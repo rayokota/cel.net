@@ -24,14 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="core\src\main\Cel\Parser" />
-  </ItemGroup>
-
-  <ItemGroup>
-      <Protobuf Include="**/*.proto" 
-          GrpcServices="None"
-          OutputDir="generated-pb/build/generated-src/main" 
-          ProtoRoot="generated-pb/src/main/googleapis" />
+      <Protobuf Include="**/*.proto" GrpcServices="None" OutputDir="generated-pb/build/generated-src/main" ProtoRoot="generated-pb/src/main/googleapis" />
   </ItemGroup>
 
   <ItemGroup>
