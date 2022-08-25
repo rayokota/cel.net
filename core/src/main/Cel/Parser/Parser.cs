@@ -22,13 +22,14 @@ namespace Cel.Parser
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static org.projectnessie.cel.parser.Macro.AllMacros;
 
+using Antlr4.Runtime;
 	using Constant = Google.Api.Expr.V1Alpha1.Constant;
 	using Expr = Google.Api.Expr.V1Alpha1.Expr;
 	using Entry = Google.Api.Expr.V1Alpha1.Expr.Types.CreateStruct.Types.Entry;
 	using Select = Google.Api.Expr.V1Alpha1.Expr.Types.Select;
 	using SourceInfo = Google.Api.Expr.V1Alpha1.SourceInfo;
-	using ByteString = com.google.protobuf.ByteString;
-	using NullValue = com.google.protobuf.NullValue;
+	using ByteString = Google.Protobuf.ByteString;
+	using NullValue = Google.Protobuf.WellKnownTypes.NullValue;
 	using ErrorWithLocation = Cel.Common.ErrorWithLocation;
 	using Errors = Cel.Common.Errors;
 	using Location = Cel.Common.Location;
@@ -67,8 +68,10 @@ namespace Cel.Parser
 	using StringContext = Cel.Parser.Gen.CELParser.StringContext;
 	using UintContext = Cel.Parser.Gen.CELParser.UintContext;
 	using UnaryContext = Cel.Parser.Gen.CELParser.UnaryContext;
+/*
 	using CommonTokenStream = Antlr4.Runtime.CommonTokenStream;
-	using ANTLRErrorListener = Antlr4.Runtime.IAntlrErrorListener;
+
+	//using ANTLRErrorListener = Antlr4.Runtime.IAntlrErrorListener;
 	using DefaultErrorStrategy = org.projectnessie.cel.shaded.org.antlr.v4.runtime.DefaultErrorStrategy;
 	using IntStream = org.projectnessie.cel.shaded.org.antlr.v4.runtime.IntStream;
 	using ParserRuleContext = org.projectnessie.cel.shaded.org.antlr.v4.runtime.ParserRuleContext;
@@ -83,17 +86,18 @@ namespace Cel.Parser
 	using ParseTree = org.projectnessie.cel.shaded.org.antlr.v4.runtime.tree.ParseTree;
 	using ParseTreeListener = org.projectnessie.cel.shaded.org.antlr.v4.runtime.tree.ParseTreeListener;
 	using TerminalNode = org.projectnessie.cel.shaded.org.antlr.v4.runtime.tree.TerminalNode;
+	*/
 
 	public sealed class Parser
 	{
 
-	  private static readonly ISet<string> reservedIds = Collections.unmodifiableSet(new HashSet<string>(Arrays.asList("as", "break", "const", "continue", "else", "false", "for", "function", "if", "import", "in", "let", "loop", "package", "namespace", "null", "return", "true", "var", "void", "while")));
+	  private static readonly ISet<string> reservedIds = new HashSet<string>{"as", "break", "const", "continue", "else", "false", "for", "function", "if", "import", "in", "let", "loop", "package", "namespace", "null", "return", "true", "var", "void", "while"};
 
 	  private readonly Options options;
 
 	  public static ParseResult parseAllMacros(Source source)
 	  {
-		return parse(Options.builder().macros(AllMacros).build(), source);
+		return parse(Options.builder().macros(Macro.AllMacros).build(), source);
 	  }
 
 	  public static ParseResult parseWithMacros(Source source, IList<Macro> macros)
@@ -292,7 +296,7 @@ namespace Cel.Parser
 		}
 	  }
 
-	  internal sealed class InnerParser : AbstractParseTreeVisitor<object>, ANTLRErrorListener
+	  internal sealed class InnerParser : AbstractParseTreeVisitor<object>, IAntlrErrorListener<IToken>
 	  {
 		  private readonly Parser outerInstance;
 

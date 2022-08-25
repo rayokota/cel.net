@@ -17,7 +17,7 @@ using System.Runtime.InteropServices;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace org.projectnessie.cel.parser
+namespace Cel.Parser
 {
 	using Constant = Google.Api.Expr.V1Alpha1.Constant;
 	using Expr = Google.Api.Expr.V1Alpha1.Expr;
