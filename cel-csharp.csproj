@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="generated-antlr/src/main/CEL.g4" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Antlr4 Include="generated-antlr/src/main/CEL.g4">
+      <AntOutDir>generated-antlr/src/main/Cel/Parser/Gen</AntOutDir>
+      <Listener>false</Listener>
+      <Package>Cel.Parser.Gen</Package>
+    </Antlr4>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Antlr4.Runtime.Standard" Version="4.10.1" />
+    <PackageReference Include="Antlr4BuildTasks" Version="10.6.0" />
+  </ItemGroup>
+
+</Project>
+
