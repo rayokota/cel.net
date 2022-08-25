@@ -68,4 +68,5 @@ target
 .DS_Store
 dependency-reduced-pom.xml
 
-generated-antlr/src/main/Cel/Parser/Gen/*
+generated-antlr/build/**
+generated-pb/build/**

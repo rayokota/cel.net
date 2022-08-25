@@ -12,7 +12,7 @@
 
   <ItemGroup>
     <Antlr4 Include="generated-antlr/src/main/CEL.g4">
-      <AntOutDir>generated-antlr/src/main/Cel/Parser/Gen</AntOutDir>
+      <AntOutDir>generated-antlr/build/generated-src/main/Cel/Parser/Gen</AntOutDir>
       <Listener>false</Listener>
       <Package>Cel.Parser.Gen</Package>
     </Antlr4>
@@ -25,6 +25,22 @@
 
   <ItemGroup>
     <Folder Include="core\src\main\Cel\Parser" />
+  </ItemGroup>
+
+  <ItemGroup>
+      <Protobuf Include="**/*.proto" 
+          GrpcServices="None"
+          OutputDir="generated-pb/build/generated-src/main" 
+          ProtoRoot="generated-pb/src/main/googleapis" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Google.Protobuf" Version="3.18.0" />
+    <PackageReference Include="Grpc.Net.Client" Version="2.39.0" />
+    <PackageReference Include="Grpc.Tools" Version="2.40.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
   </ItemGroup>
 
 </Project>
