@@ -23,5 +23,9 @@
     <PackageReference Include="Antlr4BuildTasks" Version="10.6.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="core\src\main\Cel\Parser" />
+  </ItemGroup>
+
 </Project>
 
