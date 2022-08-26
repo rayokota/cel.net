@@ -17,15 +17,14 @@
  */
 namespace Cel.Parser
 {
-	using Expr = Google.Api.Expr.V1Alpha1.Expr;
-	using ErrorWithLocation = Cel.Common.ErrorWithLocation;
+    using Expr = Google.Api.Expr.V1Alpha1.Expr;
+    using ErrorWithLocation = Cel.Common.ErrorWithLocation;
 
-	/// <summary>
-	/// MacroExpander converts the target and args of a function call that matches a Macro.
-	/// 
-	/// <para>Note: when the Macros.IsReceiverStyle() is true, the target argument will be nil.
-	/// </para>
-	/// </summary>
-	public delegate Expr MacroExpander(ExprHelper eh, Expr target, IList<Expr> args);
-
+    /// <summary>
+    /// MacroExpander converts the target and args of a function call that matches a Macro.
+    /// 
+    /// <para>Note: when the Macros.IsReceiverStyle() is true, the target argument will be nil.
+    /// </para>
+    /// </summary>
+    public delegate Expr MacroExpander(ExprHelper eh, Expr target, IList<Expr> args);
 }

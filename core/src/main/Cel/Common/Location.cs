@@ -13,84 +13,87 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel.Common
 {
+    public interface Location : IComparable<Location>
+    {
+        public static Location NoLocation = NewLocation(-1, -1);
 
-	public interface Location : IComparable<Location>
-	{
-	  public static Location NoLocation = NewLocation(-1, -1);
+        // NewLocation creates a new location.
+        static Location NewLocation(int line, int column)
+        {
+            return new SourceLocation(line, column);
+        }
 
-	  // NewLocation creates a new location.
-	  static Location NewLocation(int line, int column)
-	  {
-		return new SourceLocation(line, column);
-	  }
+        /// <summary>
+        /// 1-based line number within source. </summary>
+        int Line();
 
-	  /// <summary>
-	  /// 1-based line number within source. </summary>
-	  int Line();
+        /// <summary>
+        /// 0-based column number within source. </summary>
+        int Column();
+    }
 
-	  /// <summary>
-	  /// 0-based column number within source. </summary>
-	  int Column();
-	}
-
-	internal sealed class SourceLocation : Location
-	{
+    internal sealed class SourceLocation : Location
+    {
 //JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
-	  private readonly int line_Conflict;
+        private readonly int line_Conflict;
+
 //JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
-	  private readonly int column_Conflict;
+        private readonly int column_Conflict;
 
-	  public SourceLocation(int line, int column)
-	  {
-		this.line_Conflict = line;
-		this.column_Conflict = column;
-	  }
+        public SourceLocation(int line, int column)
+        {
+            this.line_Conflict = line;
+            this.column_Conflict = column;
+        }
 
-	  public int CompareTo(Location o)
-	  {
-		int r = line_Conflict.CompareTo(o.Line());
-		if (r == 0)
-		{
-		  r = column_Conflict.CompareTo(o.Column());
-		}
-		return r;
-	  }
+        public int CompareTo(Location o)
+        {
+            int r = line_Conflict.CompareTo(o.Line());
+            if (r == 0)
+            {
+                r = column_Conflict.CompareTo(o.Column());
+            }
 
-	  public override bool Equals(object o)
-	  {
-		if (this == o)
-		{
-		  return true;
-		}
-		if (o == null || this.GetType() != o.GetType())
-		{
-		  return false;
-		}
-		SourceLocation that = (SourceLocation) o;
-		return line_Conflict == that.line_Conflict && column_Conflict == that.column_Conflict;
-	  }
+            return r;
+        }
 
-	  public override int GetHashCode()
-	  {
-		return HashCode.Combine(line_Conflict, column_Conflict);
-	  }
+        public override bool Equals(object o)
+        {
+            if (this == o)
+            {
+                return true;
+            }
 
-	  public override string ToString()
-	  {
-		return "line=" + line_Conflict + ", column=" + column_Conflict;
-	  }
+            if (o == null || this.GetType() != o.GetType())
+            {
+                return false;
+            }
 
-	  public int Line()
-	  {
-		return line_Conflict;
-	  }
+            SourceLocation that = (SourceLocation)o;
+            return line_Conflict == that.line_Conflict && column_Conflict == that.column_Conflict;
+        }
 
-	  public int Column()
-	  {
-		return column_Conflict;
-	  }
-	}
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(line_Conflict, column_Conflict);
+        }
 
+        public override string ToString()
+        {
+            return "line=" + line_Conflict + ", column=" + column_Conflict;
+        }
+
+        public int Line()
+        {
+            return line_Conflict;
+        }
+
+        public int Column()
+        {
+            return column_Conflict;
+        }
+    }
 }

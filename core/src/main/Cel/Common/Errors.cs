@@ -13,73 +13,69 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel.Common
 {
+    public class Errors
+    {
+        private readonly IList<CelError> errors = new List<CelError>();
+        private readonly Source source;
 
-	public class Errors
-	{
-	  private readonly IList<CelError> errors = new List<CelError>();
-	  private readonly Source source;
+        public Errors(Source source)
+        {
+            this.source = source;
+        }
 
-	  public Errors(Source source)
-	  {
-		this.source = source;
-	  }
+        /// <summary>
+        /// ReportError records an error at a source location. </summary>
+        public virtual void ReportError(Location l, string format, params object[] args)
+        {
+            CelError err = new CelError(l, String.Format(format, args));
+            errors.Add(err);
+        }
 
-	  /// <summary>
-	  /// ReportError records an error at a source location. </summary>
-	  public virtual void ReportError(Location l, string format, params object[] args)
-	  {
-		CelError err = new CelError(l, String.Format(format, args));
-		errors.Add(err);
-	  }
+        /// <summary>
+        /// GetErrors returns the list of observed errors. </summary>
+        public virtual IList<CelError> GetErrors
+        {
+            get { return errors; }
+        }
 
-	  /// <summary>
-	  /// GetErrors returns the list of observed errors. </summary>
-	  public virtual IList<CelError> GetErrors
-	  {
-		  get
-		  {
-			return errors;
-		  }
-	  }
+        public virtual bool HasErrors()
+        {
+            return errors.Count > 0;
+        }
 
-	  public virtual bool HasErrors()
-	  {
-		return errors.Count > 0;
-	  }
+        /// <summary>
+        /// Append takes an Errors object as input creates a new Errors object with the current and input
+        /// errors.
+        /// </summary>
+        public virtual Errors Append(IList<CelError> errors)
+        {
+            Errors errs = new Errors(source);
+            ((List<CelError>)errs.errors).AddRange(this.errors);
+            ((List<CelError>)errs.errors).AddRange(errors);
+            return errs;
+        }
 
-	  /// <summary>
-	  /// Append takes an Errors object as input creates a new Errors object with the current and input
-	  /// errors.
-	  /// </summary>
-	  public virtual Errors Append(IList<CelError> errors)
-	  {
-		Errors errs = new Errors(source);
-		((List<CelError>)errs.errors).AddRange(this.errors);
-		((List<CelError>)errs.errors).AddRange(errors);
-		return errs;
-	  }
+        public override string ToString()
+        {
+            return ToDisplayString();
+        }
 
-	  public override string ToString()
-	  {
-		return ToDisplayString();
-	  }
-
-	  /// <summary>
-	  /// ToDisplayString returns the error set to a newline delimited string. </summary>
-	  public virtual string ToDisplayString()
-	  {
+        /// <summary>
+        /// ToDisplayString returns the error set to a newline delimited string. </summary>
+        public virtual string ToDisplayString()
+        {
 //JAVA TO C# CONVERTER TODO TASK: Most Java stream collectors are not converted by Java to C# Converter:
-		  return errors.OrderBy(c => c)
-			  .Select(e => e.ToDisplayString(source))
-			  .Aggregate((a, b) => a + "\n" + b);
-	  }
+            return errors.OrderBy(c => c)
+                .Select(e => e.ToDisplayString(source))
+                .Aggregate((a, b) => a + "\n" + b);
+        }
 
-	  public virtual void SyntaxError(Location l, string msg)
-	  {
-		ReportError(l, "Syntax error: %s", msg);
-	  }
-	}
-
+        public virtual void SyntaxError(Location l, string msg)
+        {
+            ReportError(l, "Syntax error: %s", msg);
+        }
+    }
 }

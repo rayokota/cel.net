@@ -17,262 +17,273 @@
  */
 namespace Cel.Parser
 {
+    using Expr = Google.Api.Expr.V1Alpha1.Expr;
+    using Select = Google.Api.Expr.V1Alpha1.Expr.Types.Select;
+    using ErrorWithLocation = Cel.Common.ErrorWithLocation;
+    using Location = Cel.Common.Location;
+    using Operator = Cel.Common.Operators.Operator;
 
-	using Expr = Google.Api.Expr.V1Alpha1.Expr;
-	using Select = Google.Api.Expr.V1Alpha1.Expr.Types.Select;
-	using ErrorWithLocation = Cel.Common.ErrorWithLocation;
-	using Location = Cel.Common.Location;
-	using Operator = Cel.Common.Operators.Operator;
+    public sealed class Macro
+    {
+        /// <summary>
+        /// AccumulatorName is the traditional variable name assigned to the fold accumulator variable. </summary>
+        public const string AccumulatorName = "__result__";
 
-	public sealed class Macro
-	{
-	  /// <summary>
-	  /// AccumulatorName is the traditional variable name assigned to the fold accumulator variable. </summary>
-	  public const string AccumulatorName = "__result__";
-	  /// <summary>
-	  /// AllMacros includes the list of all spec-supported macros. </summary>
-	  public static readonly IList<Macro> AllMacros = new List<Macro> {newGlobalMacro(Operator.Has.id, 1, Macro.makeHas), newReceiverMacro(Operator.All.id, 2, Macro.makeAll), newReceiverMacro(Operator.Exists.id, 2, Macro.makeExists), newReceiverMacro(Operator.ExistsOne.id, 2, Macro.makeExistsOne), newReceiverMacro(Operator.Map.id, 2, Macro.makeMap), newReceiverMacro(Operator.Map.id, 3, Macro.makeMap), newReceiverMacro(Operator.Filter.id, 2, Macro.makeFilter)};
+        /// <summary>
+        /// AllMacros includes the list of all spec-supported macros. </summary>
+        public static readonly IList<Macro> AllMacros = new List<Macro>
+        {
+            newGlobalMacro(Operator.Has.id, 1, Macro.makeHas), newReceiverMacro(Operator.All.id, 2, Macro.makeAll),
+            newReceiverMacro(Operator.Exists.id, 2, Macro.makeExists),
+            newReceiverMacro(Operator.ExistsOne.id, 2, Macro.makeExistsOne),
+            newReceiverMacro(Operator.Map.id, 2, Macro.makeMap), newReceiverMacro(Operator.Map.id, 3, Macro.makeMap),
+            newReceiverMacro(Operator.Filter.id, 2, Macro.makeFilter)
+        };
 
-	  /// <summary>
-	  /// NoMacros list. </summary>
-	  public static IList<Macro> MoMacros = new List<Macro>();
+        /// <summary>
+        /// NoMacros list. </summary>
+        public static IList<Macro> MoMacros = new List<Macro>();
 
 //JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
-	  private readonly string function_Conflict;
-	  private readonly bool receiverStyle;
-	  private readonly bool varArgStyle;
+        private readonly string function_Conflict;
+        private readonly bool receiverStyle;
+
+        private readonly bool varArgStyle;
+
 //JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
-	  private readonly int argCount_Conflict;
+        private readonly int argCount_Conflict;
+
 //JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
-	  private readonly MacroExpander expander_Conflict;
+        private readonly MacroExpander expander_Conflict;
 
-	  public Macro(string function, bool receiverStyle, bool varArgStyle, int argCount, MacroExpander expander)
-	  {
-		this.function_Conflict = function;
-		this.receiverStyle = receiverStyle;
-		this.varArgStyle = varArgStyle;
-		this.argCount_Conflict = argCount;
-		this.expander_Conflict = expander;
-	  }
+        public Macro(string function, bool receiverStyle, bool varArgStyle, int argCount, MacroExpander expander)
+        {
+            this.function_Conflict = function;
+            this.receiverStyle = receiverStyle;
+            this.varArgStyle = varArgStyle;
+            this.argCount_Conflict = argCount;
+            this.expander_Conflict = expander;
+        }
 
-	  public override string ToString()
-	  {
-		return "Macro{" + "function='" + function_Conflict + '\'' + ", receiverStyle=" + receiverStyle + ", varArgStyle=" + varArgStyle + ", argCount=" + argCount_Conflict + '}';
-	  }
+        public override string ToString()
+        {
+            return "Macro{" + "function='" + function_Conflict + '\'' + ", receiverStyle=" + receiverStyle +
+                   ", varArgStyle=" + varArgStyle + ", argCount=" + argCount_Conflict + '}';
+        }
 
-	  internal static string makeMacroKey(string name, int args, bool receiverStyle)
-	  {
-		return string.Format("{0}:{1:D}:{2}", name, args, receiverStyle);
-	  }
+        internal static string makeMacroKey(string name, int args, bool receiverStyle)
+        {
+            return string.Format("{0}:{1:D}:{2}", name, args, receiverStyle);
+        }
 
-	  internal static string makeVarArgMacroKey(string name, bool receiverStyle)
-	  {
-		return string.Format("{0}:*:{1}", name, receiverStyle);
-	  }
+        internal static string makeVarArgMacroKey(string name, bool receiverStyle)
+        {
+            return string.Format("{0}:*:{1}", name, receiverStyle);
+        }
 
-	  /// <summary>
-	  /// NewGlobalMacro creates a Macro for a global function with the specified arg count. </summary>
-	  internal static Macro newGlobalMacro(string function, int argCount, MacroExpander expander)
-	  {
-		return new Macro(function, false, false, argCount, expander);
-	  }
+        /// <summary>
+        /// NewGlobalMacro creates a Macro for a global function with the specified arg count. </summary>
+        internal static Macro newGlobalMacro(string function, int argCount, MacroExpander expander)
+        {
+            return new Macro(function, false, false, argCount, expander);
+        }
 
-	  /// <summary>
-	  /// NewReceiverMacro creates a Macro for a receiver function matching the specified arg count. </summary>
-	  public static Macro newReceiverMacro(string function, int argCount, MacroExpander expander)
-	  {
-		return new Macro(function, true, false, argCount, expander);
-	  }
+        /// <summary>
+        /// NewReceiverMacro creates a Macro for a receiver function matching the specified arg count. </summary>
+        public static Macro newReceiverMacro(string function, int argCount, MacroExpander expander)
+        {
+            return new Macro(function, true, false, argCount, expander);
+        }
 
-	  /// <summary>
-	  /// NewGlobalVarArgMacro creates a Macro for a global function with a variable arg count. </summary>
-	  internal static Macro newGlobalVarArgMacro(string function, MacroExpander expander)
-	  {
-		return new Macro(function, false, true, 0, expander);
-	  }
+        /// <summary>
+        /// NewGlobalVarArgMacro creates a Macro for a global function with a variable arg count. </summary>
+        internal static Macro newGlobalVarArgMacro(string function, MacroExpander expander)
+        {
+            return new Macro(function, false, true, 0, expander);
+        }
 
-	  /// <summary>
-	  /// NewReceiverVarArgMacro creates a Macro for a receiver function matching a variable arg count.
-	  /// </summary>
-	  internal static Macro newReceiverVarArgMacro(string function, MacroExpander expander)
-	  {
-		return new Macro(function, true, true, 0, expander);
-	  }
+        /// <summary>
+        /// NewReceiverVarArgMacro creates a Macro for a receiver function matching a variable arg count.
+        /// </summary>
+        internal static Macro newReceiverVarArgMacro(string function, MacroExpander expander)
+        {
+            return new Macro(function, true, true, 0, expander);
+        }
 
-	  internal static Expr makeAll(ExprHelper eh, Expr target, IList<Expr> args)
-	  {
-		return makeQuantifier(QuantifierKind.quantifierAll, eh, target, args);
-	  }
+        internal static Expr makeAll(ExprHelper eh, Expr target, IList<Expr> args)
+        {
+            return makeQuantifier(QuantifierKind.quantifierAll, eh, target, args);
+        }
 
-	  internal static Expr makeExists(ExprHelper eh, Expr target, IList<Expr> args)
-	  {
-		return makeQuantifier(QuantifierKind.quantifierExists, eh, target, args);
-	  }
+        internal static Expr makeExists(ExprHelper eh, Expr target, IList<Expr> args)
+        {
+            return makeQuantifier(QuantifierKind.quantifierExists, eh, target, args);
+        }
 
-	  internal static Expr makeExistsOne(ExprHelper eh, Expr target, IList<Expr> args)
-	  {
-		return makeQuantifier(QuantifierKind.quantifierExistsOne, eh, target, args);
-	  }
+        internal static Expr makeExistsOne(ExprHelper eh, Expr target, IList<Expr> args)
+        {
+            return makeQuantifier(QuantifierKind.quantifierExistsOne, eh, target, args);
+        }
 
-	  internal static Expr makeQuantifier(QuantifierKind kind, ExprHelper eh, Expr target, IList<Expr> args)
-	  {
-		string v = extractIdent(args[0]);
-		if (string.ReferenceEquals(v, null))
-		{
-		  Location location = eh.OffsetLocation(args[0].Id);
-		  throw new ErrorWithLocation(location, "argument must be a simple name");
-		}
+        internal static Expr makeQuantifier(QuantifierKind kind, ExprHelper eh, Expr target, IList<Expr> args)
+        {
+            string v = extractIdent(args[0]);
+            if (string.ReferenceEquals(v, null))
+            {
+                Location location = eh.OffsetLocation(args[0].Id);
+                throw new ErrorWithLocation(location, "argument must be a simple name");
+            }
 
-		System.Func<Expr> accuIdent = () => eh.Ident(AccumulatorName);
+            System.Func<Expr> accuIdent = () => eh.Ident(AccumulatorName);
 
-		Expr init;
-		Expr condition;
-		Expr step;
-		Expr result;
-		switch (kind)
-		{
-		  case QuantifierKind.quantifierAll:
-			init = eh.LiteralBool(true);
-			condition = eh.GlobalCall(Operator.NotStrictlyFalse.id, accuIdent());
-			step = eh.GlobalCall(Operator.LogicalAnd.id, accuIdent(), args[1]);
-			result = accuIdent();
-			break;
-		  case QuantifierKind.quantifierExists:
-			init = eh.LiteralBool(false);
-			condition = eh.GlobalCall(Operator.NotStrictlyFalse.id, eh.GlobalCall(Operator.LogicalNot.id, accuIdent()));
-			step = eh.GlobalCall(Operator.LogicalOr.id, accuIdent(), args[1]);
-			result = accuIdent();
-			break;
-		  case QuantifierKind.quantifierExistsOne:
-			Expr zeroExpr = eh.LiteralInt(0);
-			Expr oneExpr = eh.LiteralInt(1);
-			init = zeroExpr;
-			condition = eh.LiteralBool(true);
-			step = eh.GlobalCall(Operator.Conditional.id, args[1], eh.GlobalCall(Operator.Add.id, accuIdent(), oneExpr), accuIdent());
-			result = eh.GlobalCall(Operator.Equals.id, accuIdent(), oneExpr);
-			break;
-		  default:
-			throw new ErrorWithLocation(null, string.Format("unrecognized quantifier '{0}'", kind));
-		}
-		return eh.Fold(v, target, AccumulatorName, init, condition, step, result);
-	  }
+            Expr init;
+            Expr condition;
+            Expr step;
+            Expr result;
+            switch (kind)
+            {
+                case QuantifierKind.quantifierAll:
+                    init = eh.LiteralBool(true);
+                    condition = eh.GlobalCall(Operator.NotStrictlyFalse.id, accuIdent());
+                    step = eh.GlobalCall(Operator.LogicalAnd.id, accuIdent(), args[1]);
+                    result = accuIdent();
+                    break;
+                case QuantifierKind.quantifierExists:
+                    init = eh.LiteralBool(false);
+                    condition = eh.GlobalCall(Operator.NotStrictlyFalse.id,
+                        eh.GlobalCall(Operator.LogicalNot.id, accuIdent()));
+                    step = eh.GlobalCall(Operator.LogicalOr.id, accuIdent(), args[1]);
+                    result = accuIdent();
+                    break;
+                case QuantifierKind.quantifierExistsOne:
+                    Expr zeroExpr = eh.LiteralInt(0);
+                    Expr oneExpr = eh.LiteralInt(1);
+                    init = zeroExpr;
+                    condition = eh.LiteralBool(true);
+                    step = eh.GlobalCall(Operator.Conditional.id, args[1],
+                        eh.GlobalCall(Operator.Add.id, accuIdent(), oneExpr), accuIdent());
+                    result = eh.GlobalCall(Operator.Equals.id, accuIdent(), oneExpr);
+                    break;
+                default:
+                    throw new ErrorWithLocation(null, string.Format("unrecognized quantifier '{0}'", kind));
+            }
 
-	  internal static Expr makeMap(ExprHelper eh, Expr target, IList<Expr> args)
-	  {
-		string v = extractIdent(args[0]);
-		if (string.ReferenceEquals(v, null))
-		{
-		  throw new ErrorWithLocation(null, "argument is not an identifier");
-		}
+            return eh.Fold(v, target, AccumulatorName, init, condition, step, result);
+        }
 
-		Expr fn;
-		Expr filter;
+        internal static Expr makeMap(ExprHelper eh, Expr target, IList<Expr> args)
+        {
+            string v = extractIdent(args[0]);
+            if (string.ReferenceEquals(v, null))
+            {
+                throw new ErrorWithLocation(null, "argument is not an identifier");
+            }
 
-		if (args.Count == 3)
-		{
-		  filter = args[1];
-		  fn = args[2];
-		}
-		else
-		{
-		  filter = null;
-		  fn = args[1];
-		}
+            Expr fn;
+            Expr filter;
 
-		Expr accuExpr = eh.Ident(AccumulatorName);
-		Expr init = eh.NewList();
-		Expr condition = eh.LiteralBool(true);
-		Expr step = eh.GlobalCall(Operator.Add.id, accuExpr, eh.NewList(fn));
+            if (args.Count == 3)
+            {
+                filter = args[1];
+                fn = args[2];
+            }
+            else
+            {
+                filter = null;
+                fn = args[1];
+            }
 
-		if (filter != null)
-		{
-		  step = eh.GlobalCall(Operator.Conditional.id, filter, step, accuExpr);
-		}
-		return eh.Fold(v, target, AccumulatorName, init, condition, step, accuExpr);
-	  }
+            Expr accuExpr = eh.Ident(AccumulatorName);
+            Expr init = eh.NewList();
+            Expr condition = eh.LiteralBool(true);
+            Expr step = eh.GlobalCall(Operator.Add.id, accuExpr, eh.NewList(fn));
 
-	  internal static Expr makeFilter(ExprHelper eh, Expr target, IList<Expr> args)
-	  {
-		string v = extractIdent(args[0]);
-		if (string.ReferenceEquals(v, null))
-		{
-		  throw new ErrorWithLocation(null, "argument is not an identifier");
-		}
+            if (filter != null)
+            {
+                step = eh.GlobalCall(Operator.Conditional.id, filter, step, accuExpr);
+            }
 
-		Expr filter = args[1];
-		Expr accuExpr = eh.Ident(AccumulatorName);
-		Expr init = eh.NewList();
-		Expr condition = eh.LiteralBool(true);
-		Expr step = eh.GlobalCall(Operator.Add.id, accuExpr, eh.NewList(args[0]));
-		step = eh.GlobalCall(Operator.Conditional.id, filter, step, accuExpr);
-		return eh.Fold(v, target, AccumulatorName, init, condition, step, accuExpr);
-	  }
+            return eh.Fold(v, target, AccumulatorName, init, condition, step, accuExpr);
+        }
 
-	  internal static string extractIdent(Expr e)
-	  {
-		if (e.ExprKindCase == Expr.ExprKindOneofCase.IdentExpr)
-		{
-		  return e.IdentExpr.Name;
-		}
-		return null;
-	  }
+        internal static Expr makeFilter(ExprHelper eh, Expr target, IList<Expr> args)
+        {
+            string v = extractIdent(args[0]);
+            if (string.ReferenceEquals(v, null))
+            {
+                throw new ErrorWithLocation(null, "argument is not an identifier");
+            }
 
-	  internal static Expr makeHas(ExprHelper eh, Expr target, IList<Expr> args)
-	  {
-		if (args[0].ExprKindCase == Expr.ExprKindOneofCase.SelectExpr)
-		{
-		  Expr.Types.Select s = args[0].SelectExpr;
-		  return eh.PresenceTest(s.Operand, s.Field);
-		}
-		throw new ErrorWithLocation(null, "invalid argument to has() macro");
-	  }
+            Expr filter = args[1];
+            Expr accuExpr = eh.Ident(AccumulatorName);
+            Expr init = eh.NewList();
+            Expr condition = eh.LiteralBool(true);
+            Expr step = eh.GlobalCall(Operator.Add.id, accuExpr, eh.NewList(args[0]));
+            step = eh.GlobalCall(Operator.Conditional.id, filter, step, accuExpr);
+            return eh.Fold(v, target, AccumulatorName, init, condition, step, accuExpr);
+        }
 
-	  public string function()
-	  {
-		return function_Conflict;
-	  }
+        internal static string extractIdent(Expr e)
+        {
+            if (e.ExprKindCase == Expr.ExprKindOneofCase.IdentExpr)
+            {
+                return e.IdentExpr.Name;
+            }
 
-	  public bool ReceiverStyle
-	  {
-		  get
-		  {
-			return receiverStyle;
-		  }
-	  }
+            return null;
+        }
 
-	  public bool VarArgStyle
-	  {
-		  get
-		  {
-			return varArgStyle;
-		  }
-	  }
+        internal static Expr makeHas(ExprHelper eh, Expr target, IList<Expr> args)
+        {
+            if (args[0].ExprKindCase == Expr.ExprKindOneofCase.SelectExpr)
+            {
+                Expr.Types.Select s = args[0].SelectExpr;
+                return eh.PresenceTest(s.Operand, s.Field);
+            }
 
-	  public int argCount()
-	  {
-		return argCount_Conflict;
-	  }
+            throw new ErrorWithLocation(null, "invalid argument to has() macro");
+        }
 
-	  public MacroExpander expander()
-	  {
-		return expander_Conflict;
-	  }
+        public string function()
+        {
+            return function_Conflict;
+        }
 
-	  public string macroKey()
-	  {
-		if (varArgStyle)
-		{
-		  return makeVarArgMacroKey(function_Conflict, receiverStyle);
-		}
-		return makeMacroKey(function_Conflict, argCount_Conflict, receiverStyle);
-	  }
+        public bool ReceiverStyle
+        {
+            get { return receiverStyle; }
+        }
 
-	  internal enum QuantifierKind
-	  {
-		quantifierAll,
-		quantifierExists,
-		quantifierExistsOne
-	  }
-	}
+        public bool VarArgStyle
+        {
+            get { return varArgStyle; }
+        }
 
+        public int argCount()
+        {
+            return argCount_Conflict;
+        }
+
+        public MacroExpander expander()
+        {
+            return expander_Conflict;
+        }
+
+        public string macroKey()
+        {
+            if (varArgStyle)
+            {
+                return makeVarArgMacroKey(function_Conflict, receiverStyle);
+            }
+
+            return makeMacroKey(function_Conflict, argCount_Conflict, receiverStyle);
+        }
+
+        internal enum QuantifierKind
+        {
+            quantifierAll,
+            quantifierExists,
+            quantifierExistsOne
+        }
+    }
 }
