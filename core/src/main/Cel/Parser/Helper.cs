@@ -35,7 +35,7 @@ namespace Cel.Parser
 	using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
 	using Token = Antlr4.Runtime.IToken;
 
-	internal sealed class Helper
+	public sealed class Helper
 	{
 	  private readonly Source source;
 	  private readonly IDictionary<long, int> positions;
@@ -60,130 +60,130 @@ namespace Cel.Parser
 		  }
 	  }
 
-	  internal Expr newLiteral(object ctx, Constant value)
+	  internal Expr NewLiteral(object ctx, Constant value)
 	  {
-		  Expr expr = newExpr(ctx);
+		  Expr expr = NewExpr(ctx);
 		  expr.ConstExpr = value;
 		  return expr;
 	  }
 
-	  internal Expr newLiteralBool(object ctx, bool value)
+	  internal Expr NewLiteralBool(object ctx, bool value)
 	  {
 		  Constant constant = new Constant();
 		  constant.BoolValue = value;
-		  return newLiteral(ctx, constant);
+		  return NewLiteral(ctx, constant);
 	  }
 
-	  internal Expr newLiteralString(object ctx, string value)
+	  internal Expr NewLiteralString(object ctx, string value)
 	  {
 		  Constant constant = new Constant();
 		  constant.StringValue = value;
-		  return newLiteral(ctx, constant);
+		  return NewLiteral(ctx, constant);
 	  }
 
-	  internal Expr newLiteralBytes(object ctx, ByteString value)
+	  internal Expr NewLiteralBytes(object ctx, ByteString value)
 	  {
 		  Constant constant = new Constant();
 		  constant.BytesValue = value;
-		  return newLiteral(ctx, constant);
+		  return NewLiteral(ctx, constant);
 	  }
 
-	  internal Expr newLiteralInt(object ctx, long value)
+	  internal Expr NewLiteralInt(object ctx, long value)
 	  {
 		  Constant constant = new Constant();
 		  constant.Int64Value = value;
-		  return newLiteral(ctx, constant);
+		  return NewLiteral(ctx, constant);
 	  }
 
-	  internal Expr newLiteralUint(object ctx, long value)
+	  internal Expr NewLiteralUint(object ctx, ulong value)
 	  {
 		  Constant constant = new Constant();
 		  constant.Uint64Value = Convert.ToUInt64(value);
-		  return newLiteral(ctx, constant);
+		  return NewLiteral(ctx, constant);
 	  }
 
-	  internal Expr newLiteralDouble(object ctx, double value)
+	  internal Expr NewLiteralDouble(object ctx, double value)
 	  {
 		  Constant constant = new Constant();
 		  constant.DoubleValue = value;
-		  return newLiteral(ctx, constant);
+		  return NewLiteral(ctx, constant);
 	  }
 
-	  internal Expr newIdent(object ctx, string name)
+	  internal Expr NewIdent(object ctx, string name)
 	  {
 		  Ident ident = new Ident();
 		  ident.Name = name;
-		  Expr expr = newExpr(ctx);
+		  Expr expr = NewExpr(ctx);
 		  expr.IdentExpr = ident;
 		  return expr;
 	  }
 
-	  internal Expr newSelect(object ctx, Expr operand, string field)
+	  internal Expr NewSelect(object ctx, Expr operand, string field)
 	  {
 		  Select selectExpr = new Select();
 		  selectExpr.Operand = operand;
 		  selectExpr.Field = field;
-		  Expr expr = newExpr(ctx);
+		  Expr expr = NewExpr(ctx);
 		  expr.SelectExpr = selectExpr;
 		  return expr;
 	  }
 
-	  internal Expr newPresenceTest(object ctx, Expr operand, string field)
+	  internal Expr NewPresenceTest(object ctx, Expr operand, string field)
 	  {
 		  Select selectExpr = new Select();
 		  selectExpr.Operand = operand;
 		  selectExpr.Field = field;
 		  selectExpr.TestOnly = true;
-		  Expr expr = newExpr(ctx);
+		  Expr expr = NewExpr(ctx);
 		  expr.SelectExpr = selectExpr;
 		  return expr;
 	  }
 
-	  internal Expr newGlobalCall(object ctx, string function, params Expr[] args)
+	  internal Expr NewGlobalCall(object ctx, string function, params Expr[] args)
 	  {
-		  return newGlobalCall(ctx, function, args.ToList());
+		  return NewGlobalCall(ctx, function, args.ToList());
 	  }
 
-	  internal Expr newGlobalCall(object ctx, string function, IList<Expr> args)
+	  internal Expr NewGlobalCall(object ctx, string function, IList<Expr> args)
 	  {
 		  Call call = new Call();
 		  call.Function = function;
 		  call.Args.Add(args);
-		  Expr expr = newExpr(ctx);
+		  Expr expr = NewExpr(ctx);
 		  expr.CallExpr = call;
 		  return expr;
 	  }
 
-	  internal Expr newReceiverCall(object ctx, string function, Expr target, IList<Expr> args)
+	  internal Expr NewReceiverCall(object ctx, string function, Expr target, IList<Expr> args)
 	  {
 		  Call call = new Call();
 		  call.Function = function;
 		  call.Target = target;
 		  call.Args.Add(args);
-		  Expr expr = newExpr(ctx);
+		  Expr expr = NewExpr(ctx);
 		  expr.CallExpr = call;
 		  return expr;
 	  }
 
-	  internal Expr newList(object ctx, IList<Expr> elements)
+	  internal Expr NewList(object ctx, IList<Expr> elements)
 	  {
 		  CreateList createList = new CreateList();
 		  createList.Elements.Add(elements);
-		  Expr expr = newExpr(ctx);
+		  Expr expr = NewExpr(ctx);
 		  expr.ListExpr = createList;
 		  return expr;
 	  }
 
-	  internal Expr newMap(object ctx, IList<Expr.Types.CreateStruct.Types.Entry> entries)
+	  internal Expr NewMap(object ctx, IList<Expr.Types.CreateStruct.Types.Entry> entries)
 	  {
 		  CreateStruct createStruct = new CreateStruct();
 		  createStruct.Entries.Add(entries);
-		  Expr expr = newExpr(ctx);
+		  Expr expr = NewExpr(ctx);
 		  expr.StructExpr = createStruct;
 		  return expr;
 	  }
 
-	  internal Expr.Types.CreateStruct.Types.Entry newMapEntry(long entryID, Expr key, Expr value)
+	  internal Expr.Types.CreateStruct.Types.Entry NewMapEntry(long entryID, Expr key, Expr value)
 	  {
 		  Entry entry = new Entry();
 		  entry.Id = entryID;
@@ -192,17 +192,17 @@ namespace Cel.Parser
 		  return entry;
 	  }
 
-	  internal Expr newObject(object ctx, string typeName, IList<Expr.Types.CreateStruct.Types.Entry> entries)
+	  internal Expr NewObject(object ctx, string typeName, IList<Expr.Types.CreateStruct.Types.Entry> entries)
 	  {
 		  CreateStruct createStruct = new CreateStruct();
 		  createStruct.MessageName = typeName;
 		  createStruct.Entries.Add(entries);
-		  Expr expr = newExpr(ctx);
+		  Expr expr = NewExpr(ctx);
 		  expr.StructExpr = createStruct;
 		  return expr;
 	  }
 
-	  internal Expr.Types.CreateStruct.Types.Entry newObjectField(long fieldID, string field, Expr value)
+	  internal Expr.Types.CreateStruct.Types.Entry NewObjectField(long fieldID, string field, Expr value)
 	  {
 		  Entry entry = new Entry();
 		  entry.Id = fieldID;
@@ -211,7 +211,7 @@ namespace Cel.Parser
 		  return entry;
 	  }
 
-	  internal Expr newComprehension(object ctx, string iterVar, Expr iterRange, string accuVar, Expr accuInit, Expr condition, Expr step, Expr result)
+	  internal Expr NewComprehension(object ctx, string iterVar, Expr iterRange, string accuVar, Expr accuInit, Expr condition, Expr step, Expr result)
 	  {
 		  Comprehension comprehension = new Comprehension();
 		  comprehension.AccuVar = accuVar;
@@ -221,20 +221,20 @@ namespace Cel.Parser
 		  comprehension.LoopCondition = condition;
 		  comprehension.LoopStep = step;
 		  comprehension.Result = result;
-		  Expr expr =  newExpr(ctx);
+		  Expr expr =  NewExpr(ctx);
 		  expr.ComprehensionExpr = comprehension;
 		  return expr;
 	  }
 
-	  private Expr newExpr(object ctx)
+	  internal Expr NewExpr(object ctx)
 	  {
-		long exprId = (ctx is long) ? ((long?) ctx).Value : id(ctx);
+		long exprId = (ctx is long) ? ((long?) ctx).Value : Id(ctx);
 		Expr expr = new Expr();
 		expr.Id = exprId;
 		return expr;
 	  }
 
-	  internal long id(object ctx)
+	  internal long Id(object ctx)
 	  {
 		Location location;
 		if (ctx is ParserRuleContext)
@@ -262,14 +262,14 @@ namespace Cel.Parser
 		return id;
 	  }
 
-	  internal Location getLocation(long id)
+	  internal Location GetLocation(long id)
 	  {
 		int characterOffset = positions[id];
 		return source.OffsetLocation(characterOffset);
 	  }
 
 	  // newBalancer creates a balancer instance bound to a specific function and its first term.
-	  internal Balancer newBalancer(string function, Expr term)
+	  internal Balancer NewBalancer(string function, Expr term)
 	  {
 		return new Balancer(this, function, term);
 	  }
@@ -292,7 +292,7 @@ namespace Cel.Parser
 		}
 
 		// addTerm adds an operation identifier and term to the set of terms to be balanced.
-		internal void addTerm(long op, Expr term)
+		internal void AddTerm(long op, Expr term)
 		{
 		  terms.Add(term);
 		  ops.Add(op);
@@ -305,11 +305,11 @@ namespace Cel.Parser
 		  {
 			return terms[0];
 		  }
-		  return balancedTree(0, ops.Count - 1);
+		  return BalancedTree(0, ops.Count - 1);
 		}
 
 		// balancedTree recursively balances the terms provided to a commutative operator.
-		internal Expr balancedTree(int lo, int hi)
+		internal Expr BalancedTree(int lo, int hi)
 		{
 		  int mid = (lo + hi + 1) / 2;
 
@@ -320,7 +320,7 @@ namespace Cel.Parser
 		  }
 		  else
 		  {
-			left = balancedTree(lo, mid - 1);
+			left = BalancedTree(lo, mid - 1);
 		  }
 
 		  Expr right;
@@ -330,9 +330,9 @@ namespace Cel.Parser
 		  }
 		  else
 		  {
-			right = balancedTree(mid + 1, hi);
+			right = BalancedTree(mid + 1, hi);
 		  }
-		  return outerInstance.newGlobalCall(ops[mid], function, left, right);
+		  return outerInstance.NewGlobalCall(ops[mid], function, left, right);
 		}
 	  }
 	}

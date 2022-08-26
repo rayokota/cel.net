@@ -119,11 +119,11 @@ namespace Cel.Parser
 		string v = extractIdent(args[0]);
 		if (string.ReferenceEquals(v, null))
 		{
-		  Location location = eh.offsetLocation(args[0].Id);
+		  Location location = eh.OffsetLocation(args[0].Id);
 		  throw new ErrorWithLocation(location, "argument must be a simple name");
 		}
 
-		System.Func<Expr> accuIdent = () => eh.ident(AccumulatorName);
+		System.Func<Expr> accuIdent = () => eh.Ident(AccumulatorName);
 
 		Expr init;
 		Expr condition;
@@ -132,29 +132,29 @@ namespace Cel.Parser
 		switch (kind)
 		{
 		  case QuantifierKind.quantifierAll:
-			init = eh.literalBool(true);
-			condition = eh.globalCall(Operator.NotStrictlyFalse.id, accuIdent());
-			step = eh.globalCall(Operator.LogicalAnd.id, accuIdent(), args[1]);
+			init = eh.LiteralBool(true);
+			condition = eh.GlobalCall(Operator.NotStrictlyFalse.id, accuIdent());
+			step = eh.GlobalCall(Operator.LogicalAnd.id, accuIdent(), args[1]);
 			result = accuIdent();
 			break;
 		  case QuantifierKind.quantifierExists:
-			init = eh.literalBool(false);
-			condition = eh.globalCall(Operator.NotStrictlyFalse.id, eh.globalCall(Operator.LogicalNot.id, accuIdent()));
-			step = eh.globalCall(Operator.LogicalOr.id, accuIdent(), args[1]);
+			init = eh.LiteralBool(false);
+			condition = eh.GlobalCall(Operator.NotStrictlyFalse.id, eh.GlobalCall(Operator.LogicalNot.id, accuIdent()));
+			step = eh.GlobalCall(Operator.LogicalOr.id, accuIdent(), args[1]);
 			result = accuIdent();
 			break;
 		  case QuantifierKind.quantifierExistsOne:
-			Expr zeroExpr = eh.literalInt(0);
-			Expr oneExpr = eh.literalInt(1);
+			Expr zeroExpr = eh.LiteralInt(0);
+			Expr oneExpr = eh.LiteralInt(1);
 			init = zeroExpr;
-			condition = eh.literalBool(true);
-			step = eh.globalCall(Operator.Conditional.id, args[1], eh.globalCall(Operator.Add.id, accuIdent(), oneExpr), accuIdent());
-			result = eh.globalCall(Operator.Equals.id, accuIdent(), oneExpr);
+			condition = eh.LiteralBool(true);
+			step = eh.GlobalCall(Operator.Conditional.id, args[1], eh.GlobalCall(Operator.Add.id, accuIdent(), oneExpr), accuIdent());
+			result = eh.GlobalCall(Operator.Equals.id, accuIdent(), oneExpr);
 			break;
 		  default:
 			throw new ErrorWithLocation(null, string.Format("unrecognized quantifier '{0}'", kind));
 		}
-		return eh.fold(v, target, AccumulatorName, init, condition, step, result);
+		return eh.Fold(v, target, AccumulatorName, init, condition, step, result);
 	  }
 
 	  internal static Expr makeMap(ExprHelper eh, Expr target, IList<Expr> args)
@@ -179,16 +179,16 @@ namespace Cel.Parser
 		  fn = args[1];
 		}
 
-		Expr accuExpr = eh.ident(AccumulatorName);
-		Expr init = eh.newList();
-		Expr condition = eh.literalBool(true);
-		Expr step = eh.globalCall(Operator.Add.id, accuExpr, eh.newList(fn));
+		Expr accuExpr = eh.Ident(AccumulatorName);
+		Expr init = eh.NewList();
+		Expr condition = eh.LiteralBool(true);
+		Expr step = eh.GlobalCall(Operator.Add.id, accuExpr, eh.NewList(fn));
 
 		if (filter != null)
 		{
-		  step = eh.globalCall(Operator.Conditional.id, filter, step, accuExpr);
+		  step = eh.GlobalCall(Operator.Conditional.id, filter, step, accuExpr);
 		}
-		return eh.fold(v, target, AccumulatorName, init, condition, step, accuExpr);
+		return eh.Fold(v, target, AccumulatorName, init, condition, step, accuExpr);
 	  }
 
 	  internal static Expr makeFilter(ExprHelper eh, Expr target, IList<Expr> args)
@@ -200,12 +200,12 @@ namespace Cel.Parser
 		}
 
 		Expr filter = args[1];
-		Expr accuExpr = eh.ident(AccumulatorName);
-		Expr init = eh.newList();
-		Expr condition = eh.literalBool(true);
-		Expr step = eh.globalCall(Operator.Add.id, accuExpr, eh.newList(args[0]));
-		step = eh.globalCall(Operator.Conditional.id, filter, step, accuExpr);
-		return eh.fold(v, target, AccumulatorName, init, condition, step, accuExpr);
+		Expr accuExpr = eh.Ident(AccumulatorName);
+		Expr init = eh.NewList();
+		Expr condition = eh.LiteralBool(true);
+		Expr step = eh.GlobalCall(Operator.Add.id, accuExpr, eh.NewList(args[0]));
+		step = eh.GlobalCall(Operator.Conditional.id, filter, step, accuExpr);
+		return eh.Fold(v, target, AccumulatorName, init, condition, step, accuExpr);
 	  }
 
 	  internal static string extractIdent(Expr e)
@@ -222,7 +222,7 @@ namespace Cel.Parser
 		if (args[0].ExprKindCase == Expr.ExprKindOneofCase.SelectExpr)
 		{
 		  Expr.Types.Select s = args[0].SelectExpr;
-		  return eh.presenceTest(s.Operand, s.Field);
+		  return eh.PresenceTest(s.Operand, s.Field);
 		}
 		throw new ErrorWithLocation(null, "invalid argument to has() macro");
 	  }

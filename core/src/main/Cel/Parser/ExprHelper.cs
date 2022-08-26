@@ -32,59 +32,59 @@ namespace Cel.Parser
 
 	  /// <summary>
 	  /// LiteralBool creates an Expr value for a bool literal. </summary>
-	  Expr literalBool(bool value);
+	  Expr LiteralBool(bool value);
 
 	  /// <summary>
 	  /// LiteralBytes creates an Expr value for a byte literal. </summary>
-	  Expr literalBytes(ByteString value);
+	  Expr LiteralBytes(ByteString value);
 
 	  /// <summary>
 	  /// LiteralDouble creates an Expr value for double literal. </summary>
-	  Expr literalDouble(double value);
+	  Expr LiteralDouble(double value);
 
 	  /// <summary>
 	  /// LiteralInt creates an Expr value for an int literal. </summary>
-	  Expr literalInt(long value);
+	  Expr LiteralInt(long value);
 
 	  /// <summary>
 	  /// LiteralString creates am Expr value for a string literal. </summary>
-	  Expr literalString(string value);
+	  Expr LiteralString(string value);
 
 	  /// <summary>
 	  /// LiteralUint creates an Expr value for a uint literal. </summary>
-	  Expr literalUint(long value);
+	  Expr LiteralUint(ulong value);
 
 	  /// <summary>
 	  /// NewList creates a CreateList instruction where the list is comprised of the optional set of
 	  /// elements provided as arguments.
 	  /// </summary>
-	  Expr newList(IList<Expr> elems);
+	  Expr NewList(IList<Expr> elems);
 
 	  /// <summary>
 	  /// NewList creates a CreateList instruction where the list is comprised of the optional set of
 	  /// elements provided as arguments.
 	  /// </summary>
-	  Expr newList(params Expr[] elems);
+	  Expr NewList(params Expr[] elems);
 
 	  /// <summary>
 	  /// NewMap creates a CreateStruct instruction for a map where the map is comprised of the optional
 	  /// set of key, value entries.
 	  /// </summary>
-	  Expr newMap(IList<Expr.Types.CreateStruct.Types.Entry> entries);
+	  Expr NewMap(IList<Expr.Types.CreateStruct.Types.Entry> entries);
 
 	  /// <summary>
 	  /// NewMapEntry creates a Map Entry for the key, value pair. </summary>
-	  Expr.Types.CreateStruct.Types.Entry newMapEntry(Expr key, Expr val);
+	  Expr.Types.CreateStruct.Types.Entry NewMapEntry(Expr key, Expr val);
 
 	  /// <summary>
 	  /// NewObject creates a CreateStruct instruction for an object with a given type name and optional
 	  /// set of field initializers.
 	  /// </summary>
-	  Expr newObject(string typeName, IList<Expr.Types.CreateStruct.Types.Entry> fieldInits);
+	  Expr NewObject(string typeName, IList<Expr.Types.CreateStruct.Types.Entry> fieldInits);
 
 	  /// <summary>
 	  /// NewObjectFieldInit creates a new Object field initializer from the field name and value. </summary>
-	  Expr.Types.CreateStruct.Types.Entry newObjectFieldInit(string field, Expr init);
+	  Expr.Types.CreateStruct.Types.Entry NewObjectFieldInit(string field, Expr init);
 
 	  /// <summary>
 	  /// Fold creates a fold comprehension instruction.
@@ -103,35 +103,35 @@ namespace Cel.Parser
 	  /// used by built-in macros but this may change in the future.
 	  /// </para>
 	  /// </summary>
-	  Expr fold(string iterVar, Expr iterRange, string accuVar, Expr accuInit, Expr condition, Expr step, Expr result);
+	  Expr Fold(string iterVar, Expr iterRange, string accuVar, Expr accuInit, Expr condition, Expr step, Expr result);
 
 	  /// <summary>
 	  /// Ident creates an identifier Expr value. </summary>
-	  Expr ident(string name);
+	  Expr Ident(string name);
 
 	  /// <summary>
 	  /// GlobalCall creates a function call Expr value for a global (free) function. </summary>
-	  Expr globalCall(string function, IList<Expr> args);
+	  Expr GlobalCall(string function, IList<Expr> args);
 
 	  /// <summary>
 	  /// GlobalCall creates a function call Expr value for a global (free) function. </summary>
-	  Expr globalCall(string function, params Expr[] args);
+	  Expr GlobalCall(string function, params Expr[] args);
 
 	  /// <summary>
 	  /// ReceiverCall creates a function call Expr value for a receiver-style function. </summary>
-	  Expr receiverCall(string function, Expr target, IList<Expr> args);
+	  Expr ReceiverCall(string function, Expr target, IList<Expr> args);
 
 	  /// <summary>
 	  /// PresenceTest creates a Select TestOnly Expr value for modelling has() semantics. </summary>
-	  Expr presenceTest(Expr operand, string field);
+	  Expr PresenceTest(Expr operand, string field);
 
 	  /// <summary>
 	  /// Select create a field traversal Expr value. </summary>
-	  Expr select(Expr operand, string field);
+	  Expr Select(Expr operand, string field);
 
 	  /// <summary>
 	  /// OffsetLocation returns the Location of the expression identifier. </summary>
-	  Location offsetLocation(long exprID);
+	  Location OffsetLocation(long exprID);
 	}
 
 }

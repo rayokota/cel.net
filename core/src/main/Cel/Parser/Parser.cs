@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Antlr4.Runtime.Atn;
+using Antlr4.Runtime.Dfa;
+using Antlr4.Runtime.Tree;
 
 /*
  * Copyright (C) 2021 The Authors of CEL-Java
@@ -117,30 +120,31 @@ using Antlr4.Runtime;
 
 	  internal ParseResult parse(Source source)
 	  {
-		StringCharStream charStream = new StringCharStream(source.content(), source.description());
+		ICharStream charStream = new StringCharStream(source.Content(), source.Description());
 		CELLexer lexer = new CELLexer(charStream);
 		CELParser parser = new CELParser(new CommonTokenStream(lexer, 0));
 
 		RecursionListener parserListener = new RecursionListener(options.MaxRecursionDepth);
 
-		parser.addParseListener(parserListener);
+		parser.AddParseListener(parserListener);
 
-		parser.setErrorHandler(new RecoveryLimitErrorStrategy(options.ErrorRecoveryLimit));
+		parser.ErrorHandler = new RecoveryLimitErrorStrategy(options.ErrorRecoveryLimit);
 
 		Helper helper = new Helper(source);
 		Errors errors = new Errors(source);
 
-		InnerParser inner = new InnerParser(this, helper, errors);
+		InnerParser<int> inner = new InnerParser<int>(this, helper, errors);
+		InnerParser<IToken> inner2 = new InnerParser<IToken>(this, helper, errors);
 
-		lexer.addErrorListener(inner);
-		parser.addErrorListener(inner);
+		lexer.AddErrorListener(inner);
+		parser.AddErrorListener(inner2);
 
 		Expr expr = null;
 		try
 		{
-		  if (charStream.size() > options.ExpressionSizeCodePointLimit)
+		  if (charStream.Size > options.ExpressionSizeCodePointLimit)
 		  {
-			errors.reportError(Location.NoLocation, "expression code point size exceeds limit: size: %d, limit %d", charStream.size(), options.ExpressionSizeCodePointLimit);
+			errors.ReportError(Location.NoLocation, "expression code point size exceeds limit: size: %d, limit %d", charStream.Size, options.ExpressionSizeCodePointLimit);
 		  }
 		  else
 		  {
@@ -149,10 +153,10 @@ using Antlr4.Runtime;
 		}
 		catch (Exception e) when (e is RecoveryLimitError || e is RecursionError)
 		{
-		  errors.reportError(Location.NoLocation, "%s", e.getMessage());
+		  errors.ReportError(Location.NoLocation, "%s", e.Message);
 		}
 
-		if (errors.hasErrors())
+		if (errors.HasErrors())
 		{
 		  expr = null;
 		}
@@ -199,11 +203,11 @@ using Antlr4.Runtime;
 
 		public bool hasErrors()
 		{
-		  return errors.hasErrors();
+		  return errors.HasErrors();
 		}
 	  }
 
-	  internal sealed class RecursionListener : ParseTreeListener
+	  internal sealed class RecursionListener : IParseTreeListener
 	  {
 		internal readonly int maxDepth;
 		internal int depth;
@@ -213,15 +217,15 @@ using Antlr4.Runtime;
 		  this.maxDepth = maxDepth;
 		}
 
-		public override void visitTerminal(TerminalNode node)
+		public void VisitTerminal(ITerminalNode node)
 		{
 		}
-		public override void visitErrorNode(ErrorNode node)
+		public void VisitErrorNode(IErrorNode node)
 		{
 		}
-		public override void enterEveryRule(ParserRuleContext ctx)
+		public void EnterEveryRule(ParserRuleContext ctx)
 		{
-		  if (ctx != null && ctx.getRuleIndex() == CELParser.RULE_expr)
+		  if (ctx != null && ctx.RuleIndex == CELParser.RULE_expr)
 		  {
 			if (this.depth >= this.maxDepth)
 			{
@@ -232,9 +236,9 @@ using Antlr4.Runtime;
 		  }
 		}
 
-		public override void exitEveryRule(ParserRuleContext ctx)
+		public void ExitEveryRule(ParserRuleContext ctx)
 		{
-		  if (ctx != null && ctx.getRuleIndex() == CELParser.RULE_expr)
+		  if (ctx != null && ctx.RuleIndex == CELParser.RULE_expr)
 		  {
 			depth--;
 		  }
@@ -252,7 +256,7 @@ using Antlr4.Runtime;
 	  {
 //JAVA TO C# CONVERTER TODO TASK: Wildcard generics in constructor parameters are not converted. Move the generic type parameter and constraint to the class header:
 //ORIGINAL LINE: public RecoveryLimitError(String message, org.projectnessie.cel.shaded.org.antlr.v4.runtime.Recognizer<?, ?> recognizer, org.projectnessie.cel.shaded.org.antlr.v4.runtime.IntStream input, org.projectnessie.cel.shaded.org.antlr.v4.runtime.ParserRuleContext ctx)
-		public RecoveryLimitError(string message, Recognizer<T1, T2> recognizer, IntStream input, ParserRuleContext ctx) : base(message, recognizer, input, ctx)
+		public RecoveryLimitError(string message, IRecognizer recognizer, IIntStream input, ParserRuleContext ctx) : base(message, recognizer, input, ctx)
 		{
 		}
 	  }
@@ -267,36 +271,36 @@ using Antlr4.Runtime;
 		  this.maxAttempts = maxAttempts;
 		}
 
-		public override void recover(org.projectnessie.cel.shaded.org.antlr.v4.runtime.Parser recognizer, RecognitionException e)
+		public override void Recover(Antlr4.Runtime.Parser recognizer, RecognitionException e)
 		{
 		  checkAttempts(recognizer);
-		  base.recover(recognizer, e);
+		  base.Recover(recognizer, e);
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: @Override public org.projectnessie.cel.shaded.org.antlr.v4.runtime.Token recoverInline(org.projectnessie.cel.shaded.org.antlr.v4.runtime.Parser recognizer) throws org.projectnessie.cel.shaded.org.antlr.v4.runtime.RecognitionException
-		public override Token recoverInline(org.projectnessie.cel.shaded.org.antlr.v4.runtime.Parser recognizer)
+		public override IToken RecoverInline(Antlr4.Runtime.Parser recognizer)
 		{
 		  checkAttempts(recognizer);
-		  return base.recoverInline(recognizer);
+		  return base.RecoverInline(recognizer);
 		}
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: void checkAttempts(org.projectnessie.cel.shaded.org.antlr.v4.runtime.Parser recognizer) throws org.projectnessie.cel.shaded.org.antlr.v4.runtime.RecognitionException
-		internal void checkAttempts(org.projectnessie.cel.shaded.org.antlr.v4.runtime.Parser recognizer)
+		internal void checkAttempts(Antlr4.Runtime.Parser recognizer)
 		{
 		  if (attempts >= maxAttempts)
 		  {
 			attempts++;
 			string msg = string.Format("error recovery attempt limit exceeded: {0:D}", maxAttempts);
-			recognizer.notifyErrorListeners(null, msg, null);
+			recognizer.NotifyErrorListeners(null, msg, null);
 			throw new RecoveryLimitError(msg, recognizer, null, null);
 		  }
 		  attempts++;
 		}
 	  }
 
-	  internal sealed class InnerParser : AbstractParseTreeVisitor<object>, IAntlrErrorListener<IToken>
+	  internal sealed class InnerParser<Symbol> : AbstractParseTreeVisitor<object>, IAntlrErrorListener<Symbol>
 	  {
 		  private readonly Parser outerInstance;
 
@@ -311,65 +315,66 @@ using Antlr4.Runtime;
 		  this.errors = errors;
 		}
 
-		public override void syntaxError<T1, T2>(Recognizer<T1, T2> recognizer, object offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
+		public void SyntaxError(TextWriter output, IRecognizer recognizer, Symbol offendingSymbol, int line, int charPositionInLine, string msg, RecognitionException e)
 		{
-		  errors.syntaxError(Location.newLocation(line, charPositionInLine), msg);
+		  errors.SyntaxError(Location.NewLocation(line, charPositionInLine), msg);
 		}
 
-		public override void reportAmbiguity(org.projectnessie.cel.shaded.org.antlr.v4.runtime.Parser recognizer, DFA dfa, int startIndex, int stopIndex, bool exact, BitArray ambigAlts, ATNConfigSet configs)
+		public void ReportAmbiguity(Antlr4.Runtime.Parser recognizer, DFA dfa, int startIndex, int stopIndex, bool exact, BitArray ambigAlts, ATNConfigSet configs)
 		{
 		  // empty
 		}
 
-		public override void reportAttemptingFullContext(org.projectnessie.cel.shaded.org.antlr.v4.runtime.Parser recognizer, DFA dfa, int startIndex, int stopIndex, BitArray conflictingAlts, ATNConfigSet configs)
+		public void ReportAttemptingFullContext(Antlr4.Runtime.Parser recognizer, DFA dfa, int startIndex, int stopIndex, BitArray conflictingAlts, ATNConfigSet configs)
 		{
 		  // empty
 		}
 
-		public override void reportContextSensitivity(org.projectnessie.cel.shaded.org.antlr.v4.runtime.Parser recognizer, DFA dfa, int startIndex, int stopIndex, int prediction, ATNConfigSet configs)
+		public void ReportContextSensitivity(Antlr4.Runtime.Parser recognizer, DFA dfa, int startIndex, int stopIndex, int prediction, ATNConfigSet configs)
 		{
 		  // empty
 		}
 
-		internal Expr reportError(object ctx, string message)
+		internal Expr ReportError(object ctx, string message)
 		{
-		  return reportError(ctx, "%s", message);
+		  return ReportError(ctx, "%s", message);
 		}
 
-		internal Expr reportError(object ctx, string format, params object[] args)
+		internal Expr ReportError(object ctx, string format, params object[] args)
 		{
+			Expr err;
 		  Location location;
 		  if (ctx is Location)
 		  {
 			location = (Location) ctx;
 		  }
-		  else if (ctx is Token || ctx is ParserRuleContext)
+		  else if (ctx is IToken || ctx is ParserRuleContext)
 		  {
-			Expr err = helper.newExpr(ctx);
-			location = helper.getLocation(err.getId());
+			err = helper.NewExpr(ctx);
+			location = helper.GetLocation(err.Id);
 		  }
 		  else
 		  {
 			location = Location.NoLocation;
 		  }
-		  Expr err = helper.newExpr(ctx);
+		  err = helper.NewExpr(ctx);
 		  // Provide arguments to the report error.
-		  errors.reportError(location, format, args);
+		  errors.ReportError(location, format, args);
 		  return err;
 		}
 
-		public Expr exprVisit(ParseTree tree)
+		public Expr exprVisit(IParseTree tree)
 		{
-		  object r = visit(tree);
+		  object r = Visit(tree);
 		  return (Expr) r;
 		}
 
-		public override object visit(ParseTree tree)
+		public override object Visit(IParseTree tree)
 		{
 		  if (tree is RuleContext)
 		  {
 			RuleContext ruleContext = (RuleContext) tree;
-			int ruleIndex = ruleContext.getRuleIndex();
+			int ruleIndex = ruleContext.RuleIndex;
 			switch (ruleIndex)
 			{
 			  case CELParser.RULE_start:
@@ -432,27 +437,27 @@ using Antlr4.Runtime;
 				// case CELParser.RULE_exprList:
 				// case CELParser.RULE_literal:
 			  default:
-				return reportError(tree, "parser rule '%d'", ruleIndex);
+				return ReportError(tree, "parser rule '%d'", ruleIndex);
 			}
 		  }
 
 		  // Report at least one error if the parser reaches an unknown parse element.
 		  // Typically, this happens if the parser has already encountered a syntax error elsewhere.
-		  if (!errors.hasErrors())
+		  if (!errors.HasErrors())
 		  {
 			string txt = "<<nil>>";
 			if (tree != null)
 			{
 			  txt = string.Format("<<{0}>>", tree.GetType().Name);
 			}
-			return reportError(Location.NoLocation, "unknown parse element encountered: %s", txt);
+			return ReportError(Location.NoLocation, "unknown parse element encountered: %s", txt);
 		  }
-		  return helper.newExpr(Location.NoLocation);
+		  return helper.NewExpr(Location.NoLocation);
 		}
 
 		internal object visitStart(CELParser.StartContext ctx)
 		{
-		  return visit(ctx.expr());
+		  return Visit(ctx.expr());
 		}
 
 		internal Expr visitExpr(CELParser.ExprContext ctx)
@@ -462,7 +467,7 @@ using Antlr4.Runtime;
 		  {
 			return result;
 		  }
-		  long opID = helper.id(ctx.op);
+		  long opID = helper.Id(ctx.op);
 		  Expr ifTrue = exprVisit(ctx.e1);
 		  Expr ifFalse = exprVisit(ctx.e2);
 		  return globalCallOrMacro(opID, Operator.Conditional.id, result, ifTrue, ifFalse);
@@ -471,22 +476,22 @@ using Antlr4.Runtime;
 		internal Expr visitConditionalAnd(CELParser.ConditionalAndContext ctx)
 		{
 		  Expr result = exprVisit(ctx.e);
-		  if (ctx.ops == null || ctx.ops.isEmpty())
+		  if (ctx._ops == null || ctx._ops.Count == 0)
 		  {
 			return result;
 		  }
-		  Balancer b = helper.newBalancer(Operator.LogicalAnd.id, result);
-		  IList<CELParser.RelationContext> rest = ctx.e1;
-		  for (int i = 0; i < ctx.ops.size(); i++)
+		  Balancer b = helper.NewBalancer(Operator.LogicalAnd.id, result);
+		  IList<CELParser.RelationContext> rest = ctx._e1;
+		  for (int i = 0; i < ctx._ops.Count; i++)
 		  {
-			Token op = ctx.ops.get(i);
+			IToken op = ctx._ops[i];
 			if (i >= rest.Count)
 			{
-			  return reportError(ctx, "unexpected character, wanted '&&'");
+			  return ReportError(ctx, "unexpected character, wanted '&&'");
 			}
 			Expr next = exprVisit(rest[i]);
-			long opID = helper.id(op);
-			b.addTerm(opID, next);
+			long opID = helper.Id(op);
+			b.AddTerm(opID, next);
 		  }
 		  return b.balance();
 		}
@@ -494,22 +499,22 @@ using Antlr4.Runtime;
 		internal Expr visitConditionalOr(CELParser.ConditionalOrContext ctx)
 		{
 		  Expr result = exprVisit(ctx.e);
-		  if (ctx.ops == null || ctx.ops.isEmpty())
+		  if (ctx._ops == null || ctx._ops.Count == 0)
 		  {
 			return result;
 		  }
-		  Balancer b = helper.newBalancer(Operator.LogicalOr.id, result);
-		  IList<CELParser.ConditionalAndContext> rest = ctx.e1;
-		  for (int i = 0; i < ctx.ops.size(); i++)
+		  Balancer b = helper.NewBalancer(Operator.LogicalOr.id, result);
+		  IList<CELParser.ConditionalAndContext> rest = ctx._e1;
+		  for (int i = 0; i < ctx._ops.Count; i++)
 		  {
-			Token op = ctx.ops.get(i);
+			IToken op = ctx._ops[i];
 			if (i >= rest.Count)
 			{
-			  return reportError(ctx, "unexpected character, wanted '||'");
+			  return ReportError(ctx, "unexpected character, wanted '||'");
 			}
 			Expr next = exprVisit(rest[i]);
-			long opID = helper.id(op);
-			b.addTerm(opID, next);
+			long opID = helper.Id(op);
+			b.AddTerm(opID, next);
 		  }
 		  return b.balance();
 		}
@@ -523,17 +528,17 @@ using Antlr4.Runtime;
 		  string opText = "";
 		  if (ctx.op != null)
 		  {
-			opText = ctx.op.getText();
+			opText = ctx.op.Text;
 		  }
-		  Operator op = Operator.find(opText);
+		  Operator op = Operator.Find(opText);
 		  if (op != null)
 		  {
 			Expr lhs = exprVisit(ctx.relation(0));
-			long opID = helper.id(ctx.op);
+			long opID = helper.Id(ctx.op);
 			Expr rhs = exprVisit(ctx.relation(1));
 			return globalCallOrMacro(opID, op.id, lhs, rhs);
 		  }
-		  return reportError(ctx, "operator not found");
+		  return ReportError(ctx, "operator not found");
 		}
 
 		internal Expr visitCalc(CELParser.CalcContext ctx)
@@ -545,26 +550,26 @@ using Antlr4.Runtime;
 		  string opText = "";
 		  if (ctx.op != null)
 		  {
-			opText = ctx.op.getText();
+			opText = ctx.op.Text;
 		  }
-		  Operator op = Operator.find(opText);
+		  Operator op = Operator.Find(opText);
 		  if (op != null)
 		  {
 			Expr lhs = exprVisit(ctx.calc(0));
-			long opID = helper.id(ctx.op);
+			long opID = helper.Id(ctx.op);
 			Expr rhs = exprVisit(ctx.calc(1));
 			return globalCallOrMacro(opID, op.id, lhs, rhs);
 		  }
-		  return reportError(ctx, "operator not found");
+		  return ReportError(ctx, "operator not found");
 		}
 
 		internal Expr visitLogicalNot(CELParser.LogicalNotContext ctx)
 		{
-		  if (ctx.ops.size() % 2 == 0)
+		  if (ctx._ops.Count % 2 == 0)
 		  {
 			return exprVisit(ctx.member());
 		  }
-		  long opID = helper.id(ctx.ops.get(0));
+		  long opID = helper.Id(ctx._ops[0]);
 		  Expr target = exprVisit(ctx.member());
 		  return globalCallOrMacro(opID, Operator.LogicalNot.id, target);
 		}
@@ -587,7 +592,7 @@ using Antlr4.Runtime;
 		  {
 			return visitCreateMessage((CELParser.CreateMessageContext) ctx.member());
 		  }
-		  return reportError(ctx, "unsupported simple expression");
+		  return ReportError(ctx, "unsupported simple expression");
 		}
 
 		internal Expr visitPrimaryExpr(CELParser.PrimaryExprContext ctx)
@@ -613,7 +618,7 @@ using Antlr4.Runtime;
 			return visitConstantLiteral((CELParser.ConstantLiteralContext) ctx.primary());
 		  }
 
-		  return reportError(ctx, "invalid primary expression");
+		  return ReportError(ctx, "invalid primary expression");
 		}
 
 		internal Expr visitConstantLiteral(CELParser.ConstantLiteralContext ctx)
@@ -650,12 +655,12 @@ using Antlr4.Runtime;
 		  {
 			return visitNull((CELParser.NullContext) ctx.literal());
 		  }
-		  return reportError(ctx, "invalid literal");
+		  return ReportError(ctx, "invalid literal");
 		}
 
 		internal Expr visitInt(CELParser.IntContext ctx)
 		{
-		  string text = ctx.tok.getText();
+		  string text = ctx.tok.Text;
 		  int @base = 10;
 		  if (text.StartsWith("0x", StringComparison.Ordinal))
 		  {
@@ -664,22 +669,22 @@ using Antlr4.Runtime;
 		  }
 		  if (ctx.sign != null)
 		  {
-			text = ctx.sign.getText() + text;
+			text = ctx.sign.Text + text;
 		  }
 		  try
 		  {
-			long i = Long.parseLong(text, @base);
-			return helper.newLiteralInt(ctx, i);
+			long i = Convert.ToInt64(text, @base);
+			return helper.NewLiteralInt(ctx, i);
 		  }
 		  catch (Exception)
 		  {
-			return reportError(ctx, "invalid int literal");
+			return ReportError(ctx, "invalid int literal");
 		  }
 		}
 
 		internal Expr visitUint(CELParser.UintContext ctx)
 		{
-		  string text = ctx.tok.getText();
+		  string text = ctx.tok.Text;
 		  // trim the 'u' designator included in the uint literal.
 		  text = text.Substring(0, text.Length - 1);
 		  int @base = 10;
@@ -690,74 +695,76 @@ using Antlr4.Runtime;
 		  }
 		  try
 		  {
-			long i = Long.parseUnsignedLong(text, @base);
-			return helper.newLiteralUint(ctx, i);
+			ulong i = Convert.ToUInt64(text, @base);
+			return helper.NewLiteralUint(ctx, i);
 		  }
 		  catch (Exception)
 		  {
-			return reportError(ctx, "invalid int literal");
+			return ReportError(ctx, "invalid int literal");
 		  }
 		}
 
 		internal Expr visitDouble(CELParser.DoubleContext ctx)
 		{
-		  string txt = ctx.tok.getText();
+		  string txt = ctx.tok.Text;
 		  if (ctx.sign != null)
 		  {
-			txt = ctx.sign.getText() + txt;
+			txt = ctx.sign.Text + txt;
 		  }
 		  try
 		  {
 			double f = double.Parse(txt);
-			return helper.newLiteralDouble(ctx, f);
+			return helper.NewLiteralDouble(ctx, f);
 		  }
 		  catch (Exception)
 		  {
-			return reportError(ctx, "invalid double literal");
+			return ReportError(ctx, "invalid double literal");
 		  }
 		}
 
 		internal Expr visitString(CELParser.StringContext ctx)
 		{
-		  string s = unquoteString(ctx, ctx.getText());
-		  return helper.newLiteralString(ctx, s);
+		  string s = unquoteString(ctx, ctx.GetText());
+		  return helper.NewLiteralString(ctx, s);
 		}
 
 		internal Expr visitBytes(CELParser.BytesContext ctx)
 		{
-		  ByteString b = unquoteBytes(ctx, ctx.tok.getText().Substring(1));
-		  return helper.newLiteralBytes(ctx, b);
+		  ByteString b = unquoteBytes(ctx, ctx.tok.Text.Substring(1));
+		  return helper.NewLiteralBytes(ctx, b);
 		}
 
 		internal Expr visitBoolFalse(CELParser.BoolFalseContext ctx)
 		{
-		  return helper.newLiteralBool(ctx, false);
+		  return helper.NewLiteralBool(ctx, false);
 		}
 
 		internal Expr visitBoolTrue(CELParser.BoolTrueContext ctx)
 		{
-		  return helper.newLiteralBool(ctx, true);
+		  return helper.NewLiteralBool(ctx, true);
 		}
 
 		internal Expr visitNull(CELParser.NullContext ctx)
 		{
-		  return helper.newLiteral(ctx, Constant.newBuilder().setNullValue(NullValue.NULL_VALUE));
+			Constant constant = new Constant();
+				constant.NullValue = NullValue.NullValue;
+				return helper.NewLiteral(ctx, constant);
 		}
 
 		internal IList<Expr> visitList(CELParser.ExprListContext ctx)
 		{
 		  if (ctx == null)
 		  {
-			return Collections.emptyList();
+			  return new List<Expr>();
 		  }
-		  return visitSlice(ctx.e);
+		  return visitSlice(ctx._e);
 		}
 
 		internal IList<Expr> visitSlice(IList<CELParser.ExprContext> expressions)
 		{
 		  if (expressions == null)
 		  {
-			return Collections.emptyList();
+			  return new List<Expr>();
 		  }
 		  IList<Expr> result = new List<Expr>(expressions.Count);
 		  foreach (CELParser.ExprContext e in expressions)
@@ -774,44 +781,44 @@ using Antlr4.Runtime;
 		  {
 			return null;
 		  }
-		  switch (e.getExprKindCase())
+		  switch (e.ExprKindCase)
 		  {
-			case IDENT_EXPR:
-			  return e.getIdentExpr().getName();
-			case SELECT_EXPR:
-			  Expr.Select s = e.getSelectExpr();
-			  string prefix = extractQualifiedName(s.getOperand());
-			  return prefix + "." + s.getField();
+			case Expr.ExprKindOneofCase.IdentExpr:
+			  return e.IdentExpr.Name;
+			case Expr.ExprKindOneofCase.SelectExpr:
+			  Expr.Types.Select s = e.SelectExpr;
+			  string prefix = extractQualifiedName(s.Operand);
+			  return prefix + "." + s.Field;
 		  }
 		  // TODO: Add a method to Source to get location from character offset.
-		  Location location = helper.getLocation(e.getId());
-		  reportError(location, "expected a qualified name");
+		  Location location = helper.GetLocation(e.Id);
+		  ReportError(location, "expected a qualified name");
 		  return null;
 		}
 
 		// Visit a parse tree of field initializers.
-		internal IList<Expr.CreateStruct.Entry> visitIFieldInitializerList(CELParser.FieldInitializerListContext ctx)
+		internal IList<Expr.Types.CreateStruct.Types.Entry> visitIFieldInitializerList(CELParser.FieldInitializerListContext ctx)
 		{
-		  if (ctx == null || ctx.fields == null)
+		  if (ctx == null || ctx._fields == null)
 		  {
 			// This is the result of a syntax error handled elswhere, return empty.
-			return Collections.emptyList();
+			return new List<Entry>();
 		  }
 
-		  IList<Expr.CreateStruct.Entry> result = new List<Expr.CreateStruct.Entry>(ctx.fields.size());
-		  IList<Token> cols = ctx.cols;
-		  IList<CELParser.ExprContext> vals = ctx.values;
-		  for (int i = 0; i < ctx.fields.size(); i++)
+		  IList<Expr.Types.CreateStruct.Types.Entry> result = new List<Expr.Types.CreateStruct.Types.Entry>(ctx._fields.Count);
+		  IList<IToken> cols = ctx._cols;
+		  IList<CELParser.ExprContext> vals = ctx._values;
+		  for (int i = 0; i < ctx._fields.Count; i++)
 		  {
-			Token f = ctx.fields.get(i);
+			IToken f = ctx._fields[i];
 			if (i >= cols.Count || i >= vals.Count)
 			{
 			  // This is the result of a syntax error detected elsewhere.
-			  return Collections.emptyList();
+			  return new List<Entry>();
 			}
-			long initID = helper.id(cols[i]);
+			long initID = helper.Id(cols[i]);
 			Expr value = exprVisit(vals[i]);
-			Expr.CreateStruct.Entry field = helper.newObjectField(initID, f.getText(), value);
+			Expr.Types.CreateStruct.Types.Entry field = helper.NewObjectField(initID, f.Text, value);
 			result.Add(field);
 		  }
 		  return result;
@@ -827,21 +834,21 @@ using Antlr4.Runtime;
 		  // Handle the error case where no valid identifier is specified.
 		  if (ctx.id == null)
 		  {
-			return helper.newExpr(ctx);
+			return helper.NewExpr(ctx);
 		  }
 		  // Handle reserved identifiers.
-		  string id = ctx.id.getText();
+		  string id = ctx.id.Text;
 		  if (reservedIds.Contains(id))
 		  {
-			return reportError(ctx, "reserved identifier: %s", id);
+			return ReportError(ctx, "reserved identifier: %s", id);
 		  }
 		  identName += id;
 		  if (ctx.op != null)
 		  {
-			long opID = helper.id(ctx.op);
+			long opID = helper.Id(ctx.op);
 			return globalCallOrMacro(opID, identName, visitList(ctx.args));
 		  }
-		  return helper.newIdent(ctx.id, identName);
+		  return helper.NewIdent(ctx.id, identName);
 		}
 
 		internal Expr visitNested(CELParser.NestedContext ctx)
@@ -855,40 +862,40 @@ using Antlr4.Runtime;
 		  // Handle the error case where no valid identifier is specified.
 		  if (ctx.id == null)
 		  {
-			return helper.newExpr(ctx);
+			return helper.NewExpr(ctx);
 		  }
-		  string id = ctx.id.getText();
+		  string id = ctx.id.Text;
 		  if (ctx.open != null)
 		  {
-			long opID = helper.id(ctx.open);
+			long opID = helper.Id(ctx.open);
 			return receiverCallOrMacro(opID, id, operand, visitList(ctx.args));
 		  }
-		  return helper.newSelect(ctx.op, operand, id);
+		  return helper.NewSelect(ctx.op, operand, id);
 		}
 
-		internal IList<Expr.CreateStruct.Entry> visitMapInitializerList(CELParser.MapInitializerListContext ctx)
+		internal IList<Expr.Types.CreateStruct.Types.Entry> visitMapInitializerList(CELParser.MapInitializerListContext ctx)
 		{
-		  if (ctx == null || ctx.keys.isEmpty())
+		  if (ctx == null || ctx._keys.Count == 0)
 		  {
 			// This is the result of a syntax error handled elswhere, return empty.
-			return Collections.emptyList();
+			return new List<Entry>();
 		  }
 
-		  IList<Expr.CreateStruct.Entry> result = new List<Expr.CreateStruct.Entry>(ctx.cols.size());
-		  IList<CELParser.ExprContext> keys = ctx.keys;
-		  IList<CELParser.ExprContext> vals = ctx.values;
-		  for (int i = 0; i < ctx.cols.size(); i++)
+		  IList<Expr.Types.CreateStruct.Types.Entry> result = new List<Expr.Types.CreateStruct.Types.Entry>(ctx._cols.Count);
+		  IList<CELParser.ExprContext> keys = ctx._keys;
+		  IList<CELParser.ExprContext> vals = ctx._values;
+		  for (int i = 0; i < ctx._cols.Count; i++)
 		  {
-			Token col = ctx.cols.get(i);
-			long colID = helper.id(col);
+			IToken col = ctx._cols[i];
+			long colID = helper.Id(col);
 			if (i >= keys.Count || i >= vals.Count)
 			{
 			  // This is the result of a syntax error detected elsewhere.
-			  return Collections.emptyList();
+			  return new List<Entry>();
 			}
 			Expr key = exprVisit(keys[i]);
 			Expr value = exprVisit(vals[i]);
-			Expr.CreateStruct.Entry entry = helper.newMapEntry(colID, key, value);
+			Expr.Types.CreateStruct.Types.Entry entry = helper.NewMapEntry(colID, key, value);
 			result.Add(entry);
 		  }
 		  return result;
@@ -896,11 +903,11 @@ using Antlr4.Runtime;
 
 		internal Expr visitNegate(CELParser.NegateContext ctx)
 		{
-		  if (ctx.ops.size() % 2 == 0)
+		  if (ctx._ops.Count % 2 == 0)
 		  {
 			return exprVisit(ctx.member());
 		  }
-		  long opID = helper.id(ctx.ops.get(0));
+		  long opID = helper.Id(ctx._ops[0]);
 		  Expr target = exprVisit(ctx.member());
 		  return globalCallOrMacro(opID, Operator.Negate.id, target);
 		}
@@ -908,51 +915,51 @@ using Antlr4.Runtime;
 		internal Expr visitIndex(CELParser.IndexContext ctx)
 		{
 		  Expr target = exprVisit(ctx.member());
-		  long opID = helper.id(ctx.op);
+		  long opID = helper.Id(ctx.op);
 		  Expr index = exprVisit(ctx.index);
 		  return globalCallOrMacro(opID, Operator.Index.id, target, index);
 		}
 
 		internal Expr visitUnary(CELParser.UnaryContext ctx)
 		{
-		  return helper.newLiteralString(ctx, "<<error>>");
+		  return helper.NewLiteralString(ctx, "<<error>>");
 		}
 
 		internal Expr visitCreateList(CELParser.CreateListContext ctx)
 		{
-		  long listID = helper.id(ctx.op);
-		  return helper.newList(listID, visitList(ctx.elems));
+		  long listID = helper.Id(ctx.op);
+		  return helper.NewList(listID, visitList(ctx.elems));
 		}
 
 		internal Expr visitCreateMessage(CELParser.CreateMessageContext ctx)
 		{
 		  Expr target = exprVisit(ctx.member());
-		  long objID = helper.id(ctx.op);
+		  long objID = helper.Id(ctx.op);
 		  string messageName = extractQualifiedName(target);
 		  if (!string.ReferenceEquals(messageName, null))
 		  {
-			IList<Expr.CreateStruct.Entry> entries = visitIFieldInitializerList(ctx.entries);
-			return helper.newObject(objID, messageName, entries);
+			IList<Expr.Types.CreateStruct.Types.Entry> entries = visitIFieldInitializerList(ctx.entries);
+			return helper.NewObject(objID, messageName, entries);
 		  }
-		  return helper.newExpr(objID);
+		  return helper.NewExpr(objID);
 		}
 
 		internal Expr visitCreateStruct(CELParser.CreateStructContext ctx)
 		{
-		  long structID = helper.id(ctx.op);
+		  long structID = helper.Id(ctx.op);
 		  if (ctx.entries != null)
 		  {
-			return helper.newMap(structID, visitMapInitializerList(ctx.entries));
+			return helper.NewMap(structID, visitMapInitializerList(ctx.entries));
 		  }
 		  else
 		  {
-			return helper.newMap(structID, Collections.emptyList());
+			return helper.NewMap(structID, new List<Entry>());
 		  }
 		}
 
 		internal Expr globalCallOrMacro(long exprID, string function, params Expr[] args)
 		{
-		  return globalCallOrMacro(exprID, function, Arrays.asList(args));
+		  return globalCallOrMacro(exprID, function, args.ToArray());
 		}
 
 		internal Expr globalCallOrMacro(long exprID, string function, IList<Expr> args)
@@ -962,7 +969,7 @@ using Antlr4.Runtime;
 		  {
 			return expr;
 		  }
-		  return helper.newGlobalCall(exprID, function, args);
+		  return helper.NewGlobalCall(exprID, function, args);
 		}
 
 		internal Expr receiverCallOrMacro(long exprID, string function, Expr target, IList<Expr> args)
@@ -972,7 +979,7 @@ using Antlr4.Runtime;
 		  {
 			return expr;
 		  }
-		  return helper.newReceiverCall(exprID, function, target, args);
+		  return helper.NewReceiverCall(exprID, function, target, args);
 		}
 
 		internal Expr expandMacro(long exprID, string function, Expr target, IList<Expr> args)
@@ -990,20 +997,21 @@ using Antlr4.Runtime;
 		  ExprHelperImpl eh = new ExprHelperImpl(helper, exprID);
 		  try
 		  {
-			return macro.expander().expand(eh, target, args);
+			  MacroExpander expander = macro.expander();
+			return expander(eh, target, args);
 		  }
 		  catch (ErrorWithLocation err)
 		  {
 			Location loc = err.Location;
 			if (loc == null)
 			{
-			  loc = helper.getLocation(exprID);
+			  loc = helper.GetLocation(exprID);
 			}
-			return reportError(loc, err.Message);
+			return ReportError(loc, err.Message);
 		  }
 		  catch (Exception e)
 		  {
-			return reportError(helper.getLocation(exprID), e.Message);
+			return ReportError(helper.GetLocation(exprID), e.Message);
 		  }
 		}
 
@@ -1011,13 +1019,13 @@ using Antlr4.Runtime;
 		{
 		  try
 		  {
-			ByteBuffer buf = Unescape.unescape(value, true);
-			return ByteString.copyFrom(buf);
+			MemoryStream buf = Unescape.unescape(value, true);
+			return ByteString.CopyFrom(buf.ToArray());
 		  }
 		  catch (Exception e)
 		  {
-			reportError(ctx, e.ToString());
-			return ByteString.copyFromUtf8(value);
+			ReportError(ctx, e.ToString());
+			return ByteString.CopyFromUtf8(value);
 		  }
 		}
 
@@ -1025,13 +1033,13 @@ using Antlr4.Runtime;
 		{
 		  try
 		  {
-			ByteBuffer buf = Unescape.unescape(value, false);
+			MemoryStream buf = Unescape.unescape(value, false);
 
-			return Unescape.toUtf8(buf);
+			return Unescape.ToUtf8(buf);
 		  }
 		  catch (Exception e)
 		  {
-			reportError(ctx, e.ToString());
+			ReportError(ctx, e.ToString());
 			return value;
 		  }
 		}
