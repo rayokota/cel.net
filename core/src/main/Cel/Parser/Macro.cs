@@ -33,11 +33,11 @@ namespace Cel.Parser
         /// AllMacros includes the list of all spec-supported macros. </summary>
         public static readonly IList<Macro> AllMacros = new List<Macro>
         {
-            newGlobalMacro(Operator.Has.id, 1, Macro.makeHas), newReceiverMacro(Operator.All.id, 2, Macro.makeAll),
-            newReceiverMacro(Operator.Exists.id, 2, Macro.makeExists),
-            newReceiverMacro(Operator.ExistsOne.id, 2, Macro.makeExistsOne),
-            newReceiverMacro(Operator.Map.id, 2, Macro.makeMap), newReceiverMacro(Operator.Map.id, 3, Macro.makeMap),
-            newReceiverMacro(Operator.Filter.id, 2, Macro.makeFilter)
+            NewGlobalMacro(Operator.Has.id, 1, Macro.makeHas), NewReceiverMacro(Operator.All.id, 2, Macro.MakeAll),
+            NewReceiverMacro(Operator.Exists.id, 2, Macro.MakeExists),
+            NewReceiverMacro(Operator.ExistsOne.id, 2, Macro.MakeExistsOne),
+            NewReceiverMacro(Operator.Map.id, 2, Macro.makeMap), NewReceiverMacro(Operator.Map.id, 3, Macro.makeMap),
+            NewReceiverMacro(Operator.Filter.id, 2, Macro.makeFilter)
         };
 
         /// <summary>
@@ -71,33 +71,33 @@ namespace Cel.Parser
                    ", varArgStyle=" + varArgStyle + ", argCount=" + argCount_Conflict + '}';
         }
 
-        internal static string makeMacroKey(string name, int args, bool receiverStyle)
+        internal static string MakeMacroKey(string name, int args, bool receiverStyle)
         {
             return string.Format("{0}:{1:D}:{2}", name, args, receiverStyle);
         }
 
-        internal static string makeVarArgMacroKey(string name, bool receiverStyle)
+        internal static string MakeVarArgMacroKey(string name, bool receiverStyle)
         {
             return string.Format("{0}:*:{1}", name, receiverStyle);
         }
 
         /// <summary>
         /// NewGlobalMacro creates a Macro for a global function with the specified arg count. </summary>
-        internal static Macro newGlobalMacro(string function, int argCount, MacroExpander expander)
+        internal static Macro NewGlobalMacro(string function, int argCount, MacroExpander expander)
         {
             return new Macro(function, false, false, argCount, expander);
         }
 
         /// <summary>
         /// NewReceiverMacro creates a Macro for a receiver function matching the specified arg count. </summary>
-        public static Macro newReceiverMacro(string function, int argCount, MacroExpander expander)
+        public static Macro NewReceiverMacro(string function, int argCount, MacroExpander expander)
         {
             return new Macro(function, true, false, argCount, expander);
         }
 
         /// <summary>
         /// NewGlobalVarArgMacro creates a Macro for a global function with a variable arg count. </summary>
-        internal static Macro newGlobalVarArgMacro(string function, MacroExpander expander)
+        internal static Macro NewGlobalVarArgMacro(string function, MacroExpander expander)
         {
             return new Macro(function, false, true, 0, expander);
         }
@@ -105,27 +105,27 @@ namespace Cel.Parser
         /// <summary>
         /// NewReceiverVarArgMacro creates a Macro for a receiver function matching a variable arg count.
         /// </summary>
-        internal static Macro newReceiverVarArgMacro(string function, MacroExpander expander)
+        internal static Macro NewReceiverVarArgMacro(string function, MacroExpander expander)
         {
             return new Macro(function, true, true, 0, expander);
         }
 
-        internal static Expr makeAll(ExprHelper eh, Expr target, IList<Expr> args)
+        internal static Expr MakeAll(ExprHelper eh, Expr target, IList<Expr> args)
         {
-            return makeQuantifier(QuantifierKind.quantifierAll, eh, target, args);
+            return MakeQuantifier(QuantifierKind.quantifierAll, eh, target, args);
         }
 
-        internal static Expr makeExists(ExprHelper eh, Expr target, IList<Expr> args)
+        internal static Expr MakeExists(ExprHelper eh, Expr target, IList<Expr> args)
         {
-            return makeQuantifier(QuantifierKind.quantifierExists, eh, target, args);
+            return MakeQuantifier(QuantifierKind.quantifierExists, eh, target, args);
         }
 
-        internal static Expr makeExistsOne(ExprHelper eh, Expr target, IList<Expr> args)
+        internal static Expr MakeExistsOne(ExprHelper eh, Expr target, IList<Expr> args)
         {
-            return makeQuantifier(QuantifierKind.quantifierExistsOne, eh, target, args);
+            return MakeQuantifier(QuantifierKind.quantifierExistsOne, eh, target, args);
         }
 
-        internal static Expr makeQuantifier(QuantifierKind kind, ExprHelper eh, Expr target, IList<Expr> args)
+        internal static Expr MakeQuantifier(QuantifierKind kind, ExprHelper eh, Expr target, IList<Expr> args)
         {
             string v = extractIdent(args[0]);
             if (string.ReferenceEquals(v, null))
@@ -264,19 +264,19 @@ namespace Cel.Parser
             return argCount_Conflict;
         }
 
-        public MacroExpander expander()
+        public MacroExpander Expander()
         {
             return expander_Conflict;
         }
 
-        public string macroKey()
+        public string MacroKey()
         {
             if (varArgStyle)
             {
-                return makeVarArgMacroKey(function_Conflict, receiverStyle);
+                return MakeVarArgMacroKey(function_Conflict, receiverStyle);
             }
 
-            return makeMacroKey(function_Conflict, argCount_Conflict, receiverStyle);
+            return MakeMacroKey(function_Conflict, argCount_Conflict, receiverStyle);
         }
 
         internal enum QuantifierKind

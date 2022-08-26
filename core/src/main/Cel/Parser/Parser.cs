@@ -102,19 +102,19 @@ namespace Cel.Parser
 
         private readonly Options options;
 
-        public static ParseResult parseAllMacros(Source source)
+        public static ParseResult ParseAllMacros(Source source)
         {
-            return parse(Options.builder().macros(Macro.AllMacros).build(), source);
+            return Parse(Options.NewBuilder().Macros(Macro.AllMacros).Build(), source);
         }
 
-        public static ParseResult parseWithMacros(Source source, IList<Macro> macros)
+        public static ParseResult ParseWithMacros(Source source, IList<Macro> macros)
         {
-            return parse(Options.builder().macros(macros).build(), source);
+            return Parse(Options.NewBuilder().Macros(macros).Build(), source);
         }
 
-        public static ParseResult parse(Options options, Source source)
+        public static ParseResult Parse(Options options, Source source)
         {
-            return (new Parser(options)).parse(source);
+            return (new Parser(options)).Parse(source);
         }
 
         internal Parser(Options options)
@@ -122,7 +122,7 @@ namespace Cel.Parser
             this.options = options;
         }
 
-        internal ParseResult parse(Source source)
+        internal ParseResult Parse(Source source)
         {
             ICharStream charStream = new StringCharStream(source.Content(), source.Description());
             CELLexer lexer = new CELLexer(charStream);
@@ -154,7 +154,7 @@ namespace Cel.Parser
                 }
                 else
                 {
-                    expr = inner.exprVisit(parser.start());
+                    expr = inner.ExprVisit(parser.start());
                 }
             }
             catch (Exception e) when (e is RecoveryLimitError || e is RecursionError)
@@ -198,7 +198,7 @@ namespace Cel.Parser
                 get { return sourceInfo; }
             }
 
-            public bool hasErrors()
+            public bool HasErrors()
             {
                 return errors.HasErrors();
             }
@@ -274,7 +274,7 @@ namespace Cel.Parser
 
             public override void Recover(Antlr4.Runtime.Parser recognizer, RecognitionException e)
             {
-                checkAttempts(recognizer);
+                CheckAttempts(recognizer);
                 base.Recover(recognizer, e);
             }
 
@@ -282,13 +282,13 @@ namespace Cel.Parser
 //ORIGINAL LINE: @Override public org.projectnessie.cel.shaded.org.antlr.v4.runtime.Token recoverInline(org.projectnessie.cel.shaded.org.antlr.v4.runtime.Parser recognizer) throws org.projectnessie.cel.shaded.org.antlr.v4.runtime.RecognitionException
             public override IToken RecoverInline(Antlr4.Runtime.Parser recognizer)
             {
-                checkAttempts(recognizer);
+                CheckAttempts(recognizer);
                 return base.RecoverInline(recognizer);
             }
 
 //JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 //ORIGINAL LINE: void checkAttempts(org.projectnessie.cel.shaded.org.antlr.v4.runtime.Parser recognizer) throws org.projectnessie.cel.shaded.org.antlr.v4.runtime.RecognitionException
-            internal void checkAttempts(Antlr4.Runtime.Parser recognizer)
+            internal void CheckAttempts(Antlr4.Runtime.Parser recognizer)
             {
                 if (attempts >= maxAttempts)
                 {
@@ -370,7 +370,7 @@ namespace Cel.Parser
                 return err;
             }
 
-            public Expr exprVisit(IParseTree tree)
+            public Expr ExprVisit(IParseTree tree)
             {
                 object r = Visit(tree);
                 return (Expr)r;
@@ -385,65 +385,65 @@ namespace Cel.Parser
                     switch (ruleIndex)
                     {
                         case CELParser.RULE_start:
-                            return visitStart((CELParser.StartContext)tree);
+                            return VisitStart((CELParser.StartContext)tree);
                         case CELParser.RULE_expr:
-                            return visitExpr((CELParser.ExprContext)tree);
+                            return VisitExpr((CELParser.ExprContext)tree);
                         case CELParser.RULE_conditionalOr:
-                            return visitConditionalOr((CELParser.ConditionalOrContext)tree);
+                            return VisitConditionalOr((CELParser.ConditionalOrContext)tree);
                         case CELParser.RULE_conditionalAnd:
-                            return visitConditionalAnd((CELParser.ConditionalAndContext)tree);
+                            return VisitConditionalAnd((CELParser.ConditionalAndContext)tree);
                         case CELParser.RULE_relation:
-                            return visitRelation((CELParser.RelationContext)tree);
+                            return VisitRelation((CELParser.RelationContext)tree);
                         case CELParser.RULE_calc:
-                            return visitCalc((CELParser.CalcContext)tree);
+                            return VisitCalc((CELParser.CalcContext)tree);
                         case CELParser.RULE_unary:
                             if (tree is LogicalNotContext)
                             {
-                                return visitLogicalNot((CELParser.LogicalNotContext)tree);
+                                return VisitLogicalNot((CELParser.LogicalNotContext)tree);
                             }
                             else if (tree is NegateContext)
                             {
-                                return visitNegate((CELParser.NegateContext)tree);
+                                return VisitNegate((CELParser.NegateContext)tree);
                             }
                             else if (tree is MemberExprContext)
                             {
-                                return visitMemberExpr((CELParser.MemberExprContext)tree);
+                                return VisitMemberExpr((CELParser.MemberExprContext)tree);
                             }
 
-                            return visitUnary((CELParser.UnaryContext)tree);
+                            return VisitUnary((CELParser.UnaryContext)tree);
                         case CELParser.RULE_member:
                             if (tree is CreateMessageContext)
                             {
-                                return visitCreateMessage((CELParser.CreateMessageContext)tree);
+                                return VisitCreateMessage((CELParser.CreateMessageContext)tree);
                             }
                             else if (tree is PrimaryExprContext)
                             {
-                                return visitPrimaryExpr((CELParser.PrimaryExprContext)tree);
+                                return VisitPrimaryExpr((CELParser.PrimaryExprContext)tree);
                             }
                             else if (tree is SelectOrCallContext)
                             {
-                                return visitSelectOrCall((CELParser.SelectOrCallContext)tree);
+                                return VisitSelectOrCall((CELParser.SelectOrCallContext)tree);
                             }
                             else if (tree is IndexContext)
                             {
-                                return visitIndex((CELParser.IndexContext)tree);
+                                return VisitIndex((CELParser.IndexContext)tree);
                             }
 
                             break;
                         case CELParser.RULE_primary:
                             if (tree is CreateListContext)
                             {
-                                return visitCreateList((CELParser.CreateListContext)tree);
+                                return VisitCreateList((CELParser.CreateListContext)tree);
                             }
                             else if (tree is CreateStructContext)
                             {
-                                return visitCreateStruct((CELParser.CreateStructContext)tree);
+                                return VisitCreateStruct((CELParser.CreateStructContext)tree);
                             }
 
                             break;
                         case CELParser.RULE_fieldInitializerList:
                         case CELParser.RULE_mapInitializerList:
-                            return visitMapInitializerList((CELParser.MapInitializerListContext)tree);
+                            return VisitMapInitializerList((CELParser.MapInitializerListContext)tree);
                         // case CELParser.RULE_exprList:
                         // case CELParser.RULE_literal:
                         default:
@@ -467,28 +467,28 @@ namespace Cel.Parser
                 return helper.NewExpr(Location.NoLocation);
             }
 
-            internal object visitStart(CELParser.StartContext ctx)
+            internal object VisitStart(CELParser.StartContext ctx)
             {
                 return Visit(ctx.expr());
             }
 
-            internal Expr visitExpr(CELParser.ExprContext ctx)
+            internal Expr VisitExpr(CELParser.ExprContext ctx)
             {
-                Expr result = exprVisit(ctx.e);
+                Expr result = ExprVisit(ctx.e);
                 if (ctx.op == null)
                 {
                     return result;
                 }
 
                 long opID = helper.Id(ctx.op);
-                Expr ifTrue = exprVisit(ctx.e1);
-                Expr ifFalse = exprVisit(ctx.e2);
+                Expr ifTrue = ExprVisit(ctx.e1);
+                Expr ifFalse = ExprVisit(ctx.e2);
                 return globalCallOrMacro(opID, Operator.Conditional.id, result, ifTrue, ifFalse);
             }
 
-            internal Expr visitConditionalAnd(CELParser.ConditionalAndContext ctx)
+            internal Expr VisitConditionalAnd(CELParser.ConditionalAndContext ctx)
             {
-                Expr result = exprVisit(ctx.e);
+                Expr result = ExprVisit(ctx.e);
                 if (ctx._ops == null || ctx._ops.Count == 0)
                 {
                     return result;
@@ -504,7 +504,7 @@ namespace Cel.Parser
                         return ReportError(ctx, "unexpected character, wanted '&&'");
                     }
 
-                    Expr next = exprVisit(rest[i]);
+                    Expr next = ExprVisit(rest[i]);
                     long opID = helper.Id(op);
                     b.AddTerm(opID, next);
                 }
@@ -512,9 +512,9 @@ namespace Cel.Parser
                 return b.balance();
             }
 
-            internal Expr visitConditionalOr(CELParser.ConditionalOrContext ctx)
+            internal Expr VisitConditionalOr(CELParser.ConditionalOrContext ctx)
             {
-                Expr result = exprVisit(ctx.e);
+                Expr result = ExprVisit(ctx.e);
                 if (ctx._ops == null || ctx._ops.Count == 0)
                 {
                     return result;
@@ -530,7 +530,7 @@ namespace Cel.Parser
                         return ReportError(ctx, "unexpected character, wanted '||'");
                     }
 
-                    Expr next = exprVisit(rest[i]);
+                    Expr next = ExprVisit(rest[i]);
                     long opID = helper.Id(op);
                     b.AddTerm(opID, next);
                 }
@@ -538,11 +538,11 @@ namespace Cel.Parser
                 return b.balance();
             }
 
-            internal Expr visitRelation(CELParser.RelationContext ctx)
+            internal Expr VisitRelation(CELParser.RelationContext ctx)
             {
                 if (ctx.calc() != null)
                 {
-                    return exprVisit(ctx.calc());
+                    return ExprVisit(ctx.calc());
                 }
 
                 string opText = "";
@@ -554,20 +554,20 @@ namespace Cel.Parser
                 Operator op = Operator.Find(opText);
                 if (op != null)
                 {
-                    Expr lhs = exprVisit(ctx.relation(0));
+                    Expr lhs = ExprVisit(ctx.relation(0));
                     long opID = helper.Id(ctx.op);
-                    Expr rhs = exprVisit(ctx.relation(1));
+                    Expr rhs = ExprVisit(ctx.relation(1));
                     return globalCallOrMacro(opID, op.id, lhs, rhs);
                 }
 
                 return ReportError(ctx, "operator not found");
             }
 
-            internal Expr visitCalc(CELParser.CalcContext ctx)
+            internal Expr VisitCalc(CELParser.CalcContext ctx)
             {
                 if (ctx.unary() != null)
                 {
-                    return exprVisit(ctx.unary());
+                    return ExprVisit(ctx.unary());
                 }
 
                 string opText = "";
@@ -579,114 +579,114 @@ namespace Cel.Parser
                 Operator op = Operator.Find(opText);
                 if (op != null)
                 {
-                    Expr lhs = exprVisit(ctx.calc(0));
+                    Expr lhs = ExprVisit(ctx.calc(0));
                     long opID = helper.Id(ctx.op);
-                    Expr rhs = exprVisit(ctx.calc(1));
+                    Expr rhs = ExprVisit(ctx.calc(1));
                     return globalCallOrMacro(opID, op.id, lhs, rhs);
                 }
 
                 return ReportError(ctx, "operator not found");
             }
 
-            internal Expr visitLogicalNot(CELParser.LogicalNotContext ctx)
+            internal Expr VisitLogicalNot(CELParser.LogicalNotContext ctx)
             {
                 if (ctx._ops.Count % 2 == 0)
                 {
-                    return exprVisit(ctx.member());
+                    return ExprVisit(ctx.member());
                 }
 
                 long opID = helper.Id(ctx._ops[0]);
-                Expr target = exprVisit(ctx.member());
+                Expr target = ExprVisit(ctx.member());
                 return globalCallOrMacro(opID, Operator.LogicalNot.id, target);
             }
 
-            internal Expr visitMemberExpr(CELParser.MemberExprContext ctx)
+            internal Expr VisitMemberExpr(CELParser.MemberExprContext ctx)
             {
                 if (ctx.member() is PrimaryExprContext)
                 {
-                    return visitPrimaryExpr((CELParser.PrimaryExprContext)ctx.member());
+                    return VisitPrimaryExpr((CELParser.PrimaryExprContext)ctx.member());
                 }
                 else if (ctx.member() is SelectOrCallContext)
                 {
-                    return visitSelectOrCall((CELParser.SelectOrCallContext)ctx.member());
+                    return VisitSelectOrCall((CELParser.SelectOrCallContext)ctx.member());
                 }
                 else if (ctx.member() is IndexContext)
                 {
-                    return visitIndex((CELParser.IndexContext)ctx.member());
+                    return VisitIndex((CELParser.IndexContext)ctx.member());
                 }
                 else if (ctx.member() is CreateMessageContext)
                 {
-                    return visitCreateMessage((CELParser.CreateMessageContext)ctx.member());
+                    return VisitCreateMessage((CELParser.CreateMessageContext)ctx.member());
                 }
 
                 return ReportError(ctx, "unsupported simple expression");
             }
 
-            internal Expr visitPrimaryExpr(CELParser.PrimaryExprContext ctx)
+            internal Expr VisitPrimaryExpr(CELParser.PrimaryExprContext ctx)
             {
                 if (ctx.primary() is NestedContext)
                 {
-                    return visitNested((CELParser.NestedContext)ctx.primary());
+                    return VisitNested((CELParser.NestedContext)ctx.primary());
                 }
                 else if (ctx.primary() is IdentOrGlobalCallContext)
                 {
-                    return visitIdentOrGlobalCall((CELParser.IdentOrGlobalCallContext)ctx.primary());
+                    return VisitIdentOrGlobalCall((CELParser.IdentOrGlobalCallContext)ctx.primary());
                 }
                 else if (ctx.primary() is CreateListContext)
                 {
-                    return visitCreateList((CELParser.CreateListContext)ctx.primary());
+                    return VisitCreateList((CELParser.CreateListContext)ctx.primary());
                 }
                 else if (ctx.primary() is CreateStructContext)
                 {
-                    return visitCreateStruct((CELParser.CreateStructContext)ctx.primary());
+                    return VisitCreateStruct((CELParser.CreateStructContext)ctx.primary());
                 }
                 else if (ctx.primary() is ConstantLiteralContext)
                 {
-                    return visitConstantLiteral((CELParser.ConstantLiteralContext)ctx.primary());
+                    return VisitConstantLiteral((CELParser.ConstantLiteralContext)ctx.primary());
                 }
 
                 return ReportError(ctx, "invalid primary expression");
             }
 
-            internal Expr visitConstantLiteral(CELParser.ConstantLiteralContext ctx)
+            internal Expr VisitConstantLiteral(CELParser.ConstantLiteralContext ctx)
             {
                 if (ctx.literal() is IntContext)
                 {
-                    return visitInt((CELParser.IntContext)ctx.literal());
+                    return VisitInt((CELParser.IntContext)ctx.literal());
                 }
                 else if (ctx.literal() is UintContext)
                 {
-                    return visitUint((CELParser.UintContext)ctx.literal());
+                    return VisitUint((CELParser.UintContext)ctx.literal());
                 }
                 else if (ctx.literal() is DoubleContext)
                 {
-                    return visitDouble((CELParser.DoubleContext)ctx.literal());
+                    return VisitDouble((CELParser.DoubleContext)ctx.literal());
                 }
                 else if (ctx.literal() is StringContext)
                 {
-                    return visitString((CELParser.StringContext)ctx.literal());
+                    return VisitString((CELParser.StringContext)ctx.literal());
                 }
                 else if (ctx.literal() is BytesContext)
                 {
-                    return visitBytes((CELParser.BytesContext)ctx.literal());
+                    return VisitBytes((CELParser.BytesContext)ctx.literal());
                 }
                 else if (ctx.literal() is BoolFalseContext)
                 {
-                    return visitBoolFalse((CELParser.BoolFalseContext)ctx.literal());
+                    return VisitBoolFalse((CELParser.BoolFalseContext)ctx.literal());
                 }
                 else if (ctx.literal() is BoolTrueContext)
                 {
-                    return visitBoolTrue((CELParser.BoolTrueContext)ctx.literal());
+                    return VisitBoolTrue((CELParser.BoolTrueContext)ctx.literal());
                 }
                 else if (ctx.literal() is NullContext)
                 {
-                    return visitNull((CELParser.NullContext)ctx.literal());
+                    return VisitNull((CELParser.NullContext)ctx.literal());
                 }
 
                 return ReportError(ctx, "invalid literal");
             }
 
-            internal Expr visitInt(CELParser.IntContext ctx)
+            internal Expr VisitInt(CELParser.IntContext ctx)
             {
                 string text = ctx.tok.Text;
                 int @base = 10;
@@ -712,7 +712,7 @@ namespace Cel.Parser
                 }
             }
 
-            internal Expr visitUint(CELParser.UintContext ctx)
+            internal Expr VisitUint(CELParser.UintContext ctx)
             {
                 string text = ctx.tok.Text;
                 // trim the 'u' designator included in the uint literal.
@@ -735,7 +735,7 @@ namespace Cel.Parser
                 }
             }
 
-            internal Expr visitDouble(CELParser.DoubleContext ctx)
+            internal Expr VisitDouble(CELParser.DoubleContext ctx)
             {
                 string txt = ctx.tok.Text;
                 if (ctx.sign != null)
@@ -754,46 +754,46 @@ namespace Cel.Parser
                 }
             }
 
-            internal Expr visitString(CELParser.StringContext ctx)
+            internal Expr VisitString(CELParser.StringContext ctx)
             {
                 string s = unquoteString(ctx, ctx.GetText());
                 return helper.NewLiteralString(ctx, s);
             }
 
-            internal Expr visitBytes(CELParser.BytesContext ctx)
+            internal Expr VisitBytes(CELParser.BytesContext ctx)
             {
                 ByteString b = unquoteBytes(ctx, ctx.tok.Text.Substring(1));
                 return helper.NewLiteralBytes(ctx, b);
             }
 
-            internal Expr visitBoolFalse(CELParser.BoolFalseContext ctx)
+            internal Expr VisitBoolFalse(CELParser.BoolFalseContext ctx)
             {
                 return helper.NewLiteralBool(ctx, false);
             }
 
-            internal Expr visitBoolTrue(CELParser.BoolTrueContext ctx)
+            internal Expr VisitBoolTrue(CELParser.BoolTrueContext ctx)
             {
                 return helper.NewLiteralBool(ctx, true);
             }
 
-            internal Expr visitNull(CELParser.NullContext ctx)
+            internal Expr VisitNull(CELParser.NullContext ctx)
             {
                 Constant constant = new Constant();
                 constant.NullValue = NullValue.NullValue;
                 return helper.NewLiteral(ctx, constant);
             }
 
-            internal IList<Expr> visitList(CELParser.ExprListContext ctx)
+            internal IList<Expr> VisitList(CELParser.ExprListContext ctx)
             {
                 if (ctx == null)
                 {
                     return new List<Expr>();
                 }
 
-                return visitSlice(ctx._e);
+                return VisitSlice(ctx._e);
             }
 
-            internal IList<Expr> visitSlice(IList<CELParser.ExprContext> expressions)
+            internal IList<Expr> VisitSlice(IList<CELParser.ExprContext> expressions)
             {
                 if (expressions == null)
                 {
@@ -803,14 +803,14 @@ namespace Cel.Parser
                 IList<Expr> result = new List<Expr>(expressions.Count);
                 foreach (CELParser.ExprContext e in expressions)
                 {
-                    Expr ex = exprVisit(e);
+                    Expr ex = ExprVisit(e);
                     result.Add(ex);
                 }
 
                 return result;
             }
 
-            internal string extractQualifiedName(Expr e)
+            internal string ExtractQualifiedName(Expr e)
             {
                 if (e == null)
                 {
@@ -823,7 +823,7 @@ namespace Cel.Parser
                         return e.IdentExpr.Name;
                     case Expr.ExprKindOneofCase.SelectExpr:
                         Expr.Types.Select s = e.SelectExpr;
-                        string prefix = extractQualifiedName(s.Operand);
+                        string prefix = ExtractQualifiedName(s.Operand);
                         return prefix + "." + s.Field;
                 }
 
@@ -834,7 +834,7 @@ namespace Cel.Parser
             }
 
             // Visit a parse tree of field initializers.
-            internal IList<Expr.Types.CreateStruct.Types.Entry> visitIFieldInitializerList(
+            internal IList<Expr.Types.CreateStruct.Types.Entry> VisitIFieldInitializerList(
                 CELParser.FieldInitializerListContext ctx)
             {
                 if (ctx == null || ctx._fields == null)
@@ -857,7 +857,7 @@ namespace Cel.Parser
                     }
 
                     long initID = helper.Id(cols[i]);
-                    Expr value = exprVisit(vals[i]);
+                    Expr value = ExprVisit(vals[i]);
                     Expr.Types.CreateStruct.Types.Entry field = helper.NewObjectField(initID, f.Text, value);
                     result.Add(field);
                 }
@@ -865,7 +865,7 @@ namespace Cel.Parser
                 return result;
             }
 
-            internal Expr visitIdentOrGlobalCall(CELParser.IdentOrGlobalCallContext ctx)
+            internal Expr VisitIdentOrGlobalCall(CELParser.IdentOrGlobalCallContext ctx)
             {
                 string identName = "";
                 if (ctx.leadingDot != null)
@@ -890,20 +890,20 @@ namespace Cel.Parser
                 if (ctx.op != null)
                 {
                     long opID = helper.Id(ctx.op);
-                    return globalCallOrMacro(opID, identName, visitList(ctx.args));
+                    return globalCallOrMacro(opID, identName, VisitList(ctx.args));
                 }
 
                 return helper.NewIdent(ctx.id, identName);
             }
 
-            internal Expr visitNested(CELParser.NestedContext ctx)
+            internal Expr VisitNested(CELParser.NestedContext ctx)
             {
-                return exprVisit(ctx.e);
+                return ExprVisit(ctx.e);
             }
 
-            internal Expr visitSelectOrCall(CELParser.SelectOrCallContext ctx)
+            internal Expr VisitSelectOrCall(CELParser.SelectOrCallContext ctx)
             {
-                Expr operand = exprVisit(ctx.member());
+                Expr operand = ExprVisit(ctx.member());
                 // Handle the error case where no valid identifier is specified.
                 if (ctx.id == null)
                 {
@@ -914,13 +914,13 @@ namespace Cel.Parser
                 if (ctx.open != null)
                 {
                     long opID = helper.Id(ctx.open);
-                    return receiverCallOrMacro(opID, id, operand, visitList(ctx.args));
+                    return receiverCallOrMacro(opID, id, operand, VisitList(ctx.args));
                 }
 
                 return helper.NewSelect(ctx.op, operand, id);
             }
 
-            internal IList<Expr.Types.CreateStruct.Types.Entry> visitMapInitializerList(
+            internal IList<Expr.Types.CreateStruct.Types.Entry> VisitMapInitializerList(
                 CELParser.MapInitializerListContext ctx)
             {
                 if (ctx == null || ctx._keys.Count == 0)
@@ -943,8 +943,8 @@ namespace Cel.Parser
                         return new List<Entry>();
                     }
 
-                    Expr key = exprVisit(keys[i]);
-                    Expr value = exprVisit(vals[i]);
+                    Expr key = ExprVisit(keys[i]);
+                    Expr value = ExprVisit(vals[i]);
                     Expr.Types.CreateStruct.Types.Entry entry = helper.NewMapEntry(colID, key, value);
                     result.Add(entry);
                 }
@@ -952,57 +952,57 @@ namespace Cel.Parser
                 return result;
             }
 
-            internal Expr visitNegate(CELParser.NegateContext ctx)
+            internal Expr VisitNegate(CELParser.NegateContext ctx)
             {
                 if (ctx._ops.Count % 2 == 0)
                 {
-                    return exprVisit(ctx.member());
+                    return ExprVisit(ctx.member());
                 }
 
                 long opID = helper.Id(ctx._ops[0]);
-                Expr target = exprVisit(ctx.member());
+                Expr target = ExprVisit(ctx.member());
                 return globalCallOrMacro(opID, Operator.Negate.id, target);
             }
 
-            internal Expr visitIndex(CELParser.IndexContext ctx)
+            internal Expr VisitIndex(CELParser.IndexContext ctx)
             {
-                Expr target = exprVisit(ctx.member());
+                Expr target = ExprVisit(ctx.member());
                 long opID = helper.Id(ctx.op);
-                Expr index = exprVisit(ctx.index);
+                Expr index = ExprVisit(ctx.index);
                 return globalCallOrMacro(opID, Operator.Index.id, target, index);
             }
 
-            internal Expr visitUnary(CELParser.UnaryContext ctx)
+            internal Expr VisitUnary(CELParser.UnaryContext ctx)
             {
                 return helper.NewLiteralString(ctx, "<<error>>");
             }
 
-            internal Expr visitCreateList(CELParser.CreateListContext ctx)
+            internal Expr VisitCreateList(CELParser.CreateListContext ctx)
             {
                 long listID = helper.Id(ctx.op);
-                return helper.NewList(listID, visitList(ctx.elems));
+                return helper.NewList(listID, VisitList(ctx.elems));
             }
 
-            internal Expr visitCreateMessage(CELParser.CreateMessageContext ctx)
+            internal Expr VisitCreateMessage(CELParser.CreateMessageContext ctx)
             {
-                Expr target = exprVisit(ctx.member());
+                Expr target = ExprVisit(ctx.member());
                 long objID = helper.Id(ctx.op);
-                string messageName = extractQualifiedName(target);
+                string messageName = ExtractQualifiedName(target);
                 if (!string.ReferenceEquals(messageName, null))
                 {
-                    IList<Expr.Types.CreateStruct.Types.Entry> entries = visitIFieldInitializerList(ctx.entries);
+                    IList<Expr.Types.CreateStruct.Types.Entry> entries = VisitIFieldInitializerList(ctx.entries);
                     return helper.NewObject(objID, messageName, entries);
                 }
 
                 return helper.NewExpr(objID);
             }
 
-            internal Expr visitCreateStruct(CELParser.CreateStructContext ctx)
+            internal Expr VisitCreateStruct(CELParser.CreateStructContext ctx)
             {
                 long structID = helper.Id(ctx.op);
                 if (ctx.entries != null)
                 {
-                    return helper.NewMap(structID, visitMapInitializerList(ctx.entries));
+                    return helper.NewMap(structID, VisitMapInitializerList(ctx.entries));
                 }
                 else
                 {
@@ -1039,10 +1039,10 @@ namespace Cel.Parser
 
             internal Expr expandMacro(long exprID, string function, Expr target, IList<Expr> args)
             {
-                Macro macro = outerInstance.options.getMacro(Macro.makeMacroKey(function, args.Count, target != null));
+                Macro macro = outerInstance.options.GetMacro(Macro.MakeMacroKey(function, args.Count, target != null));
                 if (macro == null)
                 {
-                    macro = outerInstance.options.getMacro(Macro.makeVarArgMacroKey(function, target != null));
+                    macro = outerInstance.options.GetMacro(Macro.MakeVarArgMacroKey(function, target != null));
                     if (macro == null)
                     {
                         return null;
@@ -1052,7 +1052,7 @@ namespace Cel.Parser
                 ExprHelperImpl eh = new ExprHelperImpl(helper, exprID);
                 try
                 {
-                    MacroExpander expander = macro.expander();
+                    MacroExpander expander = macro.Expander();
                     return expander(eh, target, args);
                 }
                 catch (ErrorWithLocation err)
@@ -1075,7 +1075,7 @@ namespace Cel.Parser
             {
                 try
                 {
-                    MemoryStream buf = Unescape.unescape(value, true);
+                    MemoryStream buf = Unescape.DoUnescape(value, true);
                     return ByteString.CopyFrom(buf.ToArray());
                 }
                 catch (Exception e)
@@ -1089,7 +1089,7 @@ namespace Cel.Parser
             {
                 try
                 {
-                    MemoryStream buf = Unescape.unescape(value, false);
+                    MemoryStream buf = Unescape.DoUnescape(value, false);
 
                     return Unescape.ToUtf8(buf);
                 }

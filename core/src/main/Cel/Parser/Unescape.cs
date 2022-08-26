@@ -26,7 +26,7 @@ namespace Cel.Parser
         /// <para>This function performs escaping compatible with GoogleSQL.
         /// </para>
         /// </summary>
-        public static MemoryStream unescape(string value, bool isBytes)
+        public static MemoryStream DoUnescape(string value, bool isBytes)
         {
             // All strings normalize newlines to the \n representation.
             value = value.Replace("\r\n", "\n").Replace("\r", "\n");

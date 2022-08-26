@@ -206,7 +206,7 @@ namespace Cel.Common.Operators
         }
 
         // FindReverseBinaryOperator returns the unmangled, text representation of a binary operator.
-        public static string findReverseBinaryOperator(string id)
+        public static string FindReverseBinaryOperator(string id)
         {
             Operator op = ById(id);
             if (op == null || op == LogicalNot || op == Negate)

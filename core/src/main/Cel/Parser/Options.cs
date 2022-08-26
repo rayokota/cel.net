@@ -48,12 +48,12 @@ namespace Cel.Parser
             get { return expressionSizeCodePointLimit; }
         }
 
-        public Macro getMacro(string name)
+        public Macro GetMacro(string name)
         {
             return macros[name];
         }
 
-        public static Builder builder()
+        public static Builder NewBuilder()
         {
             return new Builder();
         }
@@ -76,7 +76,7 @@ namespace Cel.Parser
             {
             }
 
-            public Builder maxRecursionDepth(int maxRecursionDepth)
+            public Builder MaxRecursionDepth(int maxRecursionDepth)
             {
                 if (maxRecursionDepth < -1)
                 {
@@ -92,7 +92,7 @@ namespace Cel.Parser
                 return this;
             }
 
-            public Builder errorRecoveryLimit(int errorRecoveryLimit)
+            public Builder ErrorRecoveryLimit(int errorRecoveryLimit)
             {
                 if (errorRecoveryLimit < -1)
                 {
@@ -108,7 +108,7 @@ namespace Cel.Parser
                 return this;
             }
 
-            public Builder expressionSizeCodePointLimit(int expressionSizeCodePointLimit)
+            public Builder ExpressionSizeCodePointLimit(int expressionSizeCodePointLimit)
             {
                 if (expressionSizeCodePointLimit < -1)
                 {
@@ -125,22 +125,22 @@ namespace Cel.Parser
                 return this;
             }
 
-            public Builder macros(params Macro[] macros)
+            public Builder Macros(params Macro[] macros)
             {
-                return this.macros(macros.ToList());
+                return this.Macros(macros.ToList());
             }
 
-            public Builder macros(IList<Macro> macros)
+            public Builder Macros(IList<Macro> macros)
             {
                 foreach (Macro macro in macros)
                 {
-                    this.macros_Conflict[macro.macroKey()] = macro;
+                    this.macros_Conflict[macro.MacroKey()] = macro;
                 }
 
                 return this;
             }
 
-            public Options build()
+            public Options Build()
             {
                 return new Options(maxRecursionDepth_Conflict, errorRecoveryLimit_Conflict,
                     expressionSizeCodePointLimit_Conflict, new Dictionary<string, Macro>(macros_Conflict));
