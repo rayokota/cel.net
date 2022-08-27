@@ -39,7 +39,7 @@ namespace Cel.Common.Types.Ref
 	  {
 		if (obj is Val)
 		{
-		  return Equal((Val) obj) == True;
+		  return Equal((Val) obj) == BoolT.True;
 		}
 		return Value().Equals(obj);
 	  }
@@ -51,12 +51,12 @@ namespace Cel.Common.Types.Ref
 
 	  public virtual bool BooleanValue()
 	  {
-		return ConvertToType(BoolType).BooleanValue();
+		return ConvertToType(BoolT.BoolType).BooleanValue();
 	  }
 
 	  public virtual long IntValue()
 	  {
-		return ConvertToType(IntType).IntValue();
+		return ConvertToType(IntT.IntType).IntValue();
 	  }
 	}
 

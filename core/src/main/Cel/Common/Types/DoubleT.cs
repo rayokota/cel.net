@@ -184,7 +184,7 @@ namespace Cel.Common.Types
 			{
 			  return Err.RangeError(d, "int");
 			}
-			return UintT.UintOf((long)bi);
+			return UintT.UintOf((ulong)bi);
 		  case TypeEnum.InnerEnum.Double:
 			return this;
 		  case TypeEnum.InnerEnum.String:

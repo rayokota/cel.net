@@ -251,7 +251,7 @@ namespace Cel.Common.Types
 			{
 			  return Err.RangeError(i, "uint");
 			}
-			return UintT.UintOf(i);
+			return UintT.UintOf((ulong)i);
 		  case TypeEnum.InnerEnum.Double:
 			return DoubleT.DoubleOf(i);
 		  case TypeEnum.InnerEnum.String:

@@ -166,7 +166,7 @@ namespace Cel.Common.Types
 			case TypeEnum.InnerEnum.Int:
 			  return IntT.IntOf(long.Parse(s));
 			case TypeEnum.InnerEnum.Uint:
-				return UintT.UintOf(long.Parse(s));
+				return UintT.UintOf(ulong.Parse(s));
 			case TypeEnum.InnerEnum.Double:
 			  return DoubleT.DoubleOf(double.Parse(s));
 			case TypeEnum.InnerEnum.Bool:

@@ -80,7 +80,7 @@ namespace Cel.Common.Types
 			{
 				return (Val)val;
 			}
-			return adapter.NativeToValue(val);
+			return adapter(val);
 		}
 
 	public override object? ConvertToNative(System.Type typeDesc)

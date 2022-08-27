@@ -15,7 +15,7 @@
  */
 namespace Cel.Common.Types.Traits
 {
-	using IterableT = Cel.Common.types.IterableT;
+	using IterableT = Cel.Common.Types.IterableT;
 	using Val = Cel.Common.Types.Ref.Val;
 
 	/// <summary>
