@@ -24,7 +24,7 @@ namespace Cel.Common.Types
 	  /// IsUnknownOrError returns whether the input element ref.Val is an ErrType or UnknonwType. </summary>
 	  public static bool IsUnknownOrError(Val val)
 	  {
-		switch (val.Type().TypeEnum().innerEnumValue)
+		switch (val.Type().TypeEnum().InnerEnumValue)
 		{
 		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Unknown:
 		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Err:
@@ -39,11 +39,11 @@ namespace Cel.Common.Types
 	  /// </summary>
 	  public static bool IsPrimitiveType(Val val)
 	  {
-		switch (val.Type().TypeEnum().innerEnumValue)
+		switch (val.Type().TypeEnum().InnerEnumValue)
 		{
 		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Bool:
 		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Bytes:
-		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.double:
+		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Double:
 		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Int:
 		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.String:
 		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Uint:

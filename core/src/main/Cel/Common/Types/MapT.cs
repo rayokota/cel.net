@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using Google.Api.Expr.V1Alpha1;
+using Google.Protobuf;
 
 /*
  * Copyright (C) 2021 The Authors of CEL-Java
@@ -39,7 +38,7 @@ namespace Cel.Common.Types
 	using Any = Google.Protobuf.WellKnownTypes.Any;
 	using Struct = Google.Protobuf.WellKnownTypes.Struct;
 	using Value = Google.Protobuf.WellKnownTypes.Value;
-	using Operator = org.projectnessie.cel.common.operators.Operator;
+	using Operator = Cel.Common.Operators.Operator;
 	using BaseVal = Cel.Common.Types.Ref.BaseVal;
 	using Type = Cel.Common.Types.Ref.Type;
 	using TypeAdapter = Cel.Common.Types.Ref.TypeAdapter;
@@ -53,15 +52,15 @@ namespace Cel.Common.Types
 
 	public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Sizer
 	{
-		public abstract Val size();
-		public abstract IteratorT iterator();
-		public abstract Val get(Ref.Val index);
-		public abstract Val contains(Ref.Val value);
-		public override abstract object value();
-		public override abstract Val equal(Ref.Val other);
-		public override abstract Val convertToType(Ref.Type typeValue);
-		public override abstract T convertToNative(System.Type typeDesc);
-		public abstract Val find(Ref.Val key);
+		public abstract Val Size();
+		public abstract IteratorT Iterator();
+		public abstract Val Get(Ref.Val index);
+		public abstract Val Contains(Ref.Val value);
+		public override abstract object Value();
+		public override abstract Val Equal(Ref.Val other);
+		public override abstract Val ConvertToType(Ref.Type typeValue);
+		public override abstract object? ConvertToNative(System.Type typeDesc);
+		public abstract Val Find(Ref.Val key);
 	  /// <summary>
 	  /// MapType singleton. </summary>
 	  public static readonly Type MapType = TypeT.NewTypeValue(TypeEnum.Map, Trait.ContainerType, Trait.IndexerType, Trait.IterableType, Trait.SizerType);
@@ -74,7 +73,10 @@ namespace Cel.Common.Types
 	  public static Val NewMaybeWrappedMap<T1, T2>(TypeAdapter adapter, IDictionary<T1, T2> value)
 	  {
 		IDictionary<Val, Val> newMap = new Dictionary<Val, Val>(value.Count * 4 / 3 + 1);
-		value.forEach((k, v) => newMap.put(adapter.NativeToValue(k), adapter.NativeToValue(v)));
+		foreach (KeyValuePair<T1, T2> entry in value)
+		{
+			newMap.Add(adapter(entry.Key), adapter(entry.Value));
+		}
 		return NewWrappedMap(adapter, newMap);
 	  }
 
@@ -97,26 +99,29 @@ namespace Cel.Common.Types
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @SuppressWarnings("unchecked") @Override public <T> T convertToNative(Class<T> typeDesc)
-		public T ConvertToNative<T>(System.Type typeDesc)
+		public override object? ConvertToNative(System.Type typeDesc)
 		{
 		  if (typeDesc.IsAssignableFrom(typeof(System.Collections.IDictionary)) || typeDesc == typeof(object))
 		  {
-			return (T) ToJavaMap();
+			return ToJavaMap();
 		  }
 		  if (typeDesc == typeof(Struct))
 		  {
-			return (T) ToPbStruct();
+			return ToPbStruct();
 		  }
 		  if (typeDesc == typeof(Value))
 		  {
-			return (T) ToPbValue();
+			return ToPbValue();
 		  }
 		  if (typeDesc == typeof(Any))
 		  {
 			Struct v = ToPbStruct();
 			//        DynamicMessage dyn = DynamicMessage.newBuilder(v).build();
 			//        return (T) Any.newBuilder().mergeFrom(dyn).build();
-			return (T) Any.newBuilder().setTypeUrl("type.googleapis.com/google.protobuf.Struct").setValue(v.toByteString()).build();
+			Any any = new Any();
+			any.TypeUrl = "type.googleapis.com/google.protobuf.Struct";
+			any.Value = v.ToByteString();
+			return any;
 		  }
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
 		  throw new Exception(string.Format("native type conversion error from '{0}' to '{1}'", MapType, typeDesc.FullName));
@@ -124,22 +129,34 @@ namespace Cel.Common.Types
 
 		internal Value ToPbValue()
 		{
-		  return Value.newBuilder().setStructValue(ToPbStruct()).build();
+			Value value = new Value();
+			value.StructValue = ToPbStruct();
+			return value;
 		}
 
 		internal Struct ToPbStruct()
 		{
-		  Struct.Builder @struct = Struct.newBuilder();
-		  map.forEach((k, v) => @struct.putFields(k.convertToType(StringType).value().ToString(), v.convertToNative(typeof(Value))));
-		  return @struct.build();
+			Struct value = new Struct();
+			foreach (KeyValuePair<Val, Val> entry in map)
+			{
+			  value.Fields.Add(
+				  entry.Key.ConvertToType(StringT.StringType).Value().ToString(), 
+				  (Value) entry.Value.ConvertToNative(typeof(Value)));
+			}
+
+			return value;
 		}
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @SuppressWarnings({"rawtypes", "unchecked"}) private java.util.Map toJavaMap()
-		internal System.Collections.IDictionary ToJavaMap()
+		internal IDictionary<object, object> ToJavaMap()
 		{
-		  System.Collections.IDictionary r = new Hashtable();
-		  map.forEach((k, v) => r.put(k.value(), v.value()));
+		  IDictionary<object, object> r = new Dictionary<object, object>();
+		  foreach (KeyValuePair<Val, Val> entry in map)
+		  {
+			  r.Add(entry.Key.Value(), entry.Value.Value());
+			  
+		  }
 		  return r;
 		}
 
@@ -149,16 +166,16 @@ namespace Cel.Common.Types
 		  {
 			return this;
 		  }
-		  if (typeValue == TypeType)
+		  if (typeValue == TypeT.TypeType)
 		  {
 			return MapType;
 		  }
-		  return newTypeConversionError(MapType, typeValue);
+		  return Err.NewTypeConversionError(MapType, typeValue);
 		}
 
 		public override IteratorT Iterator()
 		{
-		  return IteratorT.javaIterator(adapter, map.Keys.GetEnumerator());
+		  return IteratorT.JavaIterator(adapter, map.Keys.GetEnumerator());
 		}
 
 		public override Val Equal(Val other)
@@ -166,15 +183,15 @@ namespace Cel.Common.Types
 		  // TODO this is expensive :(
 		  if (!(other is MapT))
 		  {
-			return False;
+			return BoolT.False;
 		  }
 		  MapT o = (MapT) other;
 		  if (!Size().Equal(o.Size()).BooleanValue())
 		  {
-			return False;
+			return BoolT.False;
 		  }
 		  IteratorT myIter = Iterator();
-		  while (myIter.HasNext() == True)
+		  while (myIter.HasNext() == BoolT.True)
 		  {
 			Val key = myIter.Next();
 
@@ -182,31 +199,31 @@ namespace Cel.Common.Types
 			Val oVal = o.Find(key);
 			if (oVal == null)
 			{
-			  return False;
+			  return BoolT.False;
 			}
-			if (isError(val))
+			if (Err.IsError(val))
 			{
 			  return val;
 			}
-			if (isError(oVal))
+			if (Err.IsError(oVal))
 			{
 			  return val;
 			}
 			if (val.Type() != oVal.Type())
 			{
-			  return noSuchOverload(val, Operator.Equals.id, oVal);
+			  return Err.NoSuchOverload(val, Operator.Equals.id, oVal);
 			}
 			Val eq = val.Equal(oVal);
 			if (eq is Err)
 			{
 			  return eq;
 			}
-			if (eq != True)
+			if (eq != BoolT.True)
 			{
-			  return False;
+			  return BoolT.False;
 			}
 		  }
-		  return True;
+		  return BoolT.True;
 		}
 
 		public override object Value()
@@ -218,7 +235,7 @@ namespace Cel.Common.Types
 
 		public override Val Contains(Val value)
 		{
-		  return boolOf(map.ContainsKey(value));
+		  return Types.BoolOf(map.ContainsKey(value));
 		}
 
 		public override Val Get(Val index)
@@ -247,12 +264,12 @@ namespace Cel.Common.Types
 			return false;
 		  }
 		  ValMapT valMapT = (ValMapT) o;
-		  return Objects.equals(map, valMapT.map);
+		  return Object.Equals(map, valMapT.map);
 		}
 
 		public override int GetHashCode()
 		{
-		  return Objects.hash(base.GetHashCode(), map);
+		  return HashCode.Combine(base.GetHashCode(), map);
 		}
 
 		public override string ToString()
@@ -270,7 +287,7 @@ namespace Cel.Common.Types
 	  /// </summary>
 	  public static Val NewJSONStruct(TypeAdapter adapter, Struct value)
 	  {
-		IDictionary<string, Value> fields = value.getFieldsMap();
+		  IDictionary<string, Value> fields = value.Fields;
 		return NewMaybeWrappedMap(adapter, fields);
 	  }
 	}

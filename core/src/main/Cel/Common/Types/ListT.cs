@@ -107,7 +107,7 @@ namespace Cel.Common.Types
 		{
 		  if (typeDesc.IsArray)
 		  {
-			object array = ToJavaArray(typeDesc);
+			object array = ToJavaArray<object>(typeDesc);
 
 			return array;
 		  }
@@ -155,15 +155,15 @@ namespace Cel.Common.Types
 
 		internal virtual ListValue ToPbListValue()
 		{
-		  ListValue.Builder list = ListValue.newBuilder();
+			ListValue list = new ListValue();
 		  int s = (int) size;
 		  for (int i = 0; i < s; i++)
 		  {
-			Val v = outerInstance.Get(intOf(i));
-			Value e = v.ConvertToNative(typeof(Value));
-			list.addValues(e);
+			Val v = Get(IntT.IntOf(i));
+			Value e = (Value)v.ConvertToNative(typeof(Value));
+			list.Values.Add(e);
 		  }
-		  return list.build();
+		  return list;
 		}
 
 		internal virtual IList<object> ToJavaList()
@@ -184,11 +184,11 @@ namespace Cel.Common.Types
 		  }
 		  object array = Array.CreateInstance(compType, s);
 
-		  System.Func<object, object> fixForTarget = System.Func.identity();
+		  System.Func<object, object> fixForTarget = x => x;
 
 		  for (int i = 0; i < s; i++)
 		  {
-			Val v = outerInstance.Get(intOf(i));
+			Val v = Get(IntT.IntOf(i));
 			object e = v.ConvertToNative(compType);
 			e = fixForTarget(e);
 			((Array)array).SetValue(e, i);
@@ -198,14 +198,14 @@ namespace Cel.Common.Types
 
 		public override Val ConvertToType(Type typeValue)
 		{
-		  switch (typeValue.TypeEnum().innerEnumValue)
+		  switch (typeValue.TypeEnum().InnerEnumValue)
 		  {
-			case System.Collections.IList:
+			case TypeEnum.InnerEnum.List:
 			  return this;
-			case Type:
+			case TypeEnum.InnerEnum.Type:
 			  return ListType;
 		  }
-		  return newTypeConversionError(ListType, typeValue);
+		  return Err.NewTypeConversionError(ListType, typeValue);
 		}
 
 		public override IteratorT Iterator()
@@ -217,36 +217,36 @@ namespace Cel.Common.Types
 		{
 		  if (other.Type() != ListType)
 		  {
-			return False;
+			return BoolT.False;
 		  }
 		  ListT o = (ListT) other;
 		  if (size != o.Size().IntValue())
 		  {
-			return False;
+			return BoolT.False;
 		  }
 		  for (long i = 0; i < size; i++)
 		  {
-			IntT idx = intOf(i);
-			Val e1 = outerInstance.Get(idx);
-			if (isError(e1))
+			IntT idx = IntT.IntOf(i);
+			Val e1 = Get(idx);
+			if (Err.IsError(e1))
 			{
 			  return e1;
 			}
 			Val e2 = o.Get(idx);
-			if (isError(e2))
+			if (Err.IsError(e2))
 			{
 			  return e2;
 			}
 			if (e1.Type() != e2.Type())
 			{
-			  return noSuchOverload(e1, Operator.Equals.id, e2);
+			  return Err.NoSuchOverload(e1, Operator.Equals.id, e2);
 			}
-			if (e1.Equal(e2) != True)
+			if (e1.Equal(e2) != BoolT.True)
 			{
-			  return False;
+			  return BoolT.False;
 			}
 		  }
-		  return True;
+		  return BoolT.True;
 		}
 
 		public override Val Contains(Val value)
@@ -255,7 +255,7 @@ namespace Cel.Common.Types
 		  Type mixedType = null;
 		  for (long i = 0; i < size; i++)
 		  {
-			Val elem = outerInstance.Get(intOf(i));
+			Val elem = Get(IntT.IntOf(i));
 			Type elemType = elem.Type();
 			if (firstType == null)
 			{
@@ -265,21 +265,21 @@ namespace Cel.Common.Types
 			{
 			  mixedType = elemType;
 			}
-			if (value.Equal(elem) == True)
+			if (value.Equal(elem) == BoolT.True)
 			{
-			  return True;
+			  return BoolT.True;
 			}
 		  }
 		  if (mixedType != null)
 		  {
-			return noSuchOverload(value, Operator.In.id, firstType, mixedType);
+			return Err.NoSuchOverload(value, Operator.In.id, firstType, mixedType);
 		  }
-		  return False;
+		  return BoolT.False;
 		}
 
 		public override Val Size()
 		{
-		  return intOf(size);
+		  return IntT.IntOf(size);
 		}
 
 		private sealed class ArrayListIteratorT : BaseVal, IteratorT
@@ -295,19 +295,19 @@ namespace Cel.Common.Types
 
 		  public Val HasNext()
 		  {
-			return boolOf(index < outerInstance.size);
+			return Types.BoolOf(index < outerInstance.size);
 		  }
 
 		  public Val Next()
 		  {
 			if (index < outerInstance.size)
 			{
-			  return outerInstance.outerInstance.Get(intOf(index++));
+			  return outerInstance.Get(IntT.IntOf(index++));
 			}
-			return noMoreElements();
+			return Err.NoMoreElements();
 		  }
 
-		  public override T ConvertToNative<T>(System.Type typeDesc)
+		  public override object? ConvertToNative(System.Type typeDesc)
 		  {
 			throw new System.NotSupportedException("IMPLEMENT ME??");
 		  }
@@ -343,39 +343,40 @@ namespace Cel.Common.Types
 		  this.array = array;
 		}
 
-		public object Value()
+		public override object Value()
 		{
 		  return array;
 		}
 
-		public Val Add(Val other)
+		public override Val Add(Val other)
 		{
 		  if (!(other is Lister))
 		  {
-			return noSuchOverload(this, "add", other);
+			return Err.NoSuchOverload(this, "add", other);
 		  }
 		  Lister otherList = (Lister) other;
 		  object[] otherArray = (object[]) otherList.Value();
-		  object[] newArray = Arrays.CopyOf(array, array.Length + otherArray.Length);
+		  object[] newArray = new object[array.Length + otherArray.Length];
+		  Array.Copy(array, 0, newArray, 0, array.Length);
 		  Array.Copy(otherArray, 0, newArray, array.Length, otherArray.Length);
 		  return new GenericListT(adapter, newArray);
 		}
 
-		public Val Get(Val index)
+		public override Val Get(Val index)
 		{
 		  if (!(index is IntT))
 		  {
-			return valOrErr(index, "unsupported index type '%s' in list", index.Type());
+			return Err.ValOrErr(index, "unsupported index type '%s' in list", index.Type());
 		  }
 		  int sz = array.Length;
 		  int i = (int) index.IntValue();
 		  if (i < 0 || i >= sz)
 		  {
 			// Note: the conformance tests assert on 'invalid_argument'
-			return newErr("invalid_argument: index '%d' out of range in list of size '%d'", i, sz);
+			return Err.NewErr("invalid_argument: index '%d' out of range in list of size '%d'", i, sz);
 		  }
 
-		  return adapter.NativeToValue(array[i]);
+		  return adapter(array[i]);
 		}
 
 		public override string ToString()
@@ -393,7 +394,7 @@ namespace Cel.Common.Types
 		  this.array = array;
 		}
 
-		public object Value()
+		public override object Value()
 		{
 		  object[] nativeArray = new object[array.Length];
 		  for (int i = 0; i < array.Length; i++)
@@ -403,16 +404,17 @@ namespace Cel.Common.Types
 		  return nativeArray;
 		}
 
-		public Val Add(Val other)
+		public override Val Add(Val other)
 		{
 		  if (!(other is Lister))
 		  {
-			return noSuchOverload(this, "add", other);
+			return Err.NoSuchOverload(this, "add", other);
 		  }
 		  if (other is ValListT)
 		  {
 			Val[] otherArray = ((ValListT) other).array;
-			Val[] newArray = Arrays.CopyOf(array, array.Length + otherArray.Length);
+			Val[] newArray = new Val[array.Length + otherArray.Length];
+			Array.Copy(array, 0, newArray, 0, array.Length);
 			Array.Copy(otherArray, 0, newArray, array.Length, otherArray.Length);
 			return new ValListT(adapter, newArray);
 		  }
@@ -420,27 +422,28 @@ namespace Cel.Common.Types
 		  {
 			Lister otherLister = (Lister) other;
 			int otherSIze = (int) otherLister.Size().IntValue();
-			Val[] newArray = Arrays.CopyOf(array, array.Length + otherSIze);
+			Val[] newArray = new Val[array.Length + otherSIze];
+			Array.Copy(array, 0, newArray, 0, array.Length);
 			for (int i = 0; i < otherSIze; i++)
 			{
-			  newArray[array.Length + i] = otherLister.Get(intOf(i));
+			  newArray[array.Length + i] = otherLister.Get(IntT.IntOf(i));
 			}
 			return new ValListT(adapter, newArray);
 		  }
 		}
 
-		public Val Get(Val index)
+		public override Val Get(Val index)
 		{
 		  if (!(index is IntT))
 		  {
-			return valOrErr(index, "unsupported index type '%s' in list", index.Type());
+			return Err.ValOrErr(index, "unsupported index type '%s' in list", index.Type());
 		  }
 		  int sz = array.Length;
 		  int i = (int) index.IntValue();
 		  if (i < 0 || i >= sz)
 		  {
 			// Note: the conformance tests assert on 'invalid_argument'
-			return newErr("invalid_argument: index '%d' out of range in list of size '%d'", i, sz);
+			return Err.NewErr("invalid_argument: index '%d' out of range in list of size '%d'", i, sz);
 		  }
 		  return array[i];
 		}
@@ -462,13 +465,13 @@ namespace Cel.Common.Types
 		public override int GetHashCode()
 		{
 		  int result = base.GetHashCode();
-		  result = 31 * result + Arrays.hashCode(array);
+		  result = 31 * result + array.GetHashCode();
 		  return result;
 		}
 
 		public override string ToString()
 		{
-		  return "ValListT{" + "array=" + "[" + string.Join(", ", array) + "]" + ", adapter=" + adapter + ", size=" + size + '}';
+		  return "ValListT{" + "array=" + "[" + string.Join<Val>(", ", array) + "]" + ", adapter=" + adapter + ", size=" + size + '}';
 		}
 	  }
 
@@ -476,7 +479,7 @@ namespace Cel.Common.Types
 	  /// NewJSONList returns a traits.Lister based on structpb.ListValue instance. </summary>
 	  public static Val NewJSONList(TypeAdapter adapter, ListValue l)
 	  {
-		IList<Value> vals = l.getValuesList();
+		  IList<Value> vals = l.Values;
 		return NewGenericArrayList(adapter, vals.ToArray());
 	  }
 	}

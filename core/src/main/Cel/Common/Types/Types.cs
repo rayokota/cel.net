@@ -50,15 +50,15 @@ namespace Cel.Common.Types
 	  static Types()
 	  {
 		typeNameToTypeValue[BoolT.BoolType.TypeName()] = BoolT.BoolType;
-		typeNameToTypeValue[BytesType.typeName()] = BytesType;
-		typeNameToTypeValue[DoubleType.typeName()] = DoubleType;
-		typeNameToTypeValue[NullType.typeName()] = NullType;
-		typeNameToTypeValue[IntType.typeName()] = IntType;
-		typeNameToTypeValue[ListType.typeName()] = ListType;
-		typeNameToTypeValue[MapType.typeName()] = MapType;
-		typeNameToTypeValue[StringType.typeName()] = StringType;
-		typeNameToTypeValue[TypeType.typeName()] = TypeType;
-		typeNameToTypeValue[UintType.typeName()] = UintType;
+		typeNameToTypeValue[BytesT.BytesType.TypeName()] = BytesT.BytesType;
+		typeNameToTypeValue[DoubleT.DoubleType.TypeName()] = DoubleT.DoubleType;
+		typeNameToTypeValue[NullT.NullType.TypeName()] = NullT.NullType;
+		typeNameToTypeValue[IntT.IntType.TypeName()] = IntT.IntType;
+		typeNameToTypeValue[ListT.ListType.TypeName()] = ListT.ListType;
+		typeNameToTypeValue[MapT.MapType.TypeName()] = MapT.MapType;
+		typeNameToTypeValue[StringT.StringType.TypeName()] = StringT.StringType;
+		typeNameToTypeValue[TypeT.TypeType.TypeName()] = TypeT.TypeType;
+		typeNameToTypeValue[UintT.UintType.TypeName()] = UintT.UintType;
 	  }
 
 	  public static Type GetTypeByName(string typeName)

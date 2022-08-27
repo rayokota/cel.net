@@ -13,6 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+using Cel.Common.Types.Ref;
+
 namespace Cel.Common.Types
 {
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
@@ -30,10 +33,10 @@ namespace Cel.Common.Types
 	using FieldTester = Cel.Common.Types.Traits.FieldTester;
 	using Indexer = Cel.Common.Types.Traits.Indexer;
 
-	public abstract class ObjectT : BaseVal, FieldTester, Indexer, TypeAdapter
+	public abstract class ObjectT : BaseVal, FieldTester, Indexer, TypeAdapterProvider
 	{
-		public abstract Val get(Ref.Val index);
-		public abstract Val isSet(Ref.Val field);
+		public abstract Val Get(Ref.Val index);
+		public abstract Val IsSet(Ref.Val field);
 	  protected internal readonly TypeAdapter adapter;
 	  protected internal readonly object value;
 	  protected internal readonly TypeDescription typeDesc;
@@ -49,9 +52,9 @@ namespace Cel.Common.Types
 
 	  public override Val ConvertToType(Type typeVal)
 	  {
-		switch (typeVal.TypeEnum().innerEnumValue)
+		switch (typeVal.TypeEnum().InnerEnumValue)
 		{
-		  case Type:
+		  case TypeEnum.InnerEnum.Type:
 			return typeValue;
 		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Object:
 			if (Type().TypeName().Equals(typeVal.TypeName()))
@@ -60,16 +63,16 @@ namespace Cel.Common.Types
 			}
 			break;
 		}
-		return newTypeConversionError(typeDesc.Name(), typeVal);
+		return Err.NewTypeConversionError(typeDesc.Name(), typeVal);
 	  }
 
 	  public override Val Equal(Val other)
 	  {
 		if (!typeDesc.Name().Equals(other.Type().TypeName()))
 		{
-		  return noSuchOverload(this, "equal", other);
+		  return Err.NoSuchOverload(this, "equal", other);
 		}
-		return boolOf(this.value.Equals(other.Value()));
+		return Types.BoolOf(this.value.Equals(other.Value()));
 	  }
 
 	  public override Type Type()
@@ -82,9 +85,14 @@ namespace Cel.Common.Types
 		return value;
 	  }
 
+	  public TypeAdapter ToTypeAdapter()
+	  {
+		  return NativeToValue;
+	  }
+	  
 	  public virtual Val NativeToValue(object value)
 	  {
-		return adapter.NativeToValue(value);
+		return adapter(value);
 	  }
 
 	  public override bool Equals(object o)
@@ -98,12 +106,12 @@ namespace Cel.Common.Types
 		  return false;
 		}
 		ObjectT objectT = (ObjectT) o;
-		return Objects.equals(value, objectT.value) && Objects.equals(typeDesc, objectT.typeDesc) && Objects.equals(typeValue, objectT.typeValue);
+		return Object.Equals(value, objectT.value) && Object.Equals(typeDesc, objectT.typeDesc) && Object.Equals(typeValue, objectT.typeValue);
 	  }
 
 	  public override int GetHashCode()
 	  {
-		return Objects.hash(base.GetHashCode(), value, typeDesc, typeValue);
+		return HashCode.Combine(base.GetHashCode(), value, typeDesc, typeValue);
 	  }
 	}
 

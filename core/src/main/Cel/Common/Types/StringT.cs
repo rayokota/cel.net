@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 /*
  * Copyright (C) 2021 The Authors of CEL-Java
@@ -73,10 +74,10 @@ namespace Cel.Common.Types
 
 	  static StringT()
 	  {
-		stringOneArgOverloads = new Dictionary<string, BiFunction<string, Val, Val>>();
-		stringOneArgOverloads[Overloads.Contains] = StringT.stringContains;
-		stringOneArgOverloads[Overloads.EndsWith] = StringT.stringEndsWith;
-		stringOneArgOverloads[Overloads.StartsWith] = StringT.stringStartsWith;
+		stringOneArgOverloads = new Dictionary<string, Func<string, Val, Val>>();
+		stringOneArgOverloads[Overloads.Contains] = StringT.StringContains;
+		stringOneArgOverloads[Overloads.EndsWith] = StringT.StringEndsWith;
+		stringOneArgOverloads[Overloads.StartsWith] = StringT.StringStartsWith;
 	  }
 
 	  public static StringT StringOf(string s)
@@ -97,7 +98,7 @@ namespace Cel.Common.Types
 	  {
 		if (!(other is StringT))
 		{
-		  return noSuchOverload(this, "add", other);
+		  return Err.NoSuchOverload(this, "add", other);
 		}
 		return new StringT(s + ((StringT) other).s);
 	  }
@@ -108,10 +109,10 @@ namespace Cel.Common.Types
 	  {
 		if (!(other is StringT))
 		{
-		  return noSuchOverload(this, "compare", other);
+		  return Err.NoSuchOverload(this, "compare", other);
 		}
 
-		return intOfCompare(string.CompareOrdinal(s, ((StringT) other).s));
+		return IntT.IntOfCompare(string.CompareOrdinal(s, ((StringT) other).s));
 	  }
 
 	  /// <summary>
@@ -122,27 +123,33 @@ namespace Cel.Common.Types
 	  {
 		if (typeDesc == typeof(string) || typeDesc == typeof(object))
 		{
-		  return (T) s;
+		  return s;
 		}
 		if (typeDesc == typeof(sbyte[]))
 		{
-		  return (T) s.GetBytes(Encoding.UTF8);
+			return Encoding.UTF8.GetBytes(s);
 		}
 		if (typeDesc == typeof(Any))
 		{
-		  return (T) Any.pack(StringValue.of(s));
+			StringValue value = new StringValue();
+			value.Value = s;
+			return Any.Pack(value);
 		}
 		if (typeDesc == typeof(StringValue))
 		{
-		  return (T) StringValue.of(s);
+			StringValue value = new StringValue();
+			value.Value = s;
+			return value;
 		}
 		if (typeDesc == typeof(Val) || typeDesc == typeof(StringT))
 		{
-		  return (T) this;
+		  return this;
 		}
 		if (typeDesc == typeof(Value))
 		{
-		  return (T) Value.newBuilder().setStringValue(s).build();
+			Value value = new Value();
+			value.StringValue = s;
+			return value;
 		}
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
 		throw new Exception(string.Format("native type conversion error from '{0}' to '{1}'", StringType, typeDesc.FullName));
@@ -154,40 +161,40 @@ namespace Cel.Common.Types
 	  {
 		try
 		{
-		  switch (typeVal.TypeEnum().innerEnumValue)
+		  switch (typeVal.TypeEnum().InnerEnumValue)
 		  {
 			case TypeEnum.InnerEnum.Int:
-			  return intOf(long.Parse(s));
+			  return IntT.IntOf(long.Parse(s));
 			case TypeEnum.InnerEnum.Uint:
-			  return uintOf(Long.parseUnsignedLong(s));
-			case TypeEnum.InnerEnum.double:
-			  return doubleOf(double.Parse(s));
+				return UintT.UintOf(long.Parse(s));
+			case TypeEnum.InnerEnum.Double:
+			  return DoubleT.DoubleOf(double.Parse(s));
 			case TypeEnum.InnerEnum.Bool:
 			  if ("true".Equals(s, StringComparison.OrdinalIgnoreCase))
 			  {
-				return True;
+				return BoolT.True;
 			  }
 			  if ("false".Equals(s, StringComparison.OrdinalIgnoreCase))
 			  {
-				return False;
+				return BoolT.False;
 			  }
 			  break;
 			case TypeEnum.InnerEnum.Bytes:
-			  return bytesOf(s.GetBytes(Encoding.UTF8));
+				return BytesT.BytesOf(Encoding.UTF8.GetBytes(s));
 			case TypeEnum.InnerEnum.Duration:
-			  return durationOf(s).rangeCheck();
+			  return DurationT.DurationOf(s).RangeCheck();
 			case TypeEnum.InnerEnum.Timestamp:
-			  return timestampOf(s).rangeCheck();
+			  return TimestampT.TimestampOf(s).RangeCheck();
 			case TypeEnum.InnerEnum.String:
 			  return this;
-			case Type:
+			case TypeEnum.InnerEnum.Type:
 			  return StringType;
 		  }
-		  return newTypeConversionError(StringType, typeVal);
+		  return Err.NewTypeConversionError(StringType, typeVal);
 		}
 		catch (Exception e)
 		{
-		  return newErr(e, "error during type conversion from '%s' to %s: %s", StringType, typeVal, e.ToString());
+		  return Err.NewErr(e, "error during type conversion from '%s' to %s: %s", StringType, typeVal, e.ToString());
 		}
 	  }
 
@@ -197,9 +204,9 @@ namespace Cel.Common.Types
 	  {
 		if (!(other is StringT))
 		{
-		  return noSuchOverload(this, "equal", other);
+		  return Err.NoSuchOverload(this, "equal", other);
 		}
-		return boolOf(s.Equals(((StringT) other).s));
+		return Types.BoolOf(s.Equals(((StringT) other).s));
 	  }
 
 	  /// <summary>
@@ -208,17 +215,16 @@ namespace Cel.Common.Types
 	  {
 		if (!(pattern is StringT))
 		{
-		  return noSuchOverload(this, "match", pattern);
+		  return Err.NoSuchOverload(this, "match", pattern);
 		}
 		try
 		{
-		  Pattern p = Pattern.compile(((StringT) pattern).s);
-		  java.util.regex.Matcher m = p.matcher(s);
-		  return boolOf(m.find());
+		  Regex p = new Regex(((StringT)pattern).s);
+		  return Types.BoolOf(p.IsMatch(s));
 		}
 		catch (Exception e)
 		{
-		  return newErr(e, "%s", e.Message);
+		  return Err.NewErr(e, "%s", e.Message);
 		}
 	  }
 
@@ -234,14 +240,14 @@ namespace Cel.Common.Types
 			return f(s, args[0]);
 		  }
 		}
-		return noSuchOverload(this, function, overload, args);
+		return Err.NoSuchOverload(this, function, overload, args);
 	  }
 
 	  /// <summary>
 	  /// Size implements traits.Sizer.Size. </summary>
 	  public Val Size()
 	  {
-		return intOf(s.Length);
+		return IntT.IntOf(s.Length);
 	  }
 
 	  /// <summary>
@@ -269,39 +275,39 @@ namespace Cel.Common.Types
 		  return false;
 		}
 		StringT stringT = (StringT) o;
-		return Objects.equals(s, stringT.s);
+		return Object.Equals(s, stringT.s);
 	  }
 
 	  public override int GetHashCode()
 	  {
-		return Objects.hash(base.GetHashCode(), s);
+		return HashCode.Combine(base.GetHashCode(), s);
 	  }
 
 	  internal static Val StringContains(string s, Val sub)
 	  {
 		if (!(sub is StringT))
 		{
-		  return noSuchOverload(StringType, "contains", sub);
+		  return Err.NoSuchOverload(StringType, "contains", sub);
 		}
-		return boolOf(s.Contains(((StringT) sub).s));
+		return Types.BoolOf(s.Contains(((StringT) sub).s));
 	  }
 
 	  internal static Val StringEndsWith(string s, Val suf)
 	  {
 		if (!(suf is StringT))
 		{
-		  return noSuchOverload(StringType, "endsWith", suf);
+		  return Err.NoSuchOverload(StringType, "endsWith", suf);
 		}
-		return boolOf(s.EndsWith(((StringT) suf).s, StringComparison.Ordinal));
+		return Types.BoolOf(s.EndsWith(((StringT) suf).s, StringComparison.Ordinal));
 	  }
 
 	  internal static Val StringStartsWith(string s, Val pre)
 	  {
 		if (!(pre is StringT))
 		{
-		  return noSuchOverload(StringType, "startsWith", pre);
+		  return Err.NoSuchOverload(StringType, "startsWith", pre);
 		}
-		return boolOf(s.StartsWith(((StringT) pre).s, StringComparison.Ordinal));
+		return Types.BoolOf(s.StartsWith(((StringT) pre).s, StringComparison.Ordinal));
 	  }
 	}
 

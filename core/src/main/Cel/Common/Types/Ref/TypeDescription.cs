@@ -16,7 +16,18 @@
 namespace Cel.Common.Types.Ref
 {
 	/// <summary>
-	/// TypeAdapter converts native Go values of varying type and complexity to equivalent CEL values.
+	/// TypeDescription is a collection of type metadata relevant to expression checking and evaluation.
 	/// </summary>
-	public delegate Val TypeAdapter(object value);
+	public interface TypeDescription
+	{
+
+	  /// <summary>
+	  /// Name returns the fully-qualified name of the type. </summary>
+	  string Name();
+
+	  /// <summary>
+	  /// ReflectType returns the Golang reflect.Type for this type. </summary>
+	  System.Type ReflectType();
+	}
+
 }

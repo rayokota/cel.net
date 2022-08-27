@@ -45,7 +45,6 @@ namespace Cel.Common.Types
 	using UInt32Value = Google.Protobuf.WellKnownTypes.UInt32Value;
 	using UInt64Value = Google.Protobuf.WellKnownTypes.UInt64Value;
 	using Value = Google.Protobuf.WellKnownTypes.Value;
-	using ULong = org.projectnessie.cel.common.ULong;
 	using OverflowException = Cel.Common.Types.Overflow.OverflowException;
 	using BaseVal = Cel.Common.Types.Ref.BaseVal;
 	using Type = Cel.Common.Types.Ref.Type;
@@ -72,12 +71,7 @@ namespace Cel.Common.Types
 	  /// Uint constants </summary>
 	  public static readonly UintT UintZero = new UintT(0);
 
-	  public static UintT UintOf(ULong i)
-	  {
-		return UintOf(i.LongValue());
-	  }
-
-	  public static UintT UintOf(long i)
+	  public static UintT UintOf(ulong i)
 	  {
 		if (i == 0L)
 		{
@@ -86,16 +80,16 @@ namespace Cel.Common.Types
 		return new UintT(i);
 	  }
 
-	  private readonly long i;
+	  private readonly ulong i;
 
-	  private UintT(long i)
+	  private UintT(ulong i)
 	  {
 		this.i = i;
 	  }
 
 	  public override long IntValue()
 	  {
-		return i;
+		return (int)i;
 	  }
 
 	  /// <summary>
@@ -104,15 +98,15 @@ namespace Cel.Common.Types
 	  {
 		if (other.Type() != UintType)
 		{
-		  return noSuchOverload(this, "add", other);
+		  return Err.NoSuchOverload(this, "add", other);
 		}
 		try
 		{
-		  return UintOf(Overflow.AddUint64Checked(i, ((UintT) other).i));
+		  return UintOf((ulong)Overflow.AddUint64Checked((long)i, (long)((UintT) other).i));
 		}
 		catch (OverflowException)
 		{
-		  return errUintOverflow;
+		  return Err.ErrUintOverflow;
 		}
 	  }
 
@@ -122,65 +116,75 @@ namespace Cel.Common.Types
 	  {
 		if (other.Type() != UintType)
 		{
-		  return noSuchOverload(this, "compare", other);
+		  return Err.NoSuchOverload(this, "compare", other);
 		}
-		return intOf(Long.compareUnsigned(i, ((UintT) other).i));
+		return IntT.IntOf(i.CompareTo(((UintT) other).i));
 	  }
 
 	  /// <summary>
 	  /// ConvertToNative implements ref.Val.ConvertToNative. </summary>
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @SuppressWarnings("unchecked") @Override public <T> T convertToNative(Class<T> typeDesc)
-	  public override T ConvertToNative<T>(System.Type typeDesc)
+	  public override object? ConvertToNative(System.Type typeDesc)
 	  {
-		if (typeDesc == typeof(Long) || typeDesc == typeof(long) || typeDesc == typeof(object))
+		if (typeDesc == typeof(long) || typeDesc == typeof(object))
 		{
 		  if (i < 0)
 		  {
-			Err.ThrowErrorAsIllegalStateException(rangeError(i, "Java long"));
+			Err.ThrowErrorAsIllegalStateException(Err.RangeError(i, "Java long"));
 		  }
-		  return (T) Convert.ToInt64(i);
+		  return Convert.ToInt64(i);
 		}
-		if (typeDesc == typeof(Integer) || typeDesc == typeof(int))
+		if (typeDesc == typeof(int))
 		{
 		  if (i < 0 || i > int.MaxValue)
 		  {
-			Err.ThrowErrorAsIllegalStateException(rangeError(i, "Java int"));
+			Err.ThrowErrorAsIllegalStateException(Err.RangeError(i, "Java int"));
 		  }
-		  return (T) Convert.ToInt32((int) i);
+		  return Convert.ToInt32((int) i);
 		}
-		if (typeDesc == typeof(ULong))
+		if (typeDesc == typeof(ulong))
 		{
-		  return (T) ULong.ValueOf(i);
+			return i;
 		}
 		if (typeDesc == typeof(Any))
 		{
-		  return (T) Any.pack(UInt64Value.of(i));
+			UInt64Value value = new UInt64Value();
+			value.Value = i;
+			return Any.Pack(value);
 		}
 		if (typeDesc == typeof(UInt64Value))
 		{
-		  return (T) UInt64Value.of(i);
+			UInt64Value value = new UInt64Value();
+			value.Value = i;
+			return value;
 		}
 		if (typeDesc == typeof(UInt32Value))
 		{
-		  return (T) UInt32Value.of((int) i);
+			UInt32Value value = new UInt32Value();
+			value.Value = Convert.ToUInt32(i);
+			return value;
 		}
 		if (typeDesc == typeof(Val) || typeDesc == typeof(UintT))
 		{
-		  return (T) this;
+		  return this;
 		}
 		if (typeDesc == typeof(Value))
 		{
-		  if (i <= maxIntJSON)
+		  if ((int)i <= IntT.maxIntJSON)
 		  {
 			// JSON can accurately represent 32-bit uints as floating point values.
-			return (T) Value.newBuilder().setNumberValue(i).build();
+			  Value value = new Value();
+			  value.NumberValue = i;
+			  return value;
 		  }
 		  else
 		  {
 			// Proto3 to JSON conversion requires string-formatted uint64 values
 			// since the conversion to floating point would result in truncation.
-			return (T) Value.newBuilder().setStringValue(Long.toUnsignedString(i)).build();
+			  Value value = new Value();
+			  value.StringValue = i.ToString();
+			  return value;
 		  }
 		}
 
@@ -192,28 +196,28 @@ namespace Cel.Common.Types
 	  /// ConvertToType implements ref.Val.ConvertToType. </summary>
 	  public override Val ConvertToType(Type typeValue)
 	  {
-		switch (typeValue.TypeEnum().innerEnumValue)
+		switch (typeValue.TypeEnum().InnerEnumValue)
 		{
 		  case TypeEnum.InnerEnum.Int:
 			if (i < 0L)
 			{
-			  return rangeError(Long.toUnsignedString(i), "int");
+			  return Err.RangeError(i.ToString(), "int");
 			}
-			return intOf(i);
+			return IntT.IntOf((int)i);
 		  case TypeEnum.InnerEnum.Uint:
 			return this;
-		  case TypeEnum.InnerEnum.double:
+		  case TypeEnum.InnerEnum.Double:
 			if (i < 0L)
 			{
-			  return doubleOf((new BigInteger(Long.toUnsignedString(i))).doubleValue());
+				return DoubleT.DoubleOf(Convert.ToDouble(i));
 			}
-			return doubleOf(i);
+			return DoubleT.DoubleOf(i);
 		  case TypeEnum.InnerEnum.String:
-			return stringOf(Long.toUnsignedString(i));
-		  case Type:
+			return StringT.StringOf(i.ToString());
+		  case TypeEnum.InnerEnum.Type:
 			return UintType;
 		}
-		return newTypeConversionError(UintType, typeValue);
+		return Err.NewTypeConversionError(UintType, typeValue);
 	  }
 
 	  /// <summary>
@@ -222,12 +226,12 @@ namespace Cel.Common.Types
 	  {
 		if (other.Type() != UintType)
 		{
-		  return noSuchOverload(this, "divide", other);
+		  return Err.NoSuchOverload(this, "divide", other);
 		}
-		long otherInt = ((UintT) other).i;
+		ulong otherInt = ((UintT) other).i;
 		if (otherInt == 0L)
 		{
-		  return divideByZero();
+		  return Err.DivideByZero();
 		}
 		return UintOf(i / otherInt);
 	  }
@@ -238,9 +242,9 @@ namespace Cel.Common.Types
 	  {
 		if (other.Type() != UintType)
 		{
-		  return noSuchOverload(this, "equal", other);
+		  return Err.NoSuchOverload(this, "equal", other);
 		}
-		return boolOf(i == ((UintT) other).i);
+		return Types.BoolOf(i == ((UintT) other).i);
 	  }
 
 	  /// <summary>
@@ -249,12 +253,12 @@ namespace Cel.Common.Types
 	  {
 		if (other.Type() != UintType)
 		{
-		  return noSuchOverload(this, "modulo", other);
+		  return Err.NoSuchOverload(this, "modulo", other);
 		}
-		long otherInt = ((UintT) other).i;
+		ulong otherInt = ((UintT) other).i;
 		if (otherInt == 0L)
 		{
-		  return modulusByZero();
+		  return Err.ModulusByZero();
 		}
 		return UintOf(i % otherInt);
 	  }
@@ -265,15 +269,15 @@ namespace Cel.Common.Types
 	  {
 		if (other.Type() != UintType)
 		{
-		  return noSuchOverload(this, "multiply", other);
+		  return Err.NoSuchOverload(this, "multiply", other);
 		}
 		try
 		{
-		  return UintOf(Overflow.MultiplyUint64Checked(i, ((UintT) other).i));
+		  return UintOf((uint)Overflow.MultiplyUint64Checked((long)i, (long)((UintT) other).i));
 		}
 		catch (OverflowException)
 		{
-		  return errUintOverflow;
+		  return Err.ErrUintOverflow;
 		}
 	  }
 
@@ -283,15 +287,15 @@ namespace Cel.Common.Types
 	  {
 		if (other.Type() != UintType)
 		{
-		  return noSuchOverload(this, "subtract", other);
+		  return Err.NoSuchOverload(this, "subtract", other);
 		}
 		try
 		{
-		  return UintOf(Overflow.SubtractUint64Checked(i, ((UintT) other).i));
+		  return UintOf((uint)Overflow.SubtractUint64Checked((long)i, (long)((UintT) other).i));
 		}
 		catch (OverflowException)
 		{
-		  return errUintOverflow;
+		  return Err.ErrUintOverflow;
 		}
 	  }
 
@@ -325,7 +329,7 @@ namespace Cel.Common.Types
 
 	  public override int GetHashCode()
 	  {
-		return Objects.hash(base.GetHashCode(), i);
+		return HashCode.Combine(base.GetHashCode(), i);
 	  }
 
 	  /// <summary>
@@ -336,7 +340,7 @@ namespace Cel.Common.Types
 	  {
 		  get
 		  {
-			return i >= 0 && i <= IntT.maxIntJSON;
+			return i >= 0 && (long)i <= IntT.maxIntJSON;
 		  }
 	  }
 	}

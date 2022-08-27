@@ -116,7 +116,7 @@ namespace Cel.Common.Types
 		{
 		  return Err.NoSuchOverload(this, "equal", other);
 		}
-		return BoolT.BoolOf(this.Equals(other));
+		return Types.BoolOf(this.Equals(other));
 	  }
 
 	  /// <summary>
@@ -125,7 +125,7 @@ namespace Cel.Common.Types
 	  /// </summary>
 	  public virtual bool HasTrait(Trait trait)
 	  {
-		return traitMask.contains(trait);
+		return traitMask.Contains(trait);
 	  }
 
 	  public virtual TypeEnum TypeEnum()
@@ -151,7 +151,7 @@ namespace Cel.Common.Types
 	  /// TypeName gives the type's name as a string. </summary>
 	  public virtual string TypeName()
 	  {
-		return typeEnum.getName();
+		return typeEnum.Name;
 	  }
 
 	  /// <summary>

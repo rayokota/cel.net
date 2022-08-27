@@ -45,34 +45,41 @@ namespace Cel.Common.Types
 	  /// NullValue singleton. </summary>
 	  public static readonly NullT NullValue = new NullT();
 
-	  private static readonly Value PbValue = Value.newBuilder().setNullValue(Google.Protobuf.WellKnownTypes.NullValue.NULL_VALUE).build();
-	  private static readonly Any PbAny = Any.pack(PbValue);
+	  private static readonly Value PbValue = newPBValue();
+	  private static readonly Any PbAny = Any.Pack(PbValue);
+
+	  private static Value newPBValue()
+	  {
+		  Value value = new Value();
+		  value.NullValue = Google.Protobuf.WellKnownTypes.NullValue.NullValue;
+		  return value;
+	  }
 
 	  /// <summary>
 	  /// ConvertToNative implements ref.Val.ConvertToNative. </summary>
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @SuppressWarnings("unchecked") @Override public <T> T convertToNative(Class<T> typeDesc)
-	  public override T ConvertToNative<T>(System.Type typeDesc)
+	  public override object? ConvertToNative(System.Type typeDesc)
 	  {
-		if (typeDesc == typeof(Integer) || typeDesc == typeof(int))
+		if (typeDesc == typeof(int))
 		{
-		  return (T)(int?) 0;
+		  return (int?) 0;
 		}
 		if (typeDesc == typeof(Any))
 		{
-		  return (T) PbAny;
+		  return PbAny;
 		}
 		if (typeDesc == typeof(Value))
 		{
-		  return (T) PbValue;
+		  return PbValue;
 		}
 		if (typeDesc == typeof(Google.Protobuf.WellKnownTypes.NullValue))
 		{
-		  return (T) Google.Protobuf.WellKnownTypes.NullValue.NULL_VALUE;
+		  return Google.Protobuf.WellKnownTypes.NullValue.NullValue;
 		}
 		if (typeDesc == typeof(Val) || typeDesc == typeof(NullT))
 		{
-		  return (T) this;
+		  return this;
 		}
 		if (typeDesc == typeof(object))
 		{
@@ -97,16 +104,16 @@ namespace Cel.Common.Types
 	  /// ConvertToType implements ref.Val.ConvertToType. </summary>
 	  public override Val ConvertToType(Type typeValue)
 	  {
-		switch (typeValue.TypeEnum().innerEnumValue)
+		switch (typeValue.TypeEnum().InnerEnumValue)
 		{
 		  case TypeEnum.InnerEnum.String:
-			return stringOf("null");
+			return StringT.StringOf("null");
 		  case TypeEnum.InnerEnum.Null:
 			return this;
-		  case Type:
+		  case TypeEnum.InnerEnum.Type:
 			return NullType;
 		}
-		return newTypeConversionError(NullType, typeValue);
+		return Err.NewTypeConversionError(NullType, typeValue);
 	  }
 
 	  /// <summary>
@@ -115,9 +122,9 @@ namespace Cel.Common.Types
 	  {
 		if (NullType != other.Type())
 		{
-		  return noSuchOverload(this, "equal", other);
+		  return Err.NoSuchOverload(this, "equal", other);
 		}
-		return True;
+		return BoolT.True;
 	  }
 
 	  /// <summary>
@@ -131,7 +138,7 @@ namespace Cel.Common.Types
 	  /// Value implements ref.Val.Value. </summary>
 	  public override object Value()
 	  {
-		return Google.Protobuf.WellKnownTypes.NullValue.NULL_VALUE;
+		return Google.Protobuf.WellKnownTypes.NullValue.NullValue;
 	  }
 
 	  public override string ToString()
