@@ -1,0 +1,478 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+
+/*
+ * Copyright (C) 2021 The Authors of CEL-Java
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+namespace Cel.Common.Types
+{
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static Cel.Common.Types.BoolT.False;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static Cel.Common.Types.BoolT.True;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static Cel.Common.Types.Err.isError;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static Cel.Common.Types.Err.newErr;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static Cel.Common.Types.Err.newTypeConversionError;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static Cel.Common.Types.Err.noMoreElements;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static Cel.Common.Types.Err.noSuchOverload;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static Cel.Common.Types.Err.valOrErr;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static Cel.Common.Types.IntT.intOf;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static Cel.Common.Types.StringT.stringOf;
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static Cel.Common.Types.Types.boolOf;
+
+	using Any = Google.Protobuf.WellKnownTypes.Any;
+	using ListValue = Google.Protobuf.WellKnownTypes.ListValue;
+	using Value = Google.Protobuf.WellKnownTypes.Value;
+	using Operator = org.projectnessie.cel.common.operators.Operator;
+	using BaseVal = Cel.Common.Types.Ref.BaseVal;
+	using Type = Cel.Common.Types.Ref.Type;
+	using TypeAdapter = Cel.Common.Types.Ref.TypeAdapter;
+	using TypeEnum = Cel.Common.Types.Ref.TypeEnum;
+	using Val = Cel.Common.Types.Ref.Val;
+	using Lister = Cel.Common.Types.Traits.Lister;
+	using Trait = Cel.Common.Types.Traits.Trait;
+
+	public abstract class ListT : BaseVal, Lister
+	{
+		public abstract Val size();
+		public abstract IteratorT iterator();
+		public abstract Val get(Ref.Val index);
+		public abstract Val contains(Ref.Val value);
+		public abstract Val add(Ref.Val other);
+		public override abstract object value();
+		public override abstract Val equal(Ref.Val other);
+		public override abstract Val convertToType(Ref.Type typeValue);
+		public override abstract T convertToNative(System.Type typeDesc);
+	  /// <summary>
+	  /// ListType singleton. </summary>
+	  public static readonly Type ListType = TypeT.NewTypeValue(TypeEnum.List, Trait.AdderType, Trait.ContainerType, Trait.IndexerType, Trait.IterableType, Trait.SizerType);
+
+	  public static Val NewStringArrayList(string[] value)
+	  {
+		return NewGenericArrayList(v => stringOf((string) v), value);
+	  }
+
+	  public static Val NewGenericArrayList(TypeAdapter adapter, object[] value)
+	  {
+		return new GenericListT(adapter, value);
+	  }
+
+	  public static Val NewValArrayList(TypeAdapter adapter, Val[] value)
+	  {
+		return new ValListT(adapter, value);
+	  }
+
+	  public override Type Type()
+	  {
+		return ListType;
+	  }
+
+	  internal abstract class BaseListT : ListT
+	  {
+		protected internal readonly TypeAdapter adapter;
+		protected internal readonly long size;
+
+		internal BaseListT(TypeAdapter adapter, long size)
+		{
+		  this.adapter = adapter;
+		  this.size = size;
+		}
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @SuppressWarnings("unchecked") @Override public <T> T convertToNative(Class<T> typeDesc)
+		public virtual T ConvertToNative<T>(System.Type typeDesc)
+		{
+		  if (typeDesc.IsArray)
+		  {
+			object array = ToJavaArray(typeDesc);
+
+			return (T) array;
+		  }
+		  if (typeDesc == typeof(System.Collections.IList) || typeDesc == typeof(object))
+		  {
+			return (T) ToJavaList();
+		  }
+		  if (typeDesc == typeof(ListValue))
+		  {
+			return (T) ToPbListValue();
+		  }
+		  if (typeDesc == typeof(Value))
+		  {
+			return (T) ToPbValue();
+		  }
+		  if (typeDesc == typeof(Any))
+		  {
+			ListValue v = ToPbListValue();
+			//        Descriptor anyDesc = Any.getDescriptor();
+			//        FieldDescriptor anyFieldTypeUrl = anyDesc.findFieldByName("type_url");
+			//        FieldDescriptor anyFieldValue = anyDesc.findFieldByName("value");
+			//        DynamicMessage dyn = DynamicMessage.newBuilder(Any.getDefaultInstance())
+			//            .setField(anyFieldTypeUrl, )
+			//            .setField(anyFieldValue, v.toByteString())
+			//            .build();
+
+			//        return (T) dyn;
+			//        return (T)
+			// Any.newBuilder().setTypeUrl("type.googleapis.com/google.protobuf.ListValue").setValue(dyn.toByteString()).build();
+			return (T) Any.newBuilder().setTypeUrl("type.googleapis.com/google.protobuf.ListValue").setValue(v.toByteString()).build();
+		  }
+//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
+		  throw new System.ArgumentException(string.Format("Unsupported conversion of '{0}' to '{1}'", ListType, typeDesc.FullName));
+		}
+
+		internal virtual Value ToPbValue()
+		{
+		  return Value.newBuilder().setListValue(ToPbListValue()).build();
+		}
+
+		internal virtual ListValue ToPbListValue()
+		{
+		  ListValue.Builder list = ListValue.newBuilder();
+		  int s = (int) size;
+		  for (int i = 0; i < s; i++)
+		  {
+			Val v = outerInstance.Get(intOf(i));
+			Value e = v.ConvertToNative(typeof(Value));
+			list.addValues(e);
+		  }
+		  return list.build();
+		}
+
+		internal virtual IList<object> ToJavaList()
+		{
+		  return new List<object> {ConvertToNative(typeof(object[]))};
+		}
+
+//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
+//ORIGINAL LINE: @SuppressWarnings({"rawtypes", "unchecked"}) private <T> Object toJavaArray(Class<T> typeDesc)
+		internal virtual object ToJavaArray<T>(System.Type typeDesc)
+		{
+		  int s = (int) size;
+		  System.Type compType = typeDesc.GetElementType();
+		  if (compType == typeof(Enum))
+		  {
+			// Note: cannot create `Enum` values of the right type here.
+			compType = typeof(object);
+		  }
+		  object array = Array.CreateInstance(compType, s);
+
+		  System.Func<object, object> fixForTarget = System.Func.identity();
+
+		  for (int i = 0; i < s; i++)
+		  {
+			Val v = outerInstance.Get(intOf(i));
+			object e = v.ConvertToNative(compType);
+			e = fixForTarget(e);
+			((Array)array).SetValue(e, i);
+		  }
+		  return array;
+		}
+
+		public override Val ConvertToType(Type typeValue)
+		{
+		  switch (typeValue.TypeEnum().innerEnumValue)
+		  {
+			case System.Collections.IList:
+			  return this;
+			case Type:
+			  return ListType;
+		  }
+		  return newTypeConversionError(ListType, typeValue);
+		}
+
+		public override IteratorT Iterator()
+		{
+		  return new ArrayListIteratorT(this);
+		}
+
+		public override Val Equal(Val other)
+		{
+		  if (other.Type() != ListType)
+		  {
+			return False;
+		  }
+		  ListT o = (ListT) other;
+		  if (size != o.Size().IntValue())
+		  {
+			return False;
+		  }
+		  for (long i = 0; i < size; i++)
+		  {
+			IntT idx = intOf(i);
+			Val e1 = outerInstance.Get(idx);
+			if (isError(e1))
+			{
+			  return e1;
+			}
+			Val e2 = o.Get(idx);
+			if (isError(e2))
+			{
+			  return e2;
+			}
+			if (e1.Type() != e2.Type())
+			{
+			  return noSuchOverload(e1, Operator.Equals.id, e2);
+			}
+			if (e1.Equal(e2) != True)
+			{
+			  return False;
+			}
+		  }
+		  return True;
+		}
+
+		public override Val Contains(Val value)
+		{
+		  Type firstType = null;
+		  Type mixedType = null;
+		  for (long i = 0; i < size; i++)
+		  {
+			Val elem = outerInstance.Get(intOf(i));
+			Type elemType = elem.Type();
+			if (firstType == null)
+			{
+			  firstType = elemType;
+			}
+			else if (!firstType.Equals(elemType))
+			{
+			  mixedType = elemType;
+			}
+			if (value.Equal(elem) == True)
+			{
+			  return True;
+			}
+		  }
+		  if (mixedType != null)
+		  {
+			return noSuchOverload(value, Operator.In.id, firstType, mixedType);
+		  }
+		  return False;
+		}
+
+		public override Val Size()
+		{
+		  return intOf(size);
+		}
+
+		private sealed class ArrayListIteratorT : BaseVal, IteratorT
+		{
+			private readonly ListT.BaseListT outerInstance;
+
+			public ArrayListIteratorT(ListT.BaseListT outerInstance)
+			{
+				this.outerInstance = outerInstance;
+			}
+
+		  internal long index;
+
+		  public Val HasNext()
+		  {
+			return boolOf(index < outerInstance.size);
+		  }
+
+		  public Val Next()
+		  {
+			if (index < outerInstance.size)
+			{
+			  return outerInstance.outerInstance.Get(intOf(index++));
+			}
+			return noMoreElements();
+		  }
+
+		  public override T ConvertToNative<T>(System.Type typeDesc)
+		  {
+			throw new System.NotSupportedException("IMPLEMENT ME??");
+		  }
+
+		  public override Val ConvertToType(Type typeValue)
+		  {
+			throw new System.NotSupportedException("IMPLEMENT ME??");
+		  }
+
+		  public override Val Equal(Val other)
+		  {
+			throw new System.NotSupportedException("IMPLEMENT ME??");
+		  }
+
+		  public override Type Type()
+		  {
+			throw new System.NotSupportedException("IMPLEMENT ME??");
+		  }
+
+		  public override object Value()
+		  {
+			throw new System.NotSupportedException("IMPLEMENT ME??");
+		  }
+		}
+	  }
+
+	  internal sealed class GenericListT : BaseListT
+	  {
+		internal readonly object[] array;
+
+		internal GenericListT(TypeAdapter adapter, object[] array) : base(adapter, array.Length)
+		{
+		  this.array = array;
+		}
+
+		public object Value()
+		{
+		  return array;
+		}
+
+		public Val Add(Val other)
+		{
+		  if (!(other is Lister))
+		  {
+			return noSuchOverload(this, "add", other);
+		  }
+		  Lister otherList = (Lister) other;
+		  object[] otherArray = (object[]) otherList.Value();
+		  object[] newArray = Arrays.CopyOf(array, array.Length + otherArray.Length);
+		  Array.Copy(otherArray, 0, newArray, array.Length, otherArray.Length);
+		  return new GenericListT(adapter, newArray);
+		}
+
+		public Val Get(Val index)
+		{
+		  if (!(index is IntT))
+		  {
+			return valOrErr(index, "unsupported index type '%s' in list", index.Type());
+		  }
+		  int sz = array.Length;
+		  int i = (int) index.IntValue();
+		  if (i < 0 || i >= sz)
+		  {
+			// Note: the conformance tests assert on 'invalid_argument'
+			return newErr("invalid_argument: index '%d' out of range in list of size '%d'", i, sz);
+		  }
+
+		  return adapter.NativeToValue(array[i]);
+		}
+
+		public override string ToString()
+		{
+		  return "GenericListT{" + "array=" + "[" + string.Join(", ", array) + "]" + ", adapter=" + adapter + ", size=" + size + '}';
+		}
+	  }
+
+	  internal sealed class ValListT : BaseListT
+	  {
+		internal readonly Val[] array;
+
+		internal ValListT(TypeAdapter adapter, Val[] array) : base(adapter, array.Length)
+		{
+		  this.array = array;
+		}
+
+		public object Value()
+		{
+		  object[] nativeArray = new object[array.Length];
+		  for (int i = 0; i < array.Length; i++)
+		  {
+			nativeArray[i] = array[i].Value();
+		  }
+		  return nativeArray;
+		}
+
+		public Val Add(Val other)
+		{
+		  if (!(other is Lister))
+		  {
+			return noSuchOverload(this, "add", other);
+		  }
+		  if (other is ValListT)
+		  {
+			Val[] otherArray = ((ValListT) other).array;
+			Val[] newArray = Arrays.CopyOf(array, array.Length + otherArray.Length);
+			Array.Copy(otherArray, 0, newArray, array.Length, otherArray.Length);
+			return new ValListT(adapter, newArray);
+		  }
+		  else
+		  {
+			Lister otherLister = (Lister) other;
+			int otherSIze = (int) otherLister.Size().IntValue();
+			Val[] newArray = Arrays.CopyOf(array, array.Length + otherSIze);
+			for (int i = 0; i < otherSIze; i++)
+			{
+			  newArray[array.Length + i] = otherLister.Get(intOf(i));
+			}
+			return new ValListT(adapter, newArray);
+		  }
+		}
+
+		public Val Get(Val index)
+		{
+		  if (!(index is IntT))
+		  {
+			return valOrErr(index, "unsupported index type '%s' in list", index.Type());
+		  }
+		  int sz = array.Length;
+		  int i = (int) index.IntValue();
+		  if (i < 0 || i >= sz)
+		  {
+			// Note: the conformance tests assert on 'invalid_argument'
+			return newErr("invalid_argument: index '%d' out of range in list of size '%d'", i, sz);
+		  }
+		  return array[i];
+		}
+
+		public override bool Equals(object o)
+		{
+		  if (this == o)
+		  {
+			return true;
+		  }
+		  if (o == null || this.GetType() != o.GetType())
+		  {
+			return false;
+		  }
+		  ValListT valListT = (ValListT) o;
+		  return array.SequenceEqual(valListT.array);
+		}
+
+		public override int GetHashCode()
+		{
+		  int result = base.GetHashCode();
+		  result = 31 * result + Arrays.hashCode(array);
+		  return result;
+		}
+
+		public override string ToString()
+		{
+		  return "ValListT{" + "array=" + "[" + string.Join(", ", array) + "]" + ", adapter=" + adapter + ", size=" + size + '}';
+		}
+	  }
+
+	  /// <summary>
+	  /// NewJSONList returns a traits.Lister based on structpb.ListValue instance. </summary>
+	  public static Val NewJSONList(TypeAdapter adapter, ListValue l)
+	  {
+		IList<Value> vals = l.getValuesList();
+		return NewGenericArrayList(adapter, vals.ToArray());
+	  }
+	}
+
+}
