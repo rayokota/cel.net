@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Google.Protobuf;
 
 /*
  * Copyright (C) 2021 The Authors of CEL-Java
@@ -45,7 +46,7 @@ namespace Cel.Common.Types
 	using Any = Google.Protobuf.WellKnownTypes.Any;
 	using ListValue = Google.Protobuf.WellKnownTypes.ListValue;
 	using Value = Google.Protobuf.WellKnownTypes.Value;
-	using Operator = org.projectnessie.cel.common.operators.Operator;
+	using Operator = Cel.Common.Operators.Operator;
 	using BaseVal = Cel.Common.Types.Ref.BaseVal;
 	using Type = Cel.Common.Types.Ref.Type;
 	using TypeAdapter = Cel.Common.Types.Ref.TypeAdapter;
@@ -56,22 +57,22 @@ namespace Cel.Common.Types
 
 	public abstract class ListT : BaseVal, Lister
 	{
-		public abstract Val size();
-		public abstract IteratorT iterator();
-		public abstract Val get(Ref.Val index);
-		public abstract Val contains(Ref.Val value);
-		public abstract Val add(Ref.Val other);
-		public override abstract object value();
-		public override abstract Val equal(Ref.Val other);
-		public override abstract Val convertToType(Ref.Type typeValue);
-		public override abstract T convertToNative(System.Type typeDesc);
+		public abstract Val Size();
+		public abstract IteratorT Iterator();
+		public abstract Val Get(Ref.Val index);
+		public abstract Val Contains(Ref.Val value);
+		public abstract Val Add(Ref.Val other);
+		public abstract override object Value();
+		public abstract override Val Equal(Ref.Val other);
+		public abstract override Val ConvertToType(Ref.Type typeValue);
+		public abstract override object? ConvertToNative(System.Type typeDesc);
 	  /// <summary>
 	  /// ListType singleton. </summary>
 	  public static readonly Type ListType = TypeT.NewTypeValue(TypeEnum.List, Trait.AdderType, Trait.ContainerType, Trait.IndexerType, Trait.IterableType, Trait.SizerType);
 
 	  public static Val NewStringArrayList(string[] value)
 	  {
-		return NewGenericArrayList(v => stringOf((string) v), value);
+		return NewGenericArrayList(v => StringT.StringOf((string) v), value);
 	  }
 
 	  public static Val NewGenericArrayList(TypeAdapter adapter, object[] value)
@@ -102,25 +103,25 @@ namespace Cel.Common.Types
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @SuppressWarnings("unchecked") @Override public <T> T convertToNative(Class<T> typeDesc)
-		public virtual T ConvertToNative<T>(System.Type typeDesc)
+		public override object? ConvertToNative(System.Type typeDesc)
 		{
 		  if (typeDesc.IsArray)
 		  {
 			object array = ToJavaArray(typeDesc);
 
-			return (T) array;
+			return array;
 		  }
 		  if (typeDesc == typeof(System.Collections.IList) || typeDesc == typeof(object))
 		  {
-			return (T) ToJavaList();
+			return ToJavaList();
 		  }
 		  if (typeDesc == typeof(ListValue))
 		  {
-			return (T) ToPbListValue();
+			return ToPbListValue();
 		  }
 		  if (typeDesc == typeof(Value))
 		  {
-			return (T) ToPbValue();
+			return ToPbValue();
 		  }
 		  if (typeDesc == typeof(Any))
 		  {
@@ -136,7 +137,10 @@ namespace Cel.Common.Types
 			//        return (T) dyn;
 			//        return (T)
 			// Any.newBuilder().setTypeUrl("type.googleapis.com/google.protobuf.ListValue").setValue(dyn.toByteString()).build();
-			return (T) Any.newBuilder().setTypeUrl("type.googleapis.com/google.protobuf.ListValue").setValue(v.toByteString()).build();
+			Any any = new Any();
+			any.TypeUrl = "type.googleapis.com/google.protobuf.ListValue";
+			any.Value = v.ToByteString();
+			return any;
 		  }
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
 		  throw new System.ArgumentException(string.Format("Unsupported conversion of '{0}' to '{1}'", ListType, typeDesc.FullName));
@@ -144,7 +148,9 @@ namespace Cel.Common.Types
 
 		internal virtual Value ToPbValue()
 		{
-		  return Value.newBuilder().setListValue(ToPbListValue()).build();
+		  Value value = new Value();
+			  value.ListValue = ToPbListValue();
+			  return value;
 		}
 
 		internal virtual ListValue ToPbListValue()

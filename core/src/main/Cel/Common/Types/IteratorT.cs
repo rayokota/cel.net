@@ -34,7 +34,7 @@ namespace Cel.Common.Types
 
 	  static IteratorT JavaIterator<T1>(TypeAdapter adapter, IEnumerator<T1> iterator)
 	  {
-		return new IteratorT_JavaIteratorT(adapter, iterator);
+		return new IteratorAdapter<T1>(adapter, iterator);
 	  }
 
 	  /// <summary>
@@ -45,45 +45,43 @@ namespace Cel.Common.Types
 	  Val Next();
 	}
 
-	  public sealed class IteratorT_JavaIteratorT : BaseVal, IteratorT
-	  {
-	internal readonly TypeAdapter adapter;
-//JAVA TO C# CONVERTER WARNING: Java wildcard generics have no direct equivalent in C#:
-//ORIGINAL LINE: final java.util.Iterator<?> iterator;
-	internal readonly IEnumerator<object> iterator;
+	class IteratorAdapter<T> : BaseVal , IteratorT {
+		private readonly TypeAdapter adapter;
+		private readonly IEnumerator<T> iterator;
 
-//JAVA TO C# CONVERTER TODO TASK: Wildcard generics in constructor parameters are not converted. Move the generic type parameter and constraint to the class header:
-//ORIGINAL LINE: IteratorT_JavaIteratorT(Cel.Common.Types.ref.TypeAdapter adapter, java.util.Iterator<?> iterator)
-	internal IteratorT_JavaIteratorT(TypeAdapter adapter, IEnumerator<T1> iterator)
-	{
-	  this.adapter = adapter;
-	  this.iterator = iterator;
-	}
+		private bool? hasNext;
 
-	public Val HasNext()
-	{
-//JAVA TO C# CONVERTER TODO TASK: Java iterators are only converted within the context of 'while' and 'for' loops:
-	  return boolOf(iterator.hasNext());
-	}
+		public IteratorAdapter(TypeAdapter adapter, IEnumerator<T> iterator)
+		{
+			this.adapter = adapter;
+			this.iterator = iterator;
+		}
 
-	public Val Next()
-	{
-	  object n;
-	  try
-	  {
-//JAVA TO C# CONVERTER TODO TASK: Java iterators are only converted within the context of 'while' and 'for' loops:
-		n = iterator.next();
-	  }
-	  catch (NoSuchElementException)
-	  {
-		return noMoreElements();
-	  }
-	  if (n is Val)
-	  {
-		return (Val) n;
-	  }
-	  return adapter.NativeToValue(n);
-	}
+		public Val HasNext() {
+			if (hasNext == null) {
+				// we have no idea if there's a next element or not
+				// we have to call MoveNext and remember its result
+				hasNext = iterator.MoveNext();
+			}
+
+			return Types.BoolOf(hasNext.Value);
+		}
+
+		public Val Next() {
+			// call HasNext, it will call MoveNext if needed
+			if (!hasNext.Value)
+				throw new InvalidOperationException();
+
+			// we have to clear hasNext so next time it is called MoveNext is also called
+			hasNext = null;
+
+			object val = iterator.Current;
+			if (val is Val)
+			{
+				return (Val)val;
+			}
+			return adapter.NativeToValue(val);
+		}
 
 	public override object? ConvertToNative(System.Type typeDesc)
 	{
