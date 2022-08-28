@@ -61,11 +61,11 @@ namespace Cel.Checker
 		// short-cut the "easy" types
 		switch (KindOf(t))
 		{
-		  case Cel.Checker.Types.Kind.kindDyn:
+		  case global::Cel.Checker.Types.Kind.kindDyn:
 			return "dyn";
-		  case Cel.Checker.Types.Kind.kindNull:
+		  case global::Cel.Checker.Types.Kind.kindNull:
 			return "null";
-		  case Cel.Checker.Types.Kind.kindPrimitive:
+		  case global::Cel.Checker.Types.Kind.kindPrimitive:
 			switch (t.Primitive)
 			{
 			  case PrimitiveType.Uint64:
@@ -83,7 +83,7 @@ namespace Cel.Checker
 			}
 			// unrecognizes & not-specified - ignore above
 			return t.Primitive.ToString().ToLowerInvariant().Trim();
-		  case Cel.Checker.Types.Kind.kindWellKnown:
+		  case global::Cel.Checker.Types.Kind.kindWellKnown:
 			switch (t.WellKnown)
 			{
 			  case WellKnownType.Any:
@@ -94,7 +94,7 @@ namespace Cel.Checker
 				return "timestamp";
 			}
 			break;
-		  case Cel.Checker.Types.Kind.kindError:
+		  case global::Cel.Checker.Types.Kind.kindError:
 			return "!error!";
 		}
 
@@ -108,34 +108,34 @@ namespace Cel.Checker
 	  {
 		switch (KindOf(t))
 		{
-		  case Cel.Checker.Types.Kind.kindDyn:
+		  case global::Cel.Checker.Types.Kind.kindDyn:
 			sb.Append("dyn");
 			return;
-		  case Cel.Checker.Types.Kind.kindFunction:
+		  case global::Cel.Checker.Types.Kind.kindFunction:
 			TypeErrors.FormatFunction(sb, t.Function.ResultType, t.Function.ArgTypes, false);
 			return;
-		  case Cel.Checker.Types.Kind.kindList:
+		  case global::Cel.Checker.Types.Kind.kindList:
 			sb.Append("list(");
 			FormatCheckedType(sb, t.ListType.ElemType);
 			sb.Append(')');
 			return;
-		  case Cel.Checker.Types.Kind.kindObject:
+		  case global::Cel.Checker.Types.Kind.kindObject:
 			sb.Append(t.MessageType);
 			return;
-		  case Cel.Checker.Types.Kind.kindMap:
+		  case global::Cel.Checker.Types.Kind.kindMap:
 			sb.Append("map(");
 			FormatCheckedType(sb, t.MapType.KeyType);
 			sb.Append(", ");
 			FormatCheckedType(sb, t.MapType.ValueType);
 			sb.Append(')');
 			return;
-		  case Cel.Checker.Types.Kind.kindNull:
+		  case global::Cel.Checker.Types.Kind.kindNull:
 			sb.Append("null");
 			return;
-		  case Cel.Checker.Types.Kind.kindPrimitive:
+		  case global::Cel.Checker.Types.Kind.kindPrimitive:
 			FormatCheckedTypePrimitive(sb, t.Primitive);
 			return;
-		  case Cel.Checker.Types.Kind.kindType:
+		  case global::Cel.Checker.Types.Kind.kindType:
 			if (Object.Equals(t.Type_, new Type()))
 			{
 			  sb.Append("type");
@@ -145,7 +145,7 @@ namespace Cel.Checker
 			FormatCheckedType(sb, t.Type_);
 			sb.Append(')');
 			return;
-		  case Cel.Checker.Types.Kind.kindWellKnown:
+		  case global::Cel.Checker.Types.Kind.kindWellKnown:
 			switch (t.WellKnown)
 			{
 			  case WellKnownType.Any:
@@ -159,12 +159,12 @@ namespace Cel.Checker
 				return;
 			}
 			break;
-		  case Cel.Checker.Types.Kind.kindWrapper:
+		  case global::Cel.Checker.Types.Kind.kindWrapper:
 			sb.Append("wrapper(");
 			FormatCheckedTypePrimitive(sb, t.Wrapper);
 			sb.Append(')');
 			return;
-		  case Cel.Checker.Types.Kind.kindError:
+		  case global::Cel.Checker.Types.Kind.kindError:
 			sb.Append("!error!");
 			return;
 		}
@@ -215,9 +215,9 @@ namespace Cel.Checker
 		// are sanitized prior to being added to the environment.
 		switch (KindOf(t))
 		{
-		  case Cel.Checker.Types.Kind.kindDyn:
+		  case global::Cel.Checker.Types.Kind.kindDyn:
 			return true;
-		  case Cel.Checker.Types.Kind.kindWellKnown:
+		  case global::Cel.Checker.Types.Kind.kindWellKnown:
 			return t.WellKnown == WellKnownType.Any;
 		  default:
 			return false;
@@ -263,7 +263,7 @@ namespace Cel.Checker
 		// order to return true.
 		switch (kind1)
 		{
-		  case Cel.Checker.Types.Kind.kindAbstract:
+		  case global::Cel.Checker.Types.Kind.kindAbstract:
 		  {
 			  Type.Types.AbstractType a1 = t1.AbstractType;
 			  Type.Types.AbstractType a2 = t2.AbstractType;
@@ -281,7 +281,7 @@ namespace Cel.Checker
 			  }
 			  return true;
 		  }
-		  case Cel.Checker.Types.Kind.kindFunction:
+		  case global::Cel.Checker.Types.Kind.kindFunction:
 		  {
 			  Type.Types.FunctionType fn1 = t1.Function;
 			  Type.Types.FunctionType fn2 = t2.Function;
@@ -303,15 +303,15 @@ namespace Cel.Checker
 			  }
 			  return true;
 		  }
-		  case Cel.Checker.Types.Kind.kindList:
+		  case global::Cel.Checker.Types.Kind.kindList:
 			return IsEqualOrLessSpecific(t1.ListType.ElemType, t2.ListType.ElemType);
-		  case Cel.Checker.Types.Kind.kindMap:
+		  case global::Cel.Checker.Types.Kind.kindMap:
 		  {
 			  Type.Types.MapType m1 = t1.MapType;
 			  Type.Types.MapType m2 = t2.MapType;
 			  return IsEqualOrLessSpecific(m1.KeyType, m2.KeyType) && IsEqualOrLessSpecific(m1.ValueType, m2.ValueType);
 		  }
-		  case Cel.Checker.Types.Kind.kindType:
+		  case global::Cel.Checker.Types.Kind.kindType:
 			return true;
 		  default:
 			return t1.Equals(t2);
@@ -383,11 +383,11 @@ namespace Cel.Checker
 		// Test for when the types do not need to agree, but are more specific than dyn.
 		switch (kind1)
 		{
-		  case Cel.Checker.Types.Kind.kindNull:
+		  case global::Cel.Checker.Types.Kind.kindNull:
 			return InternalIsAssignableNull(t2);
-		  case Cel.Checker.Types.Kind.kindPrimitive:
+		  case global::Cel.Checker.Types.Kind.kindPrimitive:
 			return InternalIsAssignablePrimitive(t1.Primitive, t2);
-		  case Cel.Checker.Types.Kind.kindWrapper:
+		  case global::Cel.Checker.Types.Kind.kindWrapper:
 			return InternalIsAssignable(m, Decls.NewPrimitiveType(t1.Wrapper), t2);
 		  default:
 			if (kind1 != kind2)
@@ -401,21 +401,21 @@ namespace Cel.Checker
 		switch (kind1)
 		{
 			// ERROR, TYPE_PARAM, and DYN handled above.
-		  case Cel.Checker.Types.Kind.kindAbstract:
+		  case global::Cel.Checker.Types.Kind.kindAbstract:
 			return InternalIsAssignableAbstractType(m, t1.AbstractType, t2.AbstractType);
-		  case Cel.Checker.Types.Kind.kindFunction:
+		  case global::Cel.Checker.Types.Kind.kindFunction:
 			return InternalIsAssignableFunction(m, t1.Function, t2.Function);
-		  case Cel.Checker.Types.Kind.kindList:
+		  case global::Cel.Checker.Types.Kind.kindList:
 			return InternalIsAssignable(m, t1.ListType.ElemType, t2.ListType.ElemType);
-		  case Cel.Checker.Types.Kind.kindMap:
+		  case global::Cel.Checker.Types.Kind.kindMap:
 			return InternalIsAssignableMap(m, t1.MapType, t2.MapType);
-		  case Cel.Checker.Types.Kind.kindObject:
+		  case global::Cel.Checker.Types.Kind.kindObject:
 			return t1.MessageType.Equals(t2.MessageType);
-		  case Cel.Checker.Types.Kind.kindType:
+		  case global::Cel.Checker.Types.Kind.kindType:
 			// A type is a type is a type, any additional parameterization of the
 			// type cannot affect method resolution or assignability.
 			return true;
-		  case Cel.Checker.Types.Kind.kindWellKnown:
+		  case global::Cel.Checker.Types.Kind.kindWellKnown:
 			return t1.WellKnown == t2.WellKnown;
 		  default:
 			return false;
@@ -481,11 +481,11 @@ namespace Cel.Checker
 	  {
 		switch (KindOf(t))
 		{
-		  case Cel.Checker.Types.Kind.kindAbstract:
-		  case Cel.Checker.Types.Kind.kindObject:
-		  case Cel.Checker.Types.Kind.kindNull:
-		  case Cel.Checker.Types.Kind.kindWellKnown:
-		  case Cel.Checker.Types.Kind.kindWrapper:
+		  case global::Cel.Checker.Types.Kind.kindAbstract:
+		  case global::Cel.Checker.Types.Kind.kindObject:
+		  case global::Cel.Checker.Types.Kind.kindNull:
+		  case global::Cel.Checker.Types.Kind.kindWellKnown:
+		  case global::Cel.Checker.Types.Kind.kindWrapper:
 			return true;
 		  default:
 			return false;
@@ -500,9 +500,9 @@ namespace Cel.Checker
 	  {
 		switch (KindOf(target))
 		{
-		  case Cel.Checker.Types.Kind.kindPrimitive:
+		  case global::Cel.Checker.Types.Kind.kindPrimitive:
 			return p == target.Primitive;
-		  case Cel.Checker.Types.Kind.kindWrapper:
+		  case global::Cel.Checker.Types.Kind.kindWrapper:
 			return p == target.Wrapper;
 		  default:
 			return false;
@@ -596,14 +596,14 @@ namespace Cel.Checker
 		Kind withinKind = KindOf(withinType);
 		switch (withinKind)
 		{
-		  case Cel.Checker.Types.Kind.kindTypeParam:
+		  case global::Cel.Checker.Types.Kind.kindTypeParam:
 			Type wtSub = m.Find(withinType);
 			if (wtSub == null)
 			{
 			  return true;
 			}
 			return NotReferencedIn(m, t, wtSub);
-		  case Cel.Checker.Types.Kind.kindAbstract:
+		  case global::Cel.Checker.Types.Kind.kindAbstract:
 			foreach (Type pt in withinType.AbstractType.ParameterTypes)
 			{
 			  if (!NotReferencedIn(m, t, pt))
@@ -612,7 +612,7 @@ namespace Cel.Checker
 			  }
 			}
 			return true;
-		  case Cel.Checker.Types.Kind.kindFunction:
+		  case global::Cel.Checker.Types.Kind.kindFunction:
 			FunctionType fn = withinType.Function;
 			IList<Type> types = FlattenFunctionTypes(fn);
 			foreach (Type a in types)
@@ -623,12 +623,12 @@ namespace Cel.Checker
 			  }
 			}
 			return true;
-		  case Cel.Checker.Types.Kind.kindList:
+		  case global::Cel.Checker.Types.Kind.kindList:
 			return NotReferencedIn(m, t, withinType.ListType.ElemType);
-		  case Cel.Checker.Types.Kind.kindMap:
+		  case global::Cel.Checker.Types.Kind.kindMap:
 			MapType mt = withinType.MapType;
 			return NotReferencedIn(m, t, mt.KeyType) && NotReferencedIn(m, t, mt.ValueType);
-		  case Cel.Checker.Types.Kind.kindWrapper:
+		  case global::Cel.Checker.Types.Kind.kindWrapper:
 			return NotReferencedIn(m, t, Decls.NewPrimitiveType(withinType.Wrapper));
 		  default:
 			return true;
@@ -653,7 +653,7 @@ namespace Cel.Checker
 		}
 		switch (kind)
 		{
-		  case Cel.Checker.Types.Kind.kindAbstract:
+		  case global::Cel.Checker.Types.Kind.kindAbstract:
 			// TODO: implement!
 			AbstractType at = t.AbstractType;
 			IList<Type> @params = new List<Type>(at.ParameterTypes.Count);
@@ -662,7 +662,7 @@ namespace Cel.Checker
 			  @params.Add(Substitute(m, p, typeParamToDyn));
 			}
 			return Decls.NewAbstractType(at.Name, @params);
-		  case Cel.Checker.Types.Kind.kindFunction:
+		  case global::Cel.Checker.Types.Kind.kindFunction:
 			FunctionType fn = t.Function;
 			Type rt = Substitute(m, fn.ResultType, typeParamToDyn);
 			IList<Type> args = new List<Type>(fn.ArgTypes.Count);
@@ -671,12 +671,12 @@ namespace Cel.Checker
 			  args.Add(Substitute(m, a, typeParamToDyn));
 			}
 			return Decls.NewFunctionType(rt, args);
-		  case Cel.Checker.Types.Kind.kindList:
+		  case global::Cel.Checker.Types.Kind.kindList:
 			return Decls.NewListType(Substitute(m, t.ListType.ElemType, typeParamToDyn));
-		  case Cel.Checker.Types.Kind.kindMap:
+		  case global::Cel.Checker.Types.Kind.kindMap:
 			MapType mt = t.MapType;
 			return Decls.NewMapType(Substitute(m, mt.KeyType, typeParamToDyn), Substitute(m, mt.ValueType, typeParamToDyn));
-		  case Cel.Checker.Types.Kind.kindType:
+		  case global::Cel.Checker.Types.Kind.kindType:
 			if (Object.Equals(t.Type_, new Type()))
 			{
 			  return Decls.NewTypeType(Substitute(m, t.Type_, typeParamToDyn));

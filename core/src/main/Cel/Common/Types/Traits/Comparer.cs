@@ -15,7 +15,7 @@
  */
 namespace Cel.Common.Types.Traits
 {
-	using Val = Cel.Common.Types.Ref.Val;
+	using Val = global::Cel.Common.Types.Ref.Val;
 
 	/// <summary>
 	/// Comparer interface for ordering comparisons between values in order to support '&lt;', '&lt;=',

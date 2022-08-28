@@ -30,11 +30,11 @@ namespace Cel.Common.Types.Pb
 	using Any = Google.Protobuf.WellKnownTypes.Any;
 	using Message = Google.Protobuf.IMessage;
 	using Value = Google.Protobuf.WellKnownTypes.Value;
-	using ObjectT = Cel.Common.Types.ObjectT;
-	using StringT = Cel.Common.Types.StringT;
-	using Type = Cel.Common.Types.Ref.Type;
-	using TypeAdapter = Cel.Common.Types.Ref.TypeAdapter;
-	using Val = Cel.Common.Types.Ref.Val;
+	using ObjectT = global::Cel.Common.Types.ObjectT;
+	using StringT = global::Cel.Common.Types.StringT;
+	using Type = global::Cel.Common.Types.Ref.Type;
+	using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
+	using Val = global::Cel.Common.Types.Ref.Val;
 
 	public sealed class PbObjectT : ObjectT
 	{

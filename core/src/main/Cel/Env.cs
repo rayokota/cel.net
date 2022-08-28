@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cel.Common;
+using Cel.Common.Types.Pb;
+using Cel.Interpreter;
 
 /*
  * Copyright (C) 2021 The Authors of CEL-Java
@@ -56,19 +59,19 @@ namespace Cel
 	using DeclKindCase = Google.Api.Expr.V1Alpha1.Decl.DeclKindOneofCase;
 	using Expr = Google.Api.Expr.V1Alpha1.Expr;
 	using ParsedExpr = Google.Api.Expr.V1Alpha1.ParsedExpr;
-	using Checker = Cel.Checker.Checker;
-	using CheckResult = Cel.Checker.Checker.CheckResult;
-	using CheckerEnv = Cel.Checker.CheckerEnv;
-	using Errors = Cel.Common.Errors;
-	using Source = Cel.Common.Source;
-	using Container = Cel.Common.Containers.Container;
-	using TypeAdapter = Cel.Common.Types.Ref.TypeAdapter;
-	using TypeProvider = Cel.Common.Types.Ref.TypeProvider;
-	using TypeRegistry = Cel.Common.Types.Ref.TypeRegistry;
-	using Activation_PartialActivation = Cel.Interpreter.Activation_PartialActivation;
-	using AttributePattern = Cel.Interpreter.AttributePattern;
-	using Macro = Cel.Parser.Macro;
-	using ParseResult = Cel.Parser.Parser.ParseResult;
+	using CheckResult = global::Cel.Checker.Checker.CheckResult;
+	using CheckerEnv = global::Cel.Checker.CheckerEnv;
+	using Errors = global::Cel.Common.Errors;
+	using Source = global::Cel.Common.Source;
+	using Container = global::Cel.Common.Containers.Container;
+	using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
+	using TypeProvider = global::Cel.Common.Types.Ref.TypeProvider;
+	using TypeRegistry = global::Cel.Common.Types.Ref.TypeRegistry;
+	using Activation_PartialActivation = global::Cel.Interpreter.Activation_PartialActivation;
+	using AttributePattern = global::Cel.Interpreter.AttributePattern;
+	using Macro = global::Cel.Parser.Macro;
+	using ParseResult = global::Cel.Parser.Parser.ParseResult;
+	using Parser = global::Cel.Parser.Parser;
 
 	/// <summary>
 	/// Env encapsulates the context necessary to perform parsing, type checking, or generation of
@@ -116,9 +119,9 @@ namespace Cel
 	  /// </summary>
 	  public static Env NewEnv(params EnvOption[] opts)
 	  {
-		IList<EnvOption> stdOpts = new List<EnvOption>(opts.Length + 1);
-		stdOpts.Add(StdLib());
-		Collections.addAll(stdOpts, opts);
+		List<EnvOption> stdOpts = new List<EnvOption>(opts.Length + 1);
+		stdOpts.Add(Library.StdLib());
+		stdOpts.AddRange(opts);
 		return NewCustomEnv(((List<EnvOption>)stdOpts).ToArray());
 	  }
 
@@ -138,12 +141,12 @@ namespace Cel
 	  /// </summary>
 	  public static Env NewCustomEnv(TypeRegistry registry, IList<EnvOption> opts)
 	  {
-		return (new Env(defaultContainer, new List<Decl>(), new List<Macro>(), registry, registry, EnumSet.noneOf(typeof(EnvOption_EnvFeature)), new List<ProgramOption>())).Configure(opts);
+		return (new Env(Container.DefaultContainer, new List<Decl>(), new List<Macro>(), registry.ToTypeAdapter(), registry, new HashSet<EnvOption_EnvFeature>(), new List<ProgramOption>())).Configure(opts);
 	  }
 
 	  public static Env NewCustomEnv(params EnvOption[] opts)
 	  {
-		return NewCustomEnv(newRegistry(), new List<EnvOption> {opts});
+		return NewCustomEnv(ProtoTypeRegistry.NewRegistry(), new List<EnvOption> (opts));
 	  }
 
 	  internal void AddProgOpts(IList<ProgramOption> progOpts)
@@ -159,7 +162,7 @@ namespace Cel
 		internal AstIssuesTuple(Ast ast, Issues issues)
 		{
 		  this.ast = ast;
-		  this.issues = Objects.requireNonNull(issues);
+		  this.issues = issues;
 		}
 
 		public bool HasIssues()
@@ -198,7 +201,7 @@ namespace Cel
 	  public AstIssuesTuple Check(Ast ast)
 	  {
 		// Note, errors aren't currently possible on the Ast to ParsedExpr conversion.
-		ParsedExpr pe = astToParsedExpr(ast);
+		ParsedExpr pe = global::Cel.Cel.AstToParsedExpr(ast);
 
 		// Construct the internal checker env, erroring if there is an issue adding the declarations.
 		lock (once)
@@ -207,7 +210,7 @@ namespace Cel
 		  {
 			CheckerEnv ce = CheckerEnv.NewCheckerEnv(container, provider);
 			ce.EnableDynamicAggregateLiterals(true);
-			if (HasFeature(FeatureDisableDynamicAggregateLiterals))
+			if (HasFeature(EnvOption_EnvFeature.FeatureDisableDynamicAggregateLiterals))
 			{
 			  ce.EnableDynamicAggregateLiterals(false);
 			}
@@ -220,10 +223,6 @@ namespace Cel
 			{
 			  chkErr = e;
 			}
-			catch (Exception e)
-			{
-			  chkErr = new Exception(e);
-			}
 		  }
 		}
 
@@ -231,20 +230,20 @@ namespace Cel
 		if (chkErr != null)
 		{
 		  Errors errs = new Errors(ast.Source);
-		  errs.ReportError(NoLocation, "%s", chkErr.ToString());
-		  return new AstIssuesTuple(null, newIssues(errs));
+		  errs.ReportError(Location.NoLocation, "%s", chkErr.ToString());
+		  return new AstIssuesTuple(null, Issues.NewIssues(errs));
 		}
 
-		ParseResult pr = new ParseResult(pe.getExpr(), new Errors(ast.Source), pe.getSourceInfo());
-		Checker.CheckResult checkRes = Checker.Check(pr, ast.Source, chk);
+		ParseResult pr = new ParseResult(pe.Expr, new Errors(ast.Source), pe.SourceInfo);
+		CheckResult checkRes = global::Cel.Checker.Checker.Check(pr, ast.Source, chk);
 		if (checkRes.HasErrors())
 		{
-		  return new AstIssuesTuple(null, newIssues(checkRes.Errors));
+		  return new AstIssuesTuple(null, Issues.NewIssues(checkRes.Errors));
 		}
 		// Manually create the Ast to ensure that the Ast source information (which may be more
 		// detailed than the information provided by Check), is returned to the caller.
-		CheckedExpr ce = checkRes.CheckedExpr;
-		ast = new Ast(ce.getExpr(), ce.getSourceInfo(), ast.Source, ce.getReferenceMapMap(), ce.getTypeMapMap());
+		CheckedExpr expr = checkRes.CheckedExpr;
+		ast = new Ast(expr.Expr, expr.SourceInfo, ast.Source, expr.ReferenceMap, expr.TypeMap);
 		return new AstIssuesTuple(ast, Issues.NoIssues(ast.Source));
 	  }
 
@@ -262,7 +261,7 @@ namespace Cel
 	  /// </summary>
 	  public AstIssuesTuple Compile(string txt)
 	  {
-		return CompileSource(newTextSource(txt));
+		return CompileSource(Source.NewTextSource(txt));
 	  }
 
 	  /// <summary>
@@ -314,6 +313,8 @@ namespace Cel
 		// be immutable. Since it is possible to set the TypeProvider separately
 		// from the TypeAdapter, the possible configurations which could use a
 		// TypeRegistry as the base implementation are captured below.
+     	// TODO check
+		/* 
 		if (this.adapter is TypeRegistry && this.provider is TypeRegistry)
 		{
 		  TypeRegistry adapterReg = (TypeRegistry) this.adapter;
@@ -332,16 +333,13 @@ namespace Cel
 			adapter = adapterReg.Copy();
 		  }
 		}
-		else if (this.provider is TypeRegistry)
+		*/
+		if (this.provider is TypeRegistry)
 		{
 		  provider = ((TypeRegistry) this.provider).Copy();
 		}
-		else if (this.adapter is TypeRegistry)
-		{
-		  adapter = ((TypeRegistry) this.adapter).Copy();
-		}
 
-		ISet<EnvOption_EnvFeature> featuresCopy = EnumSet.copyOf(this.features);
+		ISet<EnvOption_EnvFeature> featuresCopy = new HashSet<EnvOption_EnvFeature>(this.features);
 
 		Env ext = new Env(this.container, decsCopy, macsCopy, adapter, provider, featuresCopy, progOptsCopy);
 		return ext.Configure(opts);
@@ -349,7 +347,7 @@ namespace Cel
 
 	  public Env Extend(params EnvOption[] opts)
 	  {
-		return Extend(asList(opts));
+		return Extend(new List<EnvOption>(opts));
 	  }
 
 	  /// <summary>
@@ -370,7 +368,7 @@ namespace Cel
 	  /// </summary>
 	  public AstIssuesTuple Parse(string txt)
 	  {
-		Source src = newTextSource(txt);
+		Source src = Source.NewTextSource(txt);
 		return ParseSource(src);
 	  }
 
@@ -387,10 +385,10 @@ namespace Cel
 	  /// </summary>
 	  public AstIssuesTuple ParseSource(Source src)
 	  {
-		ParseResult res = parseWithMacros(src, macros);
+		ParseResult res = global::Cel.Parser.Parser.ParseWithMacros(src, macros);
 		if (res.HasErrors())
 		{
-		  return new AstIssuesTuple(null, newIssues(res.Errors));
+		  return new AstIssuesTuple(null, Issues.NewIssues(res.Errors));
 		}
 		// Manually create the Ast to ensure that the text source information is propagated on
 		// subsequent calls to Check.
@@ -404,11 +402,11 @@ namespace Cel
 		IList<ProgramOption> optSet = progOpts;
 		if (opts.Length > 0)
 		{
-		  IList<ProgramOption> mergedOpts = new List<ProgramOption>(progOpts);
-		  Collections.addAll(mergedOpts, opts);
+		  List<ProgramOption> mergedOpts = new List<ProgramOption>(progOpts);
+		  mergedOpts.AddRange(opts);
 		  optSet = mergedOpts;
 		}
-		return newProgram(this, ast, ((List<ProgramOption>)optSet).ToArray());
+		return Cel.NewProgram(this, ast, ((List<ProgramOption>)optSet).ToArray());
 	  }
 
 	  /// <summary>
@@ -464,12 +462,12 @@ namespace Cel
 			IList<AttributePattern> unknownPatterns = new List<AttributePattern>();
 			foreach (Decl d in declarations)
 			{
-			  if (d.getDeclKindCase() == Decl.DeclKindCase.IDENT)
+			  if (d.DeclKindCase == DeclKindCase.Ident)
 			  {
-				unknownPatterns.Add(newAttributePattern(d.getName()));
+				unknownPatterns.Add(AttributePattern.NewAttributePattern((string)d.Name));
 			  }
 			}
-			return partialVars(emptyActivation(), ((List<AttributePattern>)unknownPatterns).ToArray());
+			return Cel.PartialVars(Activation.EmptyActivation(), ((List<AttributePattern>)unknownPatterns).ToArray());
 		  }
 	  }
 
@@ -506,8 +504,10 @@ namespace Cel
 	  /// </summary>
 	  public Ast ResidualAst(Ast a, EvalDetails details)
 	  {
-		Expr pruned = pruneAst(a.Expr, details.State);
-		string expr = astToString(parsedExprToAst(ParsedExpr.newBuilder().setExpr(pruned).build()));
+		Expr pruned = AstPruner.PruneAst(a.Expr, details.State);
+		ParsedExpr parsedExpr = new ParsedExpr();
+		parsedExpr.Expr = pruned;
+		string expr = Cel.AstToString(Cel.ParsedExprToAst(parsedExpr));
 		AstIssuesTuple parsedIss = Parse(expr);
 		if (parsedIss.HasIssues())
 		{
@@ -534,7 +534,7 @@ namespace Cel
 		Env e = this;
 		foreach (EnvOption opt in opts)
 		{
-		  e = opt.Apply(e);
+		  e = opt(e);
 		}
 		return e;
 	  }

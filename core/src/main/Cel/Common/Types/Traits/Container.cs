@@ -15,7 +15,7 @@
  */
 namespace Cel.Common.Types.Traits
 {
-	using Val = Cel.Common.Types.Ref.Val;
+	using Val = global::Cel.Common.Types.Ref.Val;
 
 	/// <summary>
 	/// Container interface which permits containment tests such as 'a in b'. </summary>

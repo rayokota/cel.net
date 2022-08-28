@@ -59,10 +59,10 @@ namespace Cel.Common.Types.Ref
 	using Timestamp = Google.Protobuf.WellKnownTypes.Timestamp;
 	using UInt32Value = Google.Protobuf.WellKnownTypes.UInt32Value;
 	using UInt64Value = Google.Protobuf.WellKnownTypes.UInt64Value;
-	using DoubleT = Cel.Common.Types.DoubleT;
-	using IntT = Cel.Common.Types.IntT;
-	using NullT = Cel.Common.Types.NullT;
-	using DefaultTypeAdapter = Cel.Common.Types.Pb.DefaultTypeAdapter;
+	using DoubleT = global::Cel.Common.Types.DoubleT;
+	using IntT = global::Cel.Common.Types.IntT;
+	using NullT = global::Cel.Common.Types.NullT;
+	using DefaultTypeAdapter = global::Cel.Common.Types.Pb.DefaultTypeAdapter;
 
 	/// <summary>
 	/// Helper class for <seealso cref="TypeAdapter"/> implementations to convert from a Java type to a CEL type.

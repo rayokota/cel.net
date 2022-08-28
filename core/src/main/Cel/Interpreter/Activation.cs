@@ -17,7 +17,7 @@
  */
 namespace Cel.Interpreter
 {
-    using Val = Cel.Common.Types.Ref.Val;
+    using Val = global::Cel.Common.Types.Ref.Val;
 
     /// <summary>
     /// Activation used to resolve identifiers by name and references by id.

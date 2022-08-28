@@ -15,7 +15,7 @@
  */
 namespace Cel.Common.Types.Ref
 {
-	using Trait = Cel.Common.Types.Traits.Trait;
+	using Trait = global::Cel.Common.Types.Traits.Trait;
 
 	/// <summary>
 	/// Type interface indicate the name of a given type. </summary>

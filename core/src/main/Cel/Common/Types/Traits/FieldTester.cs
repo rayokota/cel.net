@@ -15,7 +15,7 @@
  */
 namespace Cel.Common.Types.Traits
 {
-	using Val = Cel.Common.Types.Ref.Val;
+	using Val = global::Cel.Common.Types.Ref.Val;
 
 	/// <summary>
 	/// FieldTester indicates if a defined field on an object type is set to a non-default value.

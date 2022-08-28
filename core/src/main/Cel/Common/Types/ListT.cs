@@ -46,14 +46,14 @@ namespace Cel.Common.Types
 	using Any = Google.Protobuf.WellKnownTypes.Any;
 	using ListValue = Google.Protobuf.WellKnownTypes.ListValue;
 	using Value = Google.Protobuf.WellKnownTypes.Value;
-	using Operator = Cel.Common.Operators.Operator;
-	using BaseVal = Cel.Common.Types.Ref.BaseVal;
-	using Type = Cel.Common.Types.Ref.Type;
-	using TypeAdapter = Cel.Common.Types.Ref.TypeAdapter;
-	using TypeEnum = Cel.Common.Types.Ref.TypeEnum;
-	using Val = Cel.Common.Types.Ref.Val;
-	using Lister = Cel.Common.Types.Traits.Lister;
-	using Trait = Cel.Common.Types.Traits.Trait;
+	using Operator = global::Cel.Common.Operators.Operator;
+	using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
+	using Type = global::Cel.Common.Types.Ref.Type;
+	using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
+	using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
+	using Val = global::Cel.Common.Types.Ref.Val;
+	using Lister = global::Cel.Common.Types.Traits.Lister;
+	using Trait = global::Cel.Common.Types.Traits.Trait;
 
 	public abstract class ListT : BaseVal, Lister
 	{

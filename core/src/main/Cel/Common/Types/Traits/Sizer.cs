@@ -15,7 +15,7 @@
  */
 namespace Cel.Common.Types.Traits
 {
-	using Val = Cel.Common.Types.Ref.Val;
+	using Val = global::Cel.Common.Types.Ref.Val;
 
 	/// <summary>
 	/// Sizer interface for supporting 'size()' overloads. </summary>

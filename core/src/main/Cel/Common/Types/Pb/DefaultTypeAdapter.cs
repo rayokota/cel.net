@@ -31,11 +31,11 @@ namespace Cel.Common.Types.Pb
 
 	using Value = Google.Api.Expr.V1Alpha1.Value;
 	using Message = Google.Protobuf.IMessage;
-	using Err = Cel.Common.Types.Err;
-	using Types = Cel.Common.Types.Types;
-	using TypeAdapter = Cel.Common.Types.Ref.TypeAdapter;
-	using TypeAdapterProvider = Cel.Common.Types.Ref.TypeAdapterProvider;
-	using Val = Cel.Common.Types.Ref.Val;
+	using Err = global::Cel.Common.Types.Err;
+	using Types = global::Cel.Common.Types.Types;
+	using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
+	using TypeAdapterProvider = global::Cel.Common.Types.Ref.TypeAdapterProvider;
+	using Val = global::Cel.Common.Types.Ref.Val;
 
 	/// <summary>
 	/// defaultTypeAdapter converts go native types to CEL values. </summary>

@@ -28,10 +28,10 @@ namespace Cel.Common.Types
 
 	using Any = Google.Protobuf.WellKnownTypes.Any;
 	using Value = Google.Protobuf.WellKnownTypes.Value;
-	using BaseVal = Cel.Common.Types.Ref.BaseVal;
-	using Type = Cel.Common.Types.Ref.Type;
-	using TypeEnum = Cel.Common.Types.Ref.TypeEnum;
-	using Val = Cel.Common.Types.Ref.Val;
+	using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
+	using Type = global::Cel.Common.Types.Ref.Type;
+	using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
+	using Val = global::Cel.Common.Types.Ref.Val;
 
 	/// <summary>
 	/// Null type implementation. </summary>

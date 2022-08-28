@@ -15,7 +15,7 @@
  */
 namespace Cel.Common.Types
 {
-	using Val = Cel.Common.Types.Ref.Val;
+	using Val = global::Cel.Common.Types.Ref.Val;
 
 	public sealed class Util
 	{
@@ -26,8 +26,8 @@ namespace Cel.Common.Types
 	  {
 		switch (val.Type().TypeEnum().InnerEnumValue)
 		{
-		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Unknown:
-		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Err:
+		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Unknown:
+		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Err:
 			return true;
 		}
 		return false;
@@ -41,12 +41,12 @@ namespace Cel.Common.Types
 	  {
 		switch (val.Type().TypeEnum().InnerEnumValue)
 		{
-		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Bool:
-		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Bytes:
-		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Double:
-		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Int:
-		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.String:
-		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Uint:
+		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Bool:
+		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Bytes:
+		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Double:
+		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Int:
+		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.String:
+		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Uint:
 			return true;
 		}
 		return false;

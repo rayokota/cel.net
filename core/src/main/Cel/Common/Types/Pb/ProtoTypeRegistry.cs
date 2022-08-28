@@ -96,17 +96,17 @@ namespace Cel.Common.Types.Pb
 	using UInt64Value = Google.Protobuf.WellKnownTypes.UInt64Value;
 	using Value = Google.Protobuf.WellKnownTypes.Value;
 	using WireFormat = Google.Protobuf.WireFormat;
-	using TypeT = Cel.Common.Types.TypeT;
-	using FieldType = Cel.Common.Types.Ref.FieldType;
-	using TypeRegistry = Cel.Common.Types.Ref.TypeRegistry;
-	using Val = Cel.Common.Types.Ref.Val;
+	using TypeT = global::Cel.Common.Types.TypeT;
+	using FieldType = global::Cel.Common.Types.Ref.FieldType;
+	using TypeRegistry = global::Cel.Common.Types.Ref.TypeRegistry;
+	using Val = global::Cel.Common.Types.Ref.Val;
 
 	public sealed class ProtoTypeRegistry : TypeRegistry
 	{
-	  private readonly IDictionary<string, Cel.Common.Types.Ref.Type> revTypeMap;
+	  private readonly IDictionary<string, global::Cel.Common.Types.Ref.Type> revTypeMap;
 	  private readonly Db pbdb;
 
-	  private ProtoTypeRegistry(IDictionary<string, Cel.Common.Types.Ref.Type> revTypeMap, Db pbdb)
+	  private ProtoTypeRegistry(IDictionary<string, global::Cel.Common.Types.Ref.Type> revTypeMap, Db pbdb)
 	  {
 		this.revTypeMap = revTypeMap;
 		this.pbdb = pbdb;
@@ -119,7 +119,7 @@ namespace Cel.Common.Types.Pb
 	  /// </summary>
 	  public static ProtoTypeRegistry NewRegistry(params Message[] types)
 	  {
-		ProtoTypeRegistry p = new ProtoTypeRegistry(new Dictionary<string, Cel.Common.Types.Ref.Type>(), Db.NewDb());
+		ProtoTypeRegistry p = new ProtoTypeRegistry(new Dictionary<string, global::Cel.Common.Types.Ref.Type>(), Db.NewDb());
 		p.RegisterType(
 			BoolT.BoolType, 
 			BytesT.BytesType, 
@@ -178,7 +178,7 @@ namespace Cel.Common.Types.Pb
 	  /// NewEmptyRegistry returns a registry which is completely unconfigured. </summary>
 	  public static ProtoTypeRegistry NewEmptyRegistry()
 	  {
-		return new ProtoTypeRegistry(new Dictionary<string, Cel.Common.Types.Ref.Type>(), Db.NewDb());
+		return new ProtoTypeRegistry(new Dictionary<string, global::Cel.Common.Types.Ref.Type>(), Db.NewDb());
 	  }
 
 	  /// <summary>
@@ -187,7 +187,7 @@ namespace Cel.Common.Types.Pb
 	  /// </summary>
 	  public TypeRegistry Copy()
 	  {
-		return new ProtoTypeRegistry(new Dictionary<string, Cel.Common.Types.Ref.Type>(this.revTypeMap), pbdb.Copy());
+		return new ProtoTypeRegistry(new Dictionary<string, global::Cel.Common.Types.Ref.Type>(this.revTypeMap), pbdb.Copy());
 	  }
 
 	  public void Register(object t)
@@ -203,7 +203,7 @@ namespace Cel.Common.Types.Pb
 		}
 		else if (t is Type)
 		{
-		  RegisterType((Cel.Common.Types.Ref.Type) t);
+		  RegisterType((global::Cel.Common.Types.Ref.Type) t);
 		}
 		else
 		{
@@ -239,7 +239,7 @@ namespace Cel.Common.Types.Pb
 
 	  public Val FindIdent(string identName)
 	  {
-		Cel.Common.Types.Ref.Type t = revTypeMap[identName];
+		global::Cel.Common.Types.Ref.Type t = revTypeMap[identName];
 		if (t != null)
 		{
 		  return t;
@@ -428,9 +428,9 @@ namespace Cel.Common.Types.Pb
 		RegisterAllTypes(fd);
 	  }
 
-	  public void RegisterType(params Cel.Common.Types.Ref.Type[] types)
+	  public void RegisterType(params global::Cel.Common.Types.Ref.Type[] types)
 	  {
-		foreach (Cel.Common.Types.Ref.Type t in types)
+		foreach (global::Cel.Common.Types.Ref.Type t in types)
 		{
 		  revTypeMap[t.TypeName()] = t;
 		}

@@ -24,10 +24,10 @@ namespace Cel.Common.Types
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.Common.Types.Types.boolOf;
 
-	using Type = Cel.Common.Types.Ref.Type;
-	using TypeEnum = Cel.Common.Types.Ref.TypeEnum;
-	using Val = Cel.Common.Types.Ref.Val;
-	using Trait = Cel.Common.Types.Traits.Trait;
+	using Type = global::Cel.Common.Types.Ref.Type;
+	using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
+	using Val = global::Cel.Common.Types.Ref.Val;
+	using Trait = global::Cel.Common.Types.Traits.Trait;
 
 	/// <summary>
 	/// TypeValue is an instance of a Value that describes a value's type. </summary>

@@ -25,13 +25,13 @@ namespace Cel.Common.Types
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.Common.Types.Types.boolOf;
 
-	using BaseVal = Cel.Common.Types.Ref.BaseVal;
-	using Type = Cel.Common.Types.Ref.Type;
-	using TypeAdapter = Cel.Common.Types.Ref.TypeAdapter;
-	using TypeDescription = Cel.Common.Types.Ref.TypeDescription;
-	using Val = Cel.Common.Types.Ref.Val;
-	using FieldTester = Cel.Common.Types.Traits.FieldTester;
-	using Indexer = Cel.Common.Types.Traits.Indexer;
+	using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
+	using Type = global::Cel.Common.Types.Ref.Type;
+	using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
+	using TypeDescription = global::Cel.Common.Types.Ref.TypeDescription;
+	using Val = global::Cel.Common.Types.Ref.Val;
+	using FieldTester = global::Cel.Common.Types.Traits.FieldTester;
+	using Indexer = global::Cel.Common.Types.Traits.Indexer;
 
 	public abstract class ObjectT : BaseVal, FieldTester, Indexer, TypeAdapterProvider
 	{
@@ -56,7 +56,7 @@ namespace Cel.Common.Types
 		{
 		  case TypeEnum.InnerEnum.Type:
 			return typeValue;
-		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Object:
+		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Object:
 			if (Type().TypeName().Equals(typeVal.TypeName()))
 			{
 			  return this;

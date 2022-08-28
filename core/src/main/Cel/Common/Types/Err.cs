@@ -20,10 +20,10 @@ namespace Cel.Common.Types
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.Common.Types.UnknownT.UnknownType;
 
-	using BaseVal = Cel.Common.Types.Ref.BaseVal;
-	using Type = Cel.Common.Types.Ref.Type;
-	using TypeEnum = Cel.Common.Types.Ref.TypeEnum;
-	using Val = Cel.Common.Types.Ref.Val;
+	using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
+	using Type = global::Cel.Common.Types.Ref.Type;
+	using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
+	using Val = global::Cel.Common.Types.Ref.Val;
 
 	/// <summary>
 	/// Err type which extends the built-in go error and implements ref.Val. </summary>

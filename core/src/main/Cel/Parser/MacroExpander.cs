@@ -18,7 +18,7 @@
 namespace Cel.Parser
 {
     using Expr = Google.Api.Expr.V1Alpha1.Expr;
-    using ErrorWithLocation = Cel.Common.ErrorWithLocation;
+    using ErrorWithLocation = global::Cel.Common.ErrorWithLocation;
 
     /// <summary>
     /// MacroExpander converts the target and args of a function call that matches a Macro.

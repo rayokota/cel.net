@@ -29,15 +29,15 @@ namespace Cel
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.interpreter.EvalState.newEvalState;
 
-	using ErrException = Cel.Common.Types.Err.ErrException;
-	using Val = Cel.Common.Types.Ref.Val;
-	using Activation = Cel.Interpreter.Activation;
-	using AttributeFactory = Cel.Interpreter.AttributeFactory;
-	using Coster = Cel.Interpreter.Coster;
-	using Dispatcher = Cel.Interpreter.Dispatcher;
-	using EvalState = Cel.Interpreter.EvalState;
-	using Interpretable = Cel.Interpreter.Interpretable;
-	using InterpretableDecorator = Cel.Interpreter.InterpretableDecorator;
+	using ErrException = global::Cel.Common.Types.Err.ErrException;
+	using Val = global::Cel.Common.Types.Ref.Val;
+	using Activation = global::Cel.Interpreter.Activation;
+	using AttributeFactory = global::Cel.Interpreter.AttributeFactory;
+	using Coster = global::Cel.Interpreter.Coster;
+	using Dispatcher = global::Cel.Interpreter.Dispatcher;
+	using EvalState = global::Cel.Interpreter.EvalState;
+	using Interpretable = global::Cel.Interpreter.Interpretable;
+	using InterpretableDecorator = global::Cel.Interpreter.InterpretableDecorator;
 
 	/// <summary>
 	/// prog is the internal implementation of the Program interface. </summary>
@@ -116,7 +116,7 @@ namespace Cel
 	  // Cost implements the Coster interface method.
 	  public Interpreter.Coster_Cost Cost()
 	  {
-		return CEL.EstimateCost(interpretable);
+		return Cel.EstimateCost(interpretable);
 	  }
 	}
 

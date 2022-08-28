@@ -18,9 +18,9 @@ using System.Collections.Generic;
  */
 namespace Cel
 {
-	using CELError = Cel.Common.CelError;
-	using Errors = Cel.Common.Errors;
-	using Source = Cel.Common.Source;
+	using CELError = global::Cel.Common.CelError;
+	using Errors = global::Cel.Common.Errors;
+	using Source = global::Cel.Common.Source;
 
 	/// <summary>
 	/// Issues defines methods for inspecting the error details of parse and check calls.

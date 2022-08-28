@@ -31,12 +31,12 @@ namespace Cel.Interpreter
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.Interpreter.Interpretable.newConstValue;
 
-	using IteratorT = Cel.Common.Types.IteratorT;
-	using Overloads = Cel.Common.Types.Overloads;
-	using Util = Cel.Common.Types.Util;
-	using Type = Cel.Common.Types.Ref.Type;
-	using Val = Cel.Common.Types.Ref.Val;
-	using Lister = Cel.Common.Types.Traits.Lister;
+	using IteratorT = global::Cel.Common.Types.IteratorT;
+	using Overloads = global::Cel.Common.Types.Overloads;
+	using Util = global::Cel.Common.Types.Util;
+	using Type = global::Cel.Common.Types.Ref.Type;
+	using Val = global::Cel.Common.Types.Ref.Val;
+	using Lister = global::Cel.Common.Types.Traits.Lister;
 
 	/// <summary>
 	/// InterpretableDecorator is a functional interface for decorating or replacing Interpretable

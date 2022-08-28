@@ -22,10 +22,10 @@ namespace Cel.Common.Types
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.Common.Types.Types.boolOf;
 
-	using BaseVal = Cel.Common.Types.Ref.BaseVal;
-	using Type = Cel.Common.Types.Ref.Type;
-	using TypeAdapter = Cel.Common.Types.Ref.TypeAdapter;
-	using Val = Cel.Common.Types.Ref.Val;
+	using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
+	using Type = global::Cel.Common.Types.Ref.Type;
+	using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
+	using Val = global::Cel.Common.Types.Ref.Val;
 
 	/// <summary>
 	/// Iterator permits safe traversal over the contents of an aggregate type. </summary>

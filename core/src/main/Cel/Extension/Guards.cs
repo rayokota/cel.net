@@ -17,13 +17,13 @@
  */
 namespace Cel.extension
 {
-	using Err = Cel.common.types.Err;
-	using IntT = Cel.common.types.IntT;
-	using ListT = Cel.common.types.ListT;
-	using StringT = Cel.common.types.StringT;
-	using BinaryOp = Cel.interpreter.functions.BinaryOp;
-	using FunctionOp = Cel.interpreter.functions.FunctionOp;
-	using UnaryOp = Cel.interpreter.functions.UnaryOp;
+	using Err = global::Cel.common.types.Err;
+	using IntT = global::Cel.common.types.IntT;
+	using ListT = global::Cel.common.types.ListT;
+	using StringT = global::Cel.common.types.StringT;
+	using BinaryOp = global::Cel.interpreter.functions.BinaryOp;
+	using FunctionOp = global::Cel.interpreter.functions.FunctionOp;
+	using UnaryOp = global::Cel.interpreter.functions.UnaryOp;
 
 	/// <summary>
 	/// function invocation guards for common call signatures within extension functions. </summary>

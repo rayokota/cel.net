@@ -50,16 +50,16 @@ namespace Cel.Common.Types
 	using Any = Google.Protobuf.WellKnownTypes.Any;
 	using StringValue = Google.Protobuf.WellKnownTypes.StringValue;
 	using Value = Google.Protobuf.WellKnownTypes.Value;
-	using BaseVal = Cel.Common.Types.Ref.BaseVal;
-	using Type = Cel.Common.Types.Ref.Type;
-	using TypeEnum = Cel.Common.Types.Ref.TypeEnum;
-	using Val = Cel.Common.Types.Ref.Val;
-	using Adder = Cel.Common.Types.Traits.Adder;
-	using Comparer = Cel.Common.Types.Traits.Comparer;
-	using Matcher = Cel.Common.Types.Traits.Matcher;
-	using Receiver = Cel.Common.Types.Traits.Receiver;
-	using Sizer = Cel.Common.Types.Traits.Sizer;
-	using Trait = Cel.Common.Types.Traits.Trait;
+	using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
+	using Type = global::Cel.Common.Types.Ref.Type;
+	using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
+	using Val = global::Cel.Common.Types.Ref.Val;
+	using Adder = global::Cel.Common.Types.Traits.Adder;
+	using Comparer = global::Cel.Common.Types.Traits.Comparer;
+	using Matcher = global::Cel.Common.Types.Traits.Matcher;
+	using Receiver = global::Cel.Common.Types.Traits.Receiver;
+	using Sizer = global::Cel.Common.Types.Traits.Sizer;
+	using Trait = global::Cel.Common.Types.Traits.Trait;
 
 	/// <summary>
 	/// String type implementation which supports addition, comparison, matching, and size functions. </summary>

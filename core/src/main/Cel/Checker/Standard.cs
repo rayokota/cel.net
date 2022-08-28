@@ -22,8 +22,8 @@ namespace Cel.Checker
 
 	using Decl = Google.Api.Expr.V1Alpha1.Decl;
 	using Type = Google.Api.Expr.V1Alpha1.Type;
-	using Operator = Cel.Common.Operators.Operator;
-	using Overloads = Cel.Common.Types.Overloads;
+	using Operator = global::Cel.Common.Operators.Operator;
+	using Overloads = global::Cel.Common.Types.Overloads;
 
 	internal sealed class Standard
 	{

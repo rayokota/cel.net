@@ -17,7 +17,7 @@
  */
 namespace Cel.Parser
 {
-	using Location = Cel.Common.Location;
+	using Location = global::Cel.Common.Location;
 
 	public sealed class ParseError : Exception
 	{

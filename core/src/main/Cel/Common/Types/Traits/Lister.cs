@@ -15,8 +15,8 @@
  */
 namespace Cel.Common.Types.Traits
 {
-	using IterableT = Cel.Common.Types.IterableT;
-	using Val = Cel.Common.Types.Ref.Val;
+	using IterableT = global::Cel.Common.Types.IterableT;
+	using Val = global::Cel.Common.Types.Ref.Val;
 
 	/// <summary>
 	/// Lister interface which aggregates the traits of a list. </summary>

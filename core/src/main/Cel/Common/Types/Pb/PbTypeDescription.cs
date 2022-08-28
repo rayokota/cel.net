@@ -45,8 +45,8 @@ namespace Cel.Common.Types.Pb
 	using UInt32Value = Google.Protobuf.WellKnownTypes.UInt32Value;
 	using UInt64Value = Google.Protobuf.WellKnownTypes.UInt64Value;
 	using Value = Google.Protobuf.WellKnownTypes.Value;
-	using TimestampT = Cel.Common.Types.TimestampT;
-	using TypeDescription = Cel.Common.Types.Ref.TypeDescription;
+	using TimestampT = global::Cel.Common.Types.TimestampT;
+	using TypeDescription = global::Cel.Common.Types.Ref.TypeDescription;
 
 	/// <summary>
 	/// TypeDescription is a collection of type metadata relevant to expression checking and evaluation.

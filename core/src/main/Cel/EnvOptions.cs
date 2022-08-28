@@ -24,18 +24,18 @@ namespace Cel
 //	import static Cel.common.containers.Container.name;
 
 	using Decl = Google.Api.Expr.V1Alpha1.Decl;
-	using Container = Cel.Common.Containers.Container;
-	using TypeAdapter = Cel.Common.Types.Ref.TypeAdapter;
-	using TypeProvider = Cel.Common.Types.Ref.TypeProvider;
-	using TypeRegistry = Cel.Common.Types.Ref.TypeRegistry;
-	using Macro = Cel.Parser.Macro;
-
+	using Container = global::Cel.Common.Containers.Container;
+	using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
+	using TypeProvider = global::Cel.Common.Types.Ref.TypeProvider;
+	using TypeRegistry = global::Cel.Common.Types.Ref.TypeRegistry;
+	using Macro = global::Cel.Parser.Macro;
+	
 	/// <summary>
 	/// EnvOption is a functional interface for configuring the environment. </summary>
-	public interface EnvOption
+	public delegate Env EnvOption(Env e);
+	
+	public class EnvOptions
 	{
-	  Env Apply(Env e);
-
 	  // These constants beginning with "Feature" enable optional behavior in
 	  // the library.  See the documentation for each constant to see its
 	  // effects, compatibility restrictions, and standard conformance.
@@ -47,11 +47,11 @@ namespace Cel
 	  /// comprehensions such as `all` and `exists` are enabled only via macros.
 	  /// </para>
 	  /// </summary>
-	  static EnvOption ClearMacros()
+	  public static EnvOption ClearMacros()
 	  {
 		return e =>
 		{
-		  e.macros.clear();
+		  e.macros.Clear();
 		  return e;
 		};
 	  }
@@ -63,7 +63,7 @@ namespace Cel
 	  /// together.
 	  /// </para>
 	  /// </summary>
-	  static EnvOption CustomTypeAdapter(TypeAdapter adapter)
+	  public static EnvOption CustomTypeAdapter(TypeAdapter adapter)
 	  {
 		return e =>
 		{
@@ -79,7 +79,7 @@ namespace Cel
 	  /// together.
 	  /// </para>
 	  /// </summary>
-	  static EnvOption CustomTypeProvider(TypeProvider provider)
+	  public static EnvOption CustomTypeProvider(TypeProvider provider)
 	  {
 		return e =>
 		{
@@ -96,31 +96,31 @@ namespace Cel
 	  /// For a purely custom set of declarations use NewCustomEnv.
 	  /// </para>
 	  /// </summary>
-	  static EnvOption Declarations(IList<Decl> decls)
+	  public static EnvOption Declarations(IList<Decl> decls)
 	  {
 		// TODO: provide an alternative means of specifying declarations that doesn't refer
 		//  to the underlying proto implementations.
 		return e =>
 		{
-		  e.declarations.addAll(decls);
+		  ((List<Decl>)e.declarations).AddRange(decls);
 		  return e;
 		};
 	  }
 
-	  static EnvOption Declarations(params Decl[] decls)
+	  public static EnvOption Declarations(params Decl[] decls)
 	  {
-		return declarations(asList(decls));
+		return Declarations(decls.ToArray());
 	  }
 
 	  /// <summary>
 	  /// Features sets the given feature flags. See list of Feature constants above. </summary>
-	  static EnvOption Features(params EnvOption_EnvFeature[] flags)
+	  public static EnvOption Features(params EnvOption_EnvFeature[] flags)
 	  {
 		return e =>
 		{
-		  for (EnvOption_EnvFeature flag : flags)
+		  foreach (EnvOption_EnvFeature flag in flags)
 		  {
-			e.setFeature(flag);
+			  e.Feature = flag;
 		  }
 		  return e;
 		};
@@ -135,14 +135,14 @@ namespace Cel
 	  /// expressions.
 	  /// </para>
 	  /// </summary>
-	  static EnvOption HomogeneousAggregateLiterals()
+	  public static EnvOption HomogeneousAggregateLiterals()
 	  {
-		return features(FeatureDisableDynamicAggregateLiterals);
+		return Features(EnvOption_EnvFeature.FeatureDisableDynamicAggregateLiterals);
 	  }
 
-	  static EnvOption Macros(params Macro[] macros)
+	  public static EnvOption Macros(params Macro[] macros)
 	  {
-		return macros(asList(macros));
+		return Macros(new List<Macro>(macros));
 	  }
 
 	  /// <summary>
@@ -151,11 +151,11 @@ namespace Cel
 	  /// <para>Note: This option must be specified after ClearMacros if used together.
 	  /// </para>
 	  /// </summary>
-	  static EnvOption Macros(IList<Macro> macros)
+	  public static EnvOption Macros(IList<Macro> macros)
 	  {
 		return e =>
 		{
-		  e.macros.addAll(macros);
+		  ((List<Macro>)e.macros).AddRange(macros);
 		  return e;
 		};
 	  }
@@ -168,11 +168,11 @@ namespace Cel
 	  /// `Expr{expression: 'a &lt; b'}` instead of having to write `google.type.Expr{...}`.
 	  /// </para>
 	  /// </summary>
-	  static EnvOption Container(string name)
+	  public static EnvOption Container(string name)
 	  {
 		return e =>
 		{
-		  e.container = e.container.extend(name(name));
+		  e.container = e.container.Extend(global::Cel.Common.Containers.Container.Name(name));
 		  return e;
 		};
 	  }
@@ -233,11 +233,11 @@ namespace Cel
 	  /// preserved between compilations even as the container evolves.
 	  /// </para>
 	  /// </summary>
-	  static EnvOption Abbrevs(params string[] qualifiedNames)
+	  public static EnvOption Abbrevs(params string[] qualifiedNames)
 	  {
 		return e =>
 		{
-		  e.container = e.container.extend(Container.abbrevs(qualifiedNames));
+		  e.container = e.container.Extend(global::Cel.Common.Containers.Container.Abbrevs(qualifiedNames));
 		  return e;
 		};
 	  }
@@ -257,26 +257,26 @@ namespace Cel
 	  /// <para>Note: This option must be specified after the CustomTypeProvider option when used together.
 	  /// </para>
 	  /// </summary>
-	  static EnvOption Types(IList<object> addTypes)
+	  public static EnvOption Types(IList<object> addTypes)
 	  {
 		return e =>
 		{
-		  if (!(e.provider instanceof TypeRegistry))
+		  if (!(e.provider is TypeRegistry))
 		  {
-			throw new Exception(String.format("custom types not supported by provider: %s", e.provider.getClass().getName()));
+			throw new Exception(string.Format("custom types not supported by provider: %s", e.provider.GetType().ToString()));
 		  }
 		  TypeRegistry reg = (TypeRegistry) e.provider;
-		  for (object t : addTypes)
+		  foreach (object t in addTypes)
 		  {
-			reg.register(t);
+			reg.Register(t);
 		  }
 		  return e;
 		};
 	  }
 
-	  static EnvOption Types(params object[] addTypes)
+	  public static EnvOption Types(params object[] addTypes)
 	  {
-		return types(asList(addTypes));
+		return Types(new List<object>(addTypes));
 	  }
 
 	  //  /**

@@ -44,23 +44,23 @@ namespace Cel.Interpreter
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.Interpreter.Coster.costOf;
 
-	using Operator = Cel.Common.Operators.Operator;
-	using IterableT = Cel.Common.Types.IterableT;
-	using IteratorT = Cel.Common.Types.IteratorT;
-	using Overloads = Cel.Common.Types.Overloads;
-	using StringT = Cel.Common.Types.StringT;
-	using FieldType = Cel.Common.Types.Ref.FieldType;
-	using TypeAdapter = Cel.Common.Types.Ref.TypeAdapter;
-	using TypeProvider = Cel.Common.Types.Ref.TypeProvider;
-	using Val = Cel.Common.Types.Ref.Val;
-	using Container = Cel.Common.Types.Traits.Container;
-	using FieldTester = Cel.Common.Types.Traits.FieldTester;
-	using Negater = Cel.Common.Types.Traits.Negater;
-	using Receiver = Cel.Common.Types.Traits.Receiver;
-	using Trait = Cel.Common.Types.Traits.Trait;
-	using BinaryOp = Cel.Interpreter.Functions.BinaryOp;
-	using FunctionOp = Cel.Interpreter.Functions.FunctionOp;
-	using UnaryOp = Cel.Interpreter.Functions.UnaryOp;
+	using Operator = global::Cel.Common.Operators.Operator;
+	using IterableT = global::Cel.Common.Types.IterableT;
+	using IteratorT = global::Cel.Common.Types.IteratorT;
+	using Overloads = global::Cel.Common.Types.Overloads;
+	using StringT = global::Cel.Common.Types.StringT;
+	using FieldType = global::Cel.Common.Types.Ref.FieldType;
+	using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
+	using TypeProvider = global::Cel.Common.Types.Ref.TypeProvider;
+	using Val = global::Cel.Common.Types.Ref.Val;
+	using Container = global::Cel.Common.Types.Traits.Container;
+	using FieldTester = global::Cel.Common.Types.Traits.FieldTester;
+	using Negater = global::Cel.Common.Types.Traits.Negater;
+	using Receiver = global::Cel.Common.Types.Traits.Receiver;
+	using Trait = global::Cel.Common.Types.Traits.Trait;
+	using BinaryOp = global::Cel.Interpreter.Functions.BinaryOp;
+	using FunctionOp = global::Cel.Interpreter.Functions.FunctionOp;
+	using UnaryOp = global::Cel.Interpreter.Functions.UnaryOp;
 
 	/// <summary>
 	/// Interpretable can accept a given Activation and produce a value along with an accompanying
@@ -260,7 +260,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public Val Eval(Cel.Interpreter.Activation ctx)
+	public Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  // Handle field selection on a proto in the most efficient way possible.
 	  if (fieldType != null)
@@ -362,7 +362,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation activation)
+	public override Val Eval(global::Cel.Interpreter.Activation activation)
 	{
 	  return val;
 	}
@@ -396,7 +396,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation ctx)
+	public override Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  // short-circuit lhs.
 	  Val lVal = lhs.Eval(ctx);
@@ -457,7 +457,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation ctx)
+	public override Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  // short-circuit lhs.
 	  Val lVal = lhs.Eval(ctx);
@@ -517,7 +517,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation ctx)
+	public override Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  Val lVal = lhs.Eval(ctx);
 	  Val rVal = rhs.Eval(ctx);
@@ -566,16 +566,16 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation ctx)
+	public override Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  Val lVal = lhs.Eval(ctx);
 	  Val rVal = rhs.Eval(ctx);
 	  Val eqVal = lVal.Equal(rVal);
 	  switch (eqVal.Type().TypeEnum().InnerEnumValue)
 	  {
-		case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Err:
+		case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Err:
 		  return eqVal;
-		case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Bool:
+		case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Bool:
 		  return ((Negater) eqVal).Negate();
 	  }
 	  return Err.NoSuchOverload(lVal, Operator.NotEquals.id, rVal);
@@ -630,7 +630,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation activation)
+	public override Val Eval(global::Cel.Interpreter.Activation activation)
 	{
 	  return impl();
 	}
@@ -688,7 +688,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation ctx)
+	public override Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  Val argVal = arg.Eval(ctx);
 	  // Early return if the argument to the function is unknown or error.
@@ -763,7 +763,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation ctx)
+	public override Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  Val lVal = lhs.Eval(ctx);
 	  Val rVal = rhs.Eval(ctx);
@@ -844,7 +844,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation ctx)
+	public override Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  Val[] argVals = new Val[args.Length];
 	  // Early return if any argument to the function is unknown or error.
@@ -925,7 +925,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation ctx)
+	public override Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  Val[] elemVals = new Val[elems.Length];
 	  // If any argument is unknown or error early terminate.
@@ -971,7 +971,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation ctx)
+	public override Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  IDictionary<Val, Val> entries = new Dictionary<Val, Val>();
 	  // If any argument is unknown or error early terminate.
@@ -1027,7 +1027,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation ctx)
+	public override Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  IDictionary<string, Val> fieldVals = new Dictionary<string, Val>();
 	  // If any argument is unknown or error early terminate.
@@ -1082,7 +1082,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation ctx)
+	public override Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  Val foldRange = iterRange.Eval(ctx);
 	  if (!foldRange.Type().HasTrait(Trait.IterableType))
@@ -1173,7 +1173,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation ctx)
+	public override Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  Val val = arg.Eval(ctx);
 	  if (!val.Type().TypeName().Equals(argTypeName))
@@ -1214,7 +1214,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public Val Eval(Cel.Interpreter.Activation ctx)
+	public Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  Val val = i.Eval(ctx);
 	  observer(Id(), val);
@@ -1303,7 +1303,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public Val Eval(Cel.Interpreter.Activation ctx)
+	public Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  Val val = attr.Eval(ctx);
 	  observer(Id(), val);
@@ -1316,7 +1316,7 @@ namespace Cel.Interpreter
 	}
 	  }
 
-	  public abstract class Interpretable_AbstractEvalWatch<T> : Interpretable_AbstractEval, Coster, AttributeFactory_Qualifier where T : Cel.Interpreter.AttributeFactory_Qualifier
+	  public abstract class Interpretable_AbstractEvalWatch<T> : Interpretable_AbstractEval, Coster, AttributeFactory_Qualifier where T : global::Cel.Interpreter.AttributeFactory_Qualifier
 	  {
 		  public override abstract Val Eval(Activation activation);
 	protected internal readonly T @delegate;
@@ -1332,7 +1332,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Qualify observes the qualification of a object via a value computed at runtime. </summary>
-	public virtual object Qualify(Cel.Interpreter.Activation vars, object obj)
+	public virtual object Qualify(global::Cel.Interpreter.Activation vars, object obj)
 	{
 	  object @out = @delegate.Qualify(vars, obj);
 	  Val val;
@@ -1441,7 +1441,7 @@ namespace Cel.Interpreter
 	  return c.Id();
 	}
 
-	public Val Eval(Cel.Interpreter.Activation activation)
+	public Val Eval(global::Cel.Interpreter.Activation activation)
 	{
 	  Val val = Value();
 	  observer(Id(), val);
@@ -1475,7 +1475,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation ctx)
+	public override Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  Val lVal = lhs.Eval(ctx);
 	  Val rVal = rhs.Eval(ctx);
@@ -1526,7 +1526,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation ctx)
+	public override Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  Val lVal = lhs.Eval(ctx);
 	  Val rVal = rhs.Eval(ctx);
@@ -1580,7 +1580,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation ctx)
+	public override Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  Val cVal = attr.expr.Eval(ctx);
 	  object tVal = attr.truthy.Resolve(ctx);
@@ -1636,7 +1636,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation ctx)
+	public override Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  Val foldRange = iterRange.Eval(ctx);
 	  if (!foldRange.Type().HasTrait(Trait.IterableType))
@@ -1748,7 +1748,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation ctx)
+	public override Val Eval(global::Cel.Interpreter.Activation ctx)
 	{
 	  try
 	  {
@@ -1767,14 +1767,14 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Qualify proxies to the Attribute's Qualify method. </summary>
-	public object Qualify(Cel.Interpreter.Activation ctx, object obj)
+	public object Qualify(global::Cel.Interpreter.Activation ctx, object obj)
 	{
 	  return attr.Qualify(ctx, obj);
 	}
 
 	/// <summary>
 	/// Resolve proxies to the Attribute's Resolve method. </summary>
-	public object Resolve(Cel.Interpreter.Activation ctx)
+	public object Resolve(global::Cel.Interpreter.Activation ctx)
 	{
 	  return attr.Resolve(ctx);
 	}

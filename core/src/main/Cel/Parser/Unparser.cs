@@ -29,8 +29,8 @@ namespace Cel.Parser
 	using Ident = Google.Api.Expr.V1Alpha1.Expr.Types.Ident;
 	using Select = Google.Api.Expr.V1Alpha1.Expr.Types.Select;
 	using SourceInfo = Google.Api.Expr.V1Alpha1.SourceInfo;
-	using Debug = Cel.Common.Debug.Debug;
-	using Operator = Cel.Common.Operators.Operator;
+	using Debug = global::Cel.Common.Debug.Debug;
+	using Operator = global::Cel.Common.Operators.Operator;
 
 	/// <summary>
 	/// Unparse takes an input expression and source position information and generates a human-readable

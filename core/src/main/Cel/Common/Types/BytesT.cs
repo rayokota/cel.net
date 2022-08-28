@@ -37,16 +37,16 @@ namespace Cel.Common.Types
 	using ByteString = Google.Protobuf.ByteString;
 	using BytesValue = Google.Protobuf.WellKnownTypes.BytesValue;
 	using Value = Google.Protobuf.WellKnownTypes.Value;
-	using Debug = Cel.Common.Debug.Debug;
-	using BaseVal = Cel.Common.Types.Ref.BaseVal;
-	using Type = Cel.Common.Types.Ref.Type;
-	using TypeEnum = Cel.Common.Types.Ref.TypeEnum;
-	using Val = Cel.Common.Types.Ref.Val;
-	using Adder = Cel.Common.Types.Traits.Adder;
-	using Comparer = Cel.Common.Types.Traits.Comparer;
-	using Sizer = Cel.Common.Types.Traits.Sizer;
-	using Trait = Cel.Common.Types.Traits.Trait;
-	using Unescape = Cel.Parser.Unescape;
+	using Debug = global::Cel.Common.Debug.Debug;
+	using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
+	using Type = global::Cel.Common.Types.Ref.Type;
+	using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
+	using Val = global::Cel.Common.Types.Ref.Val;
+	using Adder = global::Cel.Common.Types.Traits.Adder;
+	using Comparer = global::Cel.Common.Types.Traits.Comparer;
+	using Sizer = global::Cel.Common.Types.Traits.Sizer;
+	using Trait = global::Cel.Common.Types.Traits.Trait;
+	using Unescape = global::Cel.Parser.Unescape;
 
 	/// <summary>
 	/// Bytes type that implements ref.Val and supports add, compare, and size operations. </summary>

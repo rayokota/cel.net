@@ -15,7 +15,7 @@
  */
 namespace Cel.Common.Types.Traits
 {
-	using Val = Cel.Common.Types.Ref.Val;
+	using Val = global::Cel.Common.Types.Ref.Val;
 
 	/// <summary>
 	/// Indexer permits random access of elements by index 'a[b()]'. </summary>

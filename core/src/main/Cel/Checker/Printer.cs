@@ -24,8 +24,8 @@ namespace Cel.Checker
 	using Expr = Google.Api.Expr.V1Alpha1.Expr;
 	using Reference = Google.Api.Expr.V1Alpha1.Reference;
 	using Type = Google.Api.Expr.V1Alpha1.Type;
-	using Debug = Cel.Common.Debug.Debug;
-	using Adorner = Cel.Common.Debug.Debug.Adorner;
+	using Debug = global::Cel.Common.Debug.Debug;
+	using Adorner = global::Cel.Common.Debug.Debug.Adorner;
 
 	public sealed class Printer
 	{

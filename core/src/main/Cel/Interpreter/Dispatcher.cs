@@ -17,7 +17,7 @@
  */
 namespace Cel.Interpreter
 {
-	using Overload = Cel.Interpreter.Functions.Overload;
+	using Overload = global::Cel.Interpreter.Functions.Overload;
 
 	/// <summary>
 	/// Dispatcher resolves function calls to their appropriate overload. </summary>

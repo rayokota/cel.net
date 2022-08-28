@@ -21,8 +21,8 @@ namespace Cel
 	using Reference = Google.Api.Expr.V1Alpha1.Reference;
 	using SourceInfo = Google.Api.Expr.V1Alpha1.SourceInfo;
 	using Type = Google.Api.Expr.V1Alpha1.Type;
-	using Decls = Cel.Checker.Decls;
-	using Source = Cel.Common.Source;
+	using Decls = global::Cel.Checker.Decls;
+	using Source = global::Cel.Common.Source;
 
 	/// <summary>
 	/// Ast representing the checked or unchecked expression, its source, and related metadata such as

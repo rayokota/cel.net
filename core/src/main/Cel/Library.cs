@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using Cel.Interpreter.Functions;
+using Cel.Parser;
 
 /*
  * Copyright (C) 2021 The Authors of CEL-Java
@@ -61,15 +63,15 @@ namespace Cel
 	  {
 		return e =>
 		{
-		  for (EnvOption opt : l.getCompileOptions())
+		  foreach (EnvOption opt in l.CompileOptions)
 		  {
-			e = opt.apply(e);
+			e = opt(e);
 			if (e == null)
 			{
-			  throw new System.NullReferenceException(String.format("env option of type '%s' returned null", opt.getClass().getName()));
+			  throw new System.NullReferenceException(string.Format("env option of type '%s' returned null", opt.GetType().ToString()));
 			}
 		  }
-		  e.addProgOpts(l.getProgramOptions());
+		  e.AddProgOpts(l.ProgramOptions);
 		  return e;
 		};
 	  }
@@ -96,7 +98,7 @@ namespace Cel
 	{
 		get
 		{
-		  return new List<EnvOption> {declarations(StandardDeclarations), macros(AllMacros)};
+		  return new List<EnvOption> {EnvOptions.Declarations(global::Cel.Checker.Checker.StandardDeclarations), EnvOptions.Macros(Macro.AllMacros)};
 		}
 	}
 
@@ -106,7 +108,7 @@ namespace Cel
 	{
 		get
 		{
-		  return singletonList(functions(standardOverloads()));
+		  return new List<ProgramOption>{global::Cel.ProgramOptions.Functions(Overload.StandardOverloads())};
 		}
 	}
 	  }

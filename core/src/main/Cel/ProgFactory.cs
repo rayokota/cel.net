@@ -15,10 +15,10 @@
  */
 namespace Cel
 {
-	using EvalState = Cel.Interpreter.EvalState;
+	using EvalState = global::Cel.Interpreter.EvalState;
 
 	/// <summary>
 	/// progFactory is a helper alias for marking a program creation factory function. </summary>
-	internal delegate Cel.Program ProgFactory(EvalState evalState);
+	internal delegate global::Cel.Program ProgFactory(EvalState evalState);
 
 }

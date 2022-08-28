@@ -28,10 +28,10 @@ namespace Cel.Interpreter
 //	import static Cel.Interpreter.AttributeFactory.newAttributeFactory;
 
     using Type = Google.Api.Expr.V1Alpha1.Type;
-    using Container = Cel.Common.Containers.Container;
-    using TypeAdapter = Cel.Common.Types.Ref.TypeAdapter;
-    using TypeProvider = Cel.Common.Types.Ref.TypeProvider;
-    using UnknownT = Cel.Common.Types.UnknownT;
+    using Container = global::Cel.Common.Containers.Container;
+    using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
+    using TypeProvider = global::Cel.Common.Types.Ref.TypeProvider;
+    using UnknownT = global::Cel.Common.Types.UnknownT;
 
     /// <summary>
     /// AttributePattern represents a top-level variable with an optional set of qualifier patterns.
@@ -462,7 +462,7 @@ namespace Cel.Interpreter
             /// attributeMatcher TryResolve implementation rather than the embedded NamespacedAttribute
             /// Resolve implementation.
             /// </summary>
-            public object Resolve(Cel.Interpreter.Activation vars)
+            public object Resolve(global::Cel.Interpreter.Activation vars)
             {
                 object obj = TryResolve(vars);
                 if (obj == null)
@@ -478,7 +478,7 @@ namespace Cel.Interpreter
             /// matching unknown attribute patterns and returns types.Unknown if present. Otherwise, the
             /// standard Resolve logic applies.
             /// </summary>
-            public object TryResolve(Cel.Interpreter.Activation vars)
+            public object TryResolve(global::Cel.Interpreter.Activation vars)
             {
                 long id = attr.Id();
                 if (vars is Activation_PartialActivation)
@@ -496,7 +496,7 @@ namespace Cel.Interpreter
 
             /// <summary>
             /// Qualify is an implementation of the Qualifier interface method. </summary>
-            public object Qualify(Cel.Interpreter.Activation vars, object obj)
+            public object Qualify(global::Cel.Interpreter.Activation vars, object obj)
             {
                 object val = Resolve(vars);
                 if (UnknownT.IsUnknown(val))

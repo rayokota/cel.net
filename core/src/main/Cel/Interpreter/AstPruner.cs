@@ -41,12 +41,12 @@ namespace Cel.Interpreter
 	using Select = Google.Api.Expr.V1Alpha1.Expr.Types.Select;
 	using ByteString = Google.Protobuf.ByteString;
 	using NullValue = Google.Protobuf.WellKnownTypes.NullValue;
-	using Operator = Cel.Common.Operators.Operator;
-	using IteratorT = Cel.Common.Types.IteratorT;
-	using Type = Cel.Common.Types.Ref.Type;
-	using Val = Cel.Common.Types.Ref.Val;
-	using Lister = Cel.Common.Types.Traits.Lister;
-	using Mapper = Cel.Common.Types.Traits.Mapper;
+	using Operator = global::Cel.Common.Operators.Operator;
+	using IteratorT = global::Cel.Common.Types.IteratorT;
+	using Type = global::Cel.Common.Types.Ref.Type;
+	using Val = global::Cel.Common.Types.Ref.Val;
+	using Lister = global::Cel.Common.Types.Traits.Lister;
+	using Mapper = global::Cel.Common.Types.Traits.Mapper;
 
 	/// <summary>
 	/// PruneAst prunes the given AST based on the given EvalState and generates a new AST. Given AST is
@@ -118,25 +118,25 @@ namespace Cel.Interpreter
 		Type t = v.Type();
 		switch (t.TypeEnum().InnerEnumValue)
 		{
-		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Bool:
+		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Bool:
 			  constant.BoolValue = (bool) v.Value();
 			  return CreateLiteral(id, constant);
-		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Int:
+		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Int:
 			  constant.Int64Value = (long) v.Value();
 			  return CreateLiteral(id, constant);
-		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Uint:
+		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Uint:
 			  constant.Uint64Value = (ulong) v.Value();
 			  return CreateLiteral(id, constant);
-		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.String:
+		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.String:
 			  constant.StringValue = v.Value().ToString();
 			  return CreateLiteral(id, constant);
-		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Double:
+		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Double:
 			  constant.DoubleValue = (double) v.Value();
 			  return CreateLiteral(id, constant);
-		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Bytes:
+		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Bytes:
 			  constant.BytesValue = ByteString.CopyFrom((byte[]) v.Value());
 			  return CreateLiteral(id, constant);
-		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Null:
+		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Null:
 			  constant.NullValue = NullValue.NullValue;
 			  return CreateLiteral(id, constant);
 		}

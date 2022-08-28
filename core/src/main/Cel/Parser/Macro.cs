@@ -19,9 +19,9 @@ namespace Cel.Parser
 {
     using Expr = Google.Api.Expr.V1Alpha1.Expr;
     using Select = Google.Api.Expr.V1Alpha1.Expr.Types.Select;
-    using ErrorWithLocation = Cel.Common.ErrorWithLocation;
-    using Location = Cel.Common.Location;
-    using Operator = Cel.Common.Operators.Operator;
+    using ErrorWithLocation = global::Cel.Common.ErrorWithLocation;
+    using Location = global::Cel.Common.Location;
+    using Operator = global::Cel.Common.Operators.Operator;
 
     public sealed class Macro
     {

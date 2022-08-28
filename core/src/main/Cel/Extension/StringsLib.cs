@@ -19,12 +19,12 @@ using System.Text;
  */
 namespace Cel.extension
 {
-	using EnvOption = Cel.EnvOption;
-	using Library = Cel.Library;
-	using ProgramOption = Cel.ProgramOption;
-	using Decls = Cel.checker.Decls;
-	using Err = Cel.common.types.Err;
-	using Overload = Cel.interpreter.functions.Overload;
+	using EnvOption = global::Cel.EnvOption;
+	using Library = global::Cel.Library;
+	using ProgramOption = global::Cel.ProgramOption;
+	using Decls = global::Cel.checker.Decls;
+	using Err = global::Cel.common.types.Err;
+	using Overload = global::Cel.interpreter.functions.Overload;
 
 	/// <summary>
 	/// StringsLib provides a <seealso cref="Cel.EnvOption"/> to configure extended functions for

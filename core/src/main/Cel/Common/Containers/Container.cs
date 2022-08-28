@@ -34,7 +34,7 @@ namespace Cel.Common.Containers
 
 		/// <summary>
 		/// DefaultContainer has an empty container name. </summary>
-		public static readonly Container defaultContainer = new Container("", new Dictionary<string, string>());
+		public static readonly Container DefaultContainer = new Container("", new Dictionary<string, string>());
 
 	  private readonly string name;
 	  private readonly IDictionary<string, string> aliases;
@@ -43,7 +43,7 @@ namespace Cel.Common.Containers
 	  /// NewContainer creates a new Container with the fully-qualified name. </summary>
 	  public static Container NewContainer(params ContainerOption[] opts)
 	  {
-		Container c = defaultContainer;
+		Container c = DefaultContainer;
 		foreach (ContainerOption opt in opts)
 		{
 		  c = opt(c);

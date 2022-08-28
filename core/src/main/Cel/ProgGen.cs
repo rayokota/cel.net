@@ -22,8 +22,8 @@ namespace Cel
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.interpreter.EvalState.newEvalState;
 
-	using Coster = Cel.Interpreter.Coster;
-	using EvalState = Cel.Interpreter.EvalState;
+	using Coster = global::Cel.Interpreter.Coster;
+	using EvalState = global::Cel.Interpreter.EvalState;
 
 	internal sealed class ProgGen : Program, Coster
 	{
@@ -58,7 +58,7 @@ namespace Cel
 	  {
 		// Use an empty state value since no evaluation is performed.
 		Program p = factory(Prog.EmptyEvalState);
-		return CEL.EstimateCost(p);
+		return Cel.EstimateCost(p);
 	  }
 	}
 

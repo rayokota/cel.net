@@ -29,13 +29,13 @@ namespace Cel.Common.Types
 	using Any = Google.Protobuf.WellKnownTypes.Any;
 	using BoolValue = Google.Protobuf.WellKnownTypes.BoolValue;
 	using Value = Google.Protobuf.WellKnownTypes.Value;
-	using BaseVal = Cel.Common.Types.Ref.BaseVal;
-	using Type = Cel.Common.Types.Ref.Type;
-	using TypeEnum = Cel.Common.Types.Ref.TypeEnum;
-	using Val = Cel.Common.Types.Ref.Val;
-	using Comparer = Cel.Common.Types.Traits.Comparer;
-	using Negater = Cel.Common.Types.Traits.Negater;
-	using Trait = Cel.Common.Types.Traits.Trait;
+	using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
+	using Type = global::Cel.Common.Types.Ref.Type;
+	using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
+	using Val = global::Cel.Common.Types.Ref.Val;
+	using Comparer = global::Cel.Common.Types.Traits.Comparer;
+	using Negater = global::Cel.Common.Types.Traits.Negater;
+	using Trait = global::Cel.Common.Types.Traits.Trait;
 
 	/// <summary>
 	/// Bool type that implements ref.Val and supports comparison and negation. </summary>

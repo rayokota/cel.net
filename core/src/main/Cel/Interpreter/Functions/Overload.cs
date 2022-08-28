@@ -50,24 +50,24 @@ namespace Cel.Interpreter.Functions
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.Common.Types.UintT.UintType;
 
-    using Operator = Cel.Common.Operators.Operator;
-    using IterableT = Cel.Common.Types.IterableT;
-    using IteratorT = Cel.Common.Types.IteratorT;
-    using Overloads = Cel.Common.Types.Overloads;
-    using TypeEnum = Cel.Common.Types.Ref.TypeEnum;
-    using Val = Cel.Common.Types.Ref.Val;
-    using Adder = Cel.Common.Types.Traits.Adder;
-    using Comparer = Cel.Common.Types.Traits.Comparer;
-    using Container = Cel.Common.Types.Traits.Container;
-    using Divider = Cel.Common.Types.Traits.Divider;
-    using Indexer = Cel.Common.Types.Traits.Indexer;
-    using Matcher = Cel.Common.Types.Traits.Matcher;
-    using Modder = Cel.Common.Types.Traits.Modder;
-    using Multiplier = Cel.Common.Types.Traits.Multiplier;
-    using Negater = Cel.Common.Types.Traits.Negater;
-    using Sizer = Cel.Common.Types.Traits.Sizer;
-    using Subtractor = Cel.Common.Types.Traits.Subtractor;
-    using Trait = Cel.Common.Types.Traits.Trait;
+    using Operator = global::Cel.Common.Operators.Operator;
+    using IterableT = global::Cel.Common.Types.IterableT;
+    using IteratorT = global::Cel.Common.Types.IteratorT;
+    using Overloads = global::Cel.Common.Types.Overloads;
+    using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
+    using Val = global::Cel.Common.Types.Ref.Val;
+    using Adder = global::Cel.Common.Types.Traits.Adder;
+    using Comparer = global::Cel.Common.Types.Traits.Comparer;
+    using Container = global::Cel.Common.Types.Traits.Container;
+    using Divider = global::Cel.Common.Types.Traits.Divider;
+    using Indexer = global::Cel.Common.Types.Traits.Indexer;
+    using Matcher = global::Cel.Common.Types.Traits.Matcher;
+    using Modder = global::Cel.Common.Types.Traits.Modder;
+    using Multiplier = global::Cel.Common.Types.Traits.Multiplier;
+    using Negater = global::Cel.Common.Types.Traits.Negater;
+    using Sizer = global::Cel.Common.Types.Traits.Sizer;
+    using Subtractor = global::Cel.Common.Types.Traits.Subtractor;
+    using Trait = global::Cel.Common.Types.Traits.Trait;
 
     /// <summary>
     /// Overload defines a named overload of a function, indicating an operand trait which must be
@@ -202,7 +202,7 @@ namespace Cel.Interpreter.Functions
             {
                 Unary(Operator.LogicalNot, Trait.NegatorType, v =>
                 {
-                    if (v.Type().TypeEnum() == Cel.Common.Types.Ref.TypeEnum.Bool)
+                    if (v.Type().TypeEnum() == global::Cel.Common.Types.Ref.TypeEnum.Bool)
                     {
                         return ((Negater)v).Negate();
                     }
@@ -213,7 +213,7 @@ namespace Cel.Interpreter.Functions
                 Unary(Operator.OldNotStrictlyFalse, Overload.NotStrictlyFalse), Binary(Operator.Less,
                     Trait.ComparerType, (lhs, rhs) =>
                     {
-                        Cel.Common.Types.Ref.Val cmp = ((Comparer)lhs).Compare(rhs);
+                        global::Cel.Common.Types.Ref.Val cmp = ((Comparer)lhs).Compare(rhs);
                         if (cmp == IntT.IntNegOne)
                         {
                             return BoolT.True;
@@ -228,7 +228,7 @@ namespace Cel.Interpreter.Functions
                     }),
                 Binary(Operator.LessEquals, Trait.ComparerType, (lhs, rhs) =>
                 {
-                    Cel.Common.Types.Ref.Val cmp = ((Comparer)lhs).Compare(rhs);
+                    global::Cel.Common.Types.Ref.Val cmp = ((Comparer)lhs).Compare(rhs);
                     if (cmp == IntT.IntNegOne || cmp == IntT.IntZero)
                     {
                         return BoolT.True;
@@ -243,7 +243,7 @@ namespace Cel.Interpreter.Functions
                 }),
                 Binary(Operator.Greater, Trait.ComparerType, (lhs, rhs) =>
                 {
-                    Cel.Common.Types.Ref.Val cmp = ((Comparer)lhs).Compare(rhs);
+                    global::Cel.Common.Types.Ref.Val cmp = ((Comparer)lhs).Compare(rhs);
                     if (cmp == IntT.IntOne)
                     {
                         return BoolT.True;
@@ -258,7 +258,7 @@ namespace Cel.Interpreter.Functions
                 }),
                 Binary(Operator.GreaterEquals, Trait.ComparerType, (lhs, rhs) =>
                 {
-                    Cel.Common.Types.Ref.Val cmp = ((Comparer)lhs).Compare(rhs);
+                    global::Cel.Common.Types.Ref.Val cmp = ((Comparer)lhs).Compare(rhs);
                     if (cmp == IntT.IntOne || cmp == IntT.IntZero)
                     {
                         return BoolT.True;
@@ -278,7 +278,7 @@ namespace Cel.Interpreter.Functions
                 Binary(Operator.Modulo, Trait.ModderType, (lhs, rhs) => ((Modder)lhs).Modulo(rhs)), Unary(
                     Operator.Negate, Trait.NegatorType, v =>
                     {
-                        if (v.Type().TypeEnum() != Cel.Common.Types.Ref.TypeEnum.Bool)
+                        if (v.Type().TypeEnum() != global::Cel.Common.Types.Ref.TypeEnum.Bool)
                         {
                             return ((Negater)v).Negate();
                         }

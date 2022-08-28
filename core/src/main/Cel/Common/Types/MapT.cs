@@ -38,17 +38,17 @@ namespace Cel.Common.Types
 	using Any = Google.Protobuf.WellKnownTypes.Any;
 	using Struct = Google.Protobuf.WellKnownTypes.Struct;
 	using Value = Google.Protobuf.WellKnownTypes.Value;
-	using Operator = Cel.Common.Operators.Operator;
-	using BaseVal = Cel.Common.Types.Ref.BaseVal;
-	using Type = Cel.Common.Types.Ref.Type;
-	using TypeAdapter = Cel.Common.Types.Ref.TypeAdapter;
-	using TypeEnum = Cel.Common.Types.Ref.TypeEnum;
-	using Val = Cel.Common.Types.Ref.Val;
-	using Container = Cel.Common.Types.Traits.Container;
-	using Indexer = Cel.Common.Types.Traits.Indexer;
-	using Mapper = Cel.Common.Types.Traits.Mapper;
-	using Sizer = Cel.Common.Types.Traits.Sizer;
-	using Trait = Cel.Common.Types.Traits.Trait;
+	using Operator = global::Cel.Common.Operators.Operator;
+	using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
+	using Type = global::Cel.Common.Types.Ref.Type;
+	using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
+	using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
+	using Val = global::Cel.Common.Types.Ref.Val;
+	using Container = global::Cel.Common.Types.Traits.Container;
+	using Indexer = global::Cel.Common.Types.Traits.Indexer;
+	using Mapper = global::Cel.Common.Types.Traits.Mapper;
+	using Sizer = global::Cel.Common.Types.Traits.Sizer;
+	using Trait = global::Cel.Common.Types.Traits.Trait;
 
 	public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Sizer
 	{

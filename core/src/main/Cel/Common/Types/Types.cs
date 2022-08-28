@@ -36,7 +36,7 @@ namespace Cel.Common.Types
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.Common.Types.UintT.UintType;
 
-	using Type = Cel.Common.Types.Ref.Type;
+	using Type = global::Cel.Common.Types.Ref.Type;
 
 	public sealed class Types
 	{

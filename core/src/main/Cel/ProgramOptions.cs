@@ -21,35 +21,35 @@ namespace Cel
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.interpreter.Activation.newActivation;
 
-	using InterpretableDecorator = Cel.Interpreter.InterpretableDecorator;
-	using Overload = Cel.Interpreter.Functions.Overload;
+	using InterpretableDecorator = global::Cel.Interpreter.InterpretableDecorator;
+	using Overload = global::Cel.Interpreter.Functions.Overload;
+	
+	public delegate Prog ProgramOption(Prog prog);
 
-	public interface ProgramOption
+	public class ProgramOptions
 	{
-	  Prog Apply(Prog prog);
-
 	  /// <summary>
 	  /// CustomDecorator appends an InterpreterDecorator to the program.
 	  /// 
 	  /// <para>InterpretableDecorators can be used to inspect, alter, or replace the Program plan.
 	  /// </para>
 	  /// </summary>
-	  static ProgramOption CustomDecorator(InterpretableDecorator dec)
+	  public static ProgramOption CustomDecorator(InterpretableDecorator dec)
 	  {
 		return p =>
 		{
-		  p.decorators.add(dec);
+		  p.decorators.Add(dec);
 		  return p;
 		};
 	  }
 
 	  /// <summary>
 	  /// Functions adds function overloads that extend or override the set of CEL built-ins. </summary>
-	  static ProgramOption Functions(params Overload[] funcs)
+	  public static ProgramOption Functions(params Overload[] funcs)
 	  {
 		return p =>
 		{
-		  p.dispatcher.add(funcs);
+		  p.dispatcher.Add(funcs);
 		  return p;
 		};
 	  }
@@ -62,7 +62,7 @@ namespace Cel
 	  /// `map[string]interface{}`.
 	  /// </para>
 	  /// </summary>
-	  static ProgramOption Globals(object vars)
+	  public static ProgramOption Globals(object vars)
 	  {
 		return p =>
 		{
@@ -73,11 +73,11 @@ namespace Cel
 
 	  /// <summary>
 	  /// EvalOptions sets one or more evaluation options which may affect the evaluation or Result. </summary>
-	  static ProgramOption EvalOptions(params EvalOption[] opts)
+	  public static ProgramOption EvalOptions(params EvalOption[] opts)
 	  {
 		return p =>
 		{
-		  Collections.addAll(p.evalOpts, opts);
+			p.evalOpts.UnionWith(opts);
 		  return p;
 		};
 	  }

@@ -43,17 +43,17 @@ namespace Cel.Common.Types
 	using DoubleValue = Google.Protobuf.WellKnownTypes.DoubleValue;
 	using FloatValue = Google.Protobuf.WellKnownTypes.FloatValue;
 	using Value = Google.Protobuf.WellKnownTypes.Value;
-	using BaseVal = Cel.Common.Types.Ref.BaseVal;
-	using Type = Cel.Common.Types.Ref.Type;
-	using TypeEnum = Cel.Common.Types.Ref.TypeEnum;
-	using Val = Cel.Common.Types.Ref.Val;
-	using Adder = Cel.Common.Types.Traits.Adder;
-	using Comparer = Cel.Common.Types.Traits.Comparer;
-	using Divider = Cel.Common.Types.Traits.Divider;
-	using Multiplier = Cel.Common.Types.Traits.Multiplier;
-	using Negater = Cel.Common.Types.Traits.Negater;
-	using Subtractor = Cel.Common.Types.Traits.Subtractor;
-	using Trait = Cel.Common.Types.Traits.Trait;
+	using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
+	using Type = global::Cel.Common.Types.Ref.Type;
+	using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
+	using Val = global::Cel.Common.Types.Ref.Val;
+	using Adder = global::Cel.Common.Types.Traits.Adder;
+	using Comparer = global::Cel.Common.Types.Traits.Comparer;
+	using Divider = global::Cel.Common.Types.Traits.Divider;
+	using Multiplier = global::Cel.Common.Types.Traits.Multiplier;
+	using Negater = global::Cel.Common.Types.Traits.Negater;
+	using Subtractor = global::Cel.Common.Types.Traits.Subtractor;
+	using Trait = global::Cel.Common.Types.Traits.Trait;
 
 	/// <summary>
 	/// Double type that implements ref.Val, comparison, and mathematical operations. </summary>

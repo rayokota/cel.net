@@ -53,16 +53,16 @@ namespace Cel
 	using Reference = Google.Api.Expr.V1Alpha1.Reference;
 	using SourceInfo = Google.Api.Expr.V1Alpha1.SourceInfo;
 	using Type = Google.Api.Expr.V1Alpha1.Type;
-	using Activation = Cel.Interpreter.Activation;
-	using Activation_PartialActivation = Cel.Interpreter.Activation_PartialActivation;
-	using AttributeFactory = Cel.Interpreter.AttributeFactory;
-	using AttributePattern = Cel.Interpreter.AttributePattern;
-	using Coster = Cel.Interpreter.Coster;
-	using Coster_Cost = Cel.Interpreter.Coster_Cost;
-	using Dispatcher = Cel.Interpreter.Dispatcher;
-	using InterpretableDecorator = Cel.Interpreter.InterpretableDecorator;
+	using Activation = global::Cel.Interpreter.Activation;
+	using Activation_PartialActivation = global::Cel.Interpreter.Activation_PartialActivation;
+	using AttributeFactory = global::Cel.Interpreter.AttributeFactory;
+	using AttributePattern = global::Cel.Interpreter.AttributePattern;
+	using Coster = global::Cel.Interpreter.Coster;
+	using Coster_Cost = global::Cel.Interpreter.Coster_Cost;
+	using Dispatcher = global::Cel.Interpreter.Dispatcher;
+	using InterpretableDecorator = global::Cel.Interpreter.InterpretableDecorator;
 
-	public sealed class CEL
+	public sealed class Cel
 	{
 
 	  /// <summary>
@@ -88,7 +88,7 @@ namespace Cel
 		  {
 			throw new System.NullReferenceException("program options should be non-nil");
 		  }
-		  p = opt.Apply(p);
+		  p = opt(p);
 		  if (p == null)
 		  {
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:

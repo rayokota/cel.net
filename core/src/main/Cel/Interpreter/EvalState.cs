@@ -15,7 +15,7 @@
  */
 namespace Cel.Interpreter
 {
-	using Val = Cel.Common.Types.Ref.Val;
+	using Val = global::Cel.Common.Types.Ref.Val;
 
 	/// <summary>
 	/// EvalState tracks the values associated with expression ids during execution. </summary>

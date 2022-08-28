@@ -30,10 +30,10 @@ namespace Cel.Interpreter
 
 	using CheckedExpr = Google.Api.Expr.V1Alpha1.CheckedExpr;
 	using Expr = Google.Api.Expr.V1Alpha1.Expr;
-	using Container = Cel.Common.Containers.Container;
-	using TypeAdapter = Cel.Common.Types.Ref.TypeAdapter;
-	using TypeProvider = Cel.Common.Types.Ref.TypeProvider;
-	using Overload = Cel.Interpreter.Functions.Overload;
+	using Container = global::Cel.Common.Containers.Container;
+	using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
+	using TypeProvider = global::Cel.Common.Types.Ref.TypeProvider;
+	using Overload = global::Cel.Interpreter.Functions.Overload;
 
 	/// <summary>
 	/// Interpreter generates a new Interpretable from a checked or unchecked expression. </summary>

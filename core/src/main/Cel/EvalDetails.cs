@@ -15,7 +15,7 @@
  */
 namespace Cel
 {
-	using EvalState = Cel.Interpreter.EvalState;
+	using EvalState = global::Cel.Interpreter.EvalState;
 
 	/// <summary>
 	/// EvalDetails holds additional information observed during the Eval() call. </summary>

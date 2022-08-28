@@ -54,16 +54,16 @@ namespace Cel.Interpreter
 //	import static Cel.Interpreter.Coster.costOf;
 
 	using Type = Google.Api.Expr.V1Alpha1.Type;
-	using Container = Cel.Common.Containers.Container;
-	using Err = Cel.Common.Types.Err;
-	using NullT = Cel.Common.Types.NullT;
-	using FieldType = Cel.Common.Types.Ref.FieldType;
-	using TypeAdapter = Cel.Common.Types.Ref.TypeAdapter;
-	using TypeProvider = Cel.Common.Types.Ref.TypeProvider;
-	using Val = Cel.Common.Types.Ref.Val;
-	using Indexer = Cel.Common.Types.Traits.Indexer;
-	using Mapper = Cel.Common.Types.Traits.Mapper;
-	using QualifierValueEquator = Cel.Interpreter.AttributePattern.QualifierValueEquator;
+	using Container = global::Cel.Common.Containers.Container;
+	using Err = global::Cel.Common.Types.Err;
+	using NullT = global::Cel.Common.Types.NullT;
+	using FieldType = global::Cel.Common.Types.Ref.FieldType;
+	using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
+	using TypeProvider = global::Cel.Common.Types.Ref.TypeProvider;
+	using Val = global::Cel.Common.Types.Ref.Val;
+	using Indexer = global::Cel.Common.Types.Traits.Indexer;
+	using Mapper = global::Cel.Common.Types.Traits.Mapper;
+	using QualifierValueEquator = global::Cel.Interpreter.AttributePattern.QualifierValueEquator;
 
 	/// <summary>
 	/// AttributeFactory provides methods creating Attribute and Qualifier values. </summary>
@@ -448,7 +448,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Qualify is an implementation of the Qualifier interface method. </summary>
-	public object Qualify(Cel.Interpreter.Activation vars, object obj)
+	public object Qualify(global::Cel.Interpreter.Activation vars, object obj)
 	{
 	  object val = Resolve(vars);
 	  if (UnknownT.IsUnknown(val))
@@ -463,7 +463,7 @@ namespace Cel.Interpreter
 	/// Resolve returns the resolved Attribute value given the Activation, or error if the Attribute
 	/// variable is not found, or if its Qualifiers cannot be applied successfully.
 	/// </summary>
-	public object Resolve(Cel.Interpreter.Activation vars)
+	public object Resolve(global::Cel.Interpreter.Activation vars)
 	{
 	  object obj = TryResolve(vars);
 	  if (obj == null)
@@ -481,7 +481,7 @@ namespace Cel.Interpreter
 	/// type, then the result is `nil`, `false`, `nil` per the interface requirement.
 	/// </para>
 	/// </summary>
-	public object TryResolve(Cel.Interpreter.Activation vars)
+	public object TryResolve(global::Cel.Interpreter.Activation vars)
 	{
 	  foreach (string nm in namespaceNames)
 	  {
@@ -579,7 +579,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Qualify is an implementation of the Qualifier interface method. </summary>
-	public object Qualify(Cel.Interpreter.Activation vars, object obj)
+	public object Qualify(global::Cel.Interpreter.Activation vars, object obj)
 	{
 	  object val = Resolve(vars);
 	  if (UnknownT.IsUnknown(val))
@@ -593,7 +593,7 @@ namespace Cel.Interpreter
 	/// <summary>
 	/// Resolve evaluates the condition, and then resolves the truthy or falsy branch accordingly.
 	/// </summary>
-	public object Resolve(Cel.Interpreter.Activation vars)
+	public object Resolve(global::Cel.Interpreter.Activation vars)
 	{
 	  Val val = expr.Eval(vars);
 	  if (val == null)
@@ -743,7 +743,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Qualify is an implementation of the Qualifier interface method. </summary>
-	public object Qualify(Cel.Interpreter.Activation vars, object obj)
+	public object Qualify(global::Cel.Interpreter.Activation vars, object obj)
 	{
 	  object val = Resolve(vars);
 	  if (UnknownT.IsUnknown(val))
@@ -758,7 +758,7 @@ namespace Cel.Interpreter
 	/// Resolve follows the variable resolution rules to determine whether the attribute is a
 	/// variable or a field selection.
 	/// </summary>
-	public object Resolve(Cel.Interpreter.Activation vars)
+	public object Resolve(global::Cel.Interpreter.Activation vars)
 	{
 	  foreach (AttributeFactory_NamespacedAttribute attr in attrs)
 	  {
@@ -831,7 +831,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Qualify is an implementation of the Qualifier interface method. </summary>
-	public object Qualify(Cel.Interpreter.Activation vars, object obj)
+	public object Qualify(global::Cel.Interpreter.Activation vars, object obj)
 	{
 	  object val = Resolve(vars);
 	  if (UnknownT.IsUnknown(val))
@@ -844,7 +844,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Resolve expression value and qualifier relative to the expression result. </summary>
-	public object Resolve(Cel.Interpreter.Activation vars)
+	public object Resolve(global::Cel.Interpreter.Activation vars)
 	{
 	  // First, evaluate the operand.
 	  Val v = operand.Eval(vars);
@@ -955,7 +955,7 @@ namespace Cel.Interpreter
 	/// Qualify implements the Qualifier interface method. </summary>
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @SuppressWarnings("rawtypes") @Override public Object qualify(Cel.Interpreter.Activation vars, Object obj)
-	public object Qualify(Cel.Interpreter.Activation vars, object obj)
+	public object Qualify(global::Cel.Interpreter.Activation vars, object obj)
 	{
 	  string s = value;
 	  if (obj is System.Collections.IDictionary)
@@ -1037,7 +1037,7 @@ namespace Cel.Interpreter
 	/// Qualify implements the Qualifier interface method. </summary>
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @SuppressWarnings("rawtypes") @Override public Object qualify(Cel.Interpreter.Activation vars, Object obj)
-	public object Qualify(Cel.Interpreter.Activation vars, object obj)
+	public object Qualify(global::Cel.Interpreter.Activation vars, object obj)
 	{
 	  long i = value;
 	  if (obj is System.Collections.IDictionary)
@@ -1146,7 +1146,7 @@ namespace Cel.Interpreter
 	/// Qualify implements the Qualifier interface method. </summary>
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @SuppressWarnings("rawtypes") @Override public Object qualify(Cel.Interpreter.Activation vars, Object obj)
-	public object Qualify(Cel.Interpreter.Activation vars, object obj)
+	public object Qualify(global::Cel.Interpreter.Activation vars, object obj)
 	{
 	  long i = (long)value;
 	  if (obj is System.Collections.IDictionary)
@@ -1232,7 +1232,7 @@ namespace Cel.Interpreter
 	/// Qualify implements the Qualifier interface method. </summary>
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @SuppressWarnings("rawtypes") @Override public Object qualify(Cel.Interpreter.Activation vars, Object obj)
-	public object Qualify(Cel.Interpreter.Activation vars, object obj)
+	public object Qualify(global::Cel.Interpreter.Activation vars, object obj)
 	{
 	  bool b = value;
 	  if (obj is System.Collections.IDictionary)
@@ -1312,7 +1312,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Qualify implements the Qualifier interface method. </summary>
-	public object Qualify(Cel.Interpreter.Activation vars, object obj)
+	public object Qualify(global::Cel.Interpreter.Activation vars, object obj)
 	{
 	  if (obj is Val)
 	  {

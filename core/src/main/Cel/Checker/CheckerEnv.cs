@@ -44,10 +44,10 @@ namespace Cel.Checker
 	using Overload = Google.Api.Expr.V1Alpha1.Decl.Types.FunctionDecl.Types.Overload;
 	using IdentDecl = Google.Api.Expr.V1Alpha1.Decl.Types.IdentDecl;
 	using Type = Google.Api.Expr.V1Alpha1.Type;
-	using Container = Cel.Common.Containers.Container;
-	using TypeProvider = Cel.Common.Types.Ref.TypeProvider;
-	using Val = Cel.Common.Types.Ref.Val;
-	using Macro = Cel.Parser.Macro;
+	using Container = global::Cel.Common.Containers.Container;
+	using TypeProvider = global::Cel.Common.Types.Ref.TypeProvider;
+	using Val = global::Cel.Common.Types.Ref.Val;
+	using Macro = global::Cel.Parser.Macro;
 
 	/// <summary>
 	/// Env is the environment for type checking.

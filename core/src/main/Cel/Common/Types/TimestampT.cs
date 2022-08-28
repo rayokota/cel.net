@@ -51,16 +51,16 @@ namespace Cel.Common.Types
 	using StringValue = Google.Protobuf.WellKnownTypes.StringValue;
 	using Timestamp = Google.Protobuf.WellKnownTypes.Timestamp;
 	using Value = Google.Protobuf.WellKnownTypes.Value;
-	using OverflowException = Cel.Common.Types.Overflow.OverflowException;
-	using BaseVal = Cel.Common.Types.Ref.BaseVal;
-	using Type = Cel.Common.Types.Ref.Type;
-	using TypeEnum = Cel.Common.Types.Ref.TypeEnum;
-	using Val = Cel.Common.Types.Ref.Val;
-	using Adder = Cel.Common.Types.Traits.Adder;
-	using Comparer = Cel.Common.Types.Traits.Comparer;
-	using Receiver = Cel.Common.Types.Traits.Receiver;
-	using Subtractor = Cel.Common.Types.Traits.Subtractor;
-	using Trait = Cel.Common.Types.Traits.Trait;
+	using OverflowException = global::Cel.Common.Types.Overflow.OverflowException;
+	using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
+	using Type = global::Cel.Common.Types.Ref.Type;
+	using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
+	using Val = global::Cel.Common.Types.Ref.Val;
+	using Adder = global::Cel.Common.Types.Traits.Adder;
+	using Comparer = global::Cel.Common.Types.Traits.Comparer;
+	using Receiver = global::Cel.Common.Types.Traits.Receiver;
+	using Subtractor = global::Cel.Common.Types.Traits.Subtractor;
+	using Trait = global::Cel.Common.Types.Traits.Trait;
 
 	/// <summary>
 	/// Timestamp type implementation which supports add, compare, and subtract operations. Timestamps

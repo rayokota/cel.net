@@ -20,7 +20,7 @@ namespace Cel.Parser
     using Expr = Google.Api.Expr.V1Alpha1.Expr;
     using Entry = Google.Api.Expr.V1Alpha1.Expr.Types.CreateStruct.Types.Entry;
     using ByteString = Google.Protobuf.ByteString;
-    using Location = Cel.Common.Location;
+    using Location = global::Cel.Common.Location;
 
     /// <summary>
     /// ExprHelper assists with the manipulation of proto-based Expr values in a manner which is

@@ -15,7 +15,7 @@
  */
 namespace Cel.Interpreter.Functions
 {
-	using Val = Cel.Common.Types.Ref.Val;
+	using Val = global::Cel.Common.Types.Ref.Val;
 
 	/// <summary>
 	/// FunctionOp is a function with accepts zero or more arguments and produces an value (as

@@ -30,8 +30,8 @@ namespace Cel.Parser
     using Select = Google.Api.Expr.V1Alpha1.Expr.Types.Select;
     using SourceInfo = Google.Api.Expr.V1Alpha1.SourceInfo;
     using ByteString = Google.Protobuf.ByteString;
-    using Location = Cel.Common.Location;
-    using Source = Cel.Common.Source;
+    using Location = global::Cel.Common.Location;
+    using Source = global::Cel.Common.Source;
     using ParserRuleContext = Antlr4.Runtime.ParserRuleContext;
     using Token = Antlr4.Runtime.IToken;
 

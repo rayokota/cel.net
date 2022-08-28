@@ -22,9 +22,9 @@ namespace Cel.Checker
 //	import static Cel.Checker.Types.formatCheckedType;
 
 	using Type = Google.Api.Expr.V1Alpha1.Type;
-	using Errors = Cel.Common.Errors;
-	using Location = Cel.Common.Location;
-	using Source = Cel.Common.Source;
+	using Errors = global::Cel.Common.Errors;
+	using Location = global::Cel.Common.Location;
+	using Source = global::Cel.Common.Source;
 
 	/// <summary>
 	/// TypeErrors is a specialization of Errors. </summary>

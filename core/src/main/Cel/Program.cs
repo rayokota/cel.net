@@ -15,7 +15,7 @@
  */
 namespace Cel
 {
-	using Val = Cel.Common.Types.Ref.Val;
+	using Val = global::Cel.Common.Types.Ref.Val;
 
 	/// <summary>
 	/// Program is an evaluable view of an Ast. </summary>

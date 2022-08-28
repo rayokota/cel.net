@@ -50,18 +50,18 @@ namespace Cel.Interpreter
 	using Select = Google.Api.Expr.V1Alpha1.Expr.Types.Select;
 	using Reference = Google.Api.Expr.V1Alpha1.Reference;
 	using Type = Google.Api.Expr.V1Alpha1.Type;
-	using Container = Cel.Common.Containers.Container;
-	using Operator = Cel.Common.Operators.Operator;
-	using NullT = Cel.Common.Types.NullT;
-	using FieldType = Cel.Common.Types.Ref.FieldType;
-	using TypeAdapter = Cel.Common.Types.Ref.TypeAdapter;
-	using TypeProvider = Cel.Common.Types.Ref.TypeProvider;
-	using Val = Cel.Common.Types.Ref.Val;
-	using Trait = Cel.Common.Types.Traits.Trait;
-	using BinaryOp = Cel.Interpreter.Functions.BinaryOp;
-	using FunctionOp = Cel.Interpreter.Functions.FunctionOp;
-	using Overload = Cel.Interpreter.Functions.Overload;
-	using UnaryOp = Cel.Interpreter.Functions.UnaryOp;
+	using Container = global::Cel.Common.Containers.Container;
+	using Operator = global::Cel.Common.Operators.Operator;
+	using NullT = global::Cel.Common.Types.NullT;
+	using FieldType = global::Cel.Common.Types.Ref.FieldType;
+	using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
+	using TypeProvider = global::Cel.Common.Types.Ref.TypeProvider;
+	using Val = global::Cel.Common.Types.Ref.Val;
+	using Trait = global::Cel.Common.Types.Traits.Trait;
+	using BinaryOp = global::Cel.Interpreter.Functions.BinaryOp;
+	using FunctionOp = global::Cel.Interpreter.Functions.FunctionOp;
+	using Overload = global::Cel.Interpreter.Functions.Overload;
+	using UnaryOp = global::Cel.Interpreter.Functions.UnaryOp;
 
 	/// <summary>
 	/// interpretablePlanner creates an Interpretable evaluation plan from a proto Expr value. </summary>

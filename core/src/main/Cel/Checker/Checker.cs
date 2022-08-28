@@ -59,13 +59,13 @@ namespace Cel.Checker
 	using SourceInfo = Google.Api.Expr.V1Alpha1.SourceInfo;
 	using Type = Google.Api.Expr.V1Alpha1.Type;
 	using MapType = Google.Api.Expr.V1Alpha1.Type.Types.MapType;
-	using Kind = Cel.Checker.Types.Kind;
-	using Location = Cel.Common.Location;
-	using Source = Cel.Common.Source;
-	using Container = Cel.Common.Containers.Container;
-	using ErrException = Cel.Common.Types.Err.ErrException;
-	using FieldType = Cel.Common.Types.Ref.FieldType;
-	using ParseResult = Cel.Parser.Parser.ParseResult;
+	using Kind = global::Cel.Checker.Types.Kind;
+	using Location = global::Cel.Common.Location;
+	using Source = global::Cel.Common.Source;
+	using Container = global::Cel.Common.Containers.Container;
+	using ErrException = global::Cel.Common.Types.Err.ErrException;
+	using FieldType = global::Cel.Common.Types.Ref.FieldType;
+	using ParseResult = global::Cel.Parser.Parser.ParseResult;
 
 	public sealed class Checker
 	{
