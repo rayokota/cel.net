@@ -21,7 +21,7 @@ namespace Cel.Common
         public static Location NoLocation = NewLocation(-1, -1);
 
         // NewLocation creates a new location.
-        static Location NewLocation(int line, int column)
+        public static Location NewLocation(int line, int column)
         {
             return new SourceLocation(line, column);
         }

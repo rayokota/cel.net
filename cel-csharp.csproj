@@ -45,9 +45,5 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="core\src\main\Cel\Checker" />
-  </ItemGroup>
-
 </Project>
 

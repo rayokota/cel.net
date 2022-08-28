@@ -328,6 +328,7 @@ namespace Cel.Common.Types.Pb
 		// In order to ensure that these wrapped types match the expectations of the CEL type system
 		// the dynamicpb.Message must be merged with an protobuf instance of the well-known type
 		// value.
+		FieldDescriptor valueField;
 		string typeName = refMsg.Descriptor.FullName;
 		switch (typeName)
 		{
@@ -336,32 +337,70 @@ namespace Cel.Common.Types.Pb
 			  throw new NotImplementedException();
 			//return UnwrapDynamicAny(db, desc, refMsg);
 		  case "google.protobuf.BoolValue":
+			  if (Object.Equals(msg, new BoolValue()))
+			  {
+				  return NullValue.NullValue;
+			  }
+			valueField = msg.Descriptor.FindFieldByName("value");
+			return valueField.Accessor.GetValue(msg);
 		  case "google.protobuf.BytesValue":
+			  if (Object.Equals(msg, new BytesValue()))
+			  {
+				  return NullValue.NullValue;
+			  }
+			valueField = msg.Descriptor.FindFieldByName("value");
+			return valueField.Accessor.GetValue(msg);
 		  case "google.protobuf.DoubleValue":
+			  if (Object.Equals(msg, new DoubleValue()))
+			  {
+				  return NullValue.NullValue;
+			  }
+			valueField = msg.Descriptor.FindFieldByName("value");
+			return valueField.Accessor.GetValue(msg);
 		  case "google.protobuf.FloatValue":
+			  if (Object.Equals(msg, new FloatValue()))
+			  {
+				  return NullValue.NullValue;
+			  }
+			valueField = msg.Descriptor.FindFieldByName("value");
+			return valueField.Accessor.GetValue(msg);
 		  case "google.protobuf.Int32Value":
+			  if (Object.Equals(msg, new Int32Value()))
+			  {
+				  return NullValue.NullValue;
+			  }
+			valueField = msg.Descriptor.FindFieldByName("value");
+			return valueField.Accessor.GetValue(msg);
 		  case "google.protobuf.Int64Value":
+			  if (Object.Equals(msg, new Int64Value()))
+			  {
+				  return NullValue.NullValue;
+			  }
+			valueField = msg.Descriptor.FindFieldByName("value");
+			return valueField.Accessor.GetValue(msg);
 		  case "google.protobuf.StringValue":
 			// The msg value is ignored when dealing with wrapper types as they have a null or value
 			// behavior, rather than the standard zero value behavior of other proto message types.
-			/*
-			if (msg == msg.getDefaultInstanceForType())
-			{
-			  return NullValue.NULL_VALUE;
-			}
-			*/
-			FieldDescriptor valueField = msg.Descriptor.FindFieldByName("value");
+			  if (Object.Equals(msg, new StringValue()))
+			  {
+				  return NullValue.NullValue;
+			  }
+			valueField = msg.Descriptor.FindFieldByName("value");
 			return valueField.Accessor.GetValue(msg);
 		  case "google.protobuf.UInt32Value":
+			  if (Object.Equals(msg, new UInt32Value()))
+			  {
+				  return NullValue.NullValue;
+			  }
+			valueField = msg.Descriptor.FindFieldByName("value");
+			return (ulong) valueField.Accessor.GetValue(msg);
 		  case "google.protobuf.UInt64Value":
 			// The msg value is ignored when dealing with wrapper types as they have a null or value
 			// behavior, rather than the standard zero value behavior of other proto message types.
-			/*
-			if (msg == msg.getDefaultInstanceForType())
-			{
-			  return NullValue.NULL_VALUE;
-			}
-			*/
+			  if (Object.Equals(msg, new UInt64Value()))
+			  {
+				  return NullValue.NullValue;
+			  }
 			valueField = msg.Descriptor.FindFieldByName("value");
 			return (ulong) valueField.Accessor.GetValue(msg);
 		  case "google.protobuf.Duration":

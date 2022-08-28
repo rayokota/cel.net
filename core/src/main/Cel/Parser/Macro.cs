@@ -244,7 +244,7 @@ namespace Cel.Parser
             throw new ErrorWithLocation(null, "invalid argument to has() macro");
         }
 
-        public string function()
+        public string Function()
         {
             return function_Conflict;
         }
@@ -259,7 +259,7 @@ namespace Cel.Parser
             get { return varArgStyle; }
         }
 
-        public int argCount()
+        public int ArgCount()
         {
             return argCount_Conflict;
         }
