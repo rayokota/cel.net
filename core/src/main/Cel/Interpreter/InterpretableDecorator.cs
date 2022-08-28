@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Cel.Common.Types;
 
 /*
  * Copyright (C) 2021 The Authors of CEL-Java
@@ -56,16 +57,16 @@ namespace Cel.Interpreter
 	  {
 		return i =>
 		{
-		  if ((i instanceof EvalWatch) || (i instanceof EvalWatchAttr) || (i instanceof EvalWatchConst))
+		  if ((i is Interpretable_EvalWatch) || (i is Interpretable_EvalWatchAttr) || (i is Interpretable_EvalWatchConst))
 		  {
 			// these instruction are already watching, return straight-away.
 			return i;
 		  }
-		  if (i instanceof InterpretableAttribute)
+		  if (i is Interpretable_InterpretableAttribute)
 		  {
 			return new Interpretable_EvalWatchAttr((Interpretable_InterpretableAttribute) i, observer);
 		  }
-		  if (i instanceof InterpretableConst)
+		  if (i is Interpretable_InterpretableConst)
 		  {
 			return new Interpretable_EvalWatchConst((Interpretable_InterpretableConst) i, observer);
 		  }
@@ -81,27 +82,27 @@ namespace Cel.Interpreter
 	  {
 		return i =>
 		{
-		  if (i instanceof EvalOr)
+		  if (i is Interpretable_EvalOr)
 		  {
 			Interpretable_EvalOr expr = (Interpretable_EvalOr) i;
 			return new Interpretable_EvalExhaustiveOr(expr.id, expr.lhs, expr.rhs);
 		  }
-		  if (i instanceof EvalAnd)
+		  if (i is Interpretable_EvalAnd)
 		  {
 			Interpretable_EvalAnd expr = (Interpretable_EvalAnd) i;
 			return new Interpretable_EvalExhaustiveAnd(expr.id, expr.lhs, expr.rhs);
 		  }
-		  if (i instanceof EvalFold)
+		  if (i is Interpretable_EvalFold)
 		  {
 			Interpretable_EvalFold expr = (Interpretable_EvalFold) i;
 			return new Interpretable_EvalExhaustiveFold(expr.id, expr.accu, expr.accuVar, expr.iterRange, expr.iterVar, expr.cond, expr.step, expr.result);
 		  }
-		  if (i instanceof InterpretableAttribute)
+		  if (i is Interpretable_InterpretableAttribute)
 		  {
 			Interpretable_InterpretableAttribute expr = (Interpretable_InterpretableAttribute) i;
-			if (expr.attr() instanceof ConditionalAttribute)
+			if (expr.Attr() is AttributeFactory_ConditionalAttribute)
 			{
-			  return new Interpretable_EvalExhaustiveConditional(i.id(), expr.adapter(), (AttributeFactory_ConditionalAttribute) expr.attr());
+			  return new Interpretable_EvalExhaustiveConditional(i.Id(), expr.Adapter(), (AttributeFactory_ConditionalAttribute) expr.Attr());
 			}
 		  }
 		  return i;
@@ -121,24 +122,24 @@ namespace Cel.Interpreter
 	  {
 		return i =>
 		{
-		  if (i instanceof EvalList)
+		  if (i is Interpretable_EvalList)
 		  {
-			return maybeBuildListLiteral(i, (Interpretable_EvalList) i);
+			return MaybeBuildListLiteral(i, (Interpretable_EvalList) i);
 		  }
-		  if (i instanceof EvalMap)
+		  if (i is Interpretable_EvalMap)
 		  {
-			return maybeBuildMapLiteral(i, (Interpretable_EvalMap) i);
+			return MaybeBuildMapLiteral(i, (Interpretable_EvalMap) i);
 		  }
-		  if (i instanceof InterpretableCall)
+		  if (i is Interpretable_InterpretableCall)
 		  {
 			Interpretable_InterpretableCall inst = (Interpretable_InterpretableCall) i;
-			if (inst.overloadID().Equals(Overloads.InList))
+			if (inst.OverloadID().Equals(Overloads.InList))
 			{
-			  return maybeOptimizeSetMembership(i, inst);
+			  return MaybeOptimizeSetMembership(i, inst);
 			}
-			if (Overloads.isTypeConversionFunction(inst.function()))
+			if (Overloads.IsTypeConversionFunction(inst.Function()))
 			{
-			  return maybeOptimizeConstUnary(i, inst);
+			  return MaybeOptimizeConstUnary(i, inst);
 			}
 		  }
 		  return i;
@@ -147,46 +148,46 @@ namespace Cel.Interpreter
 
 	  static Interpretable MaybeOptimizeConstUnary(Interpretable i, Interpretable_InterpretableCall call)
 	  {
-		Interpretable[] args = call.args();
-		if (args.length != 1)
+		Interpretable[] args = call.Args();
+		if (args.Length != 1)
 		{
 		  return i;
 		}
-		if (!(args[0] instanceof InterpretableConst))
+		if (!(args[0] is Interpretable_InterpretableConst))
 		{
 		  return i;
 		}
-		Val val = call.eval(emptyActivation());
-		throwErrorAsIllegalStateException(val);
-		return newConstValue(call.id(), val);
+		Val val = call.Eval(Activation.EmptyActivation());
+		Err.ThrowErrorAsIllegalStateException(val);
+		return Interpretable.NewConstValue(call.Id(), val);
 	  }
 
 	  static Interpretable MaybeBuildListLiteral(Interpretable i, Interpretable_EvalList l)
 	  {
-		for (Interpretable elem : l.elems)
+		foreach (Interpretable elem in l.elems)
 		{
-		  if (!(elem instanceof InterpretableConst))
+		  if (!(elem is Interpretable_InterpretableConst))
 		  {
 			return i;
 		  }
 		}
-		return newConstValue(l.id(), l.eval(emptyActivation()));
+		return Interpretable.NewConstValue(l.Id(), l.Eval(Activation.EmptyActivation()));
 	  }
 
 	  static Interpretable MaybeBuildMapLiteral(Interpretable i, Interpretable_EvalMap mp)
 	  {
-		for (int idx = 0; idx < mp.keys.length; idx++)
+		for (int idx = 0; idx < mp.keys.Length; idx++)
 		{
-		  if (!(mp.keys[idx] instanceof InterpretableConst))
+		  if (!(mp.keys[idx] is Interpretable_InterpretableConst))
 		  {
 			return i;
 		  }
-		  if (!(mp.vals[idx] instanceof InterpretableConst))
+		  if (!(mp.vals[idx] is Interpretable_InterpretableConst))
 		  {
 			return i;
 		  }
 		}
-		return newConstValue(mp.id(), mp.eval(emptyActivation()));
+		return Interpretable.NewConstValue(mp.Id(), mp.Eval(Activation.EmptyActivation()));
 	  }
 
 	  /// <summary>
@@ -200,43 +201,43 @@ namespace Cel.Interpreter
 	  /// </summary>
 	  static Interpretable MaybeOptimizeSetMembership(Interpretable i, Interpretable_InterpretableCall inlist)
 	  {
-		Interpretable[] args = inlist.args();
+		Interpretable[] args = inlist.Args();
 		Interpretable lhs = args[0];
 		Interpretable rhs = args[1];
-		if (!(rhs instanceof InterpretableConst))
+		if (!(rhs is Interpretable_InterpretableConst))
 		{
 		  return i;
 		}
 		Interpretable_InterpretableConst l = (Interpretable_InterpretableConst) rhs;
 		// When the incoming binary call is flagged with as the InList overload, the value will
 		// always be convertible to a `traits.Lister` type.
-		Lister list = (Lister) l.value();
-		if (list.size() == IntZero)
+		Lister list = (Lister) l.Value();
+		if (list.Size() == IntT.IntZero)
 		{
-		  return newConstValue(inlist.id(), False);
+		  return Interpretable.NewConstValue(inlist.Id(), BoolT.False);
 		}
-		IteratorT it = list.iterator();
+		IteratorT it = list.Iterator();
 		Type typ = null;
-		ISet<Val> valueSet = new HashSet<>();
-		while (it.hasNext() == True)
+		ISet<Val> valueSet = new HashSet<Val>();
+		while (it.HasNext() == BoolT.True)
 		{
-		  Val elem = it.next();
-		  if (!Util.isPrimitiveType(elem))
+		  Val elem = it.Next();
+		  if (!Util.IsPrimitiveType(elem))
 		  {
 			// Note, non-primitive type are not yet supported.
 			return i;
 		  }
 		  if (typ == null)
 		  {
-			typ = elem.type();
+			typ = elem.Type();
 		  }
-		  else if (!typ.typeName().Equals(elem.type().typeName()))
+		  else if (!typ.TypeName().Equals(elem.Type().TypeName()))
 		  {
 			return i;
 		  }
-		  valueSet.add(elem);
+		  valueSet.Add(elem);
 		}
-		return new Interpretable_EvalSetMembership(inlist, lhs, typ.typeName(), valueSet);
+		return new Interpretable_EvalSetMembership(inlist, lhs, typ.TypeName(), valueSet);
 	  }
 	}
 

@@ -17,6 +17,8 @@ namespace Cel.Common.Types.Traits
 {
 	public enum Trait
 	{
+	  None,
+	  
 	  /// <summary>
 	  /// AdderType types provide a '+' operator overload. </summary>
 	  AdderType,

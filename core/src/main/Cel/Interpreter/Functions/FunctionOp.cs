@@ -21,6 +21,6 @@ namespace Cel.Interpreter.Functions
 	/// FunctionOp is a function with accepts zero or more arguments and produces an value (as
 	/// interface{}) or error as a result.
 	/// </summary>
-	public delegate Val FunctionOp(Val[] values);
+	public delegate Val FunctionOp(params Val[] values);
 
 }

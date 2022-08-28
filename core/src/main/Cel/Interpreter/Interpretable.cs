@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cel.Common.Types;
 
 /*
  * Copyright (C) 2021 The Authors of CEL-Java
@@ -43,7 +44,7 @@ namespace Cel.Interpreter
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.Interpreter.Coster.costOf;
 
-	using Operator = Cel.Common.operators.Operator;
+	using Operator = Cel.Common.Operators.Operator;
 	using IterableT = Cel.Common.Types.IterableT;
 	using IteratorT = Cel.Common.Types.IteratorT;
 	using Overloads = Cel.Common.Types.Overloads;
@@ -57,9 +58,9 @@ namespace Cel.Interpreter
 	using Negater = Cel.Common.Types.Traits.Negater;
 	using Receiver = Cel.Common.Types.Traits.Receiver;
 	using Trait = Cel.Common.Types.Traits.Trait;
-	using BinaryOp = Cel.Interpreter.functions.BinaryOp;
-	using FunctionOp = Cel.Interpreter.functions.FunctionOp;
-	using UnaryOp = Cel.Interpreter.functions.UnaryOp;
+	using BinaryOp = Cel.Interpreter.Functions.BinaryOp;
+	using FunctionOp = Cel.Interpreter.Functions.FunctionOp;
+	using UnaryOp = Cel.Interpreter.Functions.UnaryOp;
 
 	/// <summary>
 	/// Interpretable can accept a given Activation and produce a value along with an accompanying
@@ -98,22 +99,22 @@ namespace Cel.Interpreter
 
 	  static Coster_Cost CalShortCircuitBinaryOpsCost(Interpretable lhs, Interpretable rhs)
 	  {
-		Coster_Cost l = estimateCost(lhs);
-		Coster_Cost r = estimateCost(rhs);
-		return costOf(l.min, l.max + r.max + 1);
+		Coster_Cost l = Coster_Cost.EstimateCost(lhs);
+		Coster_Cost r = Coster_Cost.EstimateCost(rhs);
+		return Coster.CostOf(l.min, l.max + r.max + 1);
 	  }
 
 	  static Coster_Cost SumOfCost(Interpretable[] interps)
 	  {
 		long min = 0L;
 		long max = 0L;
-		for (Interpretable @in : interps)
+		foreach (Interpretable interp in interps)
 		{
-		  Coster_Cost t = estimateCost(@in);
+		  Coster_Cost t = Coster_Cost.EstimateCost(interp);
 		  min += t.min;
 		  max += t.max;
 		}
-		return costOf(min, max);
+		return Coster.CostOf(min, max);
 	  }
 
 	  // Optional Intepretable implementations that specialize, subsume, or extend the core evaluation
@@ -156,9 +157,9 @@ namespace Cel.Interpreter
 
 	  static Coster_Cost CalExhaustiveBinaryOpsCost(Interpretable lhs, Interpretable rhs)
 	  {
-		Coster_Cost l = estimateCost(lhs);
-		Coster_Cost r = estimateCost(rhs);
-		return Coster_Cost.OneOne.add(l).add(r);
+		Coster_Cost l = Coster_Cost.EstimateCost(lhs);
+		Coster_Cost r = Coster_Cost.EstimateCost(rhs);
+		return Coster_Cost.OneOne.Add(l).Add(r);
 	  }
 
 	  /// <summary>
@@ -199,7 +200,7 @@ namespace Cel.Interpreter
 	/// AttributeFactory or specifically to the underlying Attribute implementation.
 	/// </para>
 	/// </summary>
-	Attribute AddQualifier(AttributeFactory_Qualifier qualifier);
+	AttributeFactory_Attribute AddQualifier(AttributeFactory_Qualifier qualifier);
 
 	/// <summary>
 	/// Qualify replicates the Attribute.Qualify method to permit extension and interception of
@@ -245,8 +246,8 @@ namespace Cel.Interpreter
 	internal Interpretable_EvalTestOnly(long id, Interpretable op, StringT field, FieldType fieldType)
 	{
 	  this.id = id;
-	  this.op = Objects.requireNonNull(op);
-	  this.field = Objects.requireNonNull(field);
+	  this.op = op;
+	  this.field = field;
 	  this.fieldType = fieldType;
 	}
 
@@ -264,7 +265,7 @@ namespace Cel.Interpreter
 	  // Handle field selection on a proto in the most efficient way possible.
 	  if (fieldType != null)
 	  {
-		if (op is Interpretable.InterpretableAttribute)
+		if (op is Interpretable_InterpretableAttribute)
 		{
 		  Interpretable_InterpretableAttribute opAttr = (Interpretable_InterpretableAttribute) op;
 		  object opVal = opAttr.Resolve(ctx);
@@ -275,9 +276,9 @@ namespace Cel.Interpreter
 		  }
 		  if (fieldType.isSet(opVal))
 		  {
-			return True;
+			return BoolT.True;
 		  }
-		  return False;
+		  return BoolT.False;
 		}
 	  }
 
@@ -290,7 +291,7 @@ namespace Cel.Interpreter
 	  {
 		return ((Container) obj).Contains(field);
 	  }
-	  return valOrErr(obj, "invalid type for field selection.");
+	  return Err.ValOrErr(obj, "invalid type for field selection.");
 	}
 
 	/// <summary>
@@ -299,8 +300,8 @@ namespace Cel.Interpreter
 	/// </summary>
 	public Coster_Cost Cost()
 	{
-	  Coster_Cost c = estimateCost(op);
-	  return c.Add(OneOne);
+	  Coster_Cost c = Coster_Cost.EstimateCost(op);
+	  return c.Add(Coster_Cost.OneOne);
 	}
 
 	public override string ToString()
@@ -311,18 +312,13 @@ namespace Cel.Interpreter
 
 	  public abstract class Interpretable_AbstractEval : Interpretable
 	  {
-		  public abstract Coster_Cost calExhaustiveBinaryOpsCost(Interpretable lhs, Interpretable rhs);
-		  public abstract Coster_Cost sumOfCost(Interpretable[] interps);
-		  public abstract Coster_Cost calShortCircuitBinaryOpsCost(Interpretable lhs, Interpretable rhs);
-		  public abstract Interpretable_InterpretableConst newConstValue(long id, Val val);
-		  public abstract Val eval(Activation activation);
+		  public abstract Val Eval(Activation activation);
 	protected internal readonly long id;
 
 	internal Interpretable_AbstractEval(long id)
 	{
 	  this.id = id;
 	}
-
 	/// <summary>
 	/// ID implements the Interpretable interface method. </summary>
 	public virtual long Id()
@@ -338,20 +334,15 @@ namespace Cel.Interpreter
 
 	  public abstract class Interpretable_AbstractEvalLhsRhs : Interpretable_AbstractEval, Coster
 	  {
-		  public abstract Coster_Cost costOf(long min, long max);
-		  public abstract Coster_Cost cost();
-		  public override abstract Coster_Cost calExhaustiveBinaryOpsCost(Interpretable lhs, Interpretable rhs);
-		  public override abstract Coster_Cost sumOfCost(Interpretable[] interps);
-		  public override abstract Coster_Cost calShortCircuitBinaryOpsCost(Interpretable lhs, Interpretable rhs);
-		  public override abstract Interpretable_InterpretableConst newConstValue(long id, Val val);
-		  public override abstract Val eval(Activation activation);
+		  public abstract Coster_Cost Cost();
+		  public override abstract Val Eval(Activation activation);
 	protected internal readonly Interpretable lhs;
 	protected internal readonly Interpretable rhs;
 
 	internal Interpretable_AbstractEvalLhsRhs(long id, Interpretable lhs, Interpretable rhs) : base(id)
 	{
-	  this.lhs = Objects.requireNonNull(lhs);
-	  this.rhs = Objects.requireNonNull(rhs);
+	  this.lhs = lhs;
+	  this.rhs = rhs;
 	}
 
 	public override string ToString()
@@ -409,37 +400,37 @@ namespace Cel.Interpreter
 	{
 	  // short-circuit lhs.
 	  Val lVal = lhs.Eval(ctx);
-	  if (lVal == True)
+	  if (lVal == BoolT.True)
 	  {
-		return True;
+		return BoolT.True;
 	  }
 	  // short-circuit on rhs.
 	  Val rVal = rhs.Eval(ctx);
-	  if (rVal == True)
+	  if (rVal == BoolT.True)
 	  {
-		return True;
+		return BoolT.True;
 	  }
 	  // return if both sides are bool false.
-	  if (lVal == False && rVal == False)
+	  if (lVal == BoolT.False && rVal == BoolT.False)
 	  {
-		return False;
+		return BoolT.False;
 	  }
 	  // TODO: return both values as a set if both are unknown or error.
 	  // prefer left unknown to right unknown.
-	  if (isUnknown(lVal))
+	  if (UnknownT.IsUnknown(lVal))
 	  {
 		return lVal;
 	  }
-	  if (isUnknown(rVal))
+	  if (UnknownT.IsUnknown(rVal))
 	  {
 		return rVal;
 	  }
 	  // If the left-hand side is non-boolean return it as the error.
-	  if (isError(lVal))
+	  if (Err.IsError(lVal))
 	  {
 		return lVal;
 	  }
-	  return noSuchOverload(lVal, Operator.LogicalOr.id, rVal);
+	  return Err.NoSuchOverload(lVal, Operator.LogicalOr.id, rVal);
 	}
 
 	/// <summary>
@@ -448,7 +439,7 @@ namespace Cel.Interpreter
 	/// </summary>
 	public override Coster_Cost Cost()
 	{
-	  return CalShortCircuitBinaryOpsCost(lhs, rhs);
+	  return Interpretable.CalShortCircuitBinaryOpsCost(lhs, rhs);
 	}
 
 	public override string ToString()
@@ -470,37 +461,37 @@ namespace Cel.Interpreter
 	{
 	  // short-circuit lhs.
 	  Val lVal = lhs.Eval(ctx);
-	  if (lVal == False)
+	  if (lVal == BoolT.False)
 	  {
-		return False;
+		return BoolT.False;
 	  }
 	  // short-circuit on rhs.
 	  Val rVal = rhs.Eval(ctx);
-	  if (rVal == False)
+	  if (rVal == BoolT.False)
 	  {
-		return False;
+		return BoolT.False;
 	  }
 	  // return if both sides are bool true.
-	  if (lVal == True && rVal == True)
+	  if (lVal == BoolT.True && rVal == BoolT.True)
 	  {
-		return True;
+		return BoolT.True;
 	  }
 	  // TODO: return both values as a set if both are unknown or error.
 	  // prefer left unknown to right unknown.
-	  if (isUnknown(lVal))
+	  if (UnknownT.IsUnknown(lVal))
 	  {
 		return lVal;
 	  }
-	  if (isUnknown(rVal))
+	  if (UnknownT.IsUnknown(rVal))
 	  {
 		return rVal;
 	  }
 	  // If the left-hand side is non-boolean return it as the error.
-	  if (isError(lVal))
+	  if (Err.IsError(lVal))
 	  {
 		return lVal;
 	  }
-	  return noSuchOverload(lVal, Operator.LogicalAnd.id, rVal);
+	  return Err.NoSuchOverload(lVal, Operator.LogicalAnd.id, rVal);
 	}
 
 	/// <summary>
@@ -509,7 +500,7 @@ namespace Cel.Interpreter
 	/// </summary>
 	public override Coster_Cost Cost()
 	{
-	  return CalShortCircuitBinaryOpsCost(lhs, rhs);
+	  return Interpretable.CalShortCircuitBinaryOpsCost(lhs, rhs);
 	}
 
 	public override string ToString()
@@ -537,7 +528,7 @@ namespace Cel.Interpreter
 	/// Cost implements the Coster interface method. </summary>
 	public override Coster_Cost Cost()
 	{
-	  return CalExhaustiveBinaryOpsCost(lhs, rhs);
+	  return Interpretable.CalExhaustiveBinaryOpsCost(lhs, rhs);
 	}
 
 	/// <summary>
@@ -580,21 +571,21 @@ namespace Cel.Interpreter
 	  Val lVal = lhs.Eval(ctx);
 	  Val rVal = rhs.Eval(ctx);
 	  Val eqVal = lVal.Equal(rVal);
-	  switch (eqVal.Type().TypeEnum().innerEnumValue)
+	  switch (eqVal.Type().TypeEnum().InnerEnumValue)
 	  {
 		case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Err:
 		  return eqVal;
 		case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Bool:
 		  return ((Negater) eqVal).Negate();
 	  }
-	  return noSuchOverload(lVal, Operator.NotEquals.id, rVal);
+	  return Err.NoSuchOverload(lVal, Operator.NotEquals.id, rVal);
 	}
 
 	/// <summary>
 	/// Cost implements the Coster interface method. </summary>
 	public override Coster_Cost Cost()
 	{
-	  return CalExhaustiveBinaryOpsCost(lhs, rhs);
+	  return Interpretable.CalExhaustiveBinaryOpsCost(lhs, rhs);
 	}
 
 	/// <summary>
@@ -632,8 +623,8 @@ namespace Cel.Interpreter
 
 	internal Interpretable_EvalZeroArity(long id, string function, string overload, FunctionOp impl) : base(id)
 	{
-	  this.function = Objects.requireNonNull(function);
-	  this.overload = Objects.requireNonNull(overload);
+	  this.function = function;
+	  this.overload = overload;
 	  this.impl = impl;
 	}
 
@@ -641,7 +632,7 @@ namespace Cel.Interpreter
 	/// Eval implements the Interpretable interface method. </summary>
 	public override Val Eval(Cel.Interpreter.Activation activation)
 	{
-	  return impl.Invoke();
+	  return impl();
 	}
 
 	/// <summary>
@@ -688,9 +679,9 @@ namespace Cel.Interpreter
 
 	internal Interpretable_EvalUnary(long id, string function, string overload, Interpretable arg, Trait trait, UnaryOp impl) : base(id)
 	{
-	  this.function = Objects.requireNonNull(function);
-	  this.overload = Objects.requireNonNull(overload);
-	  this.arg = Objects.requireNonNull(arg);
+	  this.function = function;
+	  this.overload = overload;
+	  this.arg = arg;
 	  this.trait = trait;
 	  this.impl = impl;
 	}
@@ -701,7 +692,7 @@ namespace Cel.Interpreter
 	{
 	  Val argVal = arg.Eval(ctx);
 	  // Early return if the argument to the function is unknown or error.
-	  if (isUnknownOrError(argVal))
+	  if (Util.IsUnknownOrError(argVal))
 	  {
 		return argVal;
 	  }
@@ -717,14 +708,14 @@ namespace Cel.Interpreter
 	  {
 		return ((Receiver) argVal).Receive(function, overload);
 	  }
-	  return noSuchOverload(argVal, function, overload, new Val[] {});
+	  return Err.NoSuchOverload(argVal, function, overload, new Val[] {});
 	}
 
 	/// <summary>
 	/// Cost implements the Coster interface method. </summary>
 	public Coster_Cost Cost()
 	{
-	  Coster_Cost c = estimateCost(arg);
+	  Coster_Cost c = Coster_Cost.EstimateCost(arg);
 	  return Coster_Cost.OneOne.Add(c); // add cost for function
 	}
 
@@ -764,8 +755,8 @@ namespace Cel.Interpreter
 
 	internal Interpretable_EvalBinary(long id, string function, string overload, Interpretable lhs, Interpretable rhs, Trait trait, BinaryOp impl) : base(id, lhs, rhs)
 	{
-	  this.function = Objects.requireNonNull(function);
-	  this.overload = Objects.requireNonNull(overload);
+	  this.function = function;
+	  this.overload = overload;
 	  this.trait = trait;
 	  this.impl = impl;
 	}
@@ -777,11 +768,11 @@ namespace Cel.Interpreter
 	  Val lVal = lhs.Eval(ctx);
 	  Val rVal = rhs.Eval(ctx);
 	  // Early return if any argument to the function is unknown or error.
-	  if (isUnknownOrError(lVal))
+	  if (Util.IsUnknownOrError(lVal))
 	  {
 		return lVal;
 	  }
-	  if (isUnknownOrError(rVal))
+	  if (Util.IsUnknownOrError(rVal))
 	  {
 		return rVal;
 	  }
@@ -797,14 +788,14 @@ namespace Cel.Interpreter
 	  {
 		return ((Receiver) lVal).Receive(function, overload, rVal);
 	  }
-	  return noSuchOverload(lVal, function, overload, new Val[] {rVal});
+	  return Err.NoSuchOverload(lVal, function, overload, new Val[] {rVal});
 	}
 
 	/// <summary>
 	/// Cost implements the Coster interface method. </summary>
 	public override Coster_Cost Cost()
 	{
-	  return CalExhaustiveBinaryOpsCost(lhs, rhs);
+	  return Interpretable.CalExhaustiveBinaryOpsCost(lhs, rhs);
 	}
 
 	/// <summary>
@@ -844,9 +835,9 @@ namespace Cel.Interpreter
 
 	public Interpretable_EvalVarArgs(long id, string function, string overload, Interpretable[] args, Trait trait, FunctionOp impl) : base(id)
 	{
-	  this.function = Objects.requireNonNull(function);
-	  this.overload = Objects.requireNonNull(overload);
-	  this.args = Objects.requireNonNull(args);
+	  this.function = function;
+	  this.overload = overload;
+	  this.args = args;
 	  this.trait = trait;
 	  this.impl = impl;
 	}
@@ -861,7 +852,7 @@ namespace Cel.Interpreter
 	  {
 		Interpretable arg = args[i];
 		argVals[i] = arg.Eval(ctx);
-		if (isUnknownOrError(argVals[i]))
+		if (Util.IsUnknownOrError(argVals[i]))
 		{
 		  return argVals[i];
 		}
@@ -877,17 +868,20 @@ namespace Cel.Interpreter
 	  // operand (arg0).
 	  if (arg0.Type().HasTrait(Trait.ReceiverType))
 	  {
-		return ((Receiver) arg0).Receive(function, overload, Arrays.CopyOfRange(argVals, 1, argVals.Length - 1));
+		  Val[] newArgVals = new Val[argVals.Length - 1];
+		  // TODO does Java have bug?
+		  Array.Copy(argVals, 1, newArgVals, 0, argVals.Length - 1);
+		  return ((Receiver)arg0).Receive(function, overload, newArgVals);
 	  }
-	  return noSuchOverload(arg0, function, overload, argVals);
+	  return Err.NoSuchOverload(arg0, function, overload, argVals);
 	}
 
 	/// <summary>
 	/// Cost implements the Coster interface method. </summary>
 	public Coster_Cost Cost()
 	{
-	  Coster_Cost c = SumOfCost(args);
-	  return c.Add(OneOne); // add cost for function
+	  Coster_Cost c = Interpretable.SumOfCost(args);
+	  return c.Add(Coster_Cost.OneOne); // add cost for function
 	}
 
 	/// <summary>
@@ -913,7 +907,8 @@ namespace Cel.Interpreter
 
 	public override string ToString()
 	{
-	  return "EvalVarArgs{" + "id=" + id + ", function='" + function + '\'' + ", overload='" + overload + '\'' + ", args=" + "[" + string.Join(", ", args) + "]" + ", trait=" + trait + ", impl=" + impl + '}';
+	  return "EvalVarArgs{" + "id=" + id + ", function='" + function + '\'' + ", overload='" + overload + '\'' + ", args=" 
+	         + "[" + args.Select(o => o.ToString()).Aggregate((x, y) => x + ", " + y) + "]" + ", trait=" + trait + ", impl=" + impl + '}';
 	}
 	  }
 
@@ -938,25 +933,26 @@ namespace Cel.Interpreter
 	  {
 		Interpretable elem = elems[i];
 		Val elemVal = elem.Eval(ctx);
-		if (isUnknownOrError(elemVal))
+		if (Util.IsUnknownOrError(elemVal))
 		{
 		  return elemVal;
 		}
 		elemVals[i] = elemVal;
 	  }
-	  return adapter.NativeToValue(elemVals);
+	  return adapter(elemVals);
 	}
 
 	/// <summary>
 	/// Cost implements the Coster interface method. </summary>
 	public Coster_Cost Cost()
 	{
-	  return SumOfCost(elems);
+	  return Interpretable.SumOfCost(elems);
 	}
 
 	public override string ToString()
 	{
-	  return "EvalList{" + "id=" + id + ", elems=" + "[" + string.Join(", ", elems) + "]" + '}';
+	  return "EvalList{" + "id=" + id + ", elems=" + "[" 
+	         + elems.Select(o => o.ToString()).Aggregate((x, y) => x + ", " + y) + "]" + '}';
 	}
 	  }
 
@@ -983,32 +979,34 @@ namespace Cel.Interpreter
 	  {
 		Interpretable key = keys[i];
 		Val keyVal = key.Eval(ctx);
-		if (isUnknownOrError(keyVal))
+		if (Util.IsUnknownOrError(keyVal))
 		{
 		  return keyVal;
 		}
 		Val valVal = vals[i].Eval(ctx);
-		if (isUnknownOrError(valVal))
+		if (Util.IsUnknownOrError(valVal))
 		{
 		  return valVal;
 		}
 		entries[keyVal] = valVal;
 	  }
-	  return adapter.NativeToValue(entries);
+	  return adapter(entries);
 	}
 
 	/// <summary>
 	/// Cost implements the Coster interface method. </summary>
 	public Coster_Cost Cost()
 	{
-	  Coster_Cost k = SumOfCost(keys);
-	  Coster_Cost v = SumOfCost(vals);
+	  Coster_Cost k = Interpretable.SumOfCost(keys);
+	  Coster_Cost v = Interpretable.SumOfCost(vals);
 	  return k.Add(v);
 	}
 
 	public override string ToString()
 	{
-	  return "EvalMap{" + "id=" + id + ", keys=" + "[" + string.Join(", ", keys) + "]" + ", vals=" + "[" + string.Join(", ", vals) + "]" + '}';
+	  return "EvalMap{" + "id=" + id + ", keys=" + "[" 
+	         + keys.Select(o => o.ToString()).Aggregate((x, y) => x + ", " + y) + "]" + ", vals=" + "[" 
+	         + vals.Select(o => o.ToString()).Aggregate((x, y) => x + ", " + y) + "]" + '}';
 	}
 	  }
 
@@ -1021,10 +1019,10 @@ namespace Cel.Interpreter
 
 	internal Interpretable_EvalObj(long id, string typeName, string[] fields, Interpretable[] vals, TypeProvider provider) : base(id)
 	{
-	  this.typeName = Objects.requireNonNull(typeName);
-	  this.fields = Objects.requireNonNull(fields);
-	  this.vals = Objects.requireNonNull(vals);
-	  this.provider = Objects.requireNonNull(provider);
+	  this.typeName = typeName;
+	  this.fields = fields;
+	  this.vals = vals;
+	  this.provider = provider;
 	}
 
 	/// <summary>
@@ -1037,7 +1035,7 @@ namespace Cel.Interpreter
 	  {
 		string field = fields[i];
 		Val val = vals[i].Eval(ctx);
-		if (isUnknownOrError(val))
+		if (Util.IsUnknownOrError(val))
 		{
 		  return val;
 		}
@@ -1050,12 +1048,13 @@ namespace Cel.Interpreter
 	/// Cost implements the Coster interface method. </summary>
 	public Coster_Cost Cost()
 	{
-	  return SumOfCost(vals);
+	  return Interpretable.SumOfCost(vals);
 	}
 
 	public override string ToString()
 	{
-	  return "EvalObj{" + "id=" + id + ", typeName='" + typeName + '\'' + ", fields=" + "[" + string.Join(", ", fields) + "]" + ", vals=" + "[" + string.Join(", ", vals) + "]" + ", provider=" + provider + '}';
+	  return "EvalObj{" + "id=" + id + ", typeName='" + typeName + '\'' + ", fields=" + "[" + string.Join(", ", fields) + "]" + ", vals=" + "[" 
+	         + vals.Select(o => o.ToString()).Aggregate((x, y) => x + ", " + y) + "]" + ", provider=" + provider + '}';
 	}
 	  }
 
@@ -1089,7 +1088,7 @@ namespace Cel.Interpreter
 	  if (!foldRange.Type().HasTrait(Trait.IterableType))
 	  {
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-		return valOrErr(foldRange, "got '%s', expected iterable type", foldRange.GetType().FullName);
+		return Err.ValOrErr(foldRange, "got '%s', expected iterable type", foldRange.GetType().FullName);
 	  }
 	  // Configure the fold activation with the accumulator initial value.
 	  Activation_VarActivation accuCtx = new Activation_VarActivation();
@@ -1100,14 +1099,14 @@ namespace Cel.Interpreter
 	  iterCtx.parent = accuCtx;
 	  iterCtx.name = iterVar;
 	  IteratorT it = ((IterableT) foldRange).Iterator();
-	  while (it.HasNext() == True)
+	  while (it.HasNext() == BoolT.True)
 	  {
 		// Modify the iter var in the fold activation.
 		iterCtx.val = it.Next();
 
 		// Evaluate the condition, terminate the loop if false.
 		Val c = cond.Eval(iterCtx);
-		if (c == False)
+		if (c == BoolT.False)
 		{
 		  break;
 		}
@@ -1124,31 +1123,31 @@ namespace Cel.Interpreter
 	public Coster_Cost Cost()
 	{
 	  // Compute the cost for evaluating iterRange.
-	  Coster_Cost i = estimateCost(iterRange);
+	  Coster_Cost i = Coster_Cost.EstimateCost(iterRange);
 
 	  // Compute the size of iterRange. If the size depends on the input, return the maximum
 	  // possible
 	  // cost range.
-	  Val foldRange = iterRange.Eval(emptyActivation());
+	  Val foldRange = iterRange.Eval(Activation.EmptyActivation());
 	  if (!foldRange.Type().HasTrait(Trait.IterableType))
 	  {
 		return Coster_Cost.Unknown;
 	  }
 	  long rangeCnt = 0L;
 	  IteratorT it = ((IterableT) foldRange).Iterator();
-	  while (it.HasNext() == True)
+	  while (it.HasNext() == BoolT.True)
 	  {
 		it.Next();
 		rangeCnt++;
 	  }
-	  Coster_Cost a = estimateCost(accu);
-	  Coster_Cost c = estimateCost(cond);
-	  Coster_Cost s = estimateCost(step);
-	  Coster_Cost r = estimateCost(result);
+	  Coster_Cost a = Coster_Cost.EstimateCost(accu);
+	  Coster_Cost c = Coster_Cost.EstimateCost(cond);
+	  Coster_Cost s = Coster_Cost.EstimateCost(step);
+	  Coster_Cost r = Coster_Cost.EstimateCost(result);
 
 	  // The cond and step costs are multiplied by size(iterRange). The minimum possible cost incurs
 	  // when the evaluation result can be determined by the first iteration.
-	  return i.Add(a).Add(r).Add(CostOf(c.min, c.max * rangeCnt)).Add(CostOf(s.min, s.max * rangeCnt));
+	  return i.Add(a).Add(r).Add(Coster.CostOf(c.min, c.max * rangeCnt)).Add(Coster.CostOf(s.min, s.max * rangeCnt));
 	}
 
 	public override string ToString()
@@ -1179,16 +1178,16 @@ namespace Cel.Interpreter
 	  Val val = arg.Eval(ctx);
 	  if (!val.Type().TypeName().Equals(argTypeName))
 	  {
-		return noSuchOverload(null, Operator.In.id, val);
+		return Err.NoSuchOverload(null, Operator.In.id, val);
 	  }
-	  return valueSet.Contains(val) ? True : False;
+	  return valueSet.Contains(val) ? BoolT.True : BoolT.False;
 	}
 
 	/// <summary>
 	/// Cost implements the Coster interface method. </summary>
 	public Coster_Cost Cost()
 	{
-	  return estimateCost(arg);
+	  return Coster_Cost.EstimateCost(arg);
 	}
 
 	public override string ToString()
@@ -1204,8 +1203,8 @@ namespace Cel.Interpreter
 
 	public Interpretable_EvalWatch(Interpretable i, InterpretableDecorator_EvalObserver observer)
 	{
-	  this.i = Objects.requireNonNull(i);
-	  this.observer = Objects.requireNonNull(observer);
+	  this.i = i;
+	  this.observer = observer;
 	}
 
 	public long Id()
@@ -1218,7 +1217,7 @@ namespace Cel.Interpreter
 	public Val Eval(Cel.Interpreter.Activation ctx)
 	{
 	  Val val = i.Eval(ctx);
-	  observer.Observe(Id(), val);
+	  observer(Id(), val);
 	  return val;
 	}
 
@@ -1226,7 +1225,7 @@ namespace Cel.Interpreter
 	/// Cost implements the Coster interface method. </summary>
 	public Coster_Cost Cost()
 	{
-	  return estimateCost(i);
+	  return Coster_Cost.EstimateCost(i);
 	}
 
 	public override string ToString()
@@ -1235,20 +1234,20 @@ namespace Cel.Interpreter
 	}
 	  }
 
-	  public sealed class Interpretable_EvalWatchAttr : Coster, Interpretable.InterpretableAttribute, AttributeFactory_Attribute
+	  public sealed class Interpretable_EvalWatchAttr : Coster, Interpretable_InterpretableAttribute, AttributeFactory_Attribute
 	  {
 	internal readonly Interpretable_InterpretableAttribute attr;
 	internal readonly InterpretableDecorator_EvalObserver observer;
 
 	public Interpretable_EvalWatchAttr(Interpretable_InterpretableAttribute attr, InterpretableDecorator_EvalObserver observer)
 	{
-	  this.attr = Objects.requireNonNull(attr);
-	  this.observer = Objects.requireNonNull(observer);
+	  this.attr = attr;
+	  this.observer = observer;
 	}
 
 	public long Id()
 	{
-	  return attr.Id();
+	  return ((Interpretable)attr).Id();
 	}
 
 	/// <summary>
@@ -1257,12 +1256,12 @@ namespace Cel.Interpreter
 	/// </summary>
 	public AttributeFactory_Attribute AddQualifier(AttributeFactory_Qualifier q)
 	{
-	  if (q is ConstantQualifierEquator)
+	  if (q is AttributeFactory_ConstantQualifierEquator)
 	  {
 		AttributeFactory_ConstantQualifierEquator cq = (AttributeFactory_ConstantQualifierEquator) q;
 		q = new Interpretable_EvalWatchConstQualEquat(cq, observer, attr.Adapter());
 	  }
-	  else if (q is ConstantQualifier)
+	  else if (q is AttributeFactory_ConstantQualifier)
 	  {
 		AttributeFactory_ConstantQualifier cq = (AttributeFactory_ConstantQualifier) q;
 		q = new Interpretable_EvalWatchConstQual(cq, observer, attr.Adapter());
@@ -1275,12 +1274,12 @@ namespace Cel.Interpreter
 	  return this;
 	}
 
-	public override AttributeFactory_Attribute Attr()
+	public AttributeFactory_Attribute Attr()
 	{
 	  return attr.Attr();
 	}
 
-	public override TypeAdapter Adapter()
+	public TypeAdapter Adapter()
 	{
 	  return attr.Adapter();
 	}
@@ -1299,15 +1298,15 @@ namespace Cel.Interpreter
 	/// Cost implements the Coster interface method. </summary>
 	public Coster_Cost Cost()
 	{
-	  return estimateCost(attr);
+	  return Coster_Cost.EstimateCost(attr);
 	}
 
 	/// <summary>
 	/// Eval implements the Interpretable interface method. </summary>
-	public override Val Eval(Cel.Interpreter.Activation ctx)
+	public Val Eval(Cel.Interpreter.Activation ctx)
 	{
 	  Val val = attr.Eval(ctx);
-	  observer.Observe(Id(), val);
+	  observer(Id(), val);
 	  return val;
 	}
 
@@ -1319,21 +1318,16 @@ namespace Cel.Interpreter
 
 	  public abstract class Interpretable_AbstractEvalWatch<T> : Interpretable_AbstractEval, Coster, AttributeFactory_Qualifier where T : Cel.Interpreter.AttributeFactory_Qualifier
 	  {
-		  public abstract Coster_Cost costOf(long min, long max);
-		  public override abstract Coster_Cost calExhaustiveBinaryOpsCost(Interpretable lhs, Interpretable rhs);
-		  public override abstract Coster_Cost sumOfCost(Interpretable[] interps);
-		  public override abstract Coster_Cost calShortCircuitBinaryOpsCost(Interpretable lhs, Interpretable rhs);
-		  public override abstract Interpretable_InterpretableConst newConstValue(long id, Val val);
-		  public override abstract Val eval(Activation activation);
+		  public override abstract Val Eval(Activation activation);
 	protected internal readonly T @delegate;
 	protected internal readonly InterpretableDecorator_EvalObserver observer;
 	protected internal readonly TypeAdapter adapter;
 
-	internal Interpretable_AbstractEvalWatch(T @delegate, InterpretableDecorator_EvalObserver observer, TypeAdapter adapter) : base(@delegate.id())
+	internal Interpretable_AbstractEvalWatch(T @delegate, InterpretableDecorator_EvalObserver observer, TypeAdapter adapter) : base(@delegate.Id())
 	{
 	  this.@delegate = @delegate;
-	  this.observer = Objects.requireNonNull(observer);
-	  this.adapter = Objects.requireNonNull(adapter);
+	  this.observer = observer;
+	  this.adapter = adapter;
 	}
 
 	/// <summary>
@@ -1344,13 +1338,13 @@ namespace Cel.Interpreter
 	  Val val;
 	  if (@out != null)
 	  {
-		val = adapter.NativeToValue(@out);
+		val = adapter(@out);
 	  }
 	  else
 	  {
-		val = newErr(string.Format("qualify failed, vars={0}, obj={1}", vars, obj));
+		val = Err.NewErr(string.Format("qualify failed, vars={0}, obj={1}", vars, obj));
 	  }
-	  observer.Observe(Id(), val);
+	  observer(Id(), val);
 	  return @out;
 	}
 
@@ -1358,7 +1352,7 @@ namespace Cel.Interpreter
 	/// Cost implements the Coster interface method. </summary>
 	public virtual Coster_Cost Cost()
 	{
-	  return estimateCost(@delegate);
+	  return Coster_Cost.EstimateCost(@delegate);
 	}
 	  }
 
@@ -1375,7 +1369,7 @@ namespace Cel.Interpreter
 
 	public Val Value()
 	{
-	  return @delegate.value();
+	  return @delegate.Value();
 	}
 
 	/// <summary>
@@ -1383,7 +1377,7 @@ namespace Cel.Interpreter
 	/// </summary>
 	public bool QualifierValueEquals(object value)
 	{
-	  return @delegate.qualifierValueEquals(value);
+	  return @delegate.QualifierValueEquals(value);
 	}
 
 	public override string ToString()
@@ -1405,7 +1399,7 @@ namespace Cel.Interpreter
 
 	public Val Value()
 	{
-	  return @delegate.value();
+	  return @delegate.Value();
 	}
 
 	public override string ToString()
@@ -1431,30 +1425,30 @@ namespace Cel.Interpreter
 	}
 	  }
 
-	  public sealed class Interpretable_EvalWatchConst : Interpretable.InterpretableConst, Coster
+	  public sealed class Interpretable_EvalWatchConst : Interpretable_InterpretableConst, Coster
 	  {
 	internal readonly Interpretable_InterpretableConst c;
 	internal readonly InterpretableDecorator_EvalObserver observer;
 
 	internal Interpretable_EvalWatchConst(Interpretable_InterpretableConst c, InterpretableDecorator_EvalObserver observer)
 	{
-	  this.c = Objects.requireNonNull(c);
-	  this.observer = Objects.requireNonNull(observer);
+	  this.c = c;
+	  this.observer = observer;
 	}
 
-	public override long Id()
+	public long Id()
 	{
 	  return c.Id();
 	}
 
-	public override Val Eval(Cel.Interpreter.Activation activation)
+	public Val Eval(Cel.Interpreter.Activation activation)
 	{
 	  Val val = Value();
-	  observer.Observe(Id(), val);
+	  observer(Id(), val);
 	  return val;
 	}
 
-	public override Val Value()
+	public Val Value()
 	{
 	  return c.Value();
 	}
@@ -1463,7 +1457,7 @@ namespace Cel.Interpreter
 	/// Cost implements the Coster interface method. </summary>
 	public Coster_Cost Cost()
 	{
-	  return estimateCost(c);
+	  return Coster_Cost.EstimateCost(c);
 	}
 
 	public override string ToString()
@@ -1485,36 +1479,36 @@ namespace Cel.Interpreter
 	{
 	  Val lVal = lhs.Eval(ctx);
 	  Val rVal = rhs.Eval(ctx);
-	  if (lVal == True || rVal == True)
+	  if (lVal == BoolT.True || rVal == BoolT.True)
 	  {
-		return True;
+		return BoolT.True;
 	  }
-	  if (lVal == False && rVal == False)
+	  if (lVal == BoolT.False && rVal == BoolT.False)
 	  {
-		return False;
+		return BoolT.False;
 	  }
-	  if (isUnknown(lVal))
+	  if (UnknownT.IsUnknown(lVal))
 	  {
 		return lVal;
 	  }
-	  if (isUnknown(rVal))
+	  if (UnknownT.IsUnknown(rVal))
 	  {
 		return rVal;
 	  }
 	  // TODO: Combine the errors into a set in the future.
 	  // If the left-hand side is non-boolean return it as the error.
-	  if (isError(lVal))
+	  if (Err.IsError(lVal))
 	  {
 		return lVal;
 	  }
-	  return noSuchOverload(lVal, Operator.LogicalOr.id, rVal);
+	  return Err.NoSuchOverload(lVal, Operator.LogicalOr.id, rVal);
 	}
 
 	/// <summary>
 	/// Cost implements the Coster interface method. </summary>
 	public override Coster_Cost Cost()
 	{
-	  return CalExhaustiveBinaryOpsCost(lhs, rhs);
+	  return Interpretable.CalExhaustiveBinaryOpsCost(lhs, rhs);
 	}
 
 	public override string ToString()
@@ -1536,34 +1530,34 @@ namespace Cel.Interpreter
 	{
 	  Val lVal = lhs.Eval(ctx);
 	  Val rVal = rhs.Eval(ctx);
-	  if (lVal == False || rVal == False)
+	  if (lVal == BoolT.False || rVal == BoolT.False)
 	  {
-		return False;
+		return BoolT.False;
 	  }
-	  if (lVal == True && rVal == True)
+	  if (lVal == BoolT.True && rVal == BoolT.True)
 	  {
-		return True;
+		return BoolT.True;
 	  }
-	  if (isUnknown(lVal))
+	  if (UnknownT.IsUnknown(lVal))
 	  {
 		return lVal;
 	  }
-	  if (isUnknown(rVal))
+	  if (UnknownT.IsUnknown(rVal))
 	  {
 		return rVal;
 	  }
-	  if (isError(lVal))
+	  if (Err.IsError(lVal))
 	  {
 		return lVal;
 	  }
-	  return noSuchOverload(lVal, Operator.LogicalAnd.id, rVal);
+	  return Err.NoSuchOverload(lVal, Operator.LogicalAnd.id, rVal);
 	}
 
 	/// <summary>
 	/// Cost implements the Coster interface method. </summary>
 	public override Coster_Cost Cost()
 	{
-	  return CalExhaustiveBinaryOpsCost(lhs, rhs);
+	  return Interpretable.CalExhaustiveBinaryOpsCost(lhs, rhs);
 	}
 
 	public override string ToString()
@@ -1580,8 +1574,8 @@ namespace Cel.Interpreter
 
 	internal Interpretable_EvalExhaustiveConditional(long id, TypeAdapter adapter, AttributeFactory_ConditionalAttribute attr) : base(id)
 	{
-	  this.adapter = Objects.requireNonNull(adapter);
-	  this.attr = Objects.requireNonNull(attr);
+	  this.adapter = adapter;
+	  this.attr = attr;
 	}
 
 	/// <summary>
@@ -1591,17 +1585,17 @@ namespace Cel.Interpreter
 	  Val cVal = attr.expr.Eval(ctx);
 	  object tVal = attr.truthy.Resolve(ctx);
 	  object fVal = attr.falsy.Resolve(ctx);
-	  if (cVal == True)
+	  if (cVal == BoolT.True)
 	  {
-		return adapter.NativeToValue(tVal);
+		return adapter(tVal);
 	  }
-	  else if (cVal == False)
+	  else if (cVal == BoolT.False)
 	  {
-		return adapter.NativeToValue(fVal);
+		return adapter(fVal);
 	  }
 	  else
 	  {
-		return noSuchOverload(null, Operator.Conditional.id, cVal);
+		return Err.NoSuchOverload(null, Operator.Conditional.id, cVal);
 	  }
 	}
 
@@ -1648,7 +1642,7 @@ namespace Cel.Interpreter
 	  if (!foldRange.Type().HasTrait(Trait.IterableType))
 	  {
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-		return valOrErr(foldRange, "got '%s', expected iterable type", foldRange.GetType().FullName);
+		return Err.ValOrErr(foldRange, "got '%s', expected iterable type", foldRange.GetType().FullName);
 	  }
 	  // Configure the fold activation with the accumulator initial value.
 	  Activation_VarActivation accuCtx = new Activation_VarActivation();
@@ -1659,7 +1653,7 @@ namespace Cel.Interpreter
 	  iterCtx.parent = accuCtx;
 	  iterCtx.name = iterVar;
 	  IteratorT it = ((IterableT) foldRange).Iterator();
-	  while (it.HasNext() == True)
+	  while (it.HasNext() == BoolT.True)
 	  {
 		// Modify the iter var in the fold activation.
 		iterCtx.val = it.Next();
@@ -1679,28 +1673,28 @@ namespace Cel.Interpreter
 	public Coster_Cost Cost()
 	{
 	  // Compute the cost for evaluating iterRange.
-	  Coster_Cost i = estimateCost(iterRange);
+	  Coster_Cost i = Coster_Cost.EstimateCost(iterRange);
 
 	  // Compute the size of iterRange. If the size depends on the input, return the maximum
 	  // possible
 	  // cost range.
-	  Val foldRange = iterRange.Eval(emptyActivation());
+	  Val foldRange = iterRange.Eval(Activation.EmptyActivation());
 	  if (!foldRange.Type().HasTrait(Trait.IterableType))
 	  {
 		return Coster_Cost.Unknown;
 	  }
 	  long rangeCnt = 0L;
 	  IteratorT it = ((IterableT) foldRange).Iterator();
-	  while (it.HasNext() == True)
+	  while (it.HasNext() == BoolT.True)
 	  {
 		it.Next();
 		rangeCnt++;
 	  }
 
-	  Coster_Cost a = estimateCost(accu);
-	  Coster_Cost c = estimateCost(cond);
-	  Coster_Cost s = estimateCost(step);
-	  Coster_Cost r = estimateCost(result);
+	  Coster_Cost a = Coster_Cost.EstimateCost(accu);
+	  Coster_Cost c = Coster_Cost.EstimateCost(cond);
+	  Coster_Cost s = Coster_Cost.EstimateCost(step);
+	  Coster_Cost r = Coster_Cost.EstimateCost(result);
 
 	  // The cond and step costs are multiplied by size(iterRange).
 	  return i.Add(a).Add(c.Multiply(rangeCnt)).Add(s.Multiply(rangeCnt)).Add(r);
@@ -1719,8 +1713,8 @@ namespace Cel.Interpreter
 
 	internal Interpretable_EvalAttr(TypeAdapter adapter, AttributeFactory_Attribute attr) : base(attr.Id())
 	{
-	  this.adapter = Objects.requireNonNull(adapter);
-	  this.attr = Objects.requireNonNull(attr);
+	  this.adapter = adapter;
+	  this.attr = attr;
 	}
 
 	/// <summary>
@@ -1749,7 +1743,7 @@ namespace Cel.Interpreter
 	/// Cost implements the Coster interface method. </summary>
 	public Coster_Cost Cost()
 	{
-	  return estimateCost(attr);
+	  return Coster_Cost.EstimateCost(attr);
 	}
 
 	/// <summary>
@@ -1761,13 +1755,13 @@ namespace Cel.Interpreter
 		object v = attr.Resolve(ctx);
 		if (v != null)
 		{
-		  return adapter.NativeToValue(v);
+		  return adapter(v);
 		}
-		return newErr(string.Format("eval failed, ctx: {0}", ctx));
+		return Err.NewErr(string.Format("eval failed, ctx: {0}", ctx));
 	  }
 	  catch (Exception e)
 	  {
-		return newErr(e, e.ToString());
+		return Err.NewErr(e, e.ToString());
 	  }
 	}
 

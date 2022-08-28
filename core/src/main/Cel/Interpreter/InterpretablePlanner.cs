@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cel.Common.Types;
 
 /*
  * Copyright (C) 2021 The Authors of CEL-Java
@@ -78,7 +79,7 @@ namespace Cel.Interpreter
 	  /// </summary>
 	  static InterpretablePlanner NewPlanner(Dispatcher disp, TypeProvider provider, TypeAdapter adapter, AttributeFactory attrFactory, Container cont, CheckedExpr @checked, params InterpretableDecorator[] decorators)
 	  {
-		return new InterpretablePlanner_Planner(disp, provider, adapter, attrFactory, cont, @checked.getReferenceMapMap(), @checked.getTypeMapMap(), decorators);
+		return new InterpretablePlanner_Planner(disp, provider, adapter, attrFactory, cont, @checked.ReferenceMap, @checked.TypeMap, decorators);
 	  }
 
 	  /// <summary>
@@ -88,7 +89,7 @@ namespace Cel.Interpreter
 	  /// </summary>
 	  static InterpretablePlanner NewUncheckedPlanner(Dispatcher disp, TypeProvider provider, TypeAdapter adapter, AttributeFactory attrFactory, Container cont, params InterpretableDecorator[] decorators)
 	  {
-		return new InterpretablePlanner_Planner(disp, provider, adapter, attrFactory, cont, new Dictionary<>(), new Dictionary<>(), decorators);
+		return new InterpretablePlanner_Planner(disp, provider, adapter, attrFactory, cont, new Dictionary<long, Reference>(), new Dictionary<long, Type>(), decorators);
 	  }
 
 	  /// <summary>
@@ -127,24 +128,24 @@ namespace Cel.Interpreter
 	/// </summary>
 	public Interpretable Plan(Expr expr)
 	{
-	  switch (expr.getExprKindCase())
+	  switch (expr.ExprKindCase)
 	  {
-		case CALL_EXPR:
+		case Expr.ExprKindOneofCase.CallExpr:
 		  return Decorate(PlanCall(expr));
-		case IDENT_EXPR:
+		case Expr.ExprKindOneofCase.IdentExpr:
 		  return Decorate(PlanIdent(expr));
-		case SELECT_EXPR:
+		case Expr.ExprKindOneofCase.SelectExpr:
 		  return Decorate(PlanSelect(expr));
-		case LIST_EXPR:
+		case Expr.ExprKindOneofCase.ListExpr:
 		  return Decorate(PlanCreateList(expr));
-		case STRUCT_EXPR:
+		case Expr.ExprKindOneofCase.StructExpr:
 		  return Decorate(PlanCreateStruct(expr));
-		case COMPREHENSION_EXPR:
+		case Expr.ExprKindOneofCase.ComprehensionExpr:
 		  return Decorate(PlanComprehension(expr));
-		case CONST_EXPR:
+		case Expr.ExprKindOneofCase.ConstExpr:
 		  return Decorate(PlanConst(expr));
 	  }
-	  throw new System.ArgumentException(string.Format("unsupported expr of kind {0}: '{1}'", expr.getExprKindCase(), expr));
+	  throw new System.ArgumentException(string.Format("unsupported expr of kind {0}: '{1}'", expr.ExprKindCase, expr));
 	}
 
 	/// <summary>
@@ -155,7 +156,7 @@ namespace Cel.Interpreter
 	{
 	  foreach (InterpretableDecorator dec in decorators)
 	  {
-		i = dec.Decorate(i);
+		i = dec(i);
 		if (i == null)
 		{
 		  return null;
@@ -169,39 +170,42 @@ namespace Cel.Interpreter
 	internal Interpretable PlanIdent(Expr expr)
 	{
 	  // Establish whether the identifier is in the reference map.
-	  Reference identRef = refMap[expr.getId()];
+	  Reference identRef = refMap[expr.Id];
 	  if (identRef != null)
 	  {
-		return PlanCheckedIdent(expr.getId(), identRef);
+		return PlanCheckedIdent(expr.Id, identRef);
 	  }
 	  // Create the possible attribute list for the unresolved reference.
-	  Expr.Ident ident = expr.getIdentExpr();
-	  return new Interpretable_EvalAttr(adapter, attrFactory.MaybeAttribute(expr.getId(), ident.getName()));
+	  Ident ident = expr.IdentExpr;
+	  return new Interpretable_EvalAttr(adapter, attrFactory.MaybeAttribute(expr.Id, ident.Name));
 	}
 
 	internal Interpretable PlanCheckedIdent(long id, Reference identRef)
 	{
 	  // Plan a constant reference if this is the case for this simple identifier.
-	  if (identRef.getValue() != Reference.getDefaultInstance().getValue())
+	  if (!Object.Equals(identRef.Value, new Reference().Value))
 	  {
-		return Plan(Expr.newBuilder().setId(id).setConstExpr(identRef.getValue()).build());
+		  Expr expr = new Expr();
+		  expr.Id = id;
+		  expr.ConstExpr = identRef.Value;
+		  return Plan(expr);
 	  }
 
 	  // Check to see whether the type map indicates this is a type name. All types should be
 	  // registered with the provider.
 	  Type cType = typeMap[id];
-	  if (cType != null && cType.getType() != Type.getDefaultInstance())
+	  if (cType != null && !Object.Equals(cType.Type_, new Type()))
 	  {
-		Val cVal = provider.FindIdent(identRef.getName());
+		Val cVal = provider.FindIdent(identRef.Name);
 		if (cVal == null)
 		{
-		  throw new System.InvalidOperationException(string.Format("reference to undefined type: {0}", identRef.getName()));
+		  throw new System.InvalidOperationException(string.Format("reference to undefined type: {0}", identRef.Name));
 		}
-		return newConstValue(id, cVal);
+		return Interpretable.NewConstValue(id, cVal);
 	  }
 
 	  // Otherwise, return the attribute for the resolved identifier name.
-	  return new Interpretable_EvalAttr(adapter, attrFactory.AbsoluteAttribute(id, identRef.getName()));
+	  return new Interpretable_EvalAttr(adapter, attrFactory.AbsoluteAttribute(id, identRef.Name));
 	}
 
 	/// <summary>
@@ -217,22 +221,22 @@ namespace Cel.Interpreter
 	{
 	  // If the Select id appears in the reference map from the CheckedExpr proto then it is either
 	  // a namespaced identifier or enum value.
-	  Reference identRef = refMap[expr.getId()];
+	  Reference identRef = refMap[expr.Id];
 	  if (identRef != null)
 	  {
-		return PlanCheckedIdent(expr.getId(), identRef);
+		return PlanCheckedIdent(expr.Id, identRef);
 	  }
 
-	  Expr.Select sel = expr.getSelectExpr();
+	  Select sel = expr.SelectExpr;
 	  // Plan the operand evaluation.
-	  Interpretable op = Plan(sel.getOperand());
+	  Interpretable op = Plan(sel.Operand);
 
 	  // Determine the field type if this is a proto message type.
 	  FieldType fieldType = null;
-	  Type opType = typeMap[sel.getOperand().getId()];
-	  if (opType != null && !opType.getMessageType().isEmpty())
+	  Type opType = typeMap[sel.Operand.Id];
+	  if (opType != null && opType.MessageType.Length != 0)
 	  {
-		FieldType ft = provider.FindFieldType(opType.getMessageType(), sel.getField());
+		FieldType ft = provider.FindFieldType(opType.MessageType, sel.Field);
 		if (ft != null && ft.isSet != null && ft.getFrom != null)
 		{
 		  fieldType = ft;
@@ -252,19 +256,19 @@ namespace Cel.Interpreter
 	  // `has(a.b.c)`,
 	  // it is not clear whether has should error or follow the convention defined for structured
 	  // values.
-	  if (sel.getTestOnly())
+	  if (sel.TestOnly)
 	  {
 		// Return the test only eval expression.
-		return new Interpretable_EvalTestOnly(expr.getId(), op, stringOf(sel.getField()), fieldType);
+		return new Interpretable_EvalTestOnly(expr.Id, op, StringT.StringOf(sel.Field), fieldType);
 	  }
 	  // Build a qualifier.
-	  AttributeFactory_Qualifier qual = attrFactory.NewQualifier(opType, expr.getId(), sel.getField());
+	  AttributeFactory_Qualifier qual = attrFactory.NewQualifier(opType, expr.Id, sel.Field);
 	  if (qual == null)
 	  {
 		return null;
 	  }
 	  // Lastly, create a field selection Interpretable.
-	  if (op is InterpretableAttribute)
+	  if (op is Interpretable_InterpretableAttribute)
 	  {
 		Interpretable_InterpretableAttribute attr = (Interpretable_InterpretableAttribute) op;
 		attr.AddQualifier(qual);
@@ -287,10 +291,10 @@ namespace Cel.Interpreter
 	/// </summary>
 	internal Interpretable PlanCall(Expr expr)
 	{
-	  Expr.Call call = expr.getCallExpr();
+	  Call call = expr.CallExpr;
 	  ResolvedFunction resolvedFunc = ResolveFunction(expr);
 	  // target, fnName, oName := p.resolveFunction(expr)
-	  int argCount = call.getArgsCount();
+	  int argCount = call.Args.Count;
 	  int offset = 0;
 	  if (resolvedFunc.target != null)
 	  {
@@ -308,9 +312,9 @@ namespace Cel.Interpreter
 		}
 		args[0] = arg;
 	  }
-	  for (int i = 0; i < call.getArgsCount(); i++)
+	  for (int i = 0; i < call.Args.Count; i++)
 	  {
-		Expr argExpr = call.getArgs(i);
+		Expr argExpr = call.Args[i];
 		Interpretable arg = Plan(argExpr);
 		args[i + offset] = arg;
 	  }
@@ -374,7 +378,7 @@ namespace Cel.Interpreter
 	  {
 		throw new System.ArgumentException(string.Format("no such overload: {0}()", function));
 	  }
-	  return new Interpretable_EvalZeroArity(expr.getId(), function, overload, impl.function);
+	  return new Interpretable_EvalZeroArity(expr.Id, function, overload, impl.function);
 	}
 
 	/// <summary>
@@ -382,7 +386,7 @@ namespace Cel.Interpreter
 	internal Interpretable PlanCallUnary(Expr expr, string function, string overload, Overload impl, Interpretable[] args)
 	{
 	  UnaryOp fn = null;
-	  Trait trait = null;
+	  Trait trait = Trait.None;
 	  if (impl != null)
 	  {
 		if (impl.unary == null)
@@ -392,7 +396,7 @@ namespace Cel.Interpreter
 		fn = impl.unary;
 		trait = impl.operandTrait;
 	  }
-	  return new Interpretable_EvalUnary(expr.getId(), function, overload, args[0], trait, fn);
+	  return new Interpretable_EvalUnary(expr.Id, function, overload, args[0], trait, fn);
 	}
 
 	/// <summary>
@@ -400,7 +404,7 @@ namespace Cel.Interpreter
 	internal Interpretable PlanCallBinary(Expr expr, string function, string overload, Overload impl, params Interpretable[] args)
 	{
 	  BinaryOp fn = null;
-	  Trait trait = null;
+	  Trait trait = Trait.None;
 	  if (impl != null)
 	  {
 		if (impl.binary == null)
@@ -410,7 +414,7 @@ namespace Cel.Interpreter
 		fn = impl.binary;
 		trait = impl.operandTrait;
 	  }
-	  return new Interpretable_EvalBinary(expr.getId(), function, overload, args[0], args[1], trait, fn);
+	  return new Interpretable_EvalBinary(expr.Id, function, overload, args[0], args[1], trait, fn);
 	}
 
 	/// <summary>
@@ -418,7 +422,7 @@ namespace Cel.Interpreter
 	internal Interpretable PlanCallVarArgs(Expr expr, string function, string overload, Overload impl, params Interpretable[] args)
 	{
 	  FunctionOp fn = null;
-	  Trait trait = null;
+	  Trait trait = Trait.None;
 	  if (impl != null)
 	  {
 		if (impl.function == null)
@@ -428,35 +432,35 @@ namespace Cel.Interpreter
 		fn = impl.function;
 		trait = impl.operandTrait;
 	  }
-	  return new Interpretable_EvalVarArgs(expr.getId(), function, overload, args, trait, fn);
+	  return new Interpretable_EvalVarArgs(expr.Id, function, overload, args, trait, fn);
 	}
 
 	/// <summary>
 	/// planCallEqual generates an equals (==) Interpretable. </summary>
 	internal Interpretable PlanCallEqual(Expr expr, params Interpretable[] args)
 	{
-	  return new Interpretable_EvalEq(expr.getId(), args[0], args[1]);
+	  return new Interpretable_EvalEq(expr.Id, args[0], args[1]);
 	}
 
 	/// <summary>
 	/// planCallNotEqual generates a not equals (!=) Interpretable. </summary>
 	internal Interpretable PlanCallNotEqual(Expr expr, params Interpretable[] args)
 	{
-	  return new Interpretable_EvalNe(expr.getId(), args[0], args[1]);
+	  return new Interpretable_EvalNe(expr.Id, args[0], args[1]);
 	}
 
 	/// <summary>
 	/// planCallLogicalAnd generates a logical and (&&) Interpretable. </summary>
 	internal Interpretable PlanCallLogicalAnd(Expr expr, params Interpretable[] args)
 	{
-	  return new Interpretable_EvalAnd(expr.getId(), args[0], args[1]);
+	  return new Interpretable_EvalAnd(expr.Id, args[0], args[1]);
 	}
 
 	/// <summary>
 	/// planCallLogicalOr generates a logical or (||) Interpretable. </summary>
 	internal Interpretable PlanCallLogicalOr(Expr expr, params Interpretable[] args)
 	{
-	  return new Interpretable_EvalOr(expr.getId(), args[0], args[1]);
+	  return new Interpretable_EvalOr(expr.Id, args[0], args[1]);
 	}
 
 	/// <summary>
@@ -467,7 +471,7 @@ namespace Cel.Interpreter
 
 	  Interpretable t = args[1];
 	  AttributeFactory_Attribute tAttr;
-	  if (t is InterpretableAttribute)
+	  if (t is Interpretable_InterpretableAttribute)
 	  {
 		Interpretable_InterpretableAttribute truthyAttr = (Interpretable_InterpretableAttribute) t;
 		tAttr = truthyAttr.Attr();
@@ -479,7 +483,7 @@ namespace Cel.Interpreter
 
 	  Interpretable f = args[2];
 	  AttributeFactory_Attribute fAttr;
-	  if (f is InterpretableAttribute)
+	  if (f is Interpretable_InterpretableAttribute)
 	  {
 		Interpretable_InterpretableAttribute falsyAttr = (Interpretable_InterpretableAttribute) f;
 		fAttr = falsyAttr.Attr();
@@ -489,7 +493,7 @@ namespace Cel.Interpreter
 		fAttr = attrFactory.RelativeAttribute(f.Id(), f);
 	  }
 
-	  return new Interpretable_EvalAttr(adapter, attrFactory.ConditionalAttribute(expr.getId(), cond, tAttr, fAttr));
+	  return new Interpretable_EvalAttr(adapter, attrFactory.ConditionalAttribute(expr.Id, cond, tAttr, fAttr));
 	}
 
 	/// <summary>
@@ -505,11 +509,11 @@ namespace Cel.Interpreter
 	  {
 		return null;
 	  }
-	  Type opType = typeMap[expr.getCallExpr().getTarget().getId()];
-	  if (ind is InterpretableConst)
+	  Type opType = typeMap[expr.CallExpr.Target.Id];
+	  if (ind is Interpretable_InterpretableConst)
 	  {
 		Interpretable_InterpretableConst indConst = (Interpretable_InterpretableConst) ind;
-		AttributeFactory_Qualifier qual = attrFactory.NewQualifier(opType, expr.getId(), indConst.Value());
+		AttributeFactory_Qualifier qual = attrFactory.NewQualifier(opType, expr.Id, indConst.Value());
 		if (qual == null)
 		{
 		  return null;
@@ -517,10 +521,10 @@ namespace Cel.Interpreter
 		opAttr.AddQualifier(qual);
 		return opAttr;
 	  }
-	  if (ind is InterpretableAttribute)
+	  if (ind is Interpretable_InterpretableAttribute)
 	  {
 		Interpretable_InterpretableAttribute indAttr = (Interpretable_InterpretableAttribute) ind;
-		AttributeFactory_Qualifier qual = attrFactory.NewQualifier(opType, expr.getId(), indAttr);
+		AttributeFactory_Qualifier qual = attrFactory.NewQualifier(opType, expr.Id, indAttr);
 		if (qual == null)
 		{
 		  return null;
@@ -528,7 +532,7 @@ namespace Cel.Interpreter
 		opAttr.AddQualifier(qual);
 		return opAttr;
 	  }
-	  Interpretable_InterpretableAttribute indQual = RelativeAttr(expr.getId(), ind);
+	  Interpretable_InterpretableAttribute indQual = RelativeAttr(expr.Id, ind);
 	  if (indQual == null)
 	  {
 		return null;
@@ -541,11 +545,11 @@ namespace Cel.Interpreter
 	/// planCreateList generates a list construction Interpretable. </summary>
 	internal Interpretable PlanCreateList(Expr expr)
 	{
-	  Expr.CreateList list = expr.getListExpr();
-	  Interpretable[] elems = new Interpretable[list.getElementsCount()];
-	  for (int i = 0; i < list.getElementsCount(); i++)
+	  CreateList list = expr.ListExpr;
+	  Interpretable[] elems = new Interpretable[list.Elements.Count];
+	  for (int i = 0; i < list.Elements.Count; i++)
 	  {
-		Expr elem = list.getElements(i);
+		Expr elem = list.Elements[i];
 		Interpretable elemVal = Plan(elem);
 		if (elemVal == null)
 		{
@@ -553,111 +557,111 @@ namespace Cel.Interpreter
 		}
 		elems[i] = elemVal;
 	  }
-	  return new Interpretable_EvalList(expr.getId(), elems, adapter);
+	  return new Interpretable_EvalList(expr.Id, elems, adapter);
 	}
 
 	/// <summary>
 	/// planCreateStruct generates a map or object construction Interpretable. </summary>
 	internal Interpretable PlanCreateStruct(Expr expr)
 	{
-	  Expr.CreateStruct str = expr.getStructExpr();
-	  if (!str.getMessageName().isEmpty())
+	  CreateStruct str = expr.StructExpr;
+	  if (str.MessageName.Length != 0)
 	  {
 		return PlanCreateObj(expr);
 	  }
-	  IList<Expr.CreateStruct.Entry> entries = str.getEntriesList();
+	  IList<Entry> entries = str.Entries;
 	  Interpretable[] keys = new Interpretable[entries.Count];
 	  Interpretable[] vals = new Interpretable[entries.Count];
 	  for (int i = 0; i < entries.Count; i++)
 	  {
-		Expr.CreateStruct.Entry entry = entries[i];
-		Interpretable keyVal = Plan(entry.getMapKey());
+		Entry entry = entries[i];
+		Interpretable keyVal = Plan(entry.MapKey);
 		if (keyVal == null)
 		{
 		  return null;
 		}
 		keys[i] = keyVal;
 
-		Interpretable valVal = Plan(entry.getValue());
+		Interpretable valVal = Plan(entry.Value);
 		if (valVal == null)
 		{
 		  return null;
 		}
 		vals[i] = valVal;
 	  }
-	  return new Interpretable_EvalMap(expr.getId(), keys, vals, adapter);
+	  return new Interpretable_EvalMap(expr.Id, keys, vals, adapter);
 	}
 
 	/// <summary>
 	/// planCreateObj generates an object construction Interpretable. </summary>
 	internal Interpretable PlanCreateObj(Expr expr)
 	{
-	  Expr.CreateStruct obj = expr.getStructExpr();
-	  string typeName = ResolveTypeName(obj.getMessageName());
+	  CreateStruct obj = expr.StructExpr;
+	  string typeName = ResolveTypeName(obj.MessageName);
 	  if (string.ReferenceEquals(typeName, null))
 	  {
-		throw new System.InvalidOperationException(string.Format("unknown type: {0}", obj.getMessageName()));
+		throw new System.InvalidOperationException(string.Format("unknown type: {0}", obj.MessageName));
 	  }
-	  IList<Expr.CreateStruct.Entry> entries = obj.getEntriesList();
+	  IList<Entry> entries = obj.Entries;
 	  string[] fields = new string[entries.Count];
 	  Interpretable[] vals = new Interpretable[entries.Count];
 	  for (int i = 0; i < entries.Count; i++)
 	  {
-		Expr.CreateStruct.Entry entry = entries[i];
-		fields[i] = entry.getFieldKey();
-		Interpretable val = Plan(entry.getValue());
+		Entry entry = entries[i];
+		fields[i] = entry.FieldKey;
+		Interpretable val = Plan(entry.Value);
 		if (val == null)
 		{
 		  return null;
 		}
 		vals[i] = val;
 	  }
-	  return new Interpretable_EvalObj(expr.getId(), typeName, fields, vals, provider);
+	  return new Interpretable_EvalObj(expr.Id, typeName, fields, vals, provider);
 	}
 
 	/// <summary>
 	/// planComprehension generates an Interpretable fold operation. </summary>
 	internal Interpretable PlanComprehension(Expr expr)
 	{
-	  Expr.Comprehension fold = expr.getComprehensionExpr();
-	  Interpretable accu = Plan(fold.getAccuInit());
+	  Comprehension fold = expr.ComprehensionExpr;
+	  Interpretable accu = Plan(fold.AccuInit);
 	  if (accu == null)
 	  {
 		return null;
 	  }
-	  Interpretable iterRange = Plan(fold.getIterRange());
+	  Interpretable iterRange = Plan(fold.IterRange);
 	  if (iterRange == null)
 	  {
 		return null;
 	  }
-	  Interpretable cond = Plan(fold.getLoopCondition());
+	  Interpretable cond = Plan(fold.LoopCondition);
 	  if (cond == null)
 	  {
 		return null;
 	  }
-	  Interpretable step = Plan(fold.getLoopStep());
+	  Interpretable step = Plan(fold.LoopStep);
 	  if (step == null)
 	  {
 		return null;
 	  }
-	  Interpretable result = Plan(fold.getResult());
+	  Interpretable result = Plan(fold.Result);
 	  if (result == null)
 	  {
 		return null;
 	  }
-	  return new Interpretable_EvalFold(expr.getId(), fold.getAccuVar(), accu, fold.getIterVar(), iterRange, cond, step, result);
+	  return new Interpretable_EvalFold(expr.Id, fold.AccuVar, accu, fold.IterVar, iterRange, cond, step, result);
 	}
 
 	/// <summary>
 	/// planConst generates a constant valued Interpretable. </summary>
 	internal Interpretable PlanConst(Expr expr)
 	{
-	  Val val = ConstValue(expr.getConstExpr());
+	  Val val = ConstValue(expr.ConstExpr);
 	  if (val == null)
 	  {
 		return null;
 	  }
-	  return newConstValue(expr.getId(), val);
+	  return Interpretable.NewConstValue(expr.Id, val);
 	}
 
 	/// <summary>
@@ -666,28 +670,28 @@ namespace Cel.Interpreter
 //ORIGINAL LINE: @SuppressWarnings("deprecation") Cel.Common.Types.ref.Val constValue(Google.Api.Expr.V1Alpha1.Constant c)
 	internal Val ConstValue(Constant c)
 	{
-	  switch (c.getConstantKindCase())
+	  switch (c.ConstantKindCase)
 	  {
-		case BOOL_VALUE:
-		  return boolOf(c.getBoolValue());
-		case BYTES_VALUE:
-		  return bytesOf(c.getBytesValue());
-		case DOUBLE_VALUE:
-		  return doubleOf(c.getDoubleValue());
-		case DURATION_VALUE:
-		  return durationOf(c.getDurationValue());
-		case INT64_VALUE:
-		  return intOf(c.getInt64Value());
-		case NULL_VALUE:
+		case Constant.ConstantKindOneofCase.BoolValue:
+		  return Types.BoolOf(c.BoolValue);
+		case Constant.ConstantKindOneofCase.BytesValue:
+		  return BytesT.BytesOf(c.BytesValue);
+		case Constant.ConstantKindOneofCase.DoubleValue:
+		  return DoubleT.DoubleOf(c.DoubleValue);
+		case Constant.ConstantKindOneofCase.DurationValue:
+		  return DurationT.DurationOf(c.DurationValue);
+		case Constant.ConstantKindOneofCase.Int64Value:
+		  return IntT.IntOf(c.Int64Value);
+		case Constant.ConstantKindOneofCase.NullValue:
 		  return NullT.NullValue;
-		case STRING_VALUE:
-		  return stringOf(c.getStringValue());
-		case TIMESTAMP_VALUE:
-		  return timestampOf(c.getTimestampValue());
-		case UINT64_VALUE:
-		  return uintOf(c.getUint64Value());
+		case Constant.ConstantKindOneofCase.StringValue:
+		  return StringT.StringOf(c.StringValue);
+		case Constant.ConstantKindOneofCase.TimestampValue:
+		  return TimestampT.TimestampOf(c.TimestampValue);
+		case Constant.ConstantKindOneofCase.Uint64Value:
+		  return UintT.UintOf(c.Uint64Value);
 	  }
-	  throw new System.ArgumentException(string.Format("unknown constant type: '{0}' of kind '{1}'", c, c.getConstantKindCase()));
+	  throw new System.ArgumentException(string.Format("unknown constant type: '{0}' of kind '{1}'", c, c.ConstantKindCase));
 	}
 
 	/// <summary>
@@ -739,19 +743,19 @@ namespace Cel.Interpreter
 	  // Note: similar logic exists within the `checker/checker.go`. If making changes here
 	  // please consider the impact on checker.go and consolidate implementations or mirror code
 	  // as appropriate.
-	  Expr.Call call = expr.getCallExpr();
-	  Expr target = call.hasTarget() ? call.getTarget() : null;
-	  string fnName = call.getFunction();
+	  Call call = expr.CallExpr;
+	  Expr target = call.Target != null ? call.Target : null;
+	  string fnName = call.Function;
 
 	  // Checked expressions always have a reference map entry, and _should_ have the fully
 	  // qualified
 	  // function name as the fnName value.
-	  Reference oRef = refMap[expr.getId()];
+	  Reference oRef = refMap[expr.Id];
 	  if (oRef != null)
 	  {
-		if (oRef.getOverloadIdCount() == 1)
+		if (oRef.OverloadId.Count == 1)
 		{
-		  return new ResolvedFunction(target, fnName, oRef.getOverloadId(0));
+		  return new ResolvedFunction(target, fnName, oRef.OverloadId[0]);
 		}
 		// Note, this namespaced function name will not appear as a fully qualified name in ASTs
 		// built and stored before cel-go v0.5.0; however, this functionality did not work at all
@@ -806,7 +810,7 @@ namespace Cel.Interpreter
 	internal Interpretable_InterpretableAttribute RelativeAttr(long id, Interpretable eval)
 	{
 	  Interpretable_InterpretableAttribute eAttr;
-	  if (eval is InterpretableAttribute)
+	  if (eval is Interpretable_InterpretableAttribute)
 	  {
 		eAttr = (Interpretable_InterpretableAttribute) eval;
 	  }
@@ -819,7 +823,7 @@ namespace Cel.Interpreter
 	  {
 		return null;
 	  }
-	  if (!(decAttr is InterpretableAttribute))
+	  if (!(decAttr is Interpretable_InterpretableAttribute))
 	  {
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
 		throw new System.InvalidOperationException(string.Format("invalid attribute decoration: {0}({1})", decAttr, decAttr.GetType().FullName));
@@ -836,7 +840,7 @@ namespace Cel.Interpreter
 	{
 	  // If the checker identified the expression as an attribute by the type-checker, then it can't
 	  // possibly be part of qualified name in a namespace.
-	  if (refMap.ContainsKey(operand.getId()))
+	  if (refMap.ContainsKey(operand.Id))
 	  {
 		return "";
 	  }

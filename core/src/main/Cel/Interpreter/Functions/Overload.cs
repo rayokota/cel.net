@@ -89,7 +89,7 @@ namespace Cel.Interpreter.Functions
         /// Operand trait used to dispatch the call. The zero-value indicates a global function overload or
         /// that one of the Unary / Binary / Function definitions should be used to execute the call.
         /// </summary>
-        public readonly Trait? operandTrait;
+        public readonly Trait operandTrait;
 
         /// <summary>
         /// Unary defines the overload with a UnaryOp implementation. May be nil. </summary>
@@ -110,15 +110,15 @@ namespace Cel.Interpreter.Functions
 
         public static Overload Unary(string @operator, UnaryOp op)
         {
-            return Unary(@operator, null, op);
+            return Unary(@operator, Trait.None, op);
         }
 
-        public static Overload Unary(Operator @operator, Trait? trait, UnaryOp op)
+        public static Overload Unary(Operator @operator, Trait trait, UnaryOp op)
         {
             return Unary(@operator.id, trait, op);
         }
 
-        public static Overload Unary(string @operator, Trait? trait, UnaryOp op)
+        public static Overload Unary(string @operator, Trait trait, UnaryOp op)
         {
             return new Overload(@operator, trait, op, null, null);
         }
@@ -130,25 +130,25 @@ namespace Cel.Interpreter.Functions
 
         public static Overload Binary(string @operator, BinaryOp op)
         {
-            return Binary(@operator, null, op);
+            return Binary(@operator, Trait.None, op);
         }
 
-        public static Overload Binary(Operator @operator, Trait? trait, BinaryOp op)
+        public static Overload Binary(Operator @operator, Trait trait, BinaryOp op)
         {
             return Binary(@operator.id, trait, op);
         }
 
-        public static Overload Binary(string @operator, Trait? trait, BinaryOp op)
+        public static Overload Binary(string @operator, Trait trait, BinaryOp op)
         {
             return new Overload(@operator, trait, null, op, null);
         }
 
         public static Overload Function(string @operator, FunctionOp op)
         {
-            return Function(@operator, null, op);
+            return Function(@operator, Trait.None, op);
         }
 
-        public static Overload Function(string @operator, Trait? trait, FunctionOp op)
+        public static Overload Function(string @operator, Trait trait, FunctionOp op)
         {
             return new Overload(@operator, trait, null, null, op);
         }
@@ -159,7 +159,7 @@ namespace Cel.Interpreter.Functions
             return new Overload(@operator, trait, unary, binary, function);
         }
 
-        private Overload(string @operator, Trait? operandTrait, UnaryOp unary, BinaryOp binary, FunctionOp function)
+        private Overload(string @operator, Trait operandTrait, UnaryOp unary, BinaryOp binary, FunctionOp function)
         {
             this.@operator = @operator;
             this.operandTrait = operandTrait;
