@@ -19,13 +19,13 @@ using Google.Protobuf;
 namespace Cel.Common.Types.Pb
 {
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.Err.newTypeConversionError;
+//	import static Cel.common.types.Err.newTypeConversionError;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.Err.noSuchField;
+//	import static Cel.common.types.Err.noSuchField;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.Err.noSuchOverload;
+//	import static Cel.common.types.Err.noSuchOverload;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.Types.boolOf;
+//	import static Cel.common.types.Types.boolOf;
 
 	using Any = Google.Protobuf.WellKnownTypes.Any;
 	using Message = Google.Protobuf.IMessage;

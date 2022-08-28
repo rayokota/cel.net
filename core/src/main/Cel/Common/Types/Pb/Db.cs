@@ -18,9 +18,9 @@
 namespace Cel.Common.Types.Pb
 {
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.pb.FileDescription.newFileDescription;
+//	import static Cel.common.types.pb.FileDescription.newFileDescription;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.pb.FileDescription.sanitizeProtoName;
+//	import static Cel.common.types.pb.FileDescription.sanitizeProtoName;
 
 	using Any = Google.Protobuf.WellKnownTypes.Any;
 	using BoolValue = Google.Protobuf.WellKnownTypes.BoolValue;

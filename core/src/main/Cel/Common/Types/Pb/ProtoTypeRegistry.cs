@@ -22,55 +22,55 @@ using Google.Protobuf;
 namespace Cel.Common.Types.Pb
 {
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.BoolT.BoolType;
+//	import static Cel.common.types.BoolT.BoolType;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.BytesT.BytesType;
+//	import static Cel.common.types.BytesT.BytesType;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.DoubleT.DoubleType;
+//	import static Cel.common.types.DoubleT.DoubleType;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.DurationT.DurationType;
+//	import static Cel.common.types.DurationT.DurationType;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.Err.anyWithEmptyType;
+//	import static Cel.common.types.Err.anyWithEmptyType;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.Err.newErr;
+//	import static Cel.common.types.Err.newErr;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.Err.noSuchField;
+//	import static Cel.common.types.Err.noSuchField;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.Err.unknownType;
+//	import static Cel.common.types.Err.unknownType;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.Err.unsupportedRefValConversionErr;
+//	import static Cel.common.types.Err.unsupportedRefValConversionErr;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.IntT.IntType;
+//	import static Cel.common.types.IntT.IntType;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.IntT.intOf;
+//	import static Cel.common.types.IntT.intOf;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.ListT.ListType;
+//	import static Cel.common.types.ListT.ListType;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.MapT.MapType;
+//	import static Cel.common.types.MapT.MapType;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.NullT.NullType;
+//	import static Cel.common.types.NullT.NullType;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.StringT.StringType;
+//	import static Cel.common.types.StringT.StringType;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TimestampT.TimestampType;
+//	import static Cel.common.types.TimestampT.TimestampType;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TypeT.TypeType;
+//	import static Cel.common.types.TypeT.TypeType;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TypeT.newObjectTypeValue;
+//	import static Cel.common.types.TypeT.newObjectTypeValue;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.UintT.UintType;
+//	import static Cel.common.types.UintT.UintType;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.pb.Db.collectFileDescriptorSet;
+//	import static Cel.common.types.pb.Db.collectFileDescriptorSet;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.pb.Db.newDb;
+//	import static Cel.common.types.pb.Db.newDb;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.pb.DefaultTypeAdapter.maybeUnwrapValue;
+//	import static Cel.common.types.pb.DefaultTypeAdapter.maybeUnwrapValue;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.pb.PbObjectT.newObject;
+//	import static Cel.common.types.pb.PbObjectT.newObject;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.pb.PbTypeDescription.typeNameFromMessage;
+//	import static Cel.common.types.pb.PbTypeDescription.typeNameFromMessage;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.@ref.TypeAdapterSupport.maybeNativeToValue;
+//	import static Cel.common.types.@ref.TypeAdapterSupport.maybeNativeToValue;
 
 	using Type = Google.Api.Expr.V1Alpha1.Type;
 	using Any = Google.Protobuf.WellKnownTypes.Any;

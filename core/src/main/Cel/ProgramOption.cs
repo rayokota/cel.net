@@ -1,0 +1,86 @@
+﻿/*
+ * Copyright (C) 2021 The Authors of CEL-Java
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+using Cel.Interpreter;
+
+namespace Cel
+{
+//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
+//	import static Cel.interpreter.Activation.newActivation;
+
+	using InterpretableDecorator = Cel.Interpreter.InterpretableDecorator;
+	using Overload = Cel.Interpreter.Functions.Overload;
+
+	public interface ProgramOption
+	{
+	  Prog Apply(Prog prog);
+
+	  /// <summary>
+	  /// CustomDecorator appends an InterpreterDecorator to the program.
+	  /// 
+	  /// <para>InterpretableDecorators can be used to inspect, alter, or replace the Program plan.
+	  /// </para>
+	  /// </summary>
+	  static ProgramOption CustomDecorator(InterpretableDecorator dec)
+	  {
+		return p =>
+		{
+		  p.decorators.add(dec);
+		  return p;
+		};
+	  }
+
+	  /// <summary>
+	  /// Functions adds function overloads that extend or override the set of CEL built-ins. </summary>
+	  static ProgramOption Functions(params Overload[] funcs)
+	  {
+		return p =>
+		{
+		  p.dispatcher.add(funcs);
+		  return p;
+		};
+	  }
+
+	  /// <summary>
+	  /// Globals sets the global variable values for a given program. These values may be shadowed by
+	  /// variables with the same name provided to the Eval() call.
+	  /// 
+	  /// <para>The vars value may either be an `interpreter.Activation` instance or a
+	  /// `map[string]interface{}`.
+	  /// </para>
+	  /// </summary>
+	  static ProgramOption Globals(object vars)
+	  {
+		return p =>
+		{
+		  p.defaultVars = Activation.NewActivation(vars);
+		  return p;
+		};
+	  }
+
+	  /// <summary>
+	  /// EvalOptions sets one or more evaluation options which may affect the evaluation or Result. </summary>
+	  static ProgramOption EvalOptions(params EvalOption[] opts)
+	  {
+		return p =>
+		{
+		  Collections.addAll(p.evalOpts, opts);
+		  return p;
+		};
+	  }
+	}
+
+}

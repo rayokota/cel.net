@@ -20,35 +20,35 @@ using NodaTime;
 namespace Cel.Common.Types.Ref
 {
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.BytesT.bytesOf;
+//	import static Cel.common.types.BytesT.bytesOf;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.DoubleT.doubleOf;
+//	import static Cel.common.types.DoubleT.doubleOf;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.DurationT.durationOf;
+//	import static Cel.common.types.DurationT.durationOf;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.IntT.intOf;
+//	import static Cel.common.types.IntT.intOf;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.ListT.newGenericArrayList;
+//	import static Cel.common.types.ListT.newGenericArrayList;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.ListT.newJSONList;
+//	import static Cel.common.types.ListT.newJSONList;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.ListT.newStringArrayList;
+//	import static Cel.common.types.ListT.newStringArrayList;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.ListT.newValArrayList;
+//	import static Cel.common.types.ListT.newValArrayList;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.MapT.newJSONStruct;
+//	import static Cel.common.types.MapT.newJSONStruct;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.MapT.newMaybeWrappedMap;
+//	import static Cel.common.types.MapT.newMaybeWrappedMap;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.StringT.stringOf;
+//	import static Cel.common.types.StringT.stringOf;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TimestampT.ZoneIdZ;
+//	import static Cel.common.types.TimestampT.ZoneIdZ;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TimestampT.timestampOf;
+//	import static Cel.common.types.TimestampT.timestampOf;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.Types.boolOf;
+//	import static Cel.common.types.Types.boolOf;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.UintT.uintOf;
+//	import static Cel.common.types.UintT.uintOf;
 
 	using ByteString = Google.Protobuf.ByteString;
 	using EnumValueDescriptor = Google.Protobuf.Reflection.EnumValueDescriptor;

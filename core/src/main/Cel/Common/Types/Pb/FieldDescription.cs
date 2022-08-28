@@ -21,9 +21,9 @@ using Google.Protobuf.Reflection;
 namespace Cel.Common.Types.Pb
 {
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.pb.PbTypeDescription.reflectTypeOf;
+//	import static Cel.common.types.pb.PbTypeDescription.reflectTypeOf;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.pb.PbTypeDescription.unwrapDynamic;
+//	import static Cel.common.types.pb.PbTypeDescription.unwrapDynamic;
 
 	using Type = Google.Api.Expr.V1Alpha1.Type;
 	using ListType = Google.Api.Expr.V1Alpha1.Type.Types.ListType;

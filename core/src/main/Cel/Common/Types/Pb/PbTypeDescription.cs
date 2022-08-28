@@ -20,9 +20,9 @@ using Google.Protobuf;
 namespace Cel.Common.Types.Pb
 {
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.Err.anyWithEmptyType;
+//	import static Cel.common.types.Err.anyWithEmptyType;
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.pb.FieldDescription.newFieldDescription;
+//	import static Cel.common.types.pb.FieldDescription.newFieldDescription;
 
 	using Any = Google.Protobuf.WellKnownTypes.Any;
 	using BoolValue = Google.Protobuf.WellKnownTypes.BoolValue;
