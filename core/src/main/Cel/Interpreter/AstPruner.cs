@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Cel.Common.Types;
 
 /*
  * Copyright (C) 2021 The Authors of CEL-Java
@@ -32,15 +33,15 @@ namespace Cel.Interpreter
 
 	using Constant = Google.Api.Expr.V1Alpha1.Constant;
 	using Expr = Google.Api.Expr.V1Alpha1.Expr;
-	using Call = Google.Api.Expr.V1Alpha1.Expr.Call;
-	using Comprehension = Google.Api.Expr.V1Alpha1.Expr.Comprehension;
-	using CreateList = Google.Api.Expr.V1Alpha1.Expr.CreateList;
-	using CreateStruct = Google.Api.Expr.V1Alpha1.Expr.CreateStruct;
-	using Entry = Google.Api.Expr.V1Alpha1.Expr.CreateStruct.Entry;
-	using Select = Google.Api.Expr.V1Alpha1.Expr.Select;
-	using ByteString = com.google.protobuf.ByteString;
-	using NullValue = com.google.protobuf.NullValue;
-	using Operator = Cel.Common.operators.Operator;
+	using Call = Google.Api.Expr.V1Alpha1.Expr.Types.Call;
+	using Comprehension = Google.Api.Expr.V1Alpha1.Expr.Types.Comprehension;
+	using CreateList = Google.Api.Expr.V1Alpha1.Expr.Types.CreateList;
+	using CreateStruct = Google.Api.Expr.V1Alpha1.Expr.Types.CreateStruct;
+	using Entry = Google.Api.Expr.V1Alpha1.Expr.Types.CreateStruct.Types.Entry;
+	using Select = Google.Api.Expr.V1Alpha1.Expr.Types.Select;
+	using ByteString = Google.Protobuf.ByteString;
+	using NullValue = Google.Protobuf.WellKnownTypes.NullValue;
+	using Operator = Cel.Common.Operators.Operator;
 	using IteratorT = Cel.Common.Types.IteratorT;
 	using Type = Cel.Common.Types.Ref.Type;
 	using Val = Cel.Common.Types.Ref.Val;
@@ -105,28 +106,39 @@ namespace Cel.Interpreter
 
 	  internal static Expr CreateLiteral(long id, Constant val)
 	  {
-		return Expr.newBuilder().setId(id).setConstExpr(val).build();
+		  Expr expr = new Expr();
+		  expr.Id = id;
+		  expr.ConstExpr = val;
+		  return expr;
 	  }
 
 	  internal Expr MaybeCreateLiteral(long id, Val v)
 	  {
+		  Constant constant = new Constant();
 		Type t = v.Type();
-		switch (t.TypeEnum().innerEnumValue)
+		switch (t.TypeEnum().InnerEnumValue)
 		{
 		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Bool:
-			return CreateLiteral(id, Constant.newBuilder().setBoolValue((bool?) v.Value()).build());
+			  constant.BoolValue = (bool) v.Value();
+			  return CreateLiteral(id, constant);
 		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Int:
-			return CreateLiteral(id, Constant.newBuilder().setInt64Value(((Number) v.Value()).longValue()).build());
+			  constant.Int64Value = (long) v.Value();
+			  return CreateLiteral(id, constant);
 		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Uint:
-			return CreateLiteral(id, Constant.newBuilder().setUint64Value(((Number) v.Value()).longValue()).build());
+			  constant.Uint64Value = (ulong) v.Value();
+			  return CreateLiteral(id, constant);
 		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.String:
-			return CreateLiteral(id, Constant.newBuilder().setStringValue(v.Value().ToString()).build());
-		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.double:
-			return CreateLiteral(id, Constant.newBuilder().setDoubleValue(((Number) v.Value()).doubleValue()).build());
+			  constant.StringValue = v.Value().ToString();
+			  return CreateLiteral(id, constant);
+		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Double:
+			  constant.DoubleValue = (double) v.Value();
+			  return CreateLiteral(id, constant);
 		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Bytes:
-			return CreateLiteral(id, Constant.newBuilder().setBytesValue(ByteString.copyFrom((sbyte[]) v.Value())).build());
+			  constant.BytesValue = ByteString.CopyFrom((byte[]) v.Value());
+			  return CreateLiteral(id, constant);
 		  case Cel.Common.Types.Ref.TypeEnum.InnerEnum.Null:
-			return CreateLiteral(id, Constant.newBuilder().setNullValue(NullValue.NULL_VALUE).build());
+			  constant.NullValue = NullValue.NullValue;
+			  return CreateLiteral(id, constant);
 		}
 
 		// Attempt to build a list literal.
@@ -137,8 +149,8 @@ namespace Cel.Interpreter
 		  IList<Expr> elemExprs = new List<Expr>(sz);
 		  for (int i = 0; i < sz; i++)
 		  {
-			Val elem = list.Get(intOf(i));
-			if (isUnknownOrError(elem))
+			Val elem = list.Get(IntT.IntOf(i));
+			if (Util.IsUnknownOrError(elem))
 			{
 			  return null;
 			}
@@ -149,7 +161,13 @@ namespace Cel.Interpreter
 			}
 			elemExprs.Add(elemExpr);
 		  }
-		  return Expr.newBuilder().setId(id).setListExpr(Expr.CreateList.newBuilder().addAllElements(elemExprs).build()).build();
+
+		  CreateList createList = new CreateList();
+		  createList.Elements.Add(elemExprs);
+		  Expr expr = new Expr();
+		  expr.Id = id;
+		  expr.ListExpr = createList;
+		  return expr;
 		}
 
 		// Create a map literal if possible.
@@ -157,12 +175,12 @@ namespace Cel.Interpreter
 		{
 		  Mapper mp = (Mapper) v;
 		  IteratorT it = mp.Iterator();
-		  IList<Expr.CreateStruct.Entry> entries = new List<Expr.CreateStruct.Entry>((int) mp.Size().IntValue());
-		  while (it.HasNext() == True)
+		  IList<Entry> entries = new List<Entry>((int) mp.Size().IntValue());
+		  while (it.HasNext() == BoolT.True)
 		  {
 			Val key = it.Next();
 			Val val = mp.Get(key);
-			if (isUnknownOrError(key) || isUnknownOrError(val))
+			if (Util.IsUnknownOrError(key) || Util.IsUnknownOrError(val))
 			{
 			  return null;
 			}
@@ -176,10 +194,19 @@ namespace Cel.Interpreter
 			{
 			  return null;
 			}
-			Expr.CreateStruct.Entry entry = Expr.CreateStruct.Entry.newBuilder().setId(NextID()).setMapKey(keyExpr).setValue(valExpr).build();
+
+			Entry entry = new Entry();
+			entry.Id = id;
+			entry.MapKey = keyExpr;
+			entry.Value = valExpr;
 			entries.Add(entry);
 		  }
-		  return Expr.newBuilder().setId(id).setStructExpr(Expr.CreateStruct.newBuilder().addAllEntries(entries)).build();
+
+		  CreateStruct createStruct = new CreateStruct();
+		  createStruct.Entries.Add(entries);
+		  Expr expr = new Expr();
+		  expr.StructExpr = createStruct;
+		  return expr;
 		}
 
 		// TODO(issues/377) To construct message literals, the type provider will need to support
@@ -189,54 +216,55 @@ namespace Cel.Interpreter
 
 	  internal Expr MaybePruneAndOr(Expr node)
 	  {
-		if (!ExistsWithUnknownValue(node.getId()))
+		if (!ExistsWithUnknownValue(node.Id))
 		{
 		  return null;
 		}
 
-		Expr.Call call = node.getCallExpr();
+		Call call = node.CallExpr;
 		// We know result is unknown, so we have at least one unknown arg
 		// and if one side is a known value, we know we can ignore it.
-		if (ExistsWithKnownValue(call.getArgs(0).getId()))
+		if (ExistsWithKnownValue(call.Args[0].Id))
 		{
-		  return call.getArgs(1);
+		  return call.Args[1];
 		}
-		if (ExistsWithKnownValue(call.getArgs(1).getId()))
+		if (ExistsWithKnownValue(call.Args[1].Id))
 		{
-		  return call.getArgs(0);
+		  return call.Args[0];
 		}
 		return null;
 	  }
 
 	  internal Expr MaybePruneConditional(Expr node)
 	  {
-		if (!ExistsWithUnknownValue(node.getId()))
+		if (!ExistsWithUnknownValue(node.Id))
 		{
 		  return null;
 		}
 
-		Expr.Call call = node.getCallExpr();
-		Val condVal = Value(call.getArgs(0).getId());
-		if (condVal == null || isUnknownOrError(condVal))
+		Call call = node.CallExpr;
+		Val condVal = Value(call.Args[0].Id);
+		if (condVal == null || Util.IsUnknownOrError(condVal))
 		{
 		  return null;
 		}
 
-		if (condVal == True)
+		if (condVal == BoolT.True)
 		{
-		  return call.getArgs(1);
+			return call.Args[1];
 		}
-		return call.getArgs(2);
+
+		return call.Args[2];
 	  }
 
 	  internal Expr MaybePruneFunction(Expr node)
 	  {
-		Expr.Call call = node.getCallExpr();
-		if (call.getFunction().Equals(Operator.LogicalOr.id) || call.getFunction().Equals(Operator.LogicalAnd.id))
+		Call call = node.CallExpr;
+		if (call.Function.Equals(Operator.LogicalOr.id) || call.Function.Equals(Operator.LogicalAnd.id))
 		{
 		  return MaybePruneAndOr(node);
 		}
-		if (call.getFunction().Equals(Operator.Conditional.id))
+		if (call.Function.Equals(Operator.Conditional.id))
 		{
 		  return MaybePruneConditional(node);
 		}
@@ -250,10 +278,10 @@ namespace Cel.Interpreter
 		{
 		  return null;
 		}
-		Val val = Value(node.getId());
-		if (val != null && !isUnknownOrError(val))
+		Val val = Value(node.Id);
+		if (val != null && !Util.IsUnknownOrError(val))
 		{
-		  Expr newNode = MaybeCreateLiteral(node.getId(), val);
+		  Expr newNode = MaybeCreateLiteral(node.Id, val);
 		  if (newNode != null)
 		  {
 			return newNode;
@@ -264,18 +292,25 @@ namespace Cel.Interpreter
 		// transform, or expression was not evaluated. If possible, drill down
 		// more.
 
-		switch (node.getExprKindCase())
+		switch (node.ExprKindCase)
 		{
-		  case SELECT_EXPR:
-			Expr.Select select = node.getSelectExpr();
-			Expr operand = Prune(select.getOperand());
-			if (operand != null && operand != select.getOperand())
+		  case Expr.ExprKindOneofCase.SelectExpr:
+			Select select = node.SelectExpr;
+			Expr operand = Prune(select.Operand);
+			if (operand != null && operand != select.Operand)
 			{
-			  return Expr.newBuilder().setId(node.getId()).setSelectExpr(Expr.Select.newBuilder().setOperand(operand).setField(select.getField()).setTestOnly(select.getTestOnly())).build();
+				Select sel = new Select();
+				sel.Operand = operand;
+				sel.Field = select.Field;
+				sel.TestOnly = select.TestOnly;
+				Expr expr = new Expr();
+				expr.Id = nextExprID;
+				expr.SelectExpr = sel;
+				return expr;
 			}
 			break;
-		  case CALL_EXPR:
-			Expr.Call call = node.getCallExpr();
+		  case Expr.ExprKindOneofCase.CallExpr:
+			Call call = node.CallExpr;
 			Expr newExpr = MaybePruneFunction(node);
 			if (newExpr != null)
 			{
@@ -283,7 +318,7 @@ namespace Cel.Interpreter
 			  return newExpr;
 			}
 			bool prunedCall = false;
-			IList<Expr> args = call.getArgsList();
+			IList<Expr> args = call.Args;
 			IList<Expr> newArgs = new List<Expr>(args.Count);
 			for (int i = 0; i < args.Count; i++)
 			{
@@ -296,21 +331,31 @@ namespace Cel.Interpreter
 				newArgs[i] = newArg;
 			  }
 			}
-			Expr.Call newCall = Expr.Call.newBuilder().setFunction(call.getFunction()).setTarget(call.getTarget()).addAllArgs(newArgs).build();
-			Expr newTarget = Prune(call.getTarget());
-			if (newTarget != null && newTarget != call.getTarget())
+
+			Call newCall = new Call();
+			newCall.Function = call.Function;
+			newCall.Target = call.Target;
+			newCall.Args.Add(newArgs);
+			Expr newTarget = Prune(call.Target);
+			if (newTarget != null && newTarget != call.Target)
 			{
 			  prunedCall = true;
-			  newCall = Expr.Call.newBuilder().setFunction(call.getFunction()).setTarget(newTarget).addAllArgs(newArgs).build();
+			  newCall = new Call();
+			  newCall.Function = call.Function;
+			  newCall.Target = newTarget;
+			  newCall.Args.Add(newArgs);
 			}
 			if (prunedCall)
 			{
-			  return Expr.newBuilder().setId(node.getId()).setCallExpr(newCall).build();
+				Expr expr = new Expr();
+				expr.Id = node.Id;
+				expr.CallExpr = newCall;
+				return expr;
 			}
 			break;
-		  case LIST_EXPR:
-			Expr.CreateList list = node.getListExpr();
-			IList<Expr> elems = list.getElementsList();
+		  case Expr.ExprKindOneofCase.ListExpr:
+			CreateList list = node.ListExpr;
+			IList<Expr> elems = list.Elements;
 			IList<Expr> newElems = new List<Expr>(elems.Count);
 			bool prunedList = false;
 			for (int i = 0; i < elems.Count; i++)
@@ -326,53 +371,80 @@ namespace Cel.Interpreter
 			}
 			if (prunedList)
 			{
-			  return Expr.newBuilder().setId(node.getId()).setListExpr(Expr.CreateList.newBuilder().addAllElements(newElems)).build();
+				CreateList createList = new CreateList();
+				createList.Elements.Add(newElems);
+				Expr expr = new Expr();
+				expr.Id = node.Id;
+				expr.ListExpr = createList;
+				return expr;
 			}
 			break;
-		  case STRUCT_EXPR:
+		  case Expr.ExprKindOneofCase.StructExpr:
 			bool prunedStruct = false;
-			Expr.CreateStruct @struct = node.getStructExpr();
-			IList<Expr.CreateStruct.Entry> entries = @struct.getEntriesList();
-			string messageType = @struct.getMessageName();
-			IList<Expr.CreateStruct.Entry> newEntries = new List<Expr.CreateStruct.Entry>(entries.Count);
+			CreateStruct @struct = node.StructExpr;
+			IList<Entry> entries = @struct.Entries;
+			string messageType = @struct.MessageName;
+			IList<Entry> newEntries = new List<Entry>(entries.Count);
 			for (int i = 0; i < entries.Count; i++)
 			{
-			  Expr.CreateStruct.Entry entry = entries[i];
+			  Entry entry = entries[i];
 			  newEntries.Add(entry);
-			  Expr mapKey = entry.getMapKey();
-			  Expr newKey = mapKey != Expr.CreateStruct.Entry.getDefaultInstance().getMapKey() ? Prune(mapKey) : null;
-			  Expr newValue = Prune(entry.getValue());
-			  if ((newKey == null || newKey == mapKey) && (newValue == null || newValue == entry.getValue()))
+			  Expr mapKey = entry.MapKey;
+			  Expr newKey = mapKey != new Entry().MapKey ? Prune(mapKey) : null;
+			  Expr newValue = Prune(entry.Value);
+			  if ((newKey == null || newKey == mapKey) && (newValue == null || newValue == entry.Value))
 			  {
 				continue;
 			  }
 			  prunedStruct = true;
-			  Expr.CreateStruct.Entry newEntry;
+			  Entry newEntry;
 			  if (messageType.Length > 0)
 			  {
-				newEntry = Expr.CreateStruct.Entry.newBuilder().setFieldKey(entry.getFieldKey()).setValue(newValue).build();
+				  newEntry = new Entry();
+				  newEntry.FieldKey = entry.FieldKey;
+				  newEntry.Value = newValue;
 			  }
 			  else
 			  {
-				newEntry = Expr.CreateStruct.Entry.newBuilder().setMapKey(newKey).setValue(newValue).build();
+				  newEntry = new Entry();
+				  newEntry.MapKey = newKey;
+				  newEntry.Value = newValue;
 			  }
 			  newEntries[i] = newEntry;
 			}
 			if (prunedStruct)
 			{
-			  return Expr.newBuilder().setId(node.getId()).setStructExpr(Expr.CreateStruct.newBuilder().setMessageName(messageType).addAllEntries(entries)).build();
+				CreateStruct createStruct = new CreateStruct();
+				createStruct.MessageName = messageType;
+				createStruct.Entries.Add(entries);
+				Expr expr = new Expr();
+				expr.Id = node.Id;
+				expr.StructExpr = createStruct;
+				return expr;
 			}
 			break;
-		  case COMPREHENSION_EXPR:
-			Expr.Comprehension compre = node.getComprehensionExpr();
+		  case Expr.ExprKindOneofCase.ComprehensionExpr:
+			Comprehension compre = node.ComprehensionExpr;
 			// Only the range of the comprehension is pruned since the state tracking only records
 			// the last iteration of the comprehension and not each step in the evaluation which
 			// means that the any residuals computed in between might be inaccurate.
-			Expr newRange = Prune(compre.getIterRange());
-			if (newRange != null && newRange != compre.getIterRange())
+			Expr newRange = Prune(compre.IterRange);
+			if (newRange != null && newRange != compre.IterRange)
 			{
-			  return Expr.newBuilder().setId(node.getId()).setComprehensionExpr(Expr.Comprehension.newBuilder().setIterVar(compre.getIterVar()).setIterRange(newRange).setAccuVar(compre.getAccuVar()).setAccuInit(compre.getAccuInit()).setLoopCondition(compre.getLoopCondition()).setLoopStep(compre.getLoopStep()).setResult(compre.getResult())).build();
+				Comprehension comp = new Comprehension();
+				comp.IterVar = compre.IterVar;
+				comp.IterRange = newRange;
+				comp.AccuVar = compre.AccuVar;
+				comp.AccuInit = compre.AccuInit;
+				comp.LoopCondition = compre.LoopCondition;
+				comp.LoopStep = compre.LoopStep;
+				comp.Result = compre.Result;
+				Expr expr = new Expr();
+				expr.Id = node.Id;
+				expr.ComprehensionExpr = comp;
+				return expr;
 			}
+			break;
 		}
 
 		// Note: original Go implementation returns "node, false". We could wrap 'node' in some
@@ -389,13 +461,13 @@ namespace Cel.Interpreter
 	  internal bool ExistsWithUnknownValue(long id)
 	  {
 		Val val = Value(id);
-		return isUnknown(val);
+		return UnknownT.IsUnknown(val);
 	  }
 
 	  internal bool ExistsWithKnownValue(long id)
 	  {
 		Val val = Value(id);
-		return val != null && !isUnknown(val);
+		return val != null && !UnknownT.IsUnknown(val);
 	  }
 
 	  internal long NextID()

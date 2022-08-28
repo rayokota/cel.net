@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using Cel.Common.Types;
+using Cel.Common.Types.Ref;
 
 /*
  * Copyright (C) 2021 The Authors of CEL-Java
@@ -161,40 +163,40 @@ namespace Cel.Interpreter
 		if (v is Val)
 		{
 		  Val val = (Val) v;
-		  switch (val.Type().TypeEnum())
+		  switch (val.Type().TypeEnum().InnerEnumValue)
 		  {
-			case string:
-			  return new AttributeFactory_StringQualifier(id, (string) val.value(), val, adapter);
-			case Int:
-			  return new AttributeFactory_IntQualifier(id, val.intValue(), val, adapter);
-			case Uint:
-			  return new AttributeFactory_UintQualifier(id, val.intValue(), val, adapter);
-			case Bool:
-			  return new AttributeFactory_BoolQualifier(id, val.booleanValue(), val, adapter);
+			case TypeEnum.InnerEnum.String:
+			  return new AttributeFactory_StringQualifier(id, (string) val.Value(), val, adapter);
+			case TypeEnum.InnerEnum.Int:
+			  return new AttributeFactory_IntQualifier(id, val.IntValue(), val, adapter);
+			case TypeEnum.InnerEnum.Uint:
+			  return new AttributeFactory_UintQualifier(id, (ulong)val.IntValue(), val, adapter);
+			case TypeEnum.InnerEnum.Bool:
+			  return new AttributeFactory_BoolQualifier(id, val.BooleanValue(), val, adapter);
 		  }
 		}
 
-		if (c == String.class)
+		if (c == typeof(string))
 		{
-		  return new AttributeFactory_StringQualifier(id, (string) v, stringOf((string) v), adapter);
+		  return new AttributeFactory_StringQualifier(id, (string) v, StringT.StringOf((string) v), adapter);
 		}
-		if (c == ULong.class)
+		if (c == typeof(ulong))
 		{
-		  long l = ((ULong) v).longValue();
-		  return new AttributeFactory_UintQualifier(id, l, uintOf(l), adapter);
+			ulong l = (ulong)v;
+		  return new AttributeFactory_UintQualifier(id, l, UintT.UintOf(l), adapter);
 		}
-		if ((c == Byte.class) || (c == Short.class) || (c == Integer.class) || (c == Long.class))
+		if ((c == typeof(byte) || (c == typeof(short)) || (c == typeof(int))) || (c == typeof(long)))
 		{
-		  long i = ((Number) v).longValue();
-		  return new AttributeFactory_IntQualifier(id, i, intOf(i), adapter);
+			long i = (long)v;
+		  return new AttributeFactory_IntQualifier(id, i, IntT.IntOf(i), adapter);
 		}
-		if (c == Boolean.class)
+		if (c == typeof(bool))
 		{
-		  bool b = (bool?) v;
-		  return new AttributeFactory_BoolQualifier(id, b, boolOf(b), adapter);
+		  bool b = (bool) v;
+		  return new AttributeFactory_BoolQualifier(id, b, Types.BoolOf(b), adapter);
 		}
 
-		throw new System.InvalidOperationException(String.format("invalid qualifier type: %s", v.getClass().getName()));
+		throw new System.InvalidOperationException(string.Format("invalid qualifier type: %s", v.GetType().ToString()));
 	  }
 
 	  /// <summary>
@@ -204,36 +206,36 @@ namespace Cel.Interpreter
 	  /// </summary>
 
 	  /// <summary>
-	  /// refResolve attempts to convert the value to a CEL value and then uses reflection methods to try
+	  /// RefResolve attempts to convert the value to a CEL value and then uses reflection methods to try
 	  /// and resolve the qualifier.
 	  /// </summary>
 	  static Val RefResolve(TypeAdapter adapter, Val idx, object obj)
 	  {
-		Val celVal = adapter.nativeToValue(obj);
-		if (celVal instanceof Mapper)
+		Val celVal = adapter(obj);
+		if (celVal is Mapper)
 		{
 		  Mapper mapper = (Mapper) celVal;
-		  Val elem = mapper.find(idx);
+		  Val elem = mapper.Find(idx);
 		  if (elem == null)
 		  {
-			return noSuchKey(idx);
+			return Err.NoSuchKey(idx);
 		  }
 		  return elem;
 		}
-		if (celVal instanceof Indexer)
+		if (celVal is Indexer)
 		{
 		  Indexer indexer = (Indexer) celVal;
-		  return indexer.get(idx);
+		  return indexer.Get(idx);
 		}
-		if (isUnknown(celVal))
+		if (UnknownT.IsUnknown(celVal))
 		{
 		  return celVal;
 		}
 		// TODO: If the types.Err value contains more than just an error message at some point in the
 		//  future, then it would be reasonable to return error values as ref.Val types rather than
 		//  simple go error types.
-		throwErrorAsIllegalStateException(celVal);
-		return noSuchOverload(celVal, "ref-resolve", null);
+		Err.ThrowErrorAsIllegalStateException(celVal);
+		return Err.NoSuchOverload(celVal, "ref-resolve", null);
 	  }
 	}
 
@@ -355,16 +357,16 @@ namespace Cel.Interpreter
 	  if (val is string)
 	  {
 		string str = (string) val;
-		if (objType != null && !objType.getMessageType().isEmpty())
+		if (objType != null && objType.MessageType.Length != 0)
 		{
-		  FieldType ft = provider.FindFieldType(objType.getMessageType(), str);
+		  FieldType ft = provider.FindFieldType(objType.MessageType, str);
 		  if (ft != null && ft.isSet != null && ft.getFrom != null)
 		  {
 			return new AttributeFactory_FieldQualifier(qualID, str, ft, adapter);
 		  }
 		}
 	  }
-	  return NewQualifierStatic(adapter, qualID, val);
+	  return AttributeFactory.NewQualifierStatic(adapter, qualID, val);
 	}
 
 	public override string ToString()
@@ -373,7 +375,7 @@ namespace Cel.Interpreter
 	}
 	  }
 
-	  public sealed class AttributeFactory_AbsoluteAttribute : AttributeFactory.Qualifier, AttributeFactory.NamespacedAttribute, Coster
+	  public sealed class AttributeFactory_AbsoluteAttribute : AttributeFactory_Qualifier, AttributeFactory_NamespacedAttribute, Coster
 	  {
 	internal readonly long id;
 	/// <summary>
@@ -390,16 +392,16 @@ namespace Cel.Interpreter
 	internal AttributeFactory_AbsoluteAttribute(long id, string[] namespaceNames, IList<AttributeFactory_Qualifier> qualifiers, TypeAdapter adapter, TypeProvider provider, AttributeFactory fac)
 	{
 	  this.id = id;
-	  this.namespaceNames = Objects.requireNonNull(namespaceNames);
-	  this.qualifiers = Objects.requireNonNull(qualifiers);
-	  this.adapter = Objects.requireNonNull(adapter);
-	  this.provider = Objects.requireNonNull(provider);
-	  this.fac = Objects.requireNonNull(fac);
+	  this.namespaceNames = namespaceNames;
+	  this.qualifiers = qualifiers;
+	  this.adapter = adapter;
+	  this.provider = provider;
+	  this.fac = fac;
 	}
 
 	/// <summary>
 	/// ID implements the Attribute interface method. </summary>
-	public override long Id()
+	public long Id()
 	{
 	  return id;
 	}
@@ -418,12 +420,12 @@ namespace Cel.Interpreter
 	  }
 	  min++; // For object retrieval.
 	  max++;
-	  return CostOf(min, max);
+	  return Coster.CostOf(min, max);
 	}
 
 	/// <summary>
 	/// AddQualifier implements the Attribute interface method. </summary>
-	public override AttributeFactory_Attribute AddQualifier(AttributeFactory_Qualifier q)
+	public AttributeFactory_Attribute AddQualifier(AttributeFactory_Qualifier q)
 	{
 	  qualifiers.Add(q);
 	  return this;
@@ -431,7 +433,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// CandidateVariableNames implements the NamespaceAttribute interface method. </summary>
-	public override string[] CandidateVariableNames()
+	public string[] CandidateVariableNames()
 	{
 	  return namespaceNames;
 	}
@@ -439,17 +441,17 @@ namespace Cel.Interpreter
 	/// <summary>
 	/// Qualifiers returns the list of Qualifier instances associated with the namespaced attribute.
 	/// </summary>
-	public override IList<AttributeFactory_Qualifier> Qualifiers()
+	public IList<AttributeFactory_Qualifier> Qualifiers()
 	{
 	  return qualifiers;
 	}
 
 	/// <summary>
 	/// Qualify is an implementation of the Qualifier interface method. </summary>
-	public override object Qualify(Cel.Interpreter.Activation vars, object obj)
+	public object Qualify(Cel.Interpreter.Activation vars, object obj)
 	{
 	  object val = Resolve(vars);
-	  if (isUnknown(val))
+	  if (UnknownT.IsUnknown(val))
 	  {
 		return val;
 	  }
@@ -461,12 +463,12 @@ namespace Cel.Interpreter
 	/// Resolve returns the resolved Attribute value given the Activation, or error if the Attribute
 	/// variable is not found, or if its Qualifiers cannot be applied successfully.
 	/// </summary>
-	public override object Resolve(Cel.Interpreter.Activation vars)
+	public object Resolve(Cel.Interpreter.Activation vars)
 	{
 	  object obj = TryResolve(vars);
 	  if (obj == null)
 	  {
-		throw noSuchAttributeException(this);
+		throw Err.NoSuchAttributeException(this);
 	  }
 	  return obj;
 	}
@@ -479,7 +481,7 @@ namespace Cel.Interpreter
 	/// type, then the result is `nil`, `false`, `nil` per the interface requirement.
 	/// </para>
 	/// </summary>
-	public override object TryResolve(Cel.Interpreter.Activation vars)
+	public object TryResolve(Cel.Interpreter.Activation vars)
 	{
 	  foreach (string nm in namespaceNames)
 	  {
@@ -511,7 +513,7 @@ namespace Cel.Interpreter
 		  {
 			return typ;
 		  }
-		  throw noSuchAttributeException(this);
+		  throw Err.NoSuchAttributeException(this);
 		}
 	  }
 	  return null;
@@ -525,7 +527,7 @@ namespace Cel.Interpreter
 	}
 	  }
 
-	  public sealed class AttributeFactory_ConditionalAttribute : AttributeFactory.Qualifier, AttributeFactory.Attribute, Coster
+	  public sealed class AttributeFactory_ConditionalAttribute : AttributeFactory_Qualifier, AttributeFactory_Attribute, Coster
 	  {
 	internal readonly long id;
 	internal readonly Interpretable expr;
@@ -546,7 +548,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// ID is an implementation of the Attribute interface method. </summary>
-	public override long Id()
+	public long Id()
 	{
 	  return id;
 	}
@@ -561,14 +563,14 @@ namespace Cel.Interpreter
 	  Coster_Cost t = Coster_Cost.EstimateCost(truthy);
 	  Coster_Cost f = Coster_Cost.EstimateCost(falsy);
 	  Coster_Cost e = Coster_Cost.EstimateCost(expr);
-	  return CostOf(e.min + Math.Min(t.min, f.min), e.max + Math.Max(t.max, f.max));
+	  return Coster.CostOf(e.min + Math.Min(t.min, f.min), e.max + Math.Max(t.max, f.max));
 	}
 
 	/// <summary>
 	/// AddQualifier appends the same qualifier to both sides of the conditional, in effect managing
 	/// the qualification of alternate attributes.
 	/// </summary>
-	public override AttributeFactory_Attribute AddQualifier(AttributeFactory_Qualifier qual)
+	public AttributeFactory_Attribute AddQualifier(AttributeFactory_Qualifier qual)
 	{
 	  truthy.AddQualifier(qual); // just do
 	  falsy.AddQualifier(qual); // just do
@@ -577,10 +579,10 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// Qualify is an implementation of the Qualifier interface method. </summary>
-	public override object Qualify(Cel.Interpreter.Activation vars, object obj)
+	public object Qualify(Cel.Interpreter.Activation vars, object obj)
 	{
 	  object val = Resolve(vars);
-	  if (isUnknown(val))
+	  if (UnknownT.IsUnknown(val))
 	  {
 		return val;
 	  }
@@ -591,30 +593,30 @@ namespace Cel.Interpreter
 	/// <summary>
 	/// Resolve evaluates the condition, and then resolves the truthy or falsy branch accordingly.
 	/// </summary>
-	public override object Resolve(Cel.Interpreter.Activation vars)
+	public object Resolve(Cel.Interpreter.Activation vars)
 	{
 	  Val val = expr.Eval(vars);
 	  if (val == null)
 	  {
-		throw noSuchAttributeException(this);
+		throw Err.NoSuchAttributeException(this);
 	  }
-	  if (isError(val))
+	  if (Err.IsError(val))
 	  {
 		return null;
 	  }
-	  if (val == True)
+	  if (val == BoolT.True)
 	  {
 		return truthy.Resolve(vars);
 	  }
-	  if (val == False)
+	  if (val == BoolT.False)
 	  {
 		return falsy.Resolve(vars);
 	  }
-	  if (isUnknown(val))
+	  if (UnknownT.IsUnknown(val))
 	  {
 		return val;
 	  }
-	  return maybeNoSuchOverloadErr(val);
+	  return Err.MaybeNoSuchOverloadErr(val);
 	}
 
 	/// <summary>
@@ -660,10 +662,10 @@ namespace Cel.Interpreter
 	  foreach (AttributeFactory_NamespacedAttribute a in attrs)
 	  {
 		Coster_Cost ac = Coster_Cost.EstimateCost(a);
-		min = Long.min(min, ac.min);
-		max = Long.max(max, ac.max);
+		min = Math.Min(min, ac.min);
+		max = Math.Max(max, ac.max);
 	  }
-	  return CostOf(min, max);
+	  return Coster.CostOf(min, max);
 	}
 
 	/// <summary>
@@ -697,11 +699,11 @@ namespace Cel.Interpreter
 	/// If none of the attributes within the maybe resolves a value, the result is an error.
 	/// </para>
 	/// </summary>
-	public override AttributeFactory_Attribute AddQualifier(AttributeFactory_Qualifier qual)
+	public AttributeFactory_Attribute AddQualifier(AttributeFactory_Qualifier qual)
 	{
 	  string str = "";
 	  bool isStr = false;
-	  if (qual is AttributeFactory.ConstantQualifier)
+	  if (qual is AttributeFactory_ConstantQualifier)
 	  {
 		AttributeFactory_ConstantQualifier cq = (AttributeFactory_ConstantQualifier) qual;
 		object cqv = cq.Value().Value();
@@ -744,7 +746,7 @@ namespace Cel.Interpreter
 	public object Qualify(Cel.Interpreter.Activation vars, object obj)
 	{
 	  object val = Resolve(vars);
-	  if (isUnknown(val))
+	  if (UnknownT.IsUnknown(val))
 	  {
 		return val;
 	  }
@@ -756,7 +758,7 @@ namespace Cel.Interpreter
 	/// Resolve follows the variable resolution rules to determine whether the attribute is a
 	/// variable or a field selection.
 	/// </summary>
-	public override object Resolve(Cel.Interpreter.Activation vars)
+	public object Resolve(Cel.Interpreter.Activation vars)
 	{
 	  foreach (AttributeFactory_NamespacedAttribute attr in attrs)
 	  {
@@ -768,7 +770,7 @@ namespace Cel.Interpreter
 		}
 	  }
 	  // Else, produce a no such attribute error.
-	  throw noSuchAttributeException(this);
+	  throw Err.NoSuchAttributeException(this);
 	}
 
 	/// <summary>
@@ -779,7 +781,7 @@ namespace Cel.Interpreter
 	}
 	  }
 
-	  public sealed class AttributeFactory_RelativeAttribute : Coster, AttributeFactory.Qualifier, AttributeFactory_Attribute
+	  public sealed class AttributeFactory_RelativeAttribute : Coster, AttributeFactory_Qualifier, AttributeFactory_Attribute
 	  {
 	internal readonly long id;
 	internal readonly Interpretable operand;
@@ -816,7 +818,7 @@ namespace Cel.Interpreter
 		min += q.min;
 		max += q.max;
 	  }
-	  return CostOf(min, max);
+	  return Coster.CostOf(min, max);
 	}
 
 	/// <summary>
@@ -832,7 +834,7 @@ namespace Cel.Interpreter
 	public object Qualify(Cel.Interpreter.Activation vars, object obj)
 	{
 	  object val = Resolve(vars);
-	  if (isUnknown(val))
+	  if (UnknownT.IsUnknown(val))
 	  {
 		return val;
 	  }
@@ -846,11 +848,11 @@ namespace Cel.Interpreter
 	{
 	  // First, evaluate the operand.
 	  Val v = operand.Eval(vars);
-	  if (isError(v))
+	  if (Err.IsError(v))
 	  {
 		return null;
 	  }
-	  if (isUnknown(v))
+	  if (UnknownT.IsUnknown(v))
 	  {
 		return v;
 	  }
@@ -860,7 +862,7 @@ namespace Cel.Interpreter
 	  {
 		if (obj == null)
 		{
-		  throw noSuchAttributeException(this);
+		  throw Err.NoSuchAttributeException(this);
 		}
 		obj = qual.Qualify(vars, obj);
 		if (obj is Err)
@@ -870,7 +872,7 @@ namespace Cel.Interpreter
 	  }
 	  if (obj == null)
 	  {
-		throw noSuchAttributeException(this);
+		throw Err.NoSuchAttributeException(this);
 	  }
 	  return obj;
 	}
@@ -927,7 +929,7 @@ namespace Cel.Interpreter
 	}
 	  }
 
-	  public sealed class AttributeFactory_StringQualifier : Coster, AttributeFactory.ConstantQualifierEquator, QualifierValueEquator
+	  public sealed class AttributeFactory_StringQualifier : Coster, AttributeFactory_ConstantQualifierEquator, QualifierValueEquator
 	  {
 	internal readonly long id;
 	internal readonly string value;
@@ -944,7 +946,7 @@ namespace Cel.Interpreter
 
 	/// <summary>
 	/// ID is an implementation of the Qualifier interface method. </summary>
-	public override long Id()
+	public long Id()
 	{
 	  return id;
 	}
@@ -953,7 +955,7 @@ namespace Cel.Interpreter
 	/// Qualify implements the Qualifier interface method. </summary>
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @SuppressWarnings("rawtypes") @Override public Object qualify(Cel.Interpreter.Activation vars, Object obj)
-	public override object Qualify(Cel.Interpreter.Activation vars, object obj)
+	public object Qualify(Cel.Interpreter.Activation vars, object obj)
 	{
 	  string s = value;
 	  if (obj is System.Collections.IDictionary)
@@ -966,23 +968,23 @@ namespace Cel.Interpreter
 		  {
 			return NullT.NullValue;
 		  }
-		  throw noSuchKeyException(s);
+		  throw Err.NoSuchKeyException(s);
 		}
 	  }
-	  else if (isUnknown(obj))
+	  else if (UnknownT.IsUnknown(obj))
 	  {
 		return obj;
 	  }
 	  else
 	  {
-		return refResolve(adapter, celValue, obj);
+		return AttributeFactory.RefResolve(adapter, celValue, obj);
 	  }
 	  return obj;
 	}
 
 	/// <summary>
 	/// Value implements the ConstantQualifier interface </summary>
-	public override Val Value()
+	public Val Value()
 	{
 	  return celValue;
 	}
@@ -1052,18 +1054,19 @@ namespace Cel.Interpreter
 		  {
 			return null;
 		  }
-		  throw noSuchKeyException(i);
+		  throw Err.NoSuchKeyException(i);
 		}
 		return obj;
 	  }
 	  if (obj.GetType().IsArray)
 	  {
-		int l = Array.getLength(obj);
+		  object[] array = (object[])obj;
+		  int l = array.Length;
 		if (i < 0 || i >= l)
 		{
-		  throw indexOutOfBoundsException(i);
+		  throw Err.IndexOutOfBoundsException(i);
 		}
-		obj = Array.get(obj, (int) i);
+		obj = array[(int) i];
 		return obj;
 	  }
 	  if (obj is System.Collections.IList)
@@ -1072,16 +1075,16 @@ namespace Cel.Interpreter
 		int l = list.Count;
 		if (i < 0 || i >= l)
 		{
-		  throw indexOutOfBoundsException(i);
+		  throw Err.IndexOutOfBoundsException(i);
 		}
 		obj = list[(int) i];
 		return obj;
 	  }
-	  if (isUnknown(obj))
+	  if (UnknownT.IsUnknown(obj))
 	  {
 		return obj;
 	  }
-	  return refResolve(adapter, celValue, obj);
+	  return AttributeFactory.RefResolve(adapter, celValue, obj);
 	}
 
 	/// <summary>
@@ -1100,13 +1103,13 @@ namespace Cel.Interpreter
 
 	public bool QualifierValueEquals(object value)
 	{
-	  if (value is ULong)
+	  if (value is ulong)
 	  {
 		return false;
 	  }
-	  if (value is Number)
+	  if (value is byte || value is short || value is int || value is long)
 	  {
-		return this.value == ((Number) value).longValue();
+		  return this.value == (long)value;
 	  }
 	  return false;
 	}
@@ -1120,11 +1123,11 @@ namespace Cel.Interpreter
 	  public sealed class AttributeFactory_UintQualifier : Coster, AttributeFactory_ConstantQualifierEquator
 	  {
 	internal readonly long id;
-	internal readonly long value;
+	internal readonly ulong value;
 	internal readonly Val celValue;
 	internal readonly TypeAdapter adapter;
 
-	internal AttributeFactory_UintQualifier(long id, long value, Val celValue, TypeAdapter adapter)
+	internal AttributeFactory_UintQualifier(long id, ulong value, Val celValue, TypeAdapter adapter)
 	{
 	  this.id = id;
 	  this.value = value;
@@ -1145,32 +1148,33 @@ namespace Cel.Interpreter
 //ORIGINAL LINE: @SuppressWarnings("rawtypes") @Override public Object qualify(Cel.Interpreter.Activation vars, Object obj)
 	public object Qualify(Cel.Interpreter.Activation vars, object obj)
 	{
-	  long i = value;
+	  long i = (long)value;
 	  if (obj is System.Collections.IDictionary)
 	  {
 		System.Collections.IDictionary m = (System.Collections.IDictionary) obj;
-		obj = m[ULong.ValueOf(i)];
+		obj = m[i];
 		if (obj == null)
 		{
-		  throw noSuchKeyException(i);
+		  throw Err.NoSuchKeyException(i);
 		}
 		return obj;
 	  }
 	  if (obj.GetType().IsArray)
 	  {
-		int l = Array.getLength(obj);
+		  object[] array = (object[])obj;
+		  int l = array.Length;
 		if (i < 0 && i >= l)
 		{
-		  throw indexOutOfBoundsException(i);
+		  throw Err.IndexOutOfBoundsException(i);
 		}
-		obj = Array.get(obj, (int) i);
+		obj = array[(int) i];
 		return obj;
 	  }
-	  if (isUnknown(obj))
+	  if (UnknownT.IsUnknown(obj))
 	  {
 		return obj;
 	  }
-	  return refResolve(adapter, celValue, obj);
+	  return AttributeFactory.RefResolve(adapter, celValue, obj);
 	}
 
 	/// <summary>
@@ -1189,9 +1193,9 @@ namespace Cel.Interpreter
 
 	public bool QualifierValueEquals(object value)
 	{
-	  if (value is ULong)
+	  if (value is ulong)
 	  {
-		return this.value == ((ULong) value).LongValue();
+		  return this.value == (ulong)value;
 	  }
 	  return false;
 	}
@@ -1241,16 +1245,16 @@ namespace Cel.Interpreter
 		  {
 			return null;
 		  }
-		  throw noSuchKeyException(b);
+		  throw Err.NoSuchKeyException(b);
 		}
 	  }
-	  else if (isUnknown(obj))
+	  else if (UnknownT.IsUnknown(obj))
 	  {
 		return obj;
 	  }
 	  else
 	  {
-		return refResolve(adapter, celValue, obj);
+		return AttributeFactory.RefResolve(adapter, celValue, obj);
 	  }
 	  return obj;
 	}
@@ -1321,7 +1325,7 @@ namespace Cel.Interpreter
 	/// Value implements the ConstantQualifier interface </summary>
 	public Val Value()
 	{
-	  return stringOf(name);
+	  return StringT.StringOf(name);
 	}
 
 	/// <summary>

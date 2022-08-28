@@ -215,7 +215,7 @@ namespace Cel.Interpreter
         /// is used.
         /// </para>
         /// </summary>
-        internal interface QualifierValueEquator
+        public interface QualifierValueEquator
         {
             /// <summary>
             /// QualifierValueEquals returns true if the input value is equal to the value held in the
