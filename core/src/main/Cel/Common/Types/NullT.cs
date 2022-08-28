@@ -46,13 +46,15 @@ namespace Cel.Common.Types
 	  public static readonly NullT NullValue = new NullT();
 
 	  private static readonly Value PbValue;
-	  private static readonly Any PbAny = Any.Pack(PbValue);
+	  private static readonly Any PbAny;
 
 	  static NullT()
 	  {
 		  Value value = new Value();
 		  value.NullValue = Google.Protobuf.WellKnownTypes.NullValue.NullValue;
 		  PbValue = value;
+
+		  PbAny = Any.Pack(PbValue);
 	  }
 
 	  /// <summary>
