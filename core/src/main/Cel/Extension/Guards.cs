@@ -17,13 +17,13 @@
  */
 namespace Cel.extension
 {
-	using Err = global::Cel.common.types.Err;
-	using IntT = global::Cel.common.types.IntT;
-	using ListT = global::Cel.common.types.ListT;
-	using StringT = global::Cel.common.types.StringT;
-	using BinaryOp = global::Cel.interpreter.functions.BinaryOp;
-	using FunctionOp = global::Cel.interpreter.functions.FunctionOp;
-	using UnaryOp = global::Cel.interpreter.functions.UnaryOp;
+	using Err = global::Cel.Common.Types.Err;
+	using IntT = global::Cel.Common.Types.IntT;
+	using ListT = global::Cel.Common.Types.ListT;
+	using StringT = global::Cel.Common.Types.StringT;
+	using BinaryOp = global::Cel.Interpreter.Functions.BinaryOp;
+	using FunctionOp = global::Cel.Interpreter.Functions.FunctionOp;
+	using UnaryOp = global::Cel.Interpreter.Functions.UnaryOp;
 
 	/// <summary>
 	/// function invocation guards for common call signatures within extension functions. </summary>
@@ -40,7 +40,7 @@ namespace Cel.extension
 		{
 	  try
 	  {
-		return StringT.StringOf(func(((string) lhs.value()), GetIntValue((IntT) rhs)));
+		return StringT.StringOf(func(((string) lhs.Value()), GetIntValue((IntT) rhs)));
 	  }
 	  catch (Exception e)
 	  {
@@ -49,13 +49,13 @@ namespace Cel.extension
 		};
 	  }
 
-	  public static FunctionOp CallInStrIntIntOutStr(TriFunction<string, int, int, string> func)
+	  public static FunctionOp CallInStrIntIntOutStr(Func<string, int, int, string> func)
 	  {
 		return values =>
 		{
 	  try
 	  {
-		return StringT.StringOf(func.Apply(((string) values[0].value()), (GetIntValue((IntT) values[1])), (GetIntValue((IntT) values[2]))));
+		return StringT.StringOf(func(((string) values[0].Value()), (GetIntValue((IntT) values[1])), (GetIntValue((IntT) values[2]))));
 	  }
 	  catch (Exception e)
 	  {
@@ -70,7 +70,7 @@ namespace Cel.extension
 		{
 	  try
 	  {
-		return IntT.IntOf(func(((string) lhs.value()), ((string) rhs.value())));
+		return IntT.IntOf(func(((string) lhs.Value()), ((string) rhs.Value())));
 	  }
 	  catch (Exception e)
 	  {
@@ -79,13 +79,13 @@ namespace Cel.extension
 		};
 	  }
 
-	  public static FunctionOp CallInStrStrIntOutInt(TriFunction<string, string, int, int> func)
+	  public static FunctionOp CallInStrStrIntOutInt(Func<string, string, int, int> func)
 	  {
 		return values =>
 		{
 	  try
 	  {
-		return IntT.IntOf(func.Apply(((string) values[0].value()), ((string) values[1].value()), (GetIntValue((IntT) values[2]))));
+		return IntT.IntOf(func(((string) values[0].Value()), ((string) values[1].Value()), (GetIntValue((IntT) values[2]))));
 	  }
 	  catch (Exception e)
 	  {
@@ -100,7 +100,7 @@ namespace Cel.extension
 		{
 	  try
 	  {
-		return ListT.NewStringArrayList(func(((string) lhs.value()), ((string) rhs.value())));
+		return ListT.NewStringArrayList(func(((string) lhs.Value()), ((string) rhs.Value())));
 	  }
 	  catch (Exception e)
 	  {
@@ -109,13 +109,13 @@ namespace Cel.extension
 		};
 	  }
 
-	  public static FunctionOp CallInStrStrIntOutStrArr(TriFunction<string, string, int, string[]> func)
+	  public static FunctionOp CallInStrStrIntOutStrArr(Func<string, string, int, string[]> func)
 	  {
 		return values =>
 		{
 	  try
 	  {
-		return ListT.NewStringArrayList(func.Apply(((string) values[0].value()), ((string) values[1].value()), GetIntValue((IntT) values[2])));
+		return ListT.NewStringArrayList(func(((string) values[0].Value()), ((string) values[1].Value()), GetIntValue((IntT) values[2])));
 	  }
 	  catch (Exception e)
 	  {
@@ -124,13 +124,13 @@ namespace Cel.extension
 		};
 	  }
 
-	  public static FunctionOp CallInStrStrStrOutStr(TriFunction<string, string, string, string> func)
+	  public static FunctionOp CallInStrStrStrOutStr(Func<string, string, string, string> func)
 	  {
 		return values =>
 		{
 	  try
 	  {
-		return StringT.StringOf(func.Apply(((string) values[0].value()), ((string) values[1].value()), ((string) values[2].value())));
+		return StringT.StringOf(func(((string) values[0].Value()), ((string) values[1].Value()), ((string) values[2].Value())));
 	  }
 	  catch (Exception e)
 	  {
@@ -139,13 +139,13 @@ namespace Cel.extension
 		};
 	  }
 
-	  public static FunctionOp CallInStrStrStrIntOutStr(QuadFunction<string, string, string, int, string> func)
+	  public static FunctionOp CallInStrStrStrIntOutStr(Func<string, string, string, int, string> func)
 	  {
 		return values =>
 		{
 	  try
 	  {
-		return StringT.StringOf(func(((string) values[0].value()), ((string) values[1].value()), ((string) values[2].value()), GetIntValue((IntT) values[3])));
+		return StringT.StringOf(func(((string) values[0].Value()), ((string) values[1].Value()), ((string) values[2].Value()), GetIntValue((IntT) values[3])));
 	  }
 	  catch (Exception e)
 	  {
@@ -160,7 +160,7 @@ namespace Cel.extension
 		{
 	  try
 	  {
-		return StringT.StringOf(func(((string) val.value())));
+		return StringT.StringOf(func(((string) val.Value())));
 	  }
 	  catch (Exception e)
 	  {
@@ -175,8 +175,10 @@ namespace Cel.extension
 		{
 	  try
 	  {
-		object[] objects = (object[]) val.value();
-		return StringT.StringOf(func(Arrays.CopyOf(objects, objects.Length, typeof(string[]))));
+		object[] objects = (object[]) val.Value();
+		string[] strings = new string[objects.Length];
+		Array.Copy(objects, 0, strings, 0, objects.Length);
+		return StringT.StringOf(func(strings));
 	  }
 	  catch (Exception e)
 	  {
@@ -191,8 +193,10 @@ namespace Cel.extension
 		{
 	  try
 	  {
-		object[] objects = (object[]) lhs.value();
-		return StringT.StringOf(func(Arrays.CopyOf(objects, objects.Length, typeof(string[])), ((string) rhs.value())));
+		object[] objects = (object[]) lhs.Value();
+		string[] strings = new string[objects.Length];
+		Array.Copy(objects, 0, strings, 0, objects.Length);
+		return StringT.StringOf(func(strings, ((string) rhs.Value())));
 	  }
 	  catch (Exception e)
 	  {
@@ -203,12 +207,13 @@ namespace Cel.extension
 
 	  private static int GetIntValue(IntT value)
 	  {
-		long? longValue = (long?) value.Value();
+		long longValue = (long) value.Value();
 		if (longValue > int.MaxValue || (longValue < int.MinValue))
 		{
 		  throw new Exception(string.Format("Integer {0:D} value overflow", longValue));
 		}
-		return longValue.Value;
+
+		return (int)longValue;
 	  }
 	}
 
