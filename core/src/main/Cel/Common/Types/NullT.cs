@@ -45,14 +45,14 @@ namespace Cel.Common.Types
 	  /// NullValue singleton. </summary>
 	  public static readonly NullT NullValue = new NullT();
 
-	  private static readonly Value PbValue = newPBValue();
+	  private static readonly Value PbValue;
 	  private static readonly Any PbAny = Any.Pack(PbValue);
 
-	  private static Value newPBValue()
+	  static NullT()
 	  {
 		  Value value = new Value();
 		  value.NullValue = Google.Protobuf.WellKnownTypes.NullValue.NullValue;
-		  return value;
+		  PbValue = value;
 	  }
 
 	  /// <summary>
