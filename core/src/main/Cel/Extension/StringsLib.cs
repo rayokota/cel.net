@@ -413,6 +413,7 @@ namespace Cel.extension
             {
                 stringBuilder.Append(str);
             }
+
             return stringBuilder.ToString();
         }
 

@@ -36,40 +36,38 @@ namespace Cel.Common.Types
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.Common.Types.UintT.UintType;
 
-	using Type = global::Cel.Common.Types.Ref.Type;
+    using Type = global::Cel.Common.Types.Ref.Type;
 
-	public sealed class Types
-	{
+    public sealed class Types
+    {
+        private Types()
+        {
+        }
 
-	  private Types()
-	  {
-	  }
+        private static readonly IDictionary<string, Type> typeNameToTypeValue = new Dictionary<string, Type>();
 
-	  private static readonly IDictionary<string, Type> typeNameToTypeValue = new Dictionary<string, Type>();
+        static Types()
+        {
+            typeNameToTypeValue[BoolT.BoolType.TypeName()] = BoolT.BoolType;
+            typeNameToTypeValue[BytesT.BytesType.TypeName()] = BytesT.BytesType;
+            typeNameToTypeValue[DoubleT.DoubleType.TypeName()] = DoubleT.DoubleType;
+            typeNameToTypeValue[NullT.NullType.TypeName()] = NullT.NullType;
+            typeNameToTypeValue[IntT.IntType.TypeName()] = IntT.IntType;
+            typeNameToTypeValue[ListT.ListType.TypeName()] = ListT.ListType;
+            typeNameToTypeValue[MapT.MapType.TypeName()] = MapT.MapType;
+            typeNameToTypeValue[StringT.StringType.TypeName()] = StringT.StringType;
+            typeNameToTypeValue[TypeT.TypeType.TypeName()] = TypeT.TypeType;
+            typeNameToTypeValue[UintT.UintType.TypeName()] = UintT.UintType;
+        }
 
-	  static Types()
-	  {
-		typeNameToTypeValue[BoolT.BoolType.TypeName()] = BoolT.BoolType;
-		typeNameToTypeValue[BytesT.BytesType.TypeName()] = BytesT.BytesType;
-		typeNameToTypeValue[DoubleT.DoubleType.TypeName()] = DoubleT.DoubleType;
-		typeNameToTypeValue[NullT.NullType.TypeName()] = NullT.NullType;
-		typeNameToTypeValue[IntT.IntType.TypeName()] = IntT.IntType;
-		typeNameToTypeValue[ListT.ListType.TypeName()] = ListT.ListType;
-		typeNameToTypeValue[MapT.MapType.TypeName()] = MapT.MapType;
-		typeNameToTypeValue[StringT.StringType.TypeName()] = StringT.StringType;
-		typeNameToTypeValue[TypeT.TypeType.TypeName()] = TypeT.TypeType;
-		typeNameToTypeValue[UintT.UintType.TypeName()] = UintT.UintType;
-	  }
+        public static Type GetTypeByName(string typeName)
+        {
+            return null;
+        }
 
-	  public static Type GetTypeByName(string typeName)
-	  {
-		return null;
-	  }
-
-	  public static BoolT BoolOf(bool b)
-	  {
-		return b ? BoolT.True : BoolT.False;
-	  }
-	}
-
+        public static BoolT BoolOf(bool b)
+        {
+            return b ? BoolT.True : BoolT.False;
+        }
+    }
 }

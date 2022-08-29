@@ -35,261 +35,279 @@ namespace Cel.Common.Types
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.Common.Types.Types.boolOf;
 
-	using Any = Google.Protobuf.WellKnownTypes.Any;
-	using Struct = Google.Protobuf.WellKnownTypes.Struct;
-	using Value = Google.Protobuf.WellKnownTypes.Value;
-	using Operator = global::Cel.Common.Operators.Operator;
-	using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
-	using Type = global::Cel.Common.Types.Ref.Type;
-	using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
-	using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
-	using Val = global::Cel.Common.Types.Ref.Val;
-	using Container = global::Cel.Common.Types.Traits.Container;
-	using Indexer = global::Cel.Common.Types.Traits.Indexer;
-	using Mapper = global::Cel.Common.Types.Traits.Mapper;
-	using Sizer = global::Cel.Common.Types.Traits.Sizer;
-	using Trait = global::Cel.Common.Types.Traits.Trait;
+    using Any = Google.Protobuf.WellKnownTypes.Any;
+    using Struct = Google.Protobuf.WellKnownTypes.Struct;
+    using Value = Google.Protobuf.WellKnownTypes.Value;
+    using Operator = global::Cel.Common.Operators.Operator;
+    using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
+    using Type = global::Cel.Common.Types.Ref.Type;
+    using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
+    using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
+    using Val = global::Cel.Common.Types.Ref.Val;
+    using Container = global::Cel.Common.Types.Traits.Container;
+    using Indexer = global::Cel.Common.Types.Traits.Indexer;
+    using Mapper = global::Cel.Common.Types.Traits.Mapper;
+    using Sizer = global::Cel.Common.Types.Traits.Sizer;
+    using Trait = global::Cel.Common.Types.Traits.Trait;
 
-	public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Sizer
-	{
-		public abstract Val Size();
-		public abstract IteratorT Iterator();
-		public abstract Val Get(Ref.Val index);
-		public abstract Val Contains(Ref.Val value);
-		public override abstract object Value();
-		public override abstract Val Equal(Ref.Val other);
-		public override abstract Val ConvertToType(Ref.Type typeValue);
-		public override abstract object? ConvertToNative(System.Type typeDesc);
-		public abstract Val Find(Ref.Val key);
-	  /// <summary>
-	  /// MapType singleton. </summary>
-	  public static readonly Type MapType = TypeT.NewTypeValue(TypeEnum.Map, Trait.ContainerType, Trait.IndexerType, Trait.IterableType, Trait.SizerType);
+    public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Sizer
+    {
+        public abstract Val Size();
+        public abstract IteratorT Iterator();
+        public abstract Val Get(Ref.Val index);
+        public abstract Val Contains(Ref.Val value);
+        public override abstract object Value();
+        public override abstract Val Equal(Ref.Val other);
+        public override abstract Val ConvertToType(Ref.Type typeValue);
+        public override abstract object? ConvertToNative(System.Type typeDesc);
+        public abstract Val Find(Ref.Val key);
 
-	  public static Val NewWrappedMap(TypeAdapter adapter, IDictionary<Val, Val> value)
-	  {
-		return new ValMapT(adapter, value);
-	  }
+        /// <summary>
+        /// MapType singleton. </summary>
+        public static readonly Type MapType = TypeT.NewTypeValue(TypeEnum.Map, Trait.ContainerType, Trait.IndexerType,
+            Trait.IterableType, Trait.SizerType);
 
-	  public static Val NewMaybeWrappedMap<T1, T2>(TypeAdapter adapter, IDictionary<T1, T2> value)
-	  {
-		IDictionary<Val, Val> newMap = new Dictionary<Val, Val>(value.Count * 4 / 3 + 1);
-		foreach (KeyValuePair<T1, T2> entry in value)
-		{
-			newMap.Add(adapter(entry.Key), adapter(entry.Value));
-		}
-		return NewWrappedMap(adapter, newMap);
-	  }
+        public static Val NewWrappedMap(TypeAdapter adapter, IDictionary<Val, Val> value)
+        {
+            return new ValMapT(adapter, value);
+        }
 
-	  public override Type Type()
-	  {
-		return MapType;
-	  }
+        public static Val NewMaybeWrappedMap<T1, T2>(TypeAdapter adapter, IDictionary<T1, T2> value)
+        {
+            IDictionary<Val, Val> newMap = new Dictionary<Val, Val>(value.Count * 4 / 3 + 1);
+            foreach (KeyValuePair<T1, T2> entry in value)
+            {
+                newMap.Add(adapter(entry.Key), adapter(entry.Value));
+            }
 
-	  internal sealed class ValMapT : MapT
-	  {
+            return NewWrappedMap(adapter, newMap);
+        }
 
-		internal readonly TypeAdapter adapter;
-		internal readonly IDictionary<Val, Val> map;
+        public override Type Type()
+        {
+            return MapType;
+        }
 
-		internal ValMapT(TypeAdapter adapter, IDictionary<Val, Val> map)
-		{
-		  this.adapter = adapter;
-		  this.map = map;
-		}
+        internal sealed class ValMapT : MapT
+        {
+            internal readonly TypeAdapter adapter;
+            internal readonly IDictionary<Val, Val> map;
+
+            internal ValMapT(TypeAdapter adapter, IDictionary<Val, Val> map)
+            {
+                this.adapter = adapter;
+                this.map = map;
+            }
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @SuppressWarnings("unchecked") @Override public <T> T convertToNative(Class<T> typeDesc)
-		public override object? ConvertToNative(System.Type typeDesc)
-		{
-		  if (typeDesc.IsAssignableFrom(typeof(System.Collections.IDictionary)) || typeDesc == typeof(object))
-		  {
-			return ToJavaMap();
-		  }
-		  if (typeDesc == typeof(Struct))
-		  {
-			return ToPbStruct();
-		  }
-		  if (typeDesc == typeof(Value))
-		  {
-			return ToPbValue();
-		  }
-		  if (typeDesc == typeof(Any))
-		  {
-			Struct v = ToPbStruct();
-			//        DynamicMessage dyn = DynamicMessage.newBuilder(v).build();
-			//        return (T) Any.newBuilder().mergeFrom(dyn).build();
-			Any any = new Any();
-			any.TypeUrl = "type.googleapis.com/google.protobuf.Struct";
-			any.Value = v.ToByteString();
-			return any;
-		  }
+            public override object? ConvertToNative(System.Type typeDesc)
+            {
+                if (typeDesc.IsAssignableFrom(typeof(System.Collections.IDictionary)) || typeDesc == typeof(object))
+                {
+                    return ToJavaMap();
+                }
+
+                if (typeDesc == typeof(Struct))
+                {
+                    return ToPbStruct();
+                }
+
+                if (typeDesc == typeof(Value))
+                {
+                    return ToPbValue();
+                }
+
+                if (typeDesc == typeof(Any))
+                {
+                    Struct v = ToPbStruct();
+                    //        DynamicMessage dyn = DynamicMessage.newBuilder(v).build();
+                    //        return (T) Any.newBuilder().mergeFrom(dyn).build();
+                    Any any = new Any();
+                    any.TypeUrl = "type.googleapis.com/google.protobuf.Struct";
+                    any.Value = v.ToByteString();
+                    return any;
+                }
+
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-		  throw new Exception(String.Format("native type conversion error from '{0}' to '{1}'", MapType, typeDesc.FullName));
-		}
+                throw new Exception(String.Format("native type conversion error from '{0}' to '{1}'", MapType,
+                    typeDesc.FullName));
+            }
 
-		internal Value ToPbValue()
-		{
-			Value value = new Value();
-			value.StructValue = ToPbStruct();
-			return value;
-		}
+            internal Value ToPbValue()
+            {
+                Value value = new Value();
+                value.StructValue = ToPbStruct();
+                return value;
+            }
 
-		internal Struct ToPbStruct()
-		{
-			Struct value = new Struct();
-			foreach (KeyValuePair<Val, Val> entry in map)
-			{
-			  value.Fields.Add(
-				  entry.Key.ConvertToType(StringT.StringType).Value().ToString(), 
-				  (Value) entry.Value.ConvertToNative(typeof(Value)));
-			}
+            internal Struct ToPbStruct()
+            {
+                Struct value = new Struct();
+                foreach (KeyValuePair<Val, Val> entry in map)
+                {
+                    value.Fields.Add(
+                        entry.Key.ConvertToType(StringT.StringType).Value().ToString(),
+                        (Value)entry.Value.ConvertToNative(typeof(Value)));
+                }
 
-			return value;
-		}
+                return value;
+            }
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @SuppressWarnings({"rawtypes", "unchecked"}) private java.util.Map toJavaMap()
-		internal IDictionary<object, object> ToJavaMap()
-		{
-		  IDictionary<object, object> r = new Dictionary<object, object>();
-		  foreach (KeyValuePair<Val, Val> entry in map)
-		  {
-			  r.Add(entry.Key.Value(), entry.Value.Value());
-			  
-		  }
-		  return r;
-		}
+            internal IDictionary<object, object> ToJavaMap()
+            {
+                IDictionary<object, object> r = new Dictionary<object, object>();
+                foreach (KeyValuePair<Val, Val> entry in map)
+                {
+                    r.Add(entry.Key.Value(), entry.Value.Value());
+                }
 
-		public override Val ConvertToType(Type typeValue)
-		{
-		  if (typeValue == MapType)
-		  {
-			return this;
-		  }
-		  if (typeValue == TypeT.TypeType)
-		  {
-			return MapType;
-		  }
-		  return Err.NewTypeConversionError(MapType, typeValue);
-		}
+                return r;
+            }
 
-		public override IteratorT Iterator()
-		{
-		  return IteratorT.JavaIterator(adapter, map.Keys.GetEnumerator());
-		}
+            public override Val ConvertToType(Type typeValue)
+            {
+                if (typeValue == MapType)
+                {
+                    return this;
+                }
 
-		public override Val Equal(Val other)
-		{
-		  // TODO this is expensive :(
-		  if (!(other is MapT))
-		  {
-			return BoolT.False;
-		  }
-		  MapT o = (MapT) other;
-		  if (!Size().Equal(o.Size()).BooleanValue())
-		  {
-			return BoolT.False;
-		  }
-		  IteratorT myIter = Iterator();
-		  while (myIter.HasNext() == BoolT.True)
-		  {
-			Val key = myIter.Next();
+                if (typeValue == TypeT.TypeType)
+                {
+                    return MapType;
+                }
 
-			Val val = Get(key);
-			Val oVal = o.Find(key);
-			if (oVal == null)
-			{
-			  return BoolT.False;
-			}
-			if (Err.IsError(val))
-			{
-			  return val;
-			}
-			if (Err.IsError(oVal))
-			{
-			  return val;
-			}
-			if (val.Type() != oVal.Type())
-			{
-			  return Err.NoSuchOverload(val, Operator.Equals.id, oVal);
-			}
-			Val eq = val.Equal(oVal);
-			if (eq is Err)
-			{
-			  return eq;
-			}
-			if (eq != BoolT.True)
-			{
-			  return BoolT.False;
-			}
-		  }
-		  return BoolT.True;
-		}
+                return Err.NewTypeConversionError(MapType, typeValue);
+            }
 
-		public override object Value()
-		{
-		  // TODO this is expensive :(
-		  IDictionary<object, object> nativeMap = ToJavaMap();
-		  return nativeMap;
-		}
+            public override IteratorT Iterator()
+            {
+                return IteratorT.JavaIterator(adapter, map.Keys.GetEnumerator());
+            }
 
-		public override Val Contains(Val value)
-		{
-		  return Types.BoolOf(map.ContainsKey(value));
-		}
+            public override Val Equal(Val other)
+            {
+                // TODO this is expensive :(
+                if (!(other is MapT))
+                {
+                    return BoolT.False;
+                }
 
-		public override Val Get(Val index)
-		{
-		  return map[index];
-		}
+                MapT o = (MapT)other;
+                if (!Size().Equal(o.Size()).BooleanValue())
+                {
+                    return BoolT.False;
+                }
 
-		public override Val Size()
-		{
-		  return IntT.IntOf(map.Count);
-		}
+                IteratorT myIter = Iterator();
+                while (myIter.HasNext() == BoolT.True)
+                {
+                    Val key = myIter.Next();
 
-		public override Val Find(Val key)
-		{
-		  return map[key];
-		}
+                    Val val = Get(key);
+                    Val oVal = o.Find(key);
+                    if (oVal == null)
+                    {
+                        return BoolT.False;
+                    }
 
-		public override bool Equals(object o)
-		{
-		  if (this == o)
-		  {
-			return true;
-		  }
-		  if (o == null || this.GetType() != o.GetType())
-		  {
-			return false;
-		  }
-		  ValMapT valMapT = (ValMapT) o;
-		  return Object.Equals(map, valMapT.map);
-		}
+                    if (Err.IsError(val))
+                    {
+                        return val;
+                    }
 
-		public override int GetHashCode()
-		{
-		  return HashCode.Combine(base.GetHashCode(), map);
-		}
+                    if (Err.IsError(oVal))
+                    {
+                        return val;
+                    }
 
-		public override string ToString()
-		{
-		  return "JavaMapT{" + "adapter=" + adapter + ", map=" + map + '}';
-		}
-	  }
+                    if (val.Type() != oVal.Type())
+                    {
+                        return Err.NoSuchOverload(val, Operator.Equals.id, oVal);
+                    }
 
-	  /// <summary>
-	  /// NewJSONStruct creates a traits.Mapper implementation backed by a JSON struct that has been
-	  /// encoded in protocol buffer form.
-	  /// 
-	  /// <para>The `adapter` argument provides type adaptation capabilities from proto to CEL.
-	  /// </para>
-	  /// </summary>
-	  public static Val NewJSONStruct(TypeAdapter adapter, Struct value)
-	  {
-		  IDictionary<string, Value> fields = value.Fields;
-		return NewMaybeWrappedMap(adapter, fields);
-	  }
-	}
+                    Val eq = val.Equal(oVal);
+                    if (eq is Err)
+                    {
+                        return eq;
+                    }
 
+                    if (eq != BoolT.True)
+                    {
+                        return BoolT.False;
+                    }
+                }
+
+                return BoolT.True;
+            }
+
+            public override object Value()
+            {
+                // TODO this is expensive :(
+                IDictionary<object, object> nativeMap = ToJavaMap();
+                return nativeMap;
+            }
+
+            public override Val Contains(Val value)
+            {
+                return Types.BoolOf(map.ContainsKey(value));
+            }
+
+            public override Val Get(Val index)
+            {
+                return map[index];
+            }
+
+            public override Val Size()
+            {
+                return IntT.IntOf(map.Count);
+            }
+
+            public override Val Find(Val key)
+            {
+                return map[key];
+            }
+
+            public override bool Equals(object o)
+            {
+                if (this == o)
+                {
+                    return true;
+                }
+
+                if (o == null || this.GetType() != o.GetType())
+                {
+                    return false;
+                }
+
+                ValMapT valMapT = (ValMapT)o;
+                return Object.Equals(map, valMapT.map);
+            }
+
+            public override int GetHashCode()
+            {
+                return HashCode.Combine(base.GetHashCode(), map);
+            }
+
+            public override string ToString()
+            {
+                return "JavaMapT{" + "adapter=" + adapter + ", map=" + map + '}';
+            }
+        }
+
+        /// <summary>
+        /// NewJSONStruct creates a traits.Mapper implementation backed by a JSON struct that has been
+        /// encoded in protocol buffer form.
+        /// 
+        /// <para>The `adapter` argument provides type adaptation capabilities from proto to CEL.
+        /// </para>
+        /// </summary>
+        public static Val NewJSONStruct(TypeAdapter adapter, Struct value)
+        {
+            IDictionary<string, Value> fields = value.Fields;
+            return NewMaybeWrappedMap(adapter, fields);
+        }
+    }
 }

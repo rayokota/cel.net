@@ -13,44 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel.Common.Types
 {
-	using Val = global::Cel.Common.Types.Ref.Val;
+    using Val = global::Cel.Common.Types.Ref.Val;
 
-	public sealed class Util
-	{
+    public sealed class Util
+    {
+        /// <summary>
+        /// IsUnknownOrError returns whether the input element ref.Val is an ErrType or UnknonwType. </summary>
+        public static bool IsUnknownOrError(Val val)
+        {
+            switch (val.Type().TypeEnum().InnerEnumValue)
+            {
+                case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Unknown:
+                case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Err:
+                    return true;
+            }
 
-	  /// <summary>
-	  /// IsUnknownOrError returns whether the input element ref.Val is an ErrType or UnknonwType. </summary>
-	  public static bool IsUnknownOrError(Val val)
-	  {
-		switch (val.Type().TypeEnum().InnerEnumValue)
-		{
-		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Unknown:
-		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Err:
-			return true;
-		}
-		return false;
-	  }
+            return false;
+        }
 
-	  /// <summary>
-	  /// IsPrimitiveType returns whether the input element ref.Val is a primitive type. Note, primitive
-	  /// types do not include well-known types such as Duration and Timestamp.
-	  /// </summary>
-	  public static bool IsPrimitiveType(Val val)
-	  {
-		switch (val.Type().TypeEnum().InnerEnumValue)
-		{
-		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Bool:
-		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Bytes:
-		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Double:
-		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Int:
-		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.String:
-		  case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Uint:
-			return true;
-		}
-		return false;
-	  }
-	}
+        /// <summary>
+        /// IsPrimitiveType returns whether the input element ref.Val is a primitive type. Note, primitive
+        /// types do not include well-known types such as Duration and Timestamp.
+        /// </summary>
+        public static bool IsPrimitiveType(Val val)
+        {
+            switch (val.Type().TypeEnum().InnerEnumValue)
+            {
+                case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Bool:
+                case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Bytes:
+                case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Double:
+                case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Int:
+                case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.String:
+                case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Uint:
+                    return true;
+            }
 
+            return false;
+        }
+    }
 }

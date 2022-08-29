@@ -29,120 +29,125 @@ namespace Cel.Common.Types.Pb
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.common.types.@ref.TypeAdapterSupport.maybeNativeToValue;
 
-	using Value = Google.Api.Expr.V1Alpha1.Value;
-	using Message = Google.Protobuf.IMessage;
-	using Err = global::Cel.Common.Types.Err;
-	using Types = global::Cel.Common.Types.Types;
-	using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
-	using TypeAdapterProvider = global::Cel.Common.Types.Ref.TypeAdapterProvider;
-	using Val = global::Cel.Common.Types.Ref.Val;
+    using Value = Google.Api.Expr.V1Alpha1.Value;
+    using Message = Google.Protobuf.IMessage;
+    using Err = global::Cel.Common.Types.Err;
+    using Types = global::Cel.Common.Types.Types;
+    using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
+    using TypeAdapterProvider = global::Cel.Common.Types.Ref.TypeAdapterProvider;
+    using Val = global::Cel.Common.Types.Ref.Val;
 
-	/// <summary>
-	/// defaultTypeAdapter converts go native types to CEL values. </summary>
-	public sealed class DefaultTypeAdapter : TypeAdapterProvider
-	{
-	  /// <summary>
-	  /// DefaultTypeAdapter adapts canonical CEL types from their equivalent Go values. </summary>
-	  public static readonly DefaultTypeAdapter Instance = new DefaultTypeAdapter(Db.defaultDb);
+    /// <summary>
+    /// defaultTypeAdapter converts go native types to CEL values. </summary>
+    public sealed class DefaultTypeAdapter : TypeAdapterProvider
+    {
+        /// <summary>
+        /// DefaultTypeAdapter adapts canonical CEL types from their equivalent Go values. </summary>
+        public static readonly DefaultTypeAdapter Instance = new DefaultTypeAdapter(Db.defaultDb);
 
-	  private readonly Db db;
+        private readonly Db db;
 
-	  private DefaultTypeAdapter(Db db)
-	  {
-		this.db = db;
-	  }
+        private DefaultTypeAdapter(Db db)
+        {
+            this.db = db;
+        }
 
-	  public TypeAdapter ToTypeAdapter()
-	  {
-		  return NativeToValue;
-	  }
+        public TypeAdapter ToTypeAdapter()
+        {
+            return NativeToValue;
+        }
 
-	  /// <summary>
-	  /// NativeToValue implements the ref.TypeAdapter interface. </summary>
-	  public Val NativeToValue(object value)
-	  {
-		Val val = NativeToValue(db, this.ToTypeAdapter(), value);
-		if (val != null)
-		{
-		  return val;
-		}
-		return Err.UnsupportedRefValConversionErr(value);
-	  }
+        /// <summary>
+        /// NativeToValue implements the ref.TypeAdapter interface. </summary>
+        public Val NativeToValue(object value)
+        {
+            Val val = NativeToValue(db, this.ToTypeAdapter(), value);
+            if (val != null)
+            {
+                return val;
+            }
 
-	  /// <summary>
-	  /// nativeToValue returns the converted (ref.Val, true) of a conversion is found, otherwise (nil,
-	  /// false)
-	  /// </summary>
-	  public static Val NativeToValue(Db db, TypeAdapter a, object value)
-	  {
-		Val v = TypeAdapterSupport.MaybeNativeToValue(a, value);
-		if (v != null)
-		{
-		  return v;
-		}
+            return Err.UnsupportedRefValConversionErr(value);
+        }
 
-		// additional specializations may be added upon request / need.
-		if (value is Val)
-		{
-		  return (Val) value;
-		}
-		if (value is Message)
-		{
-		  Message msg = (Message) value;
-		  string typeName = PbTypeDescription.TypeNameFromMessage(msg);
-		  if (typeName.Length == 0)
-		  {
-			return Err.AnyWithEmptyType();
-		  }
-		  PbTypeDescription type = db.DescribeType(typeName);
-		  if (type == null)
-		  {
-			return Err.UnknownType(typeName);
-		  }
-		  value = type.MaybeUnwrap(db, msg);
-		  if (value is Message)
-		  {
-			value = type.MaybeUnwrap(db, value);
-		  }
-		  return a(value);
-		}
-		return Err.NewErr("unsupported conversion from '{0}' to value", value.GetType());
-	  }
+        /// <summary>
+        /// nativeToValue returns the converted (ref.Val, true) of a conversion is found, otherwise (nil,
+        /// false)
+        /// </summary>
+        public static Val NativeToValue(Db db, TypeAdapter a, object value)
+        {
+            Val v = TypeAdapterSupport.MaybeNativeToValue(a, value);
+            if (v != null)
+            {
+                return v;
+            }
 
-	  internal static object MaybeUnwrapValue(object value)
-	  {
-		if (value is Value)
-		{
-		  Value v = (Value) value;
-		  switch (v.KindCase)
-		  {
-			case Value.KindOneofCase.BoolValue:
-				return v.BoolValue;
-			case Value.KindOneofCase.BytesValue:
-			  return v.BytesValue;
-			case Value.KindOneofCase.DoubleValue:
-			  return v.DoubleValue;
-			case Value.KindOneofCase.Int64Value:
-			  return v.Int64Value;
-			case Value.KindOneofCase.ListValue:
-			  return v.ListValue;
-			case Value.KindOneofCase.NullValue:
-			  return v.NullValue;
-			case Value.KindOneofCase.MapValue:
-			  return v.MapValue;
-			case Value.KindOneofCase.StringValue:
-			  return v.StringValue;
-			case Value.KindOneofCase.TypeValue:
-			  return Types.GetTypeByName(v.TypeValue);
-			case Value.KindOneofCase.Uint64Value:
-				return v.Uint64Value;
-			case Value.KindOneofCase.ObjectValue:
-			  return v.ObjectValue;
-		  }
-		}
+            // additional specializations may be added upon request / need.
+            if (value is Val)
+            {
+                return (Val)value;
+            }
 
-		return value;
-	  }
-	}
+            if (value is Message)
+            {
+                Message msg = (Message)value;
+                string typeName = PbTypeDescription.TypeNameFromMessage(msg);
+                if (typeName.Length == 0)
+                {
+                    return Err.AnyWithEmptyType();
+                }
 
+                PbTypeDescription type = db.DescribeType(typeName);
+                if (type == null)
+                {
+                    return Err.UnknownType(typeName);
+                }
+
+                value = type.MaybeUnwrap(db, msg);
+                if (value is Message)
+                {
+                    value = type.MaybeUnwrap(db, value);
+                }
+
+                return a(value);
+            }
+
+            return Err.NewErr("unsupported conversion from '{0}' to value", value.GetType());
+        }
+
+        internal static object MaybeUnwrapValue(object value)
+        {
+            if (value is Value)
+            {
+                Value v = (Value)value;
+                switch (v.KindCase)
+                {
+                    case Value.KindOneofCase.BoolValue:
+                        return v.BoolValue;
+                    case Value.KindOneofCase.BytesValue:
+                        return v.BytesValue;
+                    case Value.KindOneofCase.DoubleValue:
+                        return v.DoubleValue;
+                    case Value.KindOneofCase.Int64Value:
+                        return v.Int64Value;
+                    case Value.KindOneofCase.ListValue:
+                        return v.ListValue;
+                    case Value.KindOneofCase.NullValue:
+                        return v.NullValue;
+                    case Value.KindOneofCase.MapValue:
+                        return v.MapValue;
+                    case Value.KindOneofCase.StringValue:
+                        return v.StringValue;
+                    case Value.KindOneofCase.TypeValue:
+                        return Types.GetTypeByName(v.TypeValue);
+                    case Value.KindOneofCase.Uint64Value:
+                        return v.Uint64Value;
+                    case Value.KindOneofCase.ObjectValue:
+                        return v.ObjectValue;
+                }
+            }
+
+            return value;
+        }
+    }
 }

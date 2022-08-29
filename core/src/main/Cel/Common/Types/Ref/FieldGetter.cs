@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel.Common.Types.Ref
 {
-	/// <summary>
-	/// FieldGetter is used to get the field value from an input object, if set. </summary>
-	public delegate object FieldGetter(object target);
-
+    /// <summary>
+    /// FieldGetter is used to get the field value from an input object, if set. </summary>
+    public delegate object FieldGetter(object target);
 }

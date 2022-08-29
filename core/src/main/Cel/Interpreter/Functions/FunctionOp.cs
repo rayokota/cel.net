@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel.Interpreter.Functions
 {
-	using Val = global::Cel.Common.Types.Ref.Val;
+    using Val = global::Cel.Common.Types.Ref.Val;
 
-	/// <summary>
-	/// FunctionOp is a function with accepts zero or more arguments and produces an value (as
-	/// interface{}) or error as a result.
-	/// </summary>
-	public delegate Val FunctionOp(params Val[] values);
-
+    /// <summary>
+    /// FunctionOp is a function with accepts zero or more arguments and produces an value (as
+    /// interface{}) or error as a result.
+    /// </summary>
+    public delegate Val FunctionOp(params Val[] values);
 }

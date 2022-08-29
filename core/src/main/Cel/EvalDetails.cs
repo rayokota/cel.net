@@ -13,32 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel
 {
-	using EvalState = global::Cel.Interpreter.EvalState;
+    using EvalState = global::Cel.Interpreter.EvalState;
 
-	/// <summary>
-	/// EvalDetails holds additional information observed during the Eval() call. </summary>
-	public sealed class EvalDetails
-	{
-	  private readonly EvalState state;
+    /// <summary>
+    /// EvalDetails holds additional information observed during the Eval() call. </summary>
+    public sealed class EvalDetails
+    {
+        private readonly EvalState state;
 
-	  public EvalDetails(EvalState state)
-	  {
-		this.state = state;
-	  }
+        public EvalDetails(EvalState state)
+        {
+            this.state = state;
+        }
 
-	  /// <summary>
-	  /// State of the evaluation, non-nil if the OptTrackState or OptExhaustiveEval is specified within
-	  /// EvalOptions.
-	  /// </summary>
-	  public EvalState State
-	  {
-		  get
-		  {
-			return state;
-		  }
-	  }
-	}
-
+        /// <summary>
+        /// State of the evaluation, non-nil if the OptTrackState or OptExhaustiveEval is specified within
+        /// EvalOptions.
+        /// </summary>
+        public EvalState State
+        {
+            get { return state; }
+        }
+    }
 }

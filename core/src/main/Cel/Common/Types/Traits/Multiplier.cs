@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel.Common.Types.Traits
 {
-	using Val = global::Cel.Common.Types.Ref.Val;
+    using Val = global::Cel.Common.Types.Ref.Val;
 
-	/// <summary>
-	/// Multiplier interface to support '*' operator overloads. </summary>
-	public interface Multiplier
-	{
-	  /// <summary>
-	  /// Multiply returns the result of multiplying the current and input value. </summary>
-	  Val Multiply(Val other);
-	}
-
+    /// <summary>
+    /// Multiplier interface to support '*' operator overloads. </summary>
+    public interface Multiplier
+    {
+        /// <summary>
+        /// Multiply returns the result of multiplying the current and input value. </summary>
+        Val Multiply(Val other);
+    }
 }

@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel.Common.Types.Ref
 {
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
@@ -22,42 +23,42 @@ namespace Cel.Common.Types.Ref
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.Common.Types.IntT.IntType;
 
-	public abstract class BaseVal : Val
-	{
-		public abstract object Value();
-		public abstract Type Type();
-		public abstract Val Equal(Val other);
-		public abstract Val ConvertToType(Type typeValue);
-		public abstract object? ConvertToNative(System.Type typeDesc);
+    public abstract class BaseVal : Val
+    {
+        public abstract object Value();
+        public abstract Type Type();
+        public abstract Val Equal(Val other);
+        public abstract Val ConvertToType(Type typeValue);
+        public abstract object? ConvertToNative(System.Type typeDesc);
 
-	  public override int GetHashCode()
-	  {
-		return Value().GetHashCode();
-	  }
+        public override int GetHashCode()
+        {
+            return Value().GetHashCode();
+        }
 
-	  public override bool Equals(object obj)
-	  {
-		if (obj is Val)
-		{
-		  return Equal((Val) obj) == BoolT.True;
-		}
-		return Value().Equals(obj);
-	  }
+        public override bool Equals(object obj)
+        {
+            if (obj is Val)
+            {
+                return Equal((Val)obj) == BoolT.True;
+            }
 
-	  public override string ToString()
-	  {
-		return String.Format("{0}{{{1}}}", Type().TypeName(), Value());
-	  }
+            return Value().Equals(obj);
+        }
 
-	  public virtual bool BooleanValue()
-	  {
-		return ConvertToType(BoolT.BoolType).BooleanValue();
-	  }
+        public override string ToString()
+        {
+            return String.Format("{0}{{{1}}}", Type().TypeName(), Value());
+        }
 
-	  public virtual long IntValue()
-	  {
-		return ConvertToType(IntT.IntType).IntValue();
-	  }
-	}
+        public virtual bool BooleanValue()
+        {
+            return ConvertToType(BoolT.BoolType).BooleanValue();
+        }
 
+        public virtual long IntValue()
+        {
+            return ConvertToType(IntT.IntType).IntValue();
+        }
+    }
 }

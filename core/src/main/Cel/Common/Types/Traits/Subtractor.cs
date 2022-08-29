@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel.Common.Types.Traits
 {
-	using Val = global::Cel.Common.Types.Ref.Val;
+    using Val = global::Cel.Common.Types.Ref.Val;
 
-	/// <summary>
-	/// Subtractor interface to support binary '-' operator overloads. </summary>
-	public interface Subtractor
-	{
-	  /// <summary>
-	  /// Subtract returns the result of subtracting the input from the current value. </summary>
-	  Val Subtract(Val subtrahend);
-	}
-
+    /// <summary>
+    /// Subtractor interface to support binary '-' operator overloads. </summary>
+    public interface Subtractor
+    {
+        /// <summary>
+        /// Subtract returns the result of subtracting the input from the current value. </summary>
+        Val Subtract(Val subtrahend);
+    }
 }

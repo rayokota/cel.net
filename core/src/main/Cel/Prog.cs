@@ -29,95 +29,95 @@ namespace Cel
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.interpreter.EvalState.newEvalState;
 
-	using ErrException = global::Cel.Common.Types.Err.ErrException;
-	using Val = global::Cel.Common.Types.Ref.Val;
-	using Activation = global::Cel.Interpreter.Activation;
-	using AttributeFactory = global::Cel.Interpreter.AttributeFactory;
-	using Coster = global::Cel.Interpreter.Coster;
-	using Dispatcher = global::Cel.Interpreter.Dispatcher;
-	using EvalState = global::Cel.Interpreter.EvalState;
-	using Interpretable = global::Cel.Interpreter.Interpretable;
-	using InterpretableDecorator = global::Cel.Interpreter.InterpretableDecorator;
+    using ErrException = global::Cel.Common.Types.Err.ErrException;
+    using Val = global::Cel.Common.Types.Ref.Val;
+    using Activation = global::Cel.Interpreter.Activation;
+    using AttributeFactory = global::Cel.Interpreter.AttributeFactory;
+    using Coster = global::Cel.Interpreter.Coster;
+    using Dispatcher = global::Cel.Interpreter.Dispatcher;
+    using EvalState = global::Cel.Interpreter.EvalState;
+    using Interpretable = global::Cel.Interpreter.Interpretable;
+    using InterpretableDecorator = global::Cel.Interpreter.InterpretableDecorator;
 
-	/// <summary>
-	/// prog is the internal implementation of the Program interface. </summary>
-	public sealed class Prog : Program, Coster
-	{
-	  internal static readonly EvalState EmptyEvalState = EvalState.NewEvalState();
+    /// <summary>
+    /// prog is the internal implementation of the Program interface. </summary>
+    public sealed class Prog : Program, Coster
+    {
+        internal static readonly EvalState EmptyEvalState = EvalState.NewEvalState();
 
-	  internal readonly Env e;
-	  internal readonly ISet<EvalOption> evalOpts = new HashSet<EvalOption>();
-	  internal readonly IList<InterpretableDecorator> decorators = new List<InterpretableDecorator>();
-	  internal Activation defaultVars;
-	  internal readonly Dispatcher dispatcher;
-	  internal Interpreter.Interpreter interpreter;
-	  internal Interpretable interpretable;
-	  internal AttributeFactory attrFactory;
-	  internal readonly EvalState state;
+        internal readonly Env e;
+        internal readonly ISet<EvalOption> evalOpts = new HashSet<EvalOption>();
+        internal readonly IList<InterpretableDecorator> decorators = new List<InterpretableDecorator>();
+        internal Activation defaultVars;
+        internal readonly Dispatcher dispatcher;
+        internal Interpreter.Interpreter interpreter;
+        internal Interpretable interpretable;
+        internal AttributeFactory attrFactory;
+        internal readonly EvalState state;
 
-	  internal Prog(Env e, Dispatcher dispatcher)
-	  {
-		this.e = e;
-		this.dispatcher = dispatcher;
-		this.state = EvalState.NewEvalState();
-	  }
+        internal Prog(Env e, Dispatcher dispatcher)
+        {
+            this.e = e;
+            this.dispatcher = dispatcher;
+            this.state = EvalState.NewEvalState();
+        }
 
-	  internal Prog(Env e, ISet<EvalOption> evalOpts, Activation defaultVars, Dispatcher dispatcher, Interpreter.Interpreter interpreter, EvalState state)
-	  {
-		this.e = e;
-		this.evalOpts.UnionWith(evalOpts);
-		this.defaultVars = defaultVars;
-		this.dispatcher = dispatcher;
-		this.interpreter = interpreter;
-		this.state = state;
-	  }
+        internal Prog(Env e, ISet<EvalOption> evalOpts, Activation defaultVars, Dispatcher dispatcher,
+            Interpreter.Interpreter interpreter, EvalState state)
+        {
+            this.e = e;
+            this.evalOpts.UnionWith(evalOpts);
+            this.defaultVars = defaultVars;
+            this.dispatcher = dispatcher;
+            this.interpreter = interpreter;
+            this.state = state;
+        }
 
-	  /// <summary>
-	  /// Eval implements the Program interface method. </summary>
-	  public Program_EvalResult Eval(object input)
-	  {
-		Val v;
+        /// <summary>
+        /// Eval implements the Program interface method. </summary>
+        public Program_EvalResult Eval(object input)
+        {
+            Val v;
 
-		EvalDetails evalDetails = new EvalDetails(state);
+            EvalDetails evalDetails = new EvalDetails(state);
 
-		try
-		{
-		  // Build a hierarchical activation if there are default vars set.
-		  Activation vars = Activation.NewActivation(input);
+            try
+            {
+                // Build a hierarchical activation if there are default vars set.
+                Activation vars = Activation.NewActivation(input);
 
-		  if (defaultVars != null)
-		  {
-			vars = Activation.NewHierarchicalActivation(defaultVars, vars);
-		  }
+                if (defaultVars != null)
+                {
+                    vars = Activation.NewHierarchicalActivation(defaultVars, vars);
+                }
 
-		  v = interpretable.Eval(vars);
-		}
-		catch (ErrException e)
-		{
-		  v = e.Err;
-		}
-		catch (Exception e)
-		{
-		  throw new Exception(String.Format("internal error: {0}", e.Message), e);
-		}
+                v = interpretable.Eval(vars);
+            }
+            catch (ErrException e)
+            {
+                v = e.Err;
+            }
+            catch (Exception e)
+            {
+                throw new Exception(String.Format("internal error: {0}", e.Message), e);
+            }
 
-		// The output of an internal Eval may have a value (`v`) that is a types.Err. This step
-		// translates the CEL value to a Go error response. This interface does not quite match the
-		// RPC signature which allows for multiple errors to be returned, but should be sufficient.
-		// NOTE: Unlike the Go implementation, errors are handled differently in the Java
-		// implementation.
-		//    if (isError(v)) {
-		//      throw new EvalException(v);
-		//    }
+            // The output of an internal Eval may have a value (`v`) that is a types.Err. This step
+            // translates the CEL value to a Go error response. This interface does not quite match the
+            // RPC signature which allows for multiple errors to be returned, but should be sufficient.
+            // NOTE: Unlike the Go implementation, errors are handled differently in the Java
+            // implementation.
+            //    if (isError(v)) {
+            //      throw new EvalException(v);
+            //    }
 
-		return Program.NewEvalResult(v, evalDetails);
-	  }
+            return Program.NewEvalResult(v, evalDetails);
+        }
 
-	  // Cost implements the Coster interface method.
-	  public Interpreter.Coster_Cost Cost()
-	  {
-		return Cel.EstimateCost(interpretable);
-	  }
-	}
-
+        // Cost implements the Coster interface method.
+        public Interpreter.Coster_Cost Cost()
+        {
+            return Cel.EstimateCost(interpretable);
+        }
+    }
 }

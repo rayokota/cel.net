@@ -282,6 +282,7 @@ namespace Cel.Interpreter.Functions
                         {
                             return ((Negater)v).Negate();
                         }
+
                         return Err.NoSuchOverload(null, Operator.Negate.id, v);
                     }),
                 Binary(Operator.Index, Trait.IndexerType, (lhs, rhs) => ((Indexer)lhs).Get(rhs)),

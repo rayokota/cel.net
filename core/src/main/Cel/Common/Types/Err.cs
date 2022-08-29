@@ -20,315 +20,316 @@ namespace Cel.Common.Types
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.Common.Types.UnknownT.UnknownType;
 
-	using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
-	using Type = global::Cel.Common.Types.Ref.Type;
-	using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
-	using Val = global::Cel.Common.Types.Ref.Val;
+    using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
+    using Type = global::Cel.Common.Types.Ref.Type;
+    using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
+    using Val = global::Cel.Common.Types.Ref.Val;
 
-	/// <summary>
-	/// Err type which extends the built-in go error and implements ref.Val. </summary>
-	public sealed class Err : BaseVal
-	{
+    /// <summary>
+    /// Err type which extends the built-in go error and implements ref.Val. </summary>
+    public sealed class Err : BaseVal
+    {
+        /// <summary>
+        /// ErrType singleton. </summary>
+        public static readonly Type ErrType = TypeT.NewTypeValue(TypeEnum.Err);
 
-	  /// <summary>
-	  /// ErrType singleton. </summary>
-	  public static readonly Type ErrType = TypeT.NewTypeValue(TypeEnum.Err);
+        /// <summary>
+        /// errIntOverflow is an error representing integer overflow. </summary>
+        public static readonly Val ErrIntOverflow = NewErr("integer overflow");
 
-	  /// <summary>
-	  /// errIntOverflow is an error representing integer overflow. </summary>
-	  public static readonly Val ErrIntOverflow = NewErr("integer overflow");
-	  /// <summary>
-	  /// errUintOverflow is an error representing unsigned integer overflow. </summary>
-	  public static readonly Val ErrUintOverflow = NewErr("unsigned integer overflow");
-	  /// <summary>
-	  /// errDurationOverflow is an error representing duration overflow. </summary>
-	  public static readonly Val ErrDurationOverflow = NewErr("duration overflow");
-	  /// <summary>
-	  /// errDurationOutOfRange is an error representing duration out of range. </summary>
-	  public static readonly Val ErrDurationOutOfRange = NewErr("duration out of range");
-	  /// <summary>
-	  /// errTimestampOverflow is an error representing timestamp overflow. </summary>
-	  public static readonly Val ErrTimestampOverflow = NewErr("timestamp overflow");
-	  /// <summary>
-	  /// errTimestampOutOfRange is an error representing duration out of range. </summary>
-	  public static readonly Val ErrTimestampOutOfRange = NewErr("timestamp out of range");
+        /// <summary>
+        /// errUintOverflow is an error representing unsigned integer overflow. </summary>
+        public static readonly Val ErrUintOverflow = NewErr("unsigned integer overflow");
 
-	  private readonly string error;
-	  private readonly Exception cause;
+        /// <summary>
+        /// errDurationOverflow is an error representing duration overflow. </summary>
+        public static readonly Val ErrDurationOverflow = NewErr("duration overflow");
 
-	  private Err(string error) : this(error, null)
-	  {
-	  }
+        /// <summary>
+        /// errDurationOutOfRange is an error representing duration out of range. </summary>
+        public static readonly Val ErrDurationOutOfRange = NewErr("duration out of range");
 
-	  private Err(string error, Exception cause)
-	  {
-		this.error = error;
-		this.cause = cause;
-	  }
+        /// <summary>
+        /// errTimestampOverflow is an error representing timestamp overflow. </summary>
+        public static readonly Val ErrTimestampOverflow = NewErr("timestamp overflow");
 
-	  public static Val NoSuchOverload(Val val, string function, Val other)
-	  {
-		string otName = (other != null) ? ((other is Type) ? (Type) other : other.Type()).TypeName() : "*";
-		if (val != null)
-		{
-		  Type vt = (val is Type) ? (Type) val : val.Type();
-		  return ValOrErr(other, "no such overload: {0}.{0}({0})", vt.TypeName(), function, otName);
-		}
-		else
-		{
-		  return ValOrErr(other, "no such overload: *.{0}({0})", function, otName);
-		}
-	  }
+        /// <summary>
+        /// errTimestampOutOfRange is an error representing duration out of range. </summary>
+        public static readonly Val ErrTimestampOutOfRange = NewErr("timestamp out of range");
 
-	  public static Val NoSuchOverload(Val val, string function, Type argA, Type argB)
-	  {
-		return NewErr("no such overload: {0}.{0}({0},{0},...)", val.Type().TypeName(), function, argA, argB);
-	  }
+        private readonly string error;
+        private readonly Exception cause;
 
-	  public static Val NoSuchOverload(Val val, string function, string overload, Val[] args)
-	  {
+        private Err(string error) : this(error, null)
+        {
+        }
+
+        private Err(string error, Exception cause)
+        {
+            this.error = error;
+            this.cause = cause;
+        }
+
+        public static Val NoSuchOverload(Val val, string function, Val other)
+        {
+            string otName = (other != null) ? ((other is Type) ? (Type)other : other.Type()).TypeName() : "*";
+            if (val != null)
+            {
+                Type vt = (val is Type) ? (Type)val : val.Type();
+                return ValOrErr(other, "no such overload: {0}.{0}({0})", vt.TypeName(), function, otName);
+            }
+            else
+            {
+                return ValOrErr(other, "no such overload: *.{0}({0})", function, otName);
+            }
+        }
+
+        public static Val NoSuchOverload(Val val, string function, Type argA, Type argB)
+        {
+            return NewErr("no such overload: {0}.{0}({0},{0},...)", val.Type().TypeName(), function, argA, argB);
+        }
+
+        public static Val NoSuchOverload(Val val, string function, string overload, Val[] args)
+        {
 //JAVA TO C# CONVERTER TODO TASK: Most Java stream collectors are not converted by Java to C# Converter:
-		  return NewErr("no such overload: {0}.{0}[{0}]({0})", val.Type().TypeName(), function, overload,
-			  string.Join(", ", args.Select(a => a.Type().TypeName())));
-	  }
+            return NewErr("no such overload: {0}.{0}[{0}]({0})", val.Type().TypeName(), function, overload,
+                string.Join(", ", args.Select(a => a.Type().TypeName())));
+        }
 
-	  /// <summary>
-	  /// MaybeNoSuchOverloadErr returns the error or unknown if the input ref.Val is one of these types,
-	  /// else a new no such overload error.
-	  /// </summary>
-	  public static Val MaybeNoSuchOverloadErr(Val val)
-	  {
-		return ValOrErr(val, "no such overload");
-	  }
+        /// <summary>
+        /// MaybeNoSuchOverloadErr returns the error or unknown if the input ref.Val is one of these types,
+        /// else a new no such overload error.
+        /// </summary>
+        public static Val MaybeNoSuchOverloadErr(Val val)
+        {
+            return ValOrErr(val, "no such overload");
+        }
 
-	  /// <summary>
-	  /// NewErr creates a new Err described by the format string and args. TODO: Audit the use of this
-	  /// function and standardize the error messages and codes.
-	  /// </summary>
-	  public static Val NewErr(string format, params object[] args)
-	  {
-		return new Err(String.Format(format, args));
-	  }
+        /// <summary>
+        /// NewErr creates a new Err described by the format string and args. TODO: Audit the use of this
+        /// function and standardize the error messages and codes.
+        /// </summary>
+        public static Val NewErr(string format, params object[] args)
+        {
+            return new Err(String.Format(format, args));
+        }
 
-	  /// <summary>
-	  /// NewErr creates a new Err described by the format string and args. TODO: Audit the use of this
-	  /// function and standardize the error messages and codes.
-	  /// </summary>
-	  public static Val NewErr(Exception cause, string format, params object[] args)
-	  {
-		if (cause is ErrException)
-		{
-		  return ((ErrException) cause).Err;
-		}
-		return new Err(String.Format(format, args), cause);
-	  }
+        /// <summary>
+        /// NewErr creates a new Err described by the format string and args. TODO: Audit the use of this
+        /// function and standardize the error messages and codes.
+        /// </summary>
+        public static Val NewErr(Exception cause, string format, params object[] args)
+        {
+            if (cause is ErrException)
+            {
+                return ((ErrException)cause).Err;
+            }
 
-	  /// <summary>
-	  /// UnsupportedRefValConversionErr returns a types.NewErr instance with a no such conversion
-	  /// message that indicates that the native value could not be converted to a CEL ref.Val.
-	  /// </summary>
-	  public static Val UnsupportedRefValConversionErr(object val)
-	  {
-		return NewErr("unsupported conversion to ref.Val: ({0}){0}", val.GetType().Name, val);
-	  }
+            return new Err(String.Format(format, args), cause);
+        }
 
-	  /// <summary>
-	  /// ValOrErr either returns the existing error or create a new one. TODO: Audit the use of this
-	  /// function and standardize the error messages and codes.
-	  /// </summary>
-	  public static Val ValOrErr(Val val, string format, params object[] args)
-	  {
-		if (val == null)
-		{
-		  return NewErr(format, args);
-		}
-		if (val.Type() == ErrType || val.Type() == UnknownT.UnknownType)
-		{
-		  return val;
-		}
-		return NewErr(format, args);
-	  }
+        /// <summary>
+        /// UnsupportedRefValConversionErr returns a types.NewErr instance with a no such conversion
+        /// message that indicates that the native value could not be converted to a CEL ref.Val.
+        /// </summary>
+        public static Val UnsupportedRefValConversionErr(object val)
+        {
+            return NewErr("unsupported conversion to ref.Val: ({0}){0}", val.GetType().Name, val);
+        }
 
-	  public static Val NoSuchField(object field)
-	  {
-		return NewErr("no such field '{0}'", field);
-	  }
+        /// <summary>
+        /// ValOrErr either returns the existing error or create a new one. TODO: Audit the use of this
+        /// function and standardize the error messages and codes.
+        /// </summary>
+        public static Val ValOrErr(Val val, string format, params object[] args)
+        {
+            if (val == null)
+            {
+                return NewErr(format, args);
+            }
 
-	  public static Val UnknownType(object field)
-	  {
-		return NewErr("unknown type '{0}'", field);
-	  }
+            if (val.Type() == ErrType || val.Type() == UnknownT.UnknownType)
+            {
+                return val;
+            }
 
-	  public static Val AnyWithEmptyType()
-	  {
-		return NewErr("conversion error: got Any with empty type-url");
-	  }
+            return NewErr(format, args);
+        }
 
-	  public static Val DivideByZero()
-	  {
-		return NewErr("divide by zero");
-	  }
+        public static Val NoSuchField(object field)
+        {
+            return NewErr("no such field '{0}'", field);
+        }
 
-	  public static Val NoMoreElements()
-	  {
-		return NewErr("no more elements");
-	  }
+        public static Val UnknownType(object field)
+        {
+            return NewErr("unknown type '{0}'", field);
+        }
 
-	  public static Val ModulusByZero()
-	  {
-		return NewErr("modulus by zero");
-	  }
+        public static Val AnyWithEmptyType()
+        {
+            return NewErr("conversion error: got Any with empty type-url");
+        }
 
-	  public static Val RangeError(object from, object to)
-	  {
-		return NewErr("range error converting {0} to {0}", from, to);
-	  }
+        public static Val DivideByZero()
+        {
+            return NewErr("divide by zero");
+        }
 
-	  public static Val NewTypeConversionError(object from, object to)
-	  {
-		return NewErr("type conversion error from '{0}' to '{0}'", from, to);
-	  }
+        public static Val NoMoreElements()
+        {
+            return NewErr("no more elements");
+        }
 
-	  public static Exception NoSuchAttributeException(object context)
-	  {
-		return new ErrException("undeclared reference to '{0}' (in container '')", context);
-	  }
+        public static Val ModulusByZero()
+        {
+            return NewErr("modulus by zero");
+        }
 
-	  public static Val NoSuchKey(object key)
-	  {
-		return NewErr("no such key: {0}", key);
-	  }
+        public static Val RangeError(object from, object to)
+        {
+            return NewErr("range error converting {0} to {0}", from, to);
+        }
 
-	  public static Exception NoSuchKeyException(object key)
-	  {
-		return new ErrException("no such key: {0}", key);
-	  }
+        public static Val NewTypeConversionError(object from, object to)
+        {
+            return NewErr("type conversion error from '{0}' to '{0}'", from, to);
+        }
 
-	  public static Exception IndexOutOfBoundsException(object i)
-	  {
-		return new System.InvalidOperationException(String.Format("index out of bounds: {0}", i));
-	  }
+        public static Exception NoSuchAttributeException(object context)
+        {
+            return new ErrException("undeclared reference to '{0}' (in container '')", context);
+        }
 
-	  public sealed class ErrException : System.ArgumentException
-	  {
-		internal readonly string format;
-		internal readonly object[] args;
+        public static Val NoSuchKey(object key)
+        {
+            return NewErr("no such key: {0}", key);
+        }
 
-		public ErrException(string format, params object[] args) : base(String.Format(format, args))
-		{
-		  this.format = format;
-		  this.args = args;
-		}
+        public static Exception NoSuchKeyException(object key)
+        {
+            return new ErrException("no such key: {0}", key);
+        }
 
-		public Val Err
-		{
-			get
-			{
-			  return NewErr(format, args);
-			}
-		}
-	  }
+        public static Exception IndexOutOfBoundsException(object i)
+        {
+            return new System.InvalidOperationException(String.Format("index out of bounds: {0}", i));
+        }
 
-	  /// <summary>
-	  /// ConvertToNative implements ref.Val.ConvertToNative. </summary>
-	  public override object? ConvertToNative(System.Type typeDesc)
-	  {
-		throw new System.NotSupportedException(error);
-	  }
+        public sealed class ErrException : System.ArgumentException
+        {
+            internal readonly string format;
+            internal readonly object[] args;
 
-	  /// <summary>
-	  /// ConvertToType implements ref.Val.ConvertToType. </summary>
-	  public override Val ConvertToType(Type typeVal)
-	  {
-		// Errors are not convertible to other representations.
-		return this;
-	  }
+            public ErrException(string format, params object[] args) : base(String.Format(format, args))
+            {
+                this.format = format;
+                this.args = args;
+            }
 
-	  /// <summary>
-	  /// Equal implements ref.Val.Equal. </summary>
-	  public override Val Equal(Val other)
-	  {
-		// An error cannot be equal to any other value, so it returns itself.
-		return this;
-	  }
+            public Val Err
+            {
+                get { return NewErr(format, args); }
+            }
+        }
 
-	  /// <summary>
-	  /// String implements fmt.Stringer. </summary>
-	  public override string ToString()
-	  {
-		return error;
-	  }
+        /// <summary>
+        /// ConvertToNative implements ref.Val.ConvertToNative. </summary>
+        public override object? ConvertToNative(System.Type typeDesc)
+        {
+            throw new System.NotSupportedException(error);
+        }
 
-	  /// <summary>
-	  /// Type implements ref.Val.Type. </summary>
-	  public override Type Type()
-	  {
-		return ErrType;
-	  }
+        /// <summary>
+        /// ConvertToType implements ref.Val.ConvertToType. </summary>
+        public override Val ConvertToType(Type typeVal)
+        {
+            // Errors are not convertible to other representations.
+            return this;
+        }
 
-	  /// <summary>
-	  /// Value implements ref.Val.Value. </summary>
-	  public override object Value()
-	  {
-		return error;
-	  }
+        /// <summary>
+        /// Equal implements ref.Val.Equal. </summary>
+        public override Val Equal(Val other)
+        {
+            // An error cannot be equal to any other value, so it returns itself.
+            return this;
+        }
 
-	  public override bool BooleanValue()
-	  {
-		throw new System.NotSupportedException();
-	  }
+        /// <summary>
+        /// String implements fmt.Stringer. </summary>
+        public override string ToString()
+        {
+            return error;
+        }
 
-	  public override long IntValue()
-	  {
-		throw new System.NotSupportedException();
-	  }
+        /// <summary>
+        /// Type implements ref.Val.Type. </summary>
+        public override Type Type()
+        {
+            return ErrType;
+        }
 
-	  /// <summary>
-	  /// IsError returns whether the input element ref.Type or ref.Val is equal to the ErrType
-	  /// singleton.
-	  /// </summary>
-	  public static bool IsError(Val val)
-	  {
-		return val != null && val.Type() == ErrType;
-	  }
+        /// <summary>
+        /// Value implements ref.Val.Value. </summary>
+        public override object Value()
+        {
+            return error;
+        }
 
-	  public bool HasCause()
-	  {
-		return cause != null;
-	  }
+        public override bool BooleanValue()
+        {
+            throw new System.NotSupportedException();
+        }
 
-	  public Exception Cause
-	  {
-		  get
-		  {
-			return cause;
-		  }
-	  }
+        public override long IntValue()
+        {
+            throw new System.NotSupportedException();
+        }
 
-	  public Exception ToRuntimeException()
-	  {
-		if (cause != null)
-		{
-			throw new Exception(this.error, this.cause);
-		}
-		throw new Exception(this.error);
-	  }
+        /// <summary>
+        /// IsError returns whether the input element ref.Type or ref.Val is equal to the ErrType
+        /// singleton.
+        /// </summary>
+        public static bool IsError(Val val)
+        {
+            return val != null && val.Type() == ErrType;
+        }
 
-	  public static void ThrowErrorAsIllegalStateException(Val val)
-	  {
-		if (val is Err)
-		{
-		  Err e = (Err) val;
-		  if (e.cause != null)
-		  {
-			throw new System.InvalidOperationException(e.error, e.cause);
-		  }
-		  else
-		  {
-			throw new System.InvalidOperationException(e.error);
-		  }
-		}
-	  }
-	}
+        public bool HasCause()
+        {
+            return cause != null;
+        }
 
+        public Exception Cause
+        {
+            get { return cause; }
+        }
+
+        public Exception ToRuntimeException()
+        {
+            if (cause != null)
+            {
+                throw new Exception(this.error, this.cause);
+            }
+
+            throw new Exception(this.error);
+        }
+
+        public static void ThrowErrorAsIllegalStateException(Val val)
+        {
+            if (val is Err)
+            {
+                Err e = (Err)val;
+                if (e.cause != null)
+                {
+                    throw new System.InvalidOperationException(e.error, e.cause);
+                }
+                else
+                {
+                    throw new System.InvalidOperationException(e.error);
+                }
+            }
+        }
+    }
 }

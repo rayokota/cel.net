@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel.Common.Types.Traits
 {
-	using Val = global::Cel.Common.Types.Ref.Val;
+    using Val = global::Cel.Common.Types.Ref.Val;
 
-	/// <summary>
-	/// Container interface which permits containment tests such as 'a in b'. </summary>
-	public interface Container
-	{
-	  /// <summary>
-	  /// Contains returns true if the value exists within the object. </summary>
-	  Val Contains(Val value);
-	}
-
+    /// <summary>
+    /// Container interface which permits containment tests such as 'a in b'. </summary>
+    public interface Container
+    {
+        /// <summary>
+        /// Contains returns true if the value exists within the object. </summary>
+        Val Contains(Val value);
+    }
 }

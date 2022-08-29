@@ -13,27 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel.Common.Types.Traits
 {
-	using Val = global::Cel.Common.Types.Ref.Val;
+    using Val = global::Cel.Common.Types.Ref.Val;
 
-	/// <summary>
-	/// Comparer interface for ordering comparisons between values in order to support '&lt;', '&lt;=',
-	/// '&gt;=', '&gt;' overloads.
-	/// </summary>
-	public interface Comparer
-	{
-	  /// <summary>
-	  /// Compare this value to the input other value, returning an Int:
-	  /// 
-	  /// <para>{@code this &lt; other -&gt; Int(-1)<br> this == other -&gt; Int(0)<br> this &gt; other
-	  /// -&gt; Int(1) }
-	  /// 
-	  /// </para>
-	  /// <para>If the comparison cannot be made or is not supported, an error should be returned.
-	  /// </para>
-	  /// </summary>
-	  Val Compare(Val other);
-	}
-
+    /// <summary>
+    /// Comparer interface for ordering comparisons between values in order to support '&lt;', '&lt;=',
+    /// '&gt;=', '&gt;' overloads.
+    /// </summary>
+    public interface Comparer
+    {
+        /// <summary>
+        /// Compare this value to the input other value, returning an Int:
+        /// 
+        /// <para>{@code this &lt; other -&gt; Int(-1)<br> this == other -&gt; Int(0)<br> this &gt; other
+        /// -&gt; Int(1) }
+        /// 
+        /// </para>
+        /// <para>If the comparison cannot be made or is not supported, an error should be returned.
+        /// </para>
+        /// </summary>
+        Val Compare(Val other);
+    }
 }

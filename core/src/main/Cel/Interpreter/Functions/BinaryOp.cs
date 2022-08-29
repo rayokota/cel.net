@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel.Interpreter.Functions
 {
-	using Val = global::Cel.Common.Types.Ref.Val;
+    using Val = global::Cel.Common.Types.Ref.Val;
 
-	/// <summary>
-	/// BinaryOp is a function that takes two values and produces an output. </summary>
-	public delegate Val BinaryOp(Val lhs, Val rhs);
-
+    /// <summary>
+    /// BinaryOp is a function that takes two values and produces an output. </summary>
+    public delegate Val BinaryOp(Val lhs, Val rhs);
 }

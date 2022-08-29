@@ -18,79 +18,75 @@ using System.Collections.Generic;
  */
 namespace Cel
 {
-	using CELError = global::Cel.Common.CelError;
-	using Errors = global::Cel.Common.Errors;
-	using Source = global::Cel.Common.Source;
+    using CELError = global::Cel.Common.CelError;
+    using Errors = global::Cel.Common.Errors;
+    using Source = global::Cel.Common.Source;
 
-	/// <summary>
-	/// Issues defines methods for inspecting the error details of parse and check calls.
-	/// 
-	/// <para>Note: in the future, non-fatal warnings and notices may be inspectable via the Issues struct.
-	/// </para>
-	/// </summary>
-	public sealed class Issues
-	{
+    /// <summary>
+    /// Issues defines methods for inspecting the error details of parse and check calls.
+    /// 
+    /// <para>Note: in the future, non-fatal warnings and notices may be inspectable via the Issues struct.
+    /// </para>
+    /// </summary>
+    public sealed class Issues
+    {
+        private readonly Errors errs;
 
-	  private readonly Errors errs;
+        private Issues(Errors errs)
+        {
+            this.errs = errs;
+        }
 
-	  private Issues(Errors errs)
-	  {
-		this.errs = errs;
-	  }
+        /// <summary>
+        /// NewIssues returns an Issues struct from a common.Errors object. </summary>
+        public static Issues NewIssues(Errors errs)
+        {
+            return new Issues(errs);
+        }
 
-	  /// <summary>
-	  /// NewIssues returns an Issues struct from a common.Errors object. </summary>
-	  public static Issues NewIssues(Errors errs)
-	  {
-		return new Issues(errs);
-	  }
+        /// <summary>
+        /// NewIssues returns an Issues struct from a common.Errors object. </summary>
+        public static Issues NoIssues(Source source)
+        {
+            return new Issues(new Errors(source));
+        }
 
-	  /// <summary>
-	  /// NewIssues returns an Issues struct from a common.Errors object. </summary>
-	  public static Issues NoIssues(Source source)
-	  {
-		return new Issues(new Errors(source));
-	  }
+        /// <summary>
+        /// Err returns an error value if the issues list contains one or more errors. </summary>
+        public Exception Err()
+        {
+            if (!errs.HasErrors())
+            {
+                return null;
+            }
 
-	  /// <summary>
-	  /// Err returns an error value if the issues list contains one or more errors. </summary>
-	  public Exception Err()
-	  {
-		if (!errs.HasErrors())
-		{
-		  return null;
-		}
-		return new Exception(ToString());
-	  }
+            return new Exception(ToString());
+        }
 
-	  public bool HasIssues()
-	  {
-		return errs.HasErrors();
-	  }
+        public bool HasIssues()
+        {
+            return errs.HasErrors();
+        }
 
-	  /// <summary>
-	  /// Errors returns the collection of errors encountered in more granular detail. </summary>
-	  public IList<CELError> Errors
-	  {
-		  get
-		  {
-			  return errs.GetErrors;
-		  }
-	  }
+        /// <summary>
+        /// Errors returns the collection of errors encountered in more granular detail. </summary>
+        public IList<CELError> Errors
+        {
+            get { return errs.GetErrors; }
+        }
 
-	  /// <summary>
-	  /// Append collects the issues from another Issues struct into a new Issues object. </summary>
-	  public Issues Append(Issues other)
-	  {
-		return NewIssues(errs.Append(other.Errors));
-	  }
+        /// <summary>
+        /// Append collects the issues from another Issues struct into a new Issues object. </summary>
+        public Issues Append(Issues other)
+        {
+            return NewIssues(errs.Append(other.Errors));
+        }
 
-	  /// <summary>
-	  /// String converts the issues to a suitable display string. </summary>
-	  public override string ToString()
-	  {
-		return errs.ToDisplayString();
-	  }
-	}
-
+        /// <summary>
+        /// String converts the issues to a suitable display string. </summary>
+        public override string ToString()
+        {
+            return errs.ToDisplayString();
+        }
+    }
 }

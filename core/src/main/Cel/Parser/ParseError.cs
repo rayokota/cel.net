@@ -17,24 +17,20 @@
  */
 namespace Cel.Parser
 {
-	using Location = global::Cel.Common.Location;
+    using Location = global::Cel.Common.Location;
 
-	public sealed class ParseError : Exception
-	{
-	  private readonly Location location;
+    public sealed class ParseError : Exception
+    {
+        private readonly Location location;
 
-	  public ParseError(Location location, string message) : base(message)
-	  {
-		this.location = location;
-	  }
+        public ParseError(Location location, string message) : base(message)
+        {
+            this.location = location;
+        }
 
-	  public Location Location
-	  {
-		  get
-		  {
-			return location;
-		  }
-	  }
-	}
-
+        public Location Location
+        {
+            get { return location; }
+        }
+    }
 }

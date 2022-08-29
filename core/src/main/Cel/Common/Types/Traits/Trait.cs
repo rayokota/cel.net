@@ -13,71 +13,71 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel.Common.Types.Traits
 {
-	public enum Trait
-	{
-	  None,
-	  
-	  /// <summary>
-	  /// AdderType types provide a '+' operator overload. </summary>
-	  AdderType,
+    public enum Trait
+    {
+        None,
 
-	  /// <summary>
-	  /// ComparerType types support ordering comparisons '&lt;', '&lt;=', '&lt;', '&lt;='. </summary>
-	  ComparerType,
+        /// <summary>
+        /// AdderType types provide a '+' operator overload. </summary>
+        AdderType,
 
-	  /// <summary>
-	  /// ContainerType types support 'in' operations. </summary>
-	  ContainerType,
+        /// <summary>
+        /// ComparerType types support ordering comparisons '&lt;', '&lt;=', '&lt;', '&lt;='. </summary>
+        ComparerType,
 
-	  /// <summary>
-	  /// DividerType types support '/' operations. </summary>
-	  DividerType,
+        /// <summary>
+        /// ContainerType types support 'in' operations. </summary>
+        ContainerType,
 
-	  /// <summary>
-	  /// FieldTesterType types support the detection of field value presence. </summary>
-	  FieldTesterType,
+        /// <summary>
+        /// DividerType types support '/' operations. </summary>
+        DividerType,
 
-	  /// <summary>
-	  /// IndexerType types support index access with dynamic values. </summary>
-	  IndexerType,
+        /// <summary>
+        /// FieldTesterType types support the detection of field value presence. </summary>
+        FieldTesterType,
 
-	  /// <summary>
-	  /// IterableType types can be iterated over in comprehensions. </summary>
-	  IterableType,
+        /// <summary>
+        /// IndexerType types support index access with dynamic values. </summary>
+        IndexerType,
 
-	  /// <summary>
-	  /// IteratorType types support iterator semantics. </summary>
-	  IteratorType,
+        /// <summary>
+        /// IterableType types can be iterated over in comprehensions. </summary>
+        IterableType,
 
-	  /// <summary>
-	  /// MatcherType types support pattern matching via 'matches' method. </summary>
-	  MatcherType,
+        /// <summary>
+        /// IteratorType types support iterator semantics. </summary>
+        IteratorType,
 
-	  /// <summary>
-	  /// ModderType types support modulus operations '%' </summary>
-	  ModderType,
+        /// <summary>
+        /// MatcherType types support pattern matching via 'matches' method. </summary>
+        MatcherType,
 
-	  /// <summary>
-	  /// MultiplierType types support '*' operations. </summary>
-	  MultiplierType,
+        /// <summary>
+        /// ModderType types support modulus operations '%' </summary>
+        ModderType,
 
-	  /// <summary>
-	  /// NegatorType types support either negation via '!' or '-' </summary>
-	  NegatorType,
+        /// <summary>
+        /// MultiplierType types support '*' operations. </summary>
+        MultiplierType,
 
-	  /// <summary>
-	  /// ReceiverType types support dynamic dispatch to instance methods. </summary>
-	  ReceiverType,
+        /// <summary>
+        /// NegatorType types support either negation via '!' or '-' </summary>
+        NegatorType,
 
-	  /// <summary>
-	  /// SizerType types support the size() method. </summary>
-	  SizerType,
+        /// <summary>
+        /// ReceiverType types support dynamic dispatch to instance methods. </summary>
+        ReceiverType,
 
-	  /// <summary>
-	  /// SubtractorType type support '-' operations. </summary>
-	  SubtractorType
-	}
+        /// <summary>
+        /// SizerType types support the size() method. </summary>
+        SizerType,
 
+        /// <summary>
+        /// SubtractorType type support '-' operations. </summary>
+        SubtractorType
+    }
 }

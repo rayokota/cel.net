@@ -17,204 +17,207 @@
  */
 namespace Cel.extension
 {
-	using Err = global::Cel.Common.Types.Err;
-	using IntT = global::Cel.Common.Types.IntT;
-	using ListT = global::Cel.Common.Types.ListT;
-	using StringT = global::Cel.Common.Types.StringT;
-	using BinaryOp = global::Cel.Interpreter.Functions.BinaryOp;
-	using FunctionOp = global::Cel.Interpreter.Functions.FunctionOp;
-	using UnaryOp = global::Cel.Interpreter.Functions.UnaryOp;
+    using Err = global::Cel.Common.Types.Err;
+    using IntT = global::Cel.Common.Types.IntT;
+    using ListT = global::Cel.Common.Types.ListT;
+    using StringT = global::Cel.Common.Types.StringT;
+    using BinaryOp = global::Cel.Interpreter.Functions.BinaryOp;
+    using FunctionOp = global::Cel.Interpreter.Functions.FunctionOp;
+    using UnaryOp = global::Cel.Interpreter.Functions.UnaryOp;
 
-	/// <summary>
-	/// function invocation guards for common call signatures within extension functions. </summary>
-	public sealed class Guards
-	{
+    /// <summary>
+    /// function invocation guards for common call signatures within extension functions. </summary>
+    public sealed class Guards
+    {
+        private Guards()
+        {
+        }
 
-	  private Guards()
-	  {
-	  }
+        public static BinaryOp CallInStrIntOutStr(System.Func<string, int, string> func)
+        {
+            return (lhs, rhs) =>
+            {
+                try
+                {
+                    return StringT.StringOf(func(((string)lhs.Value()), GetIntValue((IntT)rhs)));
+                }
+                catch (Exception e)
+                {
+                    return Err.NewErr(e, "{0}", e.Message);
+                }
+            };
+        }
 
-	  public static BinaryOp CallInStrIntOutStr(System.Func<string, int, string> func)
-	  {
-		return (lhs, rhs) =>
-		{
-	  try
-	  {
-		return StringT.StringOf(func(((string) lhs.Value()), GetIntValue((IntT) rhs)));
-	  }
-	  catch (Exception e)
-	  {
-		return Err.NewErr(e, "{0}", e.Message);
-	  }
-		};
-	  }
+        public static FunctionOp CallInStrIntIntOutStr(Func<string, int, int, string> func)
+        {
+            return values =>
+            {
+                try
+                {
+                    return StringT.StringOf(func(((string)values[0].Value()), (GetIntValue((IntT)values[1])),
+                        (GetIntValue((IntT)values[2]))));
+                }
+                catch (Exception e)
+                {
+                    return Err.NewErr(e, "{0}", e.Message);
+                }
+            };
+        }
 
-	  public static FunctionOp CallInStrIntIntOutStr(Func<string, int, int, string> func)
-	  {
-		return values =>
-		{
-	  try
-	  {
-		return StringT.StringOf(func(((string) values[0].Value()), (GetIntValue((IntT) values[1])), (GetIntValue((IntT) values[2]))));
-	  }
-	  catch (Exception e)
-	  {
-		return Err.NewErr(e, "{0}", e.Message);
-	  }
-		};
-	  }
+        public static BinaryOp CallInStrStrOutInt(System.Func<string, string, int> func)
+        {
+            return (lhs, rhs) =>
+            {
+                try
+                {
+                    return IntT.IntOf(func(((string)lhs.Value()), ((string)rhs.Value())));
+                }
+                catch (Exception e)
+                {
+                    return Err.NewErr(e, "{0}", e.Message);
+                }
+            };
+        }
 
-	  public static BinaryOp CallInStrStrOutInt(System.Func<string, string, int> func)
-	  {
-		return (lhs, rhs) =>
-		{
-	  try
-	  {
-		return IntT.IntOf(func(((string) lhs.Value()), ((string) rhs.Value())));
-	  }
-	  catch (Exception e)
-	  {
-		return Err.NewErr(e, "{0}", e.Message);
-	  }
-		};
-	  }
+        public static FunctionOp CallInStrStrIntOutInt(Func<string, string, int, int> func)
+        {
+            return values =>
+            {
+                try
+                {
+                    return IntT.IntOf(func(((string)values[0].Value()), ((string)values[1].Value()),
+                        (GetIntValue((IntT)values[2]))));
+                }
+                catch (Exception e)
+                {
+                    return Err.NewErr(e, "{0}", e.Message);
+                }
+            };
+        }
 
-	  public static FunctionOp CallInStrStrIntOutInt(Func<string, string, int, int> func)
-	  {
-		return values =>
-		{
-	  try
-	  {
-		return IntT.IntOf(func(((string) values[0].Value()), ((string) values[1].Value()), (GetIntValue((IntT) values[2]))));
-	  }
-	  catch (Exception e)
-	  {
-		return Err.NewErr(e, "{0}", e.Message);
-	  }
-		};
-	  }
+        public static BinaryOp CallInStrStrOutStrArr(System.Func<string, string, string[]> func)
+        {
+            return (lhs, rhs) =>
+            {
+                try
+                {
+                    return ListT.NewStringArrayList(func(((string)lhs.Value()), ((string)rhs.Value())));
+                }
+                catch (Exception e)
+                {
+                    return Err.NewErr(e, "{0}", e.Message);
+                }
+            };
+        }
 
-	  public static BinaryOp CallInStrStrOutStrArr(System.Func<string, string, string[]> func)
-	  {
-		return (lhs, rhs) =>
-		{
-	  try
-	  {
-		return ListT.NewStringArrayList(func(((string) lhs.Value()), ((string) rhs.Value())));
-	  }
-	  catch (Exception e)
-	  {
-		return Err.NewErr(e, "{0}", e.Message);
-	  }
-		};
-	  }
+        public static FunctionOp CallInStrStrIntOutStrArr(Func<string, string, int, string[]> func)
+        {
+            return values =>
+            {
+                try
+                {
+                    return ListT.NewStringArrayList(func(((string)values[0].Value()), ((string)values[1].Value()),
+                        GetIntValue((IntT)values[2])));
+                }
+                catch (Exception e)
+                {
+                    return Err.NewErr(e, "{0}", e.Message);
+                }
+            };
+        }
 
-	  public static FunctionOp CallInStrStrIntOutStrArr(Func<string, string, int, string[]> func)
-	  {
-		return values =>
-		{
-	  try
-	  {
-		return ListT.NewStringArrayList(func(((string) values[0].Value()), ((string) values[1].Value()), GetIntValue((IntT) values[2])));
-	  }
-	  catch (Exception e)
-	  {
-		return Err.NewErr(e, "{0}", e.Message);
-	  }
-		};
-	  }
+        public static FunctionOp CallInStrStrStrOutStr(Func<string, string, string, string> func)
+        {
+            return values =>
+            {
+                try
+                {
+                    return StringT.StringOf(func(((string)values[0].Value()), ((string)values[1].Value()),
+                        ((string)values[2].Value())));
+                }
+                catch (Exception e)
+                {
+                    return Err.NewErr(e, "{0}", e.Message);
+                }
+            };
+        }
 
-	  public static FunctionOp CallInStrStrStrOutStr(Func<string, string, string, string> func)
-	  {
-		return values =>
-		{
-	  try
-	  {
-		return StringT.StringOf(func(((string) values[0].Value()), ((string) values[1].Value()), ((string) values[2].Value())));
-	  }
-	  catch (Exception e)
-	  {
-		return Err.NewErr(e, "{0}", e.Message);
-	  }
-		};
-	  }
+        public static FunctionOp CallInStrStrStrIntOutStr(Func<string, string, string, int, string> func)
+        {
+            return values =>
+            {
+                try
+                {
+                    return StringT.StringOf(func(((string)values[0].Value()), ((string)values[1].Value()),
+                        ((string)values[2].Value()), GetIntValue((IntT)values[3])));
+                }
+                catch (Exception e)
+                {
+                    return Err.NewErr(e, "{0}", e.Message);
+                }
+            };
+        }
 
-	  public static FunctionOp CallInStrStrStrIntOutStr(Func<string, string, string, int, string> func)
-	  {
-		return values =>
-		{
-	  try
-	  {
-		return StringT.StringOf(func(((string) values[0].Value()), ((string) values[1].Value()), ((string) values[2].Value()), GetIntValue((IntT) values[3])));
-	  }
-	  catch (Exception e)
-	  {
-		return Err.NewErr(e, "{0}", e.Message);
-	  }
-		};
-	  }
+        public static UnaryOp CallInStrOutStr(System.Func<string, string> func)
+        {
+            return val =>
+            {
+                try
+                {
+                    return StringT.StringOf(func(((string)val.Value())));
+                }
+                catch (Exception e)
+                {
+                    return Err.NewErr(e, "{0}", e.Message);
+                }
+            };
+        }
 
-	  public static UnaryOp CallInStrOutStr(System.Func<string, string> func)
-	  {
-		return val =>
-		{
-	  try
-	  {
-		return StringT.StringOf(func(((string) val.Value())));
-	  }
-	  catch (Exception e)
-	  {
-		return Err.NewErr(e, "{0}", e.Message);
-	  }
-		};
-	  }
+        public static UnaryOp CallInStrArrayOutStr(System.Func<string[], string> func)
+        {
+            return val =>
+            {
+                try
+                {
+                    object[] objects = (object[])val.Value();
+                    string[] strings = new string[objects.Length];
+                    Array.Copy(objects, 0, strings, 0, objects.Length);
+                    return StringT.StringOf(func(strings));
+                }
+                catch (Exception e)
+                {
+                    return Err.NewErr(e, "{0}", e.Message);
+                }
+            };
+        }
 
-	  public static UnaryOp CallInStrArrayOutStr(System.Func<string[], string> func)
-	  {
-		return val =>
-		{
-	  try
-	  {
-		object[] objects = (object[]) val.Value();
-		string[] strings = new string[objects.Length];
-		Array.Copy(objects, 0, strings, 0, objects.Length);
-		return StringT.StringOf(func(strings));
-	  }
-	  catch (Exception e)
-	  {
-		return Err.NewErr(e, "{0}", e.Message);
-	  }
-		};
-	  }
+        public static BinaryOp CallInStrArrayStrOutStr(System.Func<string[], string, string> func)
+        {
+            return (lhs, rhs) =>
+            {
+                try
+                {
+                    object[] objects = (object[])lhs.Value();
+                    string[] strings = new string[objects.Length];
+                    Array.Copy(objects, 0, strings, 0, objects.Length);
+                    return StringT.StringOf(func(strings, ((string)rhs.Value())));
+                }
+                catch (Exception e)
+                {
+                    return Err.NewErr(e, "{0}", e.Message);
+                }
+            };
+        }
 
-	  public static BinaryOp CallInStrArrayStrOutStr(System.Func<string[], string, string> func)
-	  {
-		return (lhs, rhs) =>
-		{
-	  try
-	  {
-		object[] objects = (object[]) lhs.Value();
-		string[] strings = new string[objects.Length];
-		Array.Copy(objects, 0, strings, 0, objects.Length);
-		return StringT.StringOf(func(strings, ((string) rhs.Value())));
-	  }
-	  catch (Exception e)
-	  {
-		return Err.NewErr(e, "{0}", e.Message);
-	  }
-		};
-	  }
+        private static int GetIntValue(IntT value)
+        {
+            long longValue = (long)value.Value();
+            if (longValue > int.MaxValue || (longValue < int.MinValue))
+            {
+                throw new Exception(String.Format("Integer {0:D} value overflow", longValue));
+            }
 
-	  private static int GetIntValue(IntT value)
-	  {
-		long longValue = (long) value.Value();
-		if (longValue > int.MaxValue || (longValue < int.MinValue))
-		{
-		  throw new Exception(String.Format("Integer {0:D} value overflow", longValue));
-		}
-
-		return (int)longValue;
-	  }
-	}
-
+            return (int)longValue;
+        }
+    }
 }

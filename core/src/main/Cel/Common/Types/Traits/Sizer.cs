@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel.Common.Types.Traits
 {
-	using Val = global::Cel.Common.Types.Ref.Val;
+    using Val = global::Cel.Common.Types.Ref.Val;
 
-	/// <summary>
-	/// Sizer interface for supporting 'size()' overloads. </summary>
-	public interface Sizer
-	{
-	  /// <summary>
-	  /// Size returns the number of elements or length of the value. </summary>
-	  Val Size();
-	}
-
+    /// <summary>
+    /// Sizer interface for supporting 'size()' overloads. </summary>
+    public interface Sizer
+    {
+        /// <summary>
+        /// Size returns the number of elements or length of the value. </summary>
+        Val Size();
+    }
 }

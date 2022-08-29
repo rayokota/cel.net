@@ -13,45 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel.Common.Types.Ref
 {
-	/// <summary>
-	/// Val interface defines the functions supported by all expression values. Val implementations may
-	/// specialize the behavior of the value through the addition of traits.
-	/// </summary>
-	public interface Val
-	{
-	  /// <summary>
-	  /// ConvertToNative converts the Value to a native Go struct according to the reflected type
-	  /// description, or error if the conversion is not feasible.
-	  /// </summary>
-	  object? ConvertToNative(System.Type typeDesc);
+    /// <summary>
+    /// Val interface defines the functions supported by all expression values. Val implementations may
+    /// specialize the behavior of the value through the addition of traits.
+    /// </summary>
+    public interface Val
+    {
+        /// <summary>
+        /// ConvertToNative converts the Value to a native Go struct according to the reflected type
+        /// description, or error if the conversion is not feasible.
+        /// </summary>
+        object? ConvertToNative(System.Type typeDesc);
 
-	  /// <summary>
-	  /// ConvertToType supports type conversions between value types supported by the expression
-	  /// language.
-	  /// </summary>
-	  Val ConvertToType(Type typeValue);
+        /// <summary>
+        /// ConvertToType supports type conversions between value types supported by the expression
+        /// language.
+        /// </summary>
+        Val ConvertToType(Type typeValue);
 
-	  /// <summary>
-	  /// Equal returns true if the `other` value has the same type and content as the implementing
-	  /// struct.
-	  /// </summary>
-	  Val Equal(Val other);
+        /// <summary>
+        /// Equal returns true if the `other` value has the same type and content as the implementing
+        /// struct.
+        /// </summary>
+        Val Equal(Val other);
 
-	  /// <summary>
-	  /// Type returns the TypeValue of the value. </summary>
-	  Type Type();
+        /// <summary>
+        /// Type returns the TypeValue of the value. </summary>
+        Type Type();
 
-	  /// <summary>
-	  /// Value returns the raw value of the instance which may not be directly compatible with the
-	  /// expression language types.
-	  /// </summary>
-	  object Value();
+        /// <summary>
+        /// Value returns the raw value of the instance which may not be directly compatible with the
+        /// expression language types.
+        /// </summary>
+        object Value();
 
-	  bool BooleanValue();
+        bool BooleanValue();
 
-	  long IntValue();
-	}
-
+        long IntValue();
+    }
 }

@@ -32,85 +32,89 @@ namespace Cel
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.parser.Macro.AllMacros;
 
-	/// <summary>
-	/// Library provides a collection of EnvOption and ProgramOption values used to confiugre a CEL
-	/// environment for a particular use case or with a related set of functionality.
-	/// 
-	/// <para>Note, the ProgramOption values provided by a library are expected to be static and not vary
-	/// between calls to Env.Program(). If there is a need for such dynamic configuration, prefer to
-	/// configure these options outside the Library and within the Env.Program() call directly.
-	/// </para>
-	/// </summary>
-	public interface Library
-	{
-	  /// <summary>
-	  /// CompileOptions returns a collection of funcitional options for configuring the Parse / Check
-	  /// environment.
-	  /// </summary>
-	  IList<EnvOption> CompileOptions {get;}
+    /// <summary>
+    /// Library provides a collection of EnvOption and ProgramOption values used to confiugre a CEL
+    /// environment for a particular use case or with a related set of functionality.
+    /// 
+    /// <para>Note, the ProgramOption values provided by a library are expected to be static and not vary
+    /// between calls to Env.Program(). If there is a need for such dynamic configuration, prefer to
+    /// configure these options outside the Library and within the Env.Program() call directly.
+    /// </para>
+    /// </summary>
+    public interface Library
+    {
+        /// <summary>
+        /// CompileOptions returns a collection of funcitional options for configuring the Parse / Check
+        /// environment.
+        /// </summary>
+        IList<EnvOption> CompileOptions { get; }
 
-	  /// <summary>
-	  /// ProgramOptions returns a collection of functional options which should be included in every
-	  /// Program generated from the Env.Program() call.
-	  /// </summary>
-	  IList<ProgramOption> ProgramOptions {get;}
+        /// <summary>
+        /// ProgramOptions returns a collection of functional options which should be included in every
+        /// Program generated from the Env.Program() call.
+        /// </summary>
+        IList<ProgramOption> ProgramOptions { get; }
 
-	  /// <summary>
-	  /// Lib creates an EnvOption out of a Library, allowing libraries to be provided as functional
-	  /// args, and to be linked to each other.
-	  /// </summary>
-	  static EnvOption Lib(Library l)
-	  {
-		return e =>
-		{
-		  foreach (EnvOption opt in l.CompileOptions)
-		  {
-			e = opt(e);
-			if (e == null)
-			{
-			  throw new System.NullReferenceException(String.Format("env option of type '{0}' returned null", opt.GetType().ToString()));
-			}
-		  }
-		  e.AddProgOpts(l.ProgramOptions);
-		  return e;
-		};
-	  }
+        /// <summary>
+        /// Lib creates an EnvOption out of a Library, allowing libraries to be provided as functional
+        /// args, and to be linked to each other.
+        /// </summary>
+        static EnvOption Lib(Library l)
+        {
+            return e =>
+            {
+                foreach (EnvOption opt in l.CompileOptions)
+                {
+                    e = opt(e);
+                    if (e == null)
+                    {
+                        throw new System.NullReferenceException(String.Format("env option of type '{0}' returned null",
+                            opt.GetType().ToString()));
+                    }
+                }
 
-	  /// <summary>
-	  /// StdLib returns an EnvOption for the standard library of CEL functions and macros. </summary>
-	  static EnvOption StdLib()
-	  {
-		return Lib(new Library_StdLibrary());
-	  }
+                e.AddProgOpts(l.ProgramOptions);
+                return e;
+            };
+        }
 
-	  /// <summary>
-	  /// stdLibrary implements the Library interface and provides functional options for the core CEL
-	  /// features documented in the specification.
-	  /// </summary>
-	}
+        /// <summary>
+        /// StdLib returns an EnvOption for the standard library of CEL functions and macros. </summary>
+        static EnvOption StdLib()
+        {
+            return Lib(new Library_StdLibrary());
+        }
 
-	  public sealed class Library_StdLibrary : Library
-	  {
+        /// <summary>
+        /// stdLibrary implements the Library interface and provides functional options for the core CEL
+        /// features documented in the specification.
+        /// </summary>
+    }
 
-	/// <summary>
-	/// EnvOptions returns options for the standard CEL function declarations and macros. </summary>
-	public IList<EnvOption> CompileOptions
-	{
-		get
-		{
-		  return new List<EnvOption> {EnvOptions.Declarations(global::Cel.Checker.Checker.StandardDeclarations), EnvOptions.Macros(Macro.AllMacros)};
-		}
-	}
+    public sealed class Library_StdLibrary : Library
+    {
+        /// <summary>
+        /// EnvOptions returns options for the standard CEL function declarations and macros. </summary>
+        public IList<EnvOption> CompileOptions
+        {
+            get
+            {
+                return new List<EnvOption>
+                {
+                    EnvOptions.Declarations(global::Cel.Checker.Checker.StandardDeclarations),
+                    EnvOptions.Macros(Macro.AllMacros)
+                };
+            }
+        }
 
-	/// <summary>
-	/// ProgramOptions returns function implementations for the standard CEL functions. </summary>
-	public IList<ProgramOption> ProgramOptions
-	{
-		get
-		{
-		  return new List<ProgramOption>{global::Cel.ProgramOptions.Functions(Overload.StandardOverloads())};
-		}
-	}
-	  }
-
+        /// <summary>
+        /// ProgramOptions returns function implementations for the standard CEL functions. </summary>
+        public IList<ProgramOption> ProgramOptions
+        {
+            get
+            {
+                return new List<ProgramOption> { global::Cel.ProgramOptions.Functions(Overload.StandardOverloads()) };
+            }
+        }
+    }
 }

@@ -19,79 +19,77 @@ using Google.Api.Expr.V1Alpha1;
  */
 namespace Cel.Checker
 {
+    using Type = Google.Api.Expr.V1Alpha1.Type;
 
-	using Type = Google.Api.Expr.V1Alpha1.Type;
+    public sealed class Mapping
+    {
+        private readonly IDictionary<string, Type> mapping;
+        private readonly IDictionary<Type, string> typeKeys;
 
-	public sealed class Mapping
-	{
+        private Mapping(IDictionary<string, Type> srcMapping, IDictionary<Type, string> srcTypeKeys)
+        {
+            // Looks overly complicated, but prevents a bunch of j.u.HashMap.resize() operations.
+            // The copy() operation is called very often when a script's being checked, so this saves
+            // quite a lot.
+            // The formula "* 4 / 3 + 1" prevents the HashMap from resizing, assuming the
+            // default-load-factor of .75 (-> 3/4).
+            this.mapping = new Dictionary<string, Type>(srcMapping.Count * 4 / 3 + 1);
+            foreach (var entry in srcMapping)
+            {
+                mapping.Add(entry.Key, entry.Value);
+            }
 
-	  private readonly IDictionary<string, Type> mapping;
-	  private readonly IDictionary<Type, string> typeKeys;
+            this.typeKeys = new Dictionary<Type, string>(srcTypeKeys.Count * 4 / 3 + 1);
+            foreach (var entry in srcTypeKeys)
+            {
+                typeKeys.Add(entry.Key, entry.Value);
+            }
+        }
 
-	  private Mapping(IDictionary<string, Type> srcMapping, IDictionary<Type, string> srcTypeKeys)
-	  {
-		// Looks overly complicated, but prevents a bunch of j.u.HashMap.resize() operations.
-		// The copy() operation is called very often when a script's being checked, so this saves
-		// quite a lot.
-		// The formula "* 4 / 3 + 1" prevents the HashMap from resizing, assuming the
-		// default-load-factor of .75 (-> 3/4).
-		this.mapping = new Dictionary<string, Type>(srcMapping.Count * 4 / 3 + 1);
-		foreach (var entry in srcMapping)
-		{
-			mapping.Add(entry.Key, entry.Value);
-		}
-		this.typeKeys = new Dictionary<Type, string>(srcTypeKeys.Count * 4 / 3 + 1);
-		foreach (var entry in srcTypeKeys)
-		{
-			typeKeys.Add(entry.Key, entry.Value);
-		}
-	  }
+        internal static Mapping NewMapping()
+        {
+            return new Mapping(new Dictionary<string, Type>(), new Dictionary<Type, string>());
+        }
 
-	  internal static Mapping NewMapping()
-	  {
-		return new Mapping(new Dictionary<string, Type>(), new Dictionary<Type, string>());
-	  }
+        private string KeyForType(Type t)
+        {
+            // The lookup by `Type` called very often when a script's being checked, so this saves
+            // quite a lot.
+            if (!typeKeys.TryGetValue(t, out string? value))
+            {
+                value = Types.TypeKey(t);
+                typeKeys.Add(t, value);
+            }
 
-	  private string KeyForType(Type t)
-	  {
-		// The lookup by `Type` called very often when a script's being checked, so this saves
-		// quite a lot.
-		if (!typeKeys.TryGetValue(t, out string? value))
-		{
-			value = Types.TypeKey(t);
-			typeKeys.Add(t, value);
-		}
+            return value;
+        }
 
-		return value;
-	  }
+        internal void Add(Type from, Type to)
+        {
+            mapping[KeyForType(from)] = to;
+        }
 
-	  internal void Add(Type from, Type to)
-	  {
-		mapping[KeyForType(from)] = to;
-	  }
+        internal Type Find(Type from)
+        {
+            return mapping[KeyForType(from)];
+        }
 
-	  internal Type Find(Type from)
-	  {
-		return mapping[KeyForType(from)];
-	  }
+        internal Mapping Copy()
+        {
+            return new Mapping(mapping, typeKeys);
+        }
 
-	  internal Mapping Copy()
-	  {
-		return new Mapping(mapping, typeKeys);
-	  }
+        public override string ToString()
+        {
+            StringBuilder result = new StringBuilder("{");
 
-	  public override string ToString()
-	  {
-		StringBuilder result = new StringBuilder("{");
+            foreach (var entry in mapping)
+            {
+                result.Append(entry.Key).Append(" => ").Append(entry.Value);
+            }
 
-		foreach (var entry in mapping)
-		{
-			result.Append(entry.Key).Append(" => ").Append(entry.Value);
-		}
-
-		result.Append("}");
-		return result.ToString();
-	  }
-	}
-
+            result.Append("}");
+            return result.ToString();
+        }
+    }
 }

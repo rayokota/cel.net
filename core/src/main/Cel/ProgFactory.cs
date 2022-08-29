@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel
 {
-	using EvalState = global::Cel.Interpreter.EvalState;
+    using EvalState = global::Cel.Interpreter.EvalState;
 
-	/// <summary>
-	/// progFactory is a helper alias for marking a program creation factory function. </summary>
-	internal delegate global::Cel.Program ProgFactory(EvalState evalState);
-
+    /// <summary>
+    /// progFactory is a helper alias for marking a program creation factory function. </summary>
+    internal delegate global::Cel.Program ProgFactory(EvalState evalState);
 }

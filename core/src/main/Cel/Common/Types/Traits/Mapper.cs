@@ -13,24 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel.Common.Types.Traits
 {
-	using IterableT = global::Cel.Common.Types.IterableT;
-	using Val = global::Cel.Common.Types.Ref.Val;
+    using IterableT = global::Cel.Common.Types.IterableT;
+    using Val = global::Cel.Common.Types.Ref.Val;
 
-	/// <summary>
-	/// Mapper interface which aggregates the traits of a maps. </summary>
-	public interface Mapper : Val, Container, Indexer, IterableT, Sizer
-	{
-
-	  /// <summary>
-	  /// Find returns a value, if one exists, for the input key.
-	  /// 
-	  /// <para>If the key is not found the function returns (nil, false). If the input key is not valid for
-	  /// the map, or is Err or Unknown the function returns (Unknown|Err, false).
-	  /// </para>
-	  /// </summary>
-	  Val Find(Val key);
-	}
-
+    /// <summary>
+    /// Mapper interface which aggregates the traits of a maps. </summary>
+    public interface Mapper : Val, Container, Indexer, IterableT, Sizer
+    {
+        /// <summary>
+        /// Find returns a value, if one exists, for the input key.
+        /// 
+        /// <para>If the key is not found the function returns (nil, false). If the input key is not valid for
+        /// the map, or is Err or Unknown the function returns (Unknown|Err, false).
+        /// </para>
+        /// </summary>
+        Val Find(Val key);
+    }
 }

@@ -22,91 +22,95 @@ namespace Cel.Common.Types
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.Common.Types.Types.boolOf;
 
-	using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
-	using Type = global::Cel.Common.Types.Ref.Type;
-	using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
-	using Val = global::Cel.Common.Types.Ref.Val;
+    using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
+    using Type = global::Cel.Common.Types.Ref.Type;
+    using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
+    using Val = global::Cel.Common.Types.Ref.Val;
 
-	/// <summary>
-	/// Iterator permits safe traversal over the contents of an aggregate type. </summary>
-	public interface IteratorT : Val
-	{
+    /// <summary>
+    /// Iterator permits safe traversal over the contents of an aggregate type. </summary>
+    public interface IteratorT : Val
+    {
+        static IteratorT JavaIterator<T1>(TypeAdapter adapter, IEnumerator<T1> iterator)
+        {
+            return new IteratorAdapter<T1>(adapter, iterator);
+        }
 
-	  static IteratorT JavaIterator<T1>(TypeAdapter adapter, IEnumerator<T1> iterator)
-	  {
-		return new IteratorAdapter<T1>(adapter, iterator);
-	  }
+        /// <summary>
+        /// HasNext returns true if there are unvisited elements in the Iterator. </summary>
+        Val HasNext();
 
-	  /// <summary>
-	  /// HasNext returns true if there are unvisited elements in the Iterator. </summary>
-	  Val HasNext();
-	  /// <summary>
-	  /// Next returns the next element. </summary>
-	  Val Next();
-	}
+        /// <summary>
+        /// Next returns the next element. </summary>
+        Val Next();
+    }
 
-	class IteratorAdapter<T> : BaseVal , IteratorT {
-		private readonly TypeAdapter adapter;
-		private readonly IEnumerator<T> iterator;
+    class IteratorAdapter<T> : BaseVal, IteratorT
+    {
+        private readonly TypeAdapter adapter;
+        private readonly IEnumerator<T> iterator;
 
-		private bool? hasNext;
+        private bool? hasNext;
 
-		public IteratorAdapter(TypeAdapter adapter, IEnumerator<T> iterator)
-		{
-			this.adapter = adapter;
-			this.iterator = iterator;
-		}
+        public IteratorAdapter(TypeAdapter adapter, IEnumerator<T> iterator)
+        {
+            this.adapter = adapter;
+            this.iterator = iterator;
+        }
 
-		public Val HasNext() {
-			if (hasNext == null) {
-				// we have no idea if there's a next element or not
-				// we have to call MoveNext and remember its result
-				hasNext = iterator.MoveNext();
-			}
+        public Val HasNext()
+        {
+            if (hasNext == null)
+            {
+                // we have no idea if there's a next element or not
+                // we have to call MoveNext and remember its result
+                hasNext = iterator.MoveNext();
+            }
 
-			return Types.BoolOf(hasNext.Value);
-		}
+            return Types.BoolOf(hasNext.Value);
+        }
 
-		public Val Next() {
-			// call HasNext, it will call MoveNext if needed
-			if (!hasNext.Value)
-				throw new InvalidOperationException();
+        public Val Next()
+        {
+            // call HasNext, it will call MoveNext if needed
+            if (!hasNext.Value)
+                throw new InvalidOperationException();
 
-			// we have to clear hasNext so next time it is called MoveNext is also called
-			hasNext = null;
+            // we have to clear hasNext so next time it is called MoveNext is also called
+            hasNext = null;
 
-			object val = iterator.Current;
-			if (val is Val)
-			{
-				return (Val)val;
-			}
-			return adapter(val);
-		}
+            object val = iterator.Current;
+            if (val is Val)
+            {
+                return (Val)val;
+            }
 
-	public override object? ConvertToNative(System.Type typeDesc)
-	{
-	  throw new System.NotSupportedException();
-	}
+            return adapter(val);
+        }
 
-	public override Val ConvertToType(Type typeValue)
-	{
-	  throw new System.NotSupportedException();
-	}
+        public override object? ConvertToNative(System.Type typeDesc)
+        {
+            throw new System.NotSupportedException();
+        }
 
-	public override Val Equal(Val other)
-	{
-	  throw new System.NotSupportedException();
-	}
+        public override Val ConvertToType(Type typeValue)
+        {
+            throw new System.NotSupportedException();
+        }
 
-	public override Type Type()
-	{
-	  throw new System.NotSupportedException();
-	}
+        public override Val Equal(Val other)
+        {
+            throw new System.NotSupportedException();
+        }
 
-	public override object Value()
-	{
-	  throw new System.NotSupportedException();
-	}
-	  }
+        public override Type Type()
+        {
+            throw new System.NotSupportedException();
+        }
 
+        public override object Value()
+        {
+            throw new System.NotSupportedException();
+        }
+    }
 }

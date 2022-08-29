@@ -21,66 +21,65 @@ namespace Cel
 //JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
 //	import static Cel.interpreter.Activation.newActivation;
 
-	using InterpretableDecorator = global::Cel.Interpreter.InterpretableDecorator;
-	using Overload = global::Cel.Interpreter.Functions.Overload;
-	
-	public delegate Prog ProgramOption(Prog prog);
+    using InterpretableDecorator = global::Cel.Interpreter.InterpretableDecorator;
+    using Overload = global::Cel.Interpreter.Functions.Overload;
 
-	public class ProgramOptions
-	{
-	  /// <summary>
-	  /// CustomDecorator appends an InterpreterDecorator to the program.
-	  /// 
-	  /// <para>InterpretableDecorators can be used to inspect, alter, or replace the Program plan.
-	  /// </para>
-	  /// </summary>
-	  public static ProgramOption CustomDecorator(InterpretableDecorator dec)
-	  {
-		return p =>
-		{
-		  p.decorators.Add(dec);
-		  return p;
-		};
-	  }
+    public delegate Prog ProgramOption(Prog prog);
 
-	  /// <summary>
-	  /// Functions adds function overloads that extend or override the set of CEL built-ins. </summary>
-	  public static ProgramOption Functions(params Overload[] funcs)
-	  {
-		return p =>
-		{
-		  p.dispatcher.Add(funcs);
-		  return p;
-		};
-	  }
+    public class ProgramOptions
+    {
+        /// <summary>
+        /// CustomDecorator appends an InterpreterDecorator to the program.
+        /// 
+        /// <para>InterpretableDecorators can be used to inspect, alter, or replace the Program plan.
+        /// </para>
+        /// </summary>
+        public static ProgramOption CustomDecorator(InterpretableDecorator dec)
+        {
+            return p =>
+            {
+                p.decorators.Add(dec);
+                return p;
+            };
+        }
 
-	  /// <summary>
-	  /// Globals sets the global variable values for a given program. These values may be shadowed by
-	  /// variables with the same name provided to the Eval() call.
-	  /// 
-	  /// <para>The vars value may either be an `interpreter.Activation` instance or a
-	  /// `map[string]interface{}`.
-	  /// </para>
-	  /// </summary>
-	  public static ProgramOption Globals(object vars)
-	  {
-		return p =>
-		{
-		  p.defaultVars = Activation.NewActivation(vars);
-		  return p;
-		};
-	  }
+        /// <summary>
+        /// Functions adds function overloads that extend or override the set of CEL built-ins. </summary>
+        public static ProgramOption Functions(params Overload[] funcs)
+        {
+            return p =>
+            {
+                p.dispatcher.Add(funcs);
+                return p;
+            };
+        }
 
-	  /// <summary>
-	  /// EvalOptions sets one or more evaluation options which may affect the evaluation or Result. </summary>
-	  public static ProgramOption EvalOptions(params EvalOption[] opts)
-	  {
-		return p =>
-		{
-			p.evalOpts.UnionWith(opts);
-		  return p;
-		};
-	  }
-	}
+        /// <summary>
+        /// Globals sets the global variable values for a given program. These values may be shadowed by
+        /// variables with the same name provided to the Eval() call.
+        /// 
+        /// <para>The vars value may either be an `interpreter.Activation` instance or a
+        /// `map[string]interface{}`.
+        /// </para>
+        /// </summary>
+        public static ProgramOption Globals(object vars)
+        {
+            return p =>
+            {
+                p.defaultVars = Activation.NewActivation(vars);
+                return p;
+            };
+        }
 
+        /// <summary>
+        /// EvalOptions sets one or more evaluation options which may affect the evaluation or Result. </summary>
+        public static ProgramOption EvalOptions(params EvalOption[] opts)
+        {
+            return p =>
+            {
+                p.evalOpts.UnionWith(opts);
+                return p;
+            };
+        }
+    }
 }

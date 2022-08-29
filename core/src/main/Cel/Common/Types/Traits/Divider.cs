@@ -13,21 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel.Common.Types.Traits
 {
-	using Val = global::Cel.Common.Types.Ref.Val;
+    using Val = global::Cel.Common.Types.Ref.Val;
 
-	/// <summary>
-	/// Divider interface to support '/' operator overloads. </summary>
-	public interface Divider
-	{
-	  /// <summary>
-	  /// Divide returns the result of dividing the current value by the input denominator.
-	  /// 
-	  /// <para>A denominator value of zero results in an error.
-	  /// </para>
-	  /// </summary>
-	  Val Divide(Val denominator);
-	}
-
+    /// <summary>
+    /// Divider interface to support '/' operator overloads. </summary>
+    public interface Divider
+    {
+        /// <summary>
+        /// Divide returns the result of dividing the current value by the input denominator.
+        /// 
+        /// <para>A denominator value of zero results in an error.
+        /// </para>
+        /// </summary>
+        Val Divide(Val denominator);
+    }
 }

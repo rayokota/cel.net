@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel.Common.Types
 {
-	public interface IterableT
-	{
-
-	  /// <summary>
-	  /// Iterator returns a new iterator view of the struct. </summary>
-	  IteratorT Iterator();
-	}
-
+    public interface IterableT
+    {
+        /// <summary>
+        /// Iterator returns a new iterator view of the struct. </summary>
+        IteratorT Iterator();
+    }
 }
