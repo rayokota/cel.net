@@ -128,13 +128,6 @@ public sealed class Operator
             operators = m;
         }
 
-        {
-            var m = new Dictionary<string, Operator>();
-            foreach (var op in Values()) m.Add(op.id, op);
-
-            operatorsById = m;
-        }
-
         valueList.Add(Conditional);
         valueList.Add(LogicalAnd);
         valueList.Add(LogicalOr);
@@ -162,6 +155,13 @@ public sealed class Operator
         valueList.Add(In);
         valueList.Add(OldNotStrictlyFalse);
         valueList.Add(OldIn);
+        
+        {
+            var m = new Dictionary<string, Operator>();
+            foreach (var op in Values()) m.Add(op.id, op);
+
+            operatorsById = m;
+        }
     }
 
     internal Operator(string name, InnerEnum innerEnum, string id) : this(name, innerEnum, id, 0, null)
