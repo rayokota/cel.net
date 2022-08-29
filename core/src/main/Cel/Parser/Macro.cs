@@ -43,19 +43,19 @@ public sealed class Macro
     /// </summary>
     public static IList<Macro> MoMacros = new List<Macro>();
 
-    private readonly int argCount_Conflict;
+    private readonly int argCount;
 
-    private readonly MacroExpander expander_Conflict;
+    private readonly MacroExpander expander;
 
-    private readonly string function_Conflict;
+    private readonly string function;
 
     public Macro(string function, bool receiverStyle, bool varArgStyle, int argCount, MacroExpander expander)
     {
-        function_Conflict = function;
+        this.function = function;
         this.ReceiverStyle = receiverStyle;
         this.VarArgStyle = varArgStyle;
-        argCount_Conflict = argCount;
-        expander_Conflict = expander;
+        this.argCount = argCount;
+        this.expander = expander;
     }
 
     public bool ReceiverStyle { get; }
@@ -64,8 +64,8 @@ public sealed class Macro
 
     public override string ToString()
     {
-        return "Macro{" + "function='" + function_Conflict + '\'' + ", receiverStyle=" + ReceiverStyle +
-               ", varArgStyle=" + VarArgStyle + ", argCount=" + argCount_Conflict + '}';
+        return "Macro{" + "function='" + function + '\'' + ", receiverStyle=" + ReceiverStyle +
+               ", varArgStyle=" + VarArgStyle + ", argCount=" + argCount + '}';
     }
 
     internal static string MakeMacroKey(string name, int args, bool receiverStyle)
@@ -234,24 +234,24 @@ public sealed class Macro
 
     public string Function()
     {
-        return function_Conflict;
+        return function;
     }
 
     public int ArgCount()
     {
-        return argCount_Conflict;
+        return argCount;
     }
 
     public MacroExpander Expander()
     {
-        return expander_Conflict;
+        return expander;
     }
 
     public string MacroKey()
     {
-        if (VarArgStyle) return MakeVarArgMacroKey(function_Conflict, ReceiverStyle);
+        if (VarArgStyle) return MakeVarArgMacroKey(function, ReceiverStyle);
 
-        return MakeMacroKey(function_Conflict, argCount_Conflict, ReceiverStyle);
+        return MakeMacroKey(function, argCount, ReceiverStyle);
     }
 
     internal enum QuantifierKind

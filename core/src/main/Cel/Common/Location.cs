@@ -39,32 +39,32 @@ public interface Location : IComparable<Location>
 
 internal sealed class SourceLocation : Location
 {
-    private readonly int column_Conflict;
+    private readonly int column;
 
-    private readonly int line_Conflict;
+    private readonly int line;
 
     public SourceLocation(int line, int column)
     {
-        line_Conflict = line;
-        column_Conflict = column;
+        this.line = line;
+        this.column = column;
     }
 
     public int CompareTo(Location o)
     {
-        var r = line_Conflict.CompareTo(o.Line());
-        if (r == 0) r = column_Conflict.CompareTo(o.Column());
+        var r = line.CompareTo(o.Line());
+        if (r == 0) r = column.CompareTo(o.Column());
 
         return r;
     }
 
     public int Line()
     {
-        return line_Conflict;
+        return line;
     }
 
     public int Column()
     {
-        return column_Conflict;
+        return column;
     }
 
     public override bool Equals(object o)
@@ -74,16 +74,16 @@ internal sealed class SourceLocation : Location
         if (o == null || GetType() != o.GetType()) return false;
 
         var that = (SourceLocation)o;
-        return line_Conflict == that.line_Conflict && column_Conflict == that.column_Conflict;
+        return line == that.line && column == that.column;
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(line_Conflict, column_Conflict);
+        return HashCode.Combine(line, column);
     }
 
     public override string ToString()
     {
-        return "line=" + line_Conflict + ", column=" + column_Conflict;
+        return "line=" + line + ", column=" + column;
     }
 }

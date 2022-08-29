@@ -111,12 +111,12 @@ public interface Source
 
 internal sealed class SourceImpl : Source
 {
-    private readonly string content_Conflict;
+    private readonly string content;
 
-    private readonly string description_Conflict;
+    private readonly string description;
     private readonly IDictionary<long, int> idOffsets;
 
-    private readonly IList<int> lineOffsets_Conflict;
+    private readonly IList<int> lineOffsets;
 
     internal SourceImpl(string content, string description, IList<int> lineOffsets) : this(content, description,
         lineOffsets, new Dictionary<long, int>())
@@ -126,25 +126,25 @@ internal sealed class SourceImpl : Source
     internal SourceImpl(string content, string description, IList<int> lineOffsets,
         IDictionary<long, int> idOffsets)
     {
-        content_Conflict = content;
-        description_Conflict = description;
-        lineOffsets_Conflict = lineOffsets;
+        this.content = content;
+        this.description = description;
+        this.lineOffsets = lineOffsets;
         this.idOffsets = idOffsets;
     }
 
     public string Content()
     {
-        return content_Conflict;
+        return content;
     }
 
     public string Description()
     {
-        return description_Conflict;
+        return description;
     }
 
     public IList<int> LineOffsets()
     {
-        return lineOffsets_Conflict;
+        return lineOffsets;
     }
 
     public int LocationOffset(Location location)
@@ -165,7 +165,7 @@ internal sealed class SourceImpl : Source
         // beyond the end of the actual source.
         var line = 1;
         int lineOffset;
-        foreach (var lo in lineOffsets_Conflict)
+        foreach (var lo in lineOffsets)
             if (lo > offset)
                 break;
             else
@@ -174,7 +174,7 @@ internal sealed class SourceImpl : Source
         if (line == 1)
             lineOffset = 0;
         else
-            lineOffset = lineOffsets_Conflict[line - 2];
+            lineOffset = lineOffsets[line - 2];
 
         return Location.NewLocation(line, offset - lineOffset);
     }
@@ -185,9 +185,9 @@ internal sealed class SourceImpl : Source
         if (charStart < 0) return null;
 
         var charEnd = findLineOffset(line + 1);
-        if (charEnd >= 0) return content_Conflict.Substring(charStart, charEnd - 1 - charStart);
+        if (charEnd >= 0) return content.Substring(charStart, charEnd - 1 - charStart);
 
-        return content_Conflict.Substring(charStart);
+        return content.Substring(charStart);
     }
 
     /// <summary>
@@ -198,7 +198,7 @@ internal sealed class SourceImpl : Source
     {
         if (line == 1) return 0;
 
-        if (line > 1 && line <= lineOffsets_Conflict.Count) return lineOffsets_Conflict[line - 2];
+        if (line > 1 && line <= lineOffsets.Count) return lineOffsets[line - 2];
 
         return -1;
     }

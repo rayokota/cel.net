@@ -50,13 +50,13 @@ public sealed class Options
 
     public sealed class Builder
     {
-        internal readonly IDictionary<string, Macro> macros_Conflict = new Dictionary<string, Macro>();
+        internal readonly IDictionary<string, Macro> macros = new Dictionary<string, Macro>();
 
-        internal int errorRecoveryLimit_Conflict = 30;
+        internal int errorRecoveryLimit = 30;
 
-        internal int expressionSizeCodePointLimit_Conflict = 100_000;
+        internal int expressionSizeCodePointLimit = 100_000;
 
-        internal int maxRecursionDepth_Conflict = 250;
+        internal int maxRecursionDepth = 250;
 
         internal Builder()
         {
@@ -69,7 +69,7 @@ public sealed class Options
                     "max recursion depth must be greater than or equal to -1: {0:D}", maxRecursionDepth));
             if (maxRecursionDepth == -1) maxRecursionDepth = int.MaxValue;
 
-            maxRecursionDepth_Conflict = maxRecursionDepth;
+            this.maxRecursionDepth = maxRecursionDepth;
             return this;
         }
 
@@ -80,7 +80,7 @@ public sealed class Options
                     "error recovery limit must be greater than or equal to -1: {0:D}", errorRecoveryLimit));
             if (errorRecoveryLimit == -1) errorRecoveryLimit = int.MaxValue;
 
-            errorRecoveryLimit_Conflict = errorRecoveryLimit;
+            this.errorRecoveryLimit = errorRecoveryLimit;
             return this;
         }
 
@@ -92,7 +92,7 @@ public sealed class Options
                     expressionSizeCodePointLimit));
             if (expressionSizeCodePointLimit == -1) expressionSizeCodePointLimit = int.MaxValue;
 
-            expressionSizeCodePointLimit_Conflict = expressionSizeCodePointLimit;
+            this.expressionSizeCodePointLimit = expressionSizeCodePointLimit;
             return this;
         }
 
@@ -103,15 +103,15 @@ public sealed class Options
 
         public Builder Macros(IList<Macro> macros)
         {
-            foreach (var macro in macros) macros_Conflict[macro.MacroKey()] = macro;
+            foreach (var macro in macros) this.macros[macro.MacroKey()] = macro;
 
             return this;
         }
 
         public Options Build()
         {
-            return new Options(maxRecursionDepth_Conflict, errorRecoveryLimit_Conflict,
-                expressionSizeCodePointLimit_Conflict, new Dictionary<string, Macro>(macros_Conflict));
+            return new Options(maxRecursionDepth, errorRecoveryLimit,
+                expressionSizeCodePointLimit, new Dictionary<string, Macro>(macros));
         }
     }
 }
