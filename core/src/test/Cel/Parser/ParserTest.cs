@@ -30,8 +30,8 @@ internal class ParserTest
         return new[]
         {
             new[] { "0", "\"A\"", "\"A\"^#1:*expr.Constant_StringValue#", "", "" },
-            new[] { "1", "true", "True^#1:*expr.Constant_BoolValue#", "", "" },
-            new[] { "2", "false", "False^#1:*expr.Constant_BoolValue#", "", "" },
+            new[] { "1", "true", "true^#1:*expr.Constant_BoolValue#", "", "" },
+            new[] { "2", "false", "false^#1:*expr.Constant_BoolValue#", "", "" },
             new[] { "3", "0", "0^#1:*expr.Constant_Int64Value#", "", "" },
             new[] { "4", "42", "42^#1:*expr.Constant_Int64Value#", "", "" },
             new[] { "5", "0u", "0u^#1:*expr.Constant_Uint64Value#", "", "" },
@@ -297,7 +297,7 @@ internal class ParserTest
                 "__comprehension__(\n" + "  // Variable\n" + "  v,\n" + "  // Target\n" +
                 "  m^#1:*expr.Expr_IdentExpr#,\n" + "  // Accumulator\n" + "  __result__,\n" + "  // Init\n" +
                 "  0^#5:*expr.Constant_Int64Value#,\n" + "  // LoopCondition\n" +
-                "  True^#7:*expr.Constant_BoolValue#,\n" + "  // LoopStep\n" + "  _?_:_(\n" +
+                "  true^#7:*expr.Constant_BoolValue#,\n" + "  // LoopStep\n" + "  _?_:_(\n" +
                 "    f^#4:*expr.Expr_IdentExpr#,\n" + "    _+_(\n" +
                 "      __result__^#8:*expr.Expr_IdentExpr#,\n" + "      1^#6:*expr.Constant_Int64Value#\n" +
                 "    )^#9:*expr.Expr_CallExpr#,\n" + "    __result__^#10:*expr.Expr_IdentExpr#\n" +
@@ -312,7 +312,7 @@ internal class ParserTest
                 "__comprehension__(\n" + "  // Variable\n" + "  v,\n" + "  // Target\n" +
                 "  m^#1:*expr.Expr_IdentExpr#,\n" + "  // Accumulator\n" + "  __result__,\n" + "  // Init\n" +
                 "  []^#6:*expr.Expr_ListExpr#,\n" + "  // LoopCondition\n" +
-                "  True^#7:*expr.Constant_BoolValue#,\n" + "  // LoopStep\n" + "  _+_(\n" +
+                "  true^#7:*expr.Constant_BoolValue#,\n" + "  // LoopStep\n" + "  _+_(\n" +
                 "    __result__^#5:*expr.Expr_IdentExpr#,\n" + "    [\n" + "      f^#4:*expr.Expr_IdentExpr#\n" +
                 "    ]^#8:*expr.Expr_ListExpr#\n" + "  )^#9:*expr.Expr_CallExpr#,\n" + "  // Result\n" +
                 "  __result__^#5:*expr.Expr_IdentExpr#)^#10:*expr.Expr_ComprehensionExpr#",
@@ -324,7 +324,7 @@ internal class ParserTest
                 "__comprehension__(\n" + "  // Variable\n" + "  v,\n" + "  // Target\n" +
                 "  m^#1:*expr.Expr_IdentExpr#,\n" + "  // Accumulator\n" + "  __result__,\n" + "  // Init\n" +
                 "  []^#7:*expr.Expr_ListExpr#,\n" + "  // LoopCondition\n" +
-                "  True^#8:*expr.Constant_BoolValue#,\n" + "  // LoopStep\n" + "  _?_:_(\n" +
+                "  true^#8:*expr.Constant_BoolValue#,\n" + "  // LoopStep\n" + "  _?_:_(\n" +
                 "    p^#4:*expr.Expr_IdentExpr#,\n" + "    _+_(\n" +
                 "      __result__^#6:*expr.Expr_IdentExpr#,\n" + "      [\n" +
                 "        f^#5:*expr.Expr_IdentExpr#\n" + "      ]^#9:*expr.Expr_ListExpr#\n" +
@@ -339,7 +339,7 @@ internal class ParserTest
                 "__comprehension__(\n" + "  // Variable\n" + "  v,\n" + "  // Target\n" +
                 "  m^#1:*expr.Expr_IdentExpr#,\n" + "  // Accumulator\n" + "  __result__,\n" + "  // Init\n" +
                 "  []^#6:*expr.Expr_ListExpr#,\n" + "  // LoopCondition\n" +
-                "  True^#7:*expr.Constant_BoolValue#,\n" + "  // LoopStep\n" + "  _?_:_(\n" +
+                "  true^#7:*expr.Constant_BoolValue#,\n" + "  // LoopStep\n" + "  _?_:_(\n" +
                 "    p^#4:*expr.Expr_IdentExpr#,\n" + "    _+_(\n" +
                 "      __result__^#5:*expr.Expr_IdentExpr#,\n" + "      [\n" +
                 "        v^#3:*expr.Expr_IdentExpr#\n" + "      ]^#8:*expr.Expr_ListExpr#\n" +
@@ -373,7 +373,7 @@ internal class ParserTest
             new[] { "63", "\"\u2764\"", "\"\u2764\"^#1:*expr.Constant_StringValue#", "", "" },
             new[]
             {
-                "64", "! false", "!_(\n" + "  False^#2:*expr.Constant_BoolValue#\n" + ")^#1:*expr.Expr_CallExpr#",
+                "64", "! false", "!_(\n" + "  false^#2:*expr.Constant_BoolValue#\n" + ")^#1:*expr.Expr_CallExpr#",
                 "", ""
             },
             new[]
@@ -549,10 +549,10 @@ internal class ParserTest
             new[]
             {
                 "88", "false && !true || false ? 2 : 3",
-                "_?_:_(\n" + "  _||_(\n" + "    _&&_(\n" + "      False^#1:*expr.Constant_BoolValue#,\n" +
-                "      !_(\n" + "        True^#3:*expr.Constant_BoolValue#\n" +
+                "_?_:_(\n" + "  _||_(\n" + "    _&&_(\n" + "      false^#1:*expr.Constant_BoolValue#,\n" +
+                "      !_(\n" + "        true^#3:*expr.Constant_BoolValue#\n" +
                 "      )^#2:*expr.Expr_CallExpr#\n" + "    )^#4:*expr.Expr_CallExpr#,\n" +
-                "    False^#5:*expr.Constant_BoolValue#\n" + "  )^#6:*expr.Expr_CallExpr#,\n" +
+                "    false^#5:*expr.Constant_BoolValue#\n" + "  )^#6:*expr.Expr_CallExpr#,\n" +
                 "  2^#8:*expr.Constant_Int64Value#,\n" + "  3^#9:*expr.Constant_Int64Value#\n" +
                 ")^#7:*expr.Expr_CallExpr#",
                 "", ""
