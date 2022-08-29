@@ -52,7 +52,6 @@ public sealed class UnknownT : BaseVal
 
         if (typeDesc == typeof(Val) || typeDesc == typeof(UnknownT)) return this;
 
-        //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
         throw new Exception(string.Format("native type conversion error from '{0}' to '{1}'", UnknownType,
             typeDesc.FullName));
     }

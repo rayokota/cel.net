@@ -83,7 +83,7 @@ public sealed class Unparser
                 VisitStruct(expr.StructExpr);
                 break;
             default:
-                throw new NotSupportedException(string.Format("Unsupported expr: {0}", expr.GetType().Name));
+                throw new NotSupportedException(string.Format("Unsupported expr: {0}", expr.GetType().FullName));
         }
     }
 
@@ -221,7 +221,7 @@ public sealed class Unparser
     {
         // TODO: introduce a macro expansion map between the top-level comprehension id and the
         // function call that the macro replaces.
-        throw new InvalidOperationException(string.Format("unimplemented : {0}", expr.GetType().Name));
+        throw new InvalidOperationException(string.Format("unimplemented : {0}", expr.GetType().FullName));
     }
 
     internal void VisitConst(Constant v)

@@ -283,7 +283,6 @@ public sealed class FieldDescription : Description
     public object GetFrom(Db db, object target)
     {
         if (!(target is Message))
-            //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
             throw new ArgumentException(string.Format("unsupported field selection target: ({0}){1}",
                 target.GetType().FullName, target));
 

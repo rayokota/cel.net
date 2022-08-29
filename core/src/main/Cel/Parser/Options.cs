@@ -50,16 +50,12 @@ public sealed class Options
 
     public sealed class Builder
     {
-//JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
         internal readonly IDictionary<string, Macro> macros_Conflict = new Dictionary<string, Macro>();
 
-//JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
         internal int errorRecoveryLimit_Conflict = 30;
 
-//JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
         internal int expressionSizeCodePointLimit_Conflict = 100_000;
 
-//JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
         internal int maxRecursionDepth_Conflict = 250;
 
         internal Builder()

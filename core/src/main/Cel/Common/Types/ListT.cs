@@ -117,7 +117,6 @@ public abstract class ListT : BaseVal, Lister
                 return any;
             }
 
-//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
             throw new ArgumentException(string.Format("Unsupported conversion of '{0}' to '{1}'", ListType,
                 typeDesc.FullName));
         }

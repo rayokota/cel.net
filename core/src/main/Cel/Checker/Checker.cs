@@ -107,7 +107,6 @@ public sealed class Checker
                         return;
                 }
 
-//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
                 throw new ArgumentException(
                     string.Format("Unrecognized ast type: {0}", e.GetType().FullName));
             case Expr.ExprKindOneofCase.IdentExpr:
@@ -129,7 +128,6 @@ public sealed class Checker
                 CheckComprehension(e);
                 return;
             default:
-//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
                 throw new ArgumentException(
                     string.Format("Unrecognized ast type: {0}", e.GetType().FullName));
         }

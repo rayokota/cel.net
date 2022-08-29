@@ -39,10 +39,8 @@ public interface Location : IComparable<Location>
 
 internal sealed class SourceLocation : Location
 {
-//JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
     private readonly int column_Conflict;
 
-//JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
     private readonly int line_Conflict;
 
     public SourceLocation(int line, int column)

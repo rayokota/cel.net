@@ -874,7 +874,6 @@ internal class ParserTest
             else if (elem is Expr.Types.CreateStruct.Types.Entry)
                 elemID = ((Expr.Types.CreateStruct.Types.Entry)elem).Id;
             else
-                //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
                 throw new ArgumentException(elem.GetType().FullName);
 
             var location = GetLocation(elemID);

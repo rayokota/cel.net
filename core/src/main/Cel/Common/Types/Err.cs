@@ -130,7 +130,7 @@ public sealed class Err : BaseVal
     /// </summary>
     public static Val UnsupportedRefValConversionErr(object val)
     {
-        return NewErr("unsupported conversion to ref.Val: ({0}){0}", val.GetType().Name, val);
+        return NewErr("unsupported conversion to ref.Val: ({0}){0}", val.GetType().FullName, val);
     }
 
     /// <summary>

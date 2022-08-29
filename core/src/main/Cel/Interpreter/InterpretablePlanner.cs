@@ -729,7 +729,6 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
         if (decAttr == null) return null;
 
         if (!(decAttr is Interpretable_InterpretableAttribute))
-            //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
             throw new InvalidOperationException(string.Format("invalid attribute decoration: {0}({1})",
                 decAttr, decAttr.GetType().FullName));
 

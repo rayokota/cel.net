@@ -212,16 +212,12 @@ public sealed class Parser
             base.Recover(recognizer, e);
         }
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: @Override public Cel.shaded.org.antlr.v4.runtime.Token recoverInline(Cel.shaded.org.antlr.v4.runtime.Parser recognizer) throws Cel.shaded.org.antlr.v4.runtime.RecognitionException
         public override IToken RecoverInline(Antlr4.Runtime.Parser recognizer)
         {
             CheckAttempts(recognizer);
             return base.RecoverInline(recognizer);
         }
 
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-//ORIGINAL LINE: void checkAttempts(Cel.shaded.org.antlr.v4.runtime.Parser recognizer) throws Cel.shaded.org.antlr.v4.runtime.RecognitionException
         internal void CheckAttempts(Antlr4.Runtime.Parser recognizer)
         {
             if (attempts >= maxAttempts)
@@ -371,7 +367,7 @@ public sealed class Parser
             if (!errors.HasErrors())
             {
                 var txt = "<<nil>>";
-                if (tree != null) txt = string.Format("<<{0}>>", tree.GetType().Name);
+                if (tree != null) txt = string.Format("<<{0}>>", tree.GetType().FullName);
 
                 return ReportError(Location.NoLocation, "unknown parse element encountered: {0}", txt);
             }

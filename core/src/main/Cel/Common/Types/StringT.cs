@@ -147,7 +147,6 @@ public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
             return value;
         }
 
-//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
         throw new Exception(string.Format("native type conversion error from '{0}' to '{1}'", StringType,
             typeDesc.FullName));
     }

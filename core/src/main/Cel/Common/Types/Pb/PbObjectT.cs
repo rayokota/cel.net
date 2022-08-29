@@ -113,7 +113,6 @@ public sealed class PbObjectT : ObjectT
         if (typeDesc == typeof(Val) || typeDesc == typeof(PbObjectT)) return this;
 
         // impossible cast
-//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
         throw new ArgumentException(
             Err.NewTypeConversionError(value.GetType().FullName, typeDesc).ToString());
     }
@@ -138,7 +137,6 @@ public sealed class PbObjectT : ObjectT
         }
         catch (Exception e)
         {
-//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
             throw new Exception(string.Format("{0}: {1}",
                 Err.NewTypeConversionError(value.GetType().FullName, typeDesc), e));
         }

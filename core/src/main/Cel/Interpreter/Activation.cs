@@ -74,7 +74,7 @@ public interface Activation
             return new Activation_MapActivation((IDictionary<string, object>)bindings);
 
         throw new ArgumentException(string.Format(
-            "activation input must be an activation or map[string]interface: got {0}", bindings.GetType().Name));
+            "activation input must be an activation or map[string]interface: got {0}", bindings.GetType().FullName));
     }
 
     /// <summary>

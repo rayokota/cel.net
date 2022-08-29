@@ -87,13 +87,9 @@ public sealed class TypeAdapterSupport
         if (value is object[]) return ListT.NewGenericArrayList(a, (object[])value);
 
         if (value is IList)
-            //JAVA TO C# CONVERTER WARNING: Java wildcard generics have no direct equivalent in C#:
-//ORIGINAL LINE: return newGenericArrayList(a, ((java.util.List<?>) value).toArray());
             return ListT.NewGenericArrayList(a, ((IList<object>)value).ToArray());
 
         if (value is IDictionary)
-            //JAVA TO C# CONVERTER WARNING: Java wildcard generics have no direct equivalent in C#:
-//ORIGINAL LINE: return newMaybeWrappedMap(a, (java.util.Map<?, ?>) value);
             return MapT.NewMaybeWrappedMap(a, (IDictionary<object, object>)value);
 
         if (value is ByteString) return BytesT.BytesOf((ByteString)value);

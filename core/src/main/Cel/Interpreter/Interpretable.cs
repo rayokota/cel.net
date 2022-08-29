@@ -1093,7 +1093,6 @@ public sealed class Interpretable_EvalFold : Interpretable_AbstractEval, Coster
     {
         var foldRange = iterRange.Eval(ctx);
         if (!foldRange.Type().HasTrait(Trait.IterableType))
-            //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
             return Err.ValOrErr(foldRange, "got '{0}', expected iterable type", foldRange.GetType().FullName);
 
         // Configure the fold activation with the accumulator initial value.
@@ -1647,7 +1646,6 @@ public sealed class Interpretable_EvalExhaustiveFold : Interpretable_AbstractEva
     {
         var foldRange = iterRange.Eval(ctx);
         if (!foldRange.Type().HasTrait(Trait.IterableType))
-            //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
             return Err.ValOrErr(foldRange, "got '{0}', expected iterable type", foldRange.GetType().FullName);
 
         // Configure the fold activation with the accumulator initial value.

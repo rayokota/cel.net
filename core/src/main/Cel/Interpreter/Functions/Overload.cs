@@ -126,8 +126,6 @@ public sealed class Overload
 
     public override string ToString()
     {
-//JAVA TO C# CONVERTER WARNING: The original Java variable was marked 'final':
-//ORIGINAL LINE: final StringBuilder sb = new StringBuilder("Overload{");
         var sb = new StringBuilder("Overload{");
         sb.Append(@operator).Append('\'');
         sb.Append(", trait=").Append(operandTrait);

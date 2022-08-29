@@ -43,13 +43,10 @@ public sealed class Macro
     /// </summary>
     public static IList<Macro> MoMacros = new List<Macro>();
 
-//JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
     private readonly int argCount_Conflict;
 
-//JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
     private readonly MacroExpander expander_Conflict;
 
-//JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
     private readonly string function_Conflict;
 
     public Macro(string function, bool receiverStyle, bool varArgStyle, int argCount, MacroExpander expander)

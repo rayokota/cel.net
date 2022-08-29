@@ -111,14 +111,11 @@ public interface Source
 
 internal sealed class SourceImpl : Source
 {
-//JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
     private readonly string content_Conflict;
 
-//JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
     private readonly string description_Conflict;
     private readonly IDictionary<long, int> idOffsets;
 
-//JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
     private readonly IList<int> lineOffsets_Conflict;
 
     internal SourceImpl(string content, string description, IList<int> lineOffsets) : this(content, description,

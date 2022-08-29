@@ -47,7 +47,6 @@ public sealed class Cel
 
             p = opt(p);
             if (p == null)
-                //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
                 throw new NullReferenceException(string.Format("program option of type '{0}' returned null",
                     opt.GetType().FullName));
         }
