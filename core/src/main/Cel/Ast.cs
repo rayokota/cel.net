@@ -71,7 +71,8 @@ public sealed class Ast
         {
             if (!Checked) return Decls.Dyn;
 
-            return typeMap[Expr.Id];
+            typeMap.TryGetValue(Expr.Id, out Type t);
+            return t;
         }
     }
 

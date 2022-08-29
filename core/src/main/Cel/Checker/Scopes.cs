@@ -78,7 +78,7 @@ public sealed class Scopes
     /// </summary>
     public Decl FindIdent(string name)
     {
-        var ident = scopes.idents[name];
+        scopes.idents.TryGetValue(name, out Decl ident);
         if (ident != null) return ident;
 
         if (parent != null) return parent.FindIdent(name);
@@ -93,7 +93,8 @@ public sealed class Scopes
     /// </summary>
     public Decl FindIdentInScope(string name)
     {
-        return scopes.idents[name];
+        scopes.idents.TryGetValue(name, out Decl decl);
+        return decl;
     }
 
     /// <summary>
@@ -111,7 +112,7 @@ public sealed class Scopes
     /// </summary>
     public Decl FindFunction(string name)
     {
-        var ident = scopes.functions[name];
+        scopes.functions.TryGetValue(name, out Decl ident);
         if (ident != null) return ident;
 
         if (parent != null) return parent.FindFunction(name);

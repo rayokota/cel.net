@@ -133,7 +133,8 @@ public sealed class PbTypeDescription : Description, TypeDescription
     /// </summary>
     public FieldDescription FieldByName(string name)
     {
-        return fieldMap[name];
+        fieldMap.TryGetValue(name, out FieldDescription fd);
+        return fd;
     }
 
     /// <summary>
@@ -231,7 +232,7 @@ public sealed class PbTypeDescription : Description, TypeDescription
     /// </summary>
     internal static object Unwrap(Db db, Description desc, Message msg)
     {
-        var conv = MessageToObjectExact[msg.GetType()];
+        MessageToObjectExact.TryGetValue(msg.GetType(), out Func<Message, object> conv);
         if (conv != null) return conv(msg);
 
         if (msg is Any)
@@ -450,7 +451,6 @@ public sealed class PbTypeDescription : Description, TypeDescription
         if (msg == null) return null;
 
         var typeName = msg.Descriptor.FullName;
-        Message result;
-        return zeroValueMap.TryGetValue(typeName, out result) ? result : msg;
+        return zeroValueMap.TryGetValue(typeName, out Message result) ? result : msg;
     }
 }

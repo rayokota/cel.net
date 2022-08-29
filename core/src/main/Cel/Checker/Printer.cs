@@ -46,7 +46,7 @@ public sealed class Printer
 
             var result = new StringBuilder();
             var e = (Expr)elem;
-            var t = checks.TypeMap[e.Id];
+            checks.TypeMap.TryGetValue(e.Id, out global::Google.Api.Expr.V1Alpha1.Type t);
             if (t != null)
             {
                 result.Append("~");
@@ -59,7 +59,7 @@ public sealed class Printer
                 case Expr.ExprKindOneofCase.CallExpr:
                 case Expr.ExprKindOneofCase.StructExpr:
                 case Expr.ExprKindOneofCase.SelectExpr:
-                    var @ref = checks.ReferenceMap[e.Id];
+                    checks.ReferenceMap.TryGetValue(e.Id, out Reference @ref);
                     if (@ref != null)
                     {
                         if (@ref.OverloadId.Count == 0)

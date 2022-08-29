@@ -924,11 +924,11 @@ public sealed class AttributeFactory_StringQualifier : Coster, AttributeFactory_
         var s = value;
         if (obj is IDictionary)
         {
-            var m = (IDictionary)obj;
-            obj = m[s];
+            var m = (Dictionary<object, object>)obj;
+            m.TryGetValue(s, out obj);
             if (obj == null)
             {
-                if (m.Contains(s)) return NullT.NullValue;
+                if (m.ContainsKey(s)) return NullT.NullValue;
 
                 throw Err.NoSuchKeyException(s);
             }
@@ -1006,13 +1006,16 @@ public sealed class AttributeFactory_IntQualifier : Coster, AttributeFactory_Con
         var i = value;
         if (obj is IDictionary)
         {
-            var m = (IDictionary)obj;
-            obj = m[i];
-            if (obj == null) obj = m[(int)i];
+            var m = (Dictionary<object, object>)obj;
+            m.TryGetValue(i, out obj);
+            if (obj == null)
+            {
+                obj = m.TryGetValue((int)i, out obj);
+            }
 
             if (obj == null)
             {
-                if (m.Contains(i) || m.Contains((int)i)) return null;
+                if (m.ContainsKey(i) || m.ContainsKey((int)i)) return null;
 
                 throw Err.NoSuchKeyException(i);
             }
@@ -1108,8 +1111,8 @@ public sealed class AttributeFactory_UintQualifier : Coster, AttributeFactory_Co
         var i = (long)value;
         if (obj is IDictionary)
         {
-            var m = (IDictionary)obj;
-            obj = m[i];
+            var m = (Dictionary<object, object>)obj;
+            m.TryGetValue(i, out obj);
             if (obj == null) throw Err.NoSuchKeyException(i);
 
             return obj;
@@ -1191,11 +1194,11 @@ public sealed class AttributeFactory_BoolQualifier : Coster, AttributeFactory_Co
         var b = value;
         if (obj is IDictionary)
         {
-            var m = (IDictionary)obj;
-            obj = m[b];
+            var m = (Dictionary<object, object>)obj;
+            m.TryGetValue(b, out obj);
             if (obj == null)
             {
-                if (m.Contains(b)) return null;
+                if (m.ContainsKey(b)) return null;
 
                 throw Err.NoSuchKeyException(b);
             }

@@ -38,8 +38,7 @@ public sealed class Options
 
     public Macro GetMacro(string name)
     {
-        Macro macro = null;
-        macros.TryGetValue(name, out macro);
+        macros.TryGetValue(name, out Macro macro);
         return macro;
     }
 

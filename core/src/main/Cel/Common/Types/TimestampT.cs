@@ -122,12 +122,12 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
         switch (args.Length)
         {
             case 0:
-                var f0 = timestampZeroArgOverloads[function];
+                timestampZeroArgOverloads.TryGetValue(function, out Func<ZonedDateTime, Val> f0);
                 if (f0 != null) return f0(t);
 
                 break;
             case 1:
-                var f1 = timestampOneArgOverloads[function];
+                timestampOneArgOverloads.TryGetValue(function, out Func<ZonedDateTime, Val, Val> f1);
                 if (f1 != null) return f1(t, args[0]);
 
                 break;

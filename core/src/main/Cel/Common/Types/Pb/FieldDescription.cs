@@ -419,7 +419,7 @@ public sealed class FieldDescription : Description
         {
             case FieldType.Message:
                 var msgType = desc.MessageType.FullName;
-                var wk = Checked.CheckedWellKnowns[msgType];
+                Checked.CheckedWellKnowns.TryGetValue(msgType, out Type wk);
                 if (wk != null) return wk;
 
                 return Checked.CheckedMessageType(msgType);
@@ -558,8 +558,7 @@ public sealed class FieldDescription : Description
     {
         if (desc.FieldType != FieldType.Message) return false;
 
-        Type wellKnown;
-        Checked.CheckedWellKnowns.TryGetValue(desc.MessageType.FullName, out wellKnown);
+        Checked.CheckedWellKnowns.TryGetValue(desc.MessageType.FullName, out Type wellKnown);
         if (wellKnown == null) return false;
 
         return wellKnown.TypeKindCase == Type.TypeKindOneofCase.Wrapper;

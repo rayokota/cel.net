@@ -1,9 +1,11 @@
-﻿using Cel.Common;
+﻿using System.Reflection;
+using Cel.Common;
 using Cel.Common.Containers;
 using Cel.Common.Types;
 using Cel.Common.Types.Ref;
 using Google.Api.Expr.V1Alpha1;
 using Google.Protobuf;
+using SharpCompress.Archives.Tar;
 using Type = Google.Api.Expr.V1Alpha1.Type;
 
 /*
@@ -295,6 +297,11 @@ public sealed class Checker
         //
         // Check whether the target is a namespaced function name.
         var target = call.Target;
+        if (target == null)
+        {
+            target = new Expr();
+            call.Target = target;
+        }
         var qualifiedPrefix = Container.ToQualifiedName(target);
         if (!ReferenceEquals(qualifiedPrefix, null))
         {
@@ -646,7 +653,7 @@ public sealed class Checker
 
     internal void SetType(Expr e, Type t)
     {
-        var old = types[e.Id];
+        types.TryGetValue(e.Id, out Type old);
         if (old != null && !old.Equals(t))
             throw new InvalidOperationException(string.Format(
                 "(Incompatible) Type already exists for expression: {0}({1:D}) old:{2}, new:{3}", e, e.Id, old, t));
@@ -656,12 +663,13 @@ public sealed class Checker
 
     internal Type GetType(Expr e)
     {
-        return types[e.Id];
+        types.TryGetValue(e.Id, out Type type);
+        return type;
     }
 
     internal void SetReference(Expr e, Reference r)
     {
-        var old = references[e.Id];
+        references.TryGetValue(e.Id, out Reference old);
         if (old != null && !old.Equals(r))
             throw new InvalidOperationException(string.Format(
                 "Reference already exists for expression: {0}({1:D}) old:{2}, new:{3}", e, e.Id, old, r));
@@ -688,15 +696,16 @@ public sealed class Checker
     {
         IDictionary<long, int> positions = sourceInfo.Positions;
         var line = 1;
-        int? offset = positions[id];
-        if (offset != null)
+        int offset = -1;
+        positions.TryGetValue(id, out offset);
+        if (offset >= 0)
         {
-            var col = offset.Value;
+            var col = offset;
             foreach (int? lineOffset in sourceInfo.LineOffsets)
                 if (lineOffset < offset)
                 {
                     line++;
-                    col = offset.Value - lineOffset.Value;
+                    col = offset- lineOffset.Value;
                 }
                 else
                 {

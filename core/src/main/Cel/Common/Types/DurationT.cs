@@ -125,7 +125,7 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
     {
         if (args.Length == 0)
         {
-            var f = durationZeroArgOverloads[function];
+            durationZeroArgOverloads.TryGetValue(function, out Func<Period, Val> f);
             if (f != null) return f(d);
         }
 

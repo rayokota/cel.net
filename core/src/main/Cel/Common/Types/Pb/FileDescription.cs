@@ -90,7 +90,8 @@ public sealed class FileDescription
     /// </summary>
     public EnumValueDescription GetEnumDescription(string enumName)
     {
-        return enums[SanitizeProtoName(enumName)];
+        enums.TryGetValue(SanitizeProtoName(enumName), out EnumValueDescription ed);
+        return ed;
     }
 
     /// <summary>
@@ -99,7 +100,8 @@ public sealed class FileDescription
     /// </summary>
     public PbTypeDescription GetTypeDescription(string typeName)
     {
-        return types[SanitizeProtoName(typeName)];
+        types.TryGetValue(SanitizeProtoName(typeName), out PbTypeDescription pd);
+        return pd;
     }
 
     /// <summary>

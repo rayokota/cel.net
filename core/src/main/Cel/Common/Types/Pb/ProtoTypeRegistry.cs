@@ -88,7 +88,7 @@ public sealed class ProtoTypeRegistry : TypeRegistry
 
     public Val FindIdent(string identName)
     {
-        var t = revTypeMap[identName];
+        revTypeMap.TryGetValue(identName, out Type t);
         if (t != null) return t;
 
         var enumVal = pbdb.DescribeEnum(identName);
@@ -207,8 +207,7 @@ public sealed class ProtoTypeRegistry : TypeRegistry
         foreach (var nv in fields)
         {
             var name = nv.Key;
-            FieldDescription field;
-            fieldMap.TryGetValue(name, out field);
+            fieldMap.TryGetValue(name, out FieldDescription field);
             if (field == null) return Err.NoSuchField(name);
 
             // TODO resolve inefficiency for maps: first converted from a MapT to a native Java map and

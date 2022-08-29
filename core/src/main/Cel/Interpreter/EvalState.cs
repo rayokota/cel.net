@@ -74,7 +74,8 @@ public sealed class EvalState_EvalStateImpl : EvalState
     /// </summary>
     public Val Value(long id)
     {
-        return values[id];
+        values.TryGetValue(id, out Val v);
+        return v;
     }
 
     /// <summary>

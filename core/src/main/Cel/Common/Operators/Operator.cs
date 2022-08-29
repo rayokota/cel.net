@@ -184,15 +184,15 @@ public sealed class Operator
 
     public static Operator ById(string id)
     {
-        Operator op;
-        operatorsById.TryGetValue(id, out op);
+        operatorsById.TryGetValue(id, out Operator op);
         return op;
     }
 
     // Find the internal function name for an operator, if the input text is one.
     public static Operator Find(string text)
     {
-        return operators[text];
+        operators.TryGetValue(text, out Operator op);
+        return op;
     }
 
     // FindReverse returns the unmangled, text representation of the operator.

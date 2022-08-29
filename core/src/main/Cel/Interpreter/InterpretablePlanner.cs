@@ -141,7 +141,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
     internal Interpretable PlanIdent(Expr expr)
     {
         // Establish whether the identifier is in the reference map.
-        var identRef = refMap[expr.Id];
+        refMap.TryGetValue(expr.Id, out Reference identRef);
         if (identRef != null) return PlanCheckedIdent(expr.Id, identRef);
 
         // Create the possible attribute list for the unresolved reference.
@@ -162,7 +162,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
 
         // Check to see whether the type map indicates this is a type name. All types should be
         // registered with the provider.
-        var cType = typeMap[id];
+        typeMap.TryGetValue(id, out Type cType);
         if (cType != null && !Equals(cType.Type_, new Type()))
         {
             var cVal = provider.FindIdent(identRef.Name);
@@ -191,7 +191,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
     {
         // If the Select id appears in the reference map from the CheckedExpr proto then it is either
         // a namespaced identifier or enum value.
-        var identRef = refMap[expr.Id];
+        refMap.TryGetValue(expr.Id, out Reference identRef);
         if (identRef != null) return PlanCheckedIdent(expr.Id, identRef);
 
         var sel = expr.SelectExpr;
@@ -200,7 +200,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
 
         // Determine the field type if this is a proto message type.
         FieldType fieldType = null;
-        var opType = typeMap[sel.Operand.Id];
+        typeMap.TryGetValue(sel.Operand.Id, out Type opType);
         if (opType != null && opType.MessageType.Length != 0)
         {
             var ft = provider.FindFieldType(opType.MessageType, sel.Field);
@@ -668,7 +668,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
         // Checked expressions always have a reference map entry, and _should_ have the fully
         // qualified
         // function name as the fnName value.
-        var oRef = refMap[expr.Id];
+        refMap.TryGetValue(expr.Id, out Reference oRef);
         if (oRef != null)
         {
             if (oRef.OverloadId.Count == 1) return new ResolvedFunction(target, fnName, oRef.OverloadId[0]);

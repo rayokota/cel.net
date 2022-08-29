@@ -95,7 +95,7 @@ public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
     {
         if (args.Length == 1)
         {
-            var f = stringOneArgOverloads[function];
+            stringOneArgOverloads.TryGetValue(function, out Func<string, Val, Val> f);
             if (f != null) return f(s, args[0]);
         }
 

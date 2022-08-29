@@ -340,7 +340,8 @@ public sealed class CheckerEnv
     /// </summary>
     internal static Type GetObjectWellKnownType(Type t)
     {
-        return Checked.CheckedWellKnowns[t.MessageType];
+        Checked.CheckedWellKnowns.TryGetValue(t.MessageType, out var type);
+        return type;
     }
 
     /// <summary>

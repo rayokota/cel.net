@@ -192,7 +192,8 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
 
         public override Val Get(Val index)
         {
-            return map[index];
+            map.TryGetValue(index, out Val v);
+            return v;
         }
 
         public override Val Size()
@@ -202,7 +203,8 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
 
         public override Val Find(Val key)
         {
-            return map[key];
+            map.TryGetValue(key, out Val v);
+            return v;
         }
 
         public override bool Equals(object o)
