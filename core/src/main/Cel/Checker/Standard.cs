@@ -17,9 +17,6 @@
  */
 namespace Cel.Checker
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.checker.Types.formatCheckedType;
-
     using Decl = Google.Api.Expr.V1Alpha1.Decl;
     using Type = Google.Api.Expr.V1Alpha1.Type;
     using Operator = global::Cel.Common.Operators.Operator;

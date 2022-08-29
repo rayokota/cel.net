@@ -19,37 +19,6 @@ using Microsoft.VisualBasic.CompilerServices;
  */
 namespace Cel.Interpreter.Functions
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.BoolT.BoolType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.BoolT.False;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.BoolT.True;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.BytesT.BytesType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.DoubleT.DoubleType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.DurationT.DurationType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.noSuchOverload;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.IntT.IntNegOne;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.IntT.IntOne;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.IntT.IntType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.IntT.IntZero;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.StringT.StringType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.TimestampT.TimestampType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.TypeT.TypeType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.UintT.UintType;
-
     using Operator = global::Cel.Common.Operators.Operator;
     using IterableT = global::Cel.Common.Types.IterableT;
     using IteratorT = global::Cel.Common.Types.IteratorT;

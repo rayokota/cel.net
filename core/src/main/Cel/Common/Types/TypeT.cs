@@ -16,15 +16,6 @@
 
 namespace Cel.Common.Types
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.newTypeConversionError;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.noSuchOverload;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.StringT.stringOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Types.boolOf;
-
     using Type = global::Cel.Common.Types.Ref.Type;
     using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
     using Val = global::Cel.Common.Types.Ref.Val;

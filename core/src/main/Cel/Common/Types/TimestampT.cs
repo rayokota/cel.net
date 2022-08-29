@@ -20,33 +20,6 @@ using NodaTime.Text;
  */
 namespace Cel.Common.Types
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.DurationT.durationOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.errDurationOverflow;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.errTimestampOutOfRange;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.errTimestampOverflow;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.newErr;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.newTypeConversionError;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.noSuchOverload;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.IntT.IntNegOne;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.IntT.IntOne;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.IntT.IntZero;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.IntT.intOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.StringT.stringOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Types.boolOf;
-
     using Any = Google.Protobuf.WellKnownTypes.Any;
     using StringValue = Google.Protobuf.WellKnownTypes.StringValue;
     using Timestamp = Google.Protobuf.WellKnownTypes.Timestamp;
@@ -209,8 +182,6 @@ namespace Cel.Common.Types
 
         /// <summary>
         /// ConvertToNative implements ref.Val.ConvertToNative. </summary>
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings("unchecked") @Override public <T> T convertToNative(Class<T> typeDesc)
         public override object? ConvertToNative(System.Type typeDesc)
         {
             if (typeDesc == typeof(ZonedDateTime))

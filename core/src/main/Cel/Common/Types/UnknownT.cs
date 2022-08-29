@@ -46,8 +46,6 @@ namespace Cel.Common.Types
 
         /// <summary>
         /// ConvertToNative implements ref.Val.ConvertToNative. </summary>
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings("unchecked") @Override public <T> T convertToNative(Class<T> typeDesc)
         public override object? ConvertToNative(System.Type typeDesc)
         {
             if (typeDesc.IsAssignableFrom(typeof(long)) || typeDesc.IsAssignableFrom(typeof(long)) ||

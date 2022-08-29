@@ -17,25 +17,6 @@
  */
 namespace Cel.Common.Types
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.BytesT.BytesType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.DoubleT.DoubleType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.IntT.IntType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.ListT.ListType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.MapT.MapType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.NullT.NullType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.StringT.StringType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.TypeT.TypeType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.UintT.UintType;
-
     using Type = global::Cel.Common.Types.Ref.Type;
 
     public sealed class Types

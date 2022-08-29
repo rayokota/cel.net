@@ -20,33 +20,6 @@ using Cel.Parser;
  */
 namespace Cel
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.Source.newInfoSource;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.interpreter.Activation.emptyActivation;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.interpreter.Activation.newPartialActivation;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.interpreter.AttributeFactory.newAttributeFactory;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.interpreter.AttributePattern.newAttributePattern;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.interpreter.AttributePattern.newPartialAttributeFactory;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.interpreter.Dispatcher.newDispatcher;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.interpreter.EvalState.newEvalState;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.interpreter.Interpreter.exhaustiveEval;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.interpreter.Interpreter.newInterpreter;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.interpreter.Interpreter.optimize;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.interpreter.Interpreter.trackState;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.parser.Unparser.unparse;
-
     using CheckedExpr = Google.Api.Expr.V1Alpha1.CheckedExpr;
     using Expr = Google.Api.Expr.V1Alpha1.Expr;
     using ParsedExpr = Google.Api.Expr.V1Alpha1.ParsedExpr;

@@ -21,57 +21,6 @@ using Google.Protobuf;
  */
 namespace Cel.Common.Types.Pb
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.BoolT.BoolType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.BytesT.BytesType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.DoubleT.DoubleType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.DurationT.DurationType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.Err.anyWithEmptyType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.Err.newErr;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.Err.noSuchField;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.Err.unknownType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.Err.unsupportedRefValConversionErr;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.IntT.IntType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.IntT.intOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.ListT.ListType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.MapT.MapType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.NullT.NullType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.StringT.StringType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.TimestampT.TimestampType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.TypeT.TypeType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.TypeT.newObjectTypeValue;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.UintT.UintType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.pb.Db.collectFileDescriptorSet;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.pb.Db.newDb;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.pb.DefaultTypeAdapter.maybeUnwrapValue;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.pb.PbObjectT.newObject;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.pb.PbTypeDescription.typeNameFromMessage;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.@ref.TypeAdapterSupport.maybeNativeToValue;
-
     using Type = Google.Api.Expr.V1Alpha1.Type;
     using Any = Google.Protobuf.WellKnownTypes.Any;
     using BoolValue = Google.Protobuf.WellKnownTypes.BoolValue;
@@ -348,8 +297,6 @@ namespace Cel.Common.Types.Pb
         /// Converts {@code value}, of the map-field {@code fieldDesc} from its Java <seealso cref="System.Collections.IDictionary"/>
         /// representation to the protobuf-y {@code <seealso cref="System.Collections.IList"/><<seealso cref="MapEntry"/>>} representation.
         /// </summary>
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings({"unchecked", "rawtypes"}) private Object toProtoMapStructure(Google.Protobuf.WellKnownTypes.Descriptors.FieldDescriptor fieldDesc, Object value)
         /*
         private object ToProtoMapStructure(FieldDescriptor fieldDesc, object value)
         {
@@ -391,8 +338,6 @@ namespace Cel.Common.Types.Pb
         /// Converts a value of type <seealso cref="Number"/> to <seealso cref="EnumValueDescriptor"/>, also works for arrays
         /// and <seealso cref="System.Collections.IList"/>s containing <seealso cref="Number"/>s.
         /// </summary>
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings({"rawtypes", "unchecked"}) private Object intToProtoEnumValues(FieldDescription field, Object value)
         private object IntToProtoEnumValues(FieldDescription field, object value)
         {
             EnumDescriptor enumType = field.Descriptor().EnumType;

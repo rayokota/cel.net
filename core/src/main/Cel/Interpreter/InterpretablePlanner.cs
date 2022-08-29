@@ -19,25 +19,6 @@ using Cel.Common.Types;
  */
 namespace Cel.Interpreter
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.BytesT.bytesOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.DoubleT.doubleOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.DurationT.durationOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.IntT.intOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.StringT.stringOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.TimestampT.timestampOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Types.boolOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.UintT.uintOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Interpreter.Interpretable.newConstValue;
-
     using CheckedExpr = Google.Api.Expr.V1Alpha1.CheckedExpr;
     using Constant = Google.Api.Expr.V1Alpha1.Constant;
     using Expr = Google.Api.Expr.V1Alpha1.Expr;
@@ -723,8 +704,6 @@ namespace Cel.Interpreter
 
         /// <summary>
         /// constValue converts a proto Constant value to a ref.Val. </summary>
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings("deprecation") Cel.Common.Types.ref.Val constValue(Google.Api.Expr.V1Alpha1.Constant c)
         internal Val ConstValue(Constant c)
         {
             switch (c.ConstantKindCase)

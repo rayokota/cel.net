@@ -22,9 +22,6 @@ using Antlr4.Runtime.Tree;
  */
 namespace Cel.Parser
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.parser.Macro.AllMacros;
-
     using Antlr4.Runtime;
     using Constant = Google.Api.Expr.V1Alpha1.Constant;
     using Expr = Google.Api.Expr.V1Alpha1.Expr;
@@ -254,8 +251,6 @@ namespace Cel.Parser
 
         internal sealed class RecoveryLimitError : RecognitionException
         {
-//JAVA TO C# CONVERTER TODO TASK: Wildcard generics in constructor parameters are not converted. Move the generic type parameter and constraint to the class header:
-//ORIGINAL LINE: public RecoveryLimitError(String message, Cel.shaded.org.antlr.v4.runtime.Recognizer<?, ?> recognizer, Cel.shaded.org.antlr.v4.runtime.IntStream input, Cel.shaded.org.antlr.v4.runtime.ParserRuleContext ctx)
             public RecoveryLimitError(string message, IRecognizer recognizer, IIntStream input, ParserRuleContext ctx) :
                 base(message, recognizer, input, ctx)
             {

@@ -18,15 +18,6 @@ using Google.Protobuf;
  */
 namespace Cel.Common.Types.Pb
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.Err.newTypeConversionError;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.Err.noSuchField;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.Err.noSuchOverload;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.Types.boolOf;
-
     using Any = Google.Protobuf.WellKnownTypes.Any;
     using Message = Google.Protobuf.IMessage;
     using Value = Google.Protobuf.WellKnownTypes.Value;
@@ -93,8 +84,6 @@ namespace Cel.Common.Types.Pb
             return NativeToValue(fd.GetField(value));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings("unchecked") @Override public <T> T convertToNative(Class<T> typeDesc)
         public override object? ConvertToNative(System.Type typeDesc)
         {
             if (typeDesc.IsAssignableFrom(value.GetType()))
@@ -178,8 +167,6 @@ namespace Cel.Common.Types.Pb
             return (PbTypeDescription)typeDesc;
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings("unchecked") private <T> T buildFrom(Class<T> typeDesc)
         private Message BuildFrom(System.Type typeDesc)
         {
             try

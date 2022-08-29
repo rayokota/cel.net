@@ -16,13 +16,6 @@
 
 namespace Cel
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.CEL.estimateCost;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Prog.emptyEvalState;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.interpreter.EvalState.newEvalState;
-
     using Coster = global::Cel.Interpreter.Coster;
     using EvalState = global::Cel.Interpreter.EvalState;
 

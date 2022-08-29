@@ -20,11 +20,6 @@ using NUnit.Framework;
 
 namespace Cel.Parser
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.assertj.core.api.Assertions.assertThat;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
     using Expr = Google.Api.Expr.V1Alpha1.Expr;
     using Entry = Google.Api.Expr.V1Alpha1.Expr.Types.CreateStruct.Types.Entry;
     using ExprKindCase = Google.Api.Expr.V1Alpha1.Expr.ExprKindOneofCase;
@@ -32,8 +27,6 @@ namespace Cel.Parser
 
     internal class ParserTest
     {
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings("unused") public static String[][] testCases()
         public static string[][] TestCases()
         {
             return new string[][]
@@ -804,8 +797,6 @@ namespace Cel.Parser
         /// <param name="e"> contains the expected error output for a failed parse, or "" if the parse is expected
         ///     to be successful. </param>
         /// <param name="l"> contains the expected source adorned debug output of the expression tree. </param>
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @ParameterizedTest @MethodSource("testCases") void parseTest(String num, String i, String p, String e, String l)
         [TestCaseSource(nameof(TestCases))]
         public virtual void ParseTest(string num, string i, string p, string e, string l)
         {
@@ -829,8 +820,6 @@ namespace Cel.Parser
             }
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void expressionSizeCodePointLimit()
         internal virtual void ExpressionSizeCodePointLimit()
         {
             Options options = new Options.Builder().Macros(Macro.AllMacros).ExpressionSizeCodePointLimit(-2).Build();

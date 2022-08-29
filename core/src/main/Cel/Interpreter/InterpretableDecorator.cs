@@ -18,19 +18,6 @@ using Cel.Common.Types;
  */
 namespace Cel.Interpreter
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.BoolT.False;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.BoolT.True;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.throwErrorAsIllegalStateException;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.IntT.IntZero;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Interpreter.Activation.emptyActivation;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Interpreter.Interpretable.newConstValue;
-
     using IteratorT = global::Cel.Common.Types.IteratorT;
     using Overloads = global::Cel.Common.Types.Overloads;
     using Util = global::Cel.Common.Types.Util;

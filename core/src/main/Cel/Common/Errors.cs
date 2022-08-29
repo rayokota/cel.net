@@ -67,7 +67,6 @@ namespace Cel.Common
         /// ToDisplayString returns the error set to a newline delimited string. </summary>
         public virtual string ToDisplayString()
         {
-//JAVA TO C# CONVERTER TODO TASK: Most Java stream collectors are not converted by Java to C# Converter:
             return string.Join("\n", errors.OrderBy(c => c)
                 .Select(e => e.ToDisplayString(source)));
         }

@@ -18,11 +18,6 @@ using System.Collections.Generic;
  */
 namespace Cel
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.EnvOption_EnvFeature.FeatureDisableDynamicAggregateLiterals;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.containers.Container.name;
-
     using Decl = Google.Api.Expr.V1Alpha1.Decl;
     using Container = global::Cel.Common.Containers.Container;
     using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;

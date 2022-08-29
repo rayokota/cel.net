@@ -20,39 +20,6 @@ using Cel.Common.Types.Ref;
  */
 namespace Cel.Interpreter
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.BoolT.False;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.BoolT.True;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.indexOutOfBoundsException;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.isError;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.maybeNoSuchOverloadErr;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.noSuchAttributeException;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.noSuchKey;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.noSuchKeyException;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.noSuchOverload;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.throwErrorAsIllegalStateException;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.IntT.intOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.StringT.stringOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Types.boolOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.UintT.uintOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.UnknownT.isUnknown;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Interpreter.Coster.costOf;
-
     using Type = Google.Api.Expr.V1Alpha1.Type;
     using Container = global::Cel.Common.Containers.Container;
     using Err = global::Cel.Common.Types.Err;
@@ -1001,8 +968,6 @@ namespace Cel.Interpreter
 
         /// <summary>
         /// Qualify implements the Qualifier interface method. </summary>
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings("rawtypes") @Override public Object qualify(Cel.Interpreter.Activation vars, Object obj)
         public object Qualify(global::Cel.Interpreter.Activation vars, object obj)
         {
             string s = value;
@@ -1087,8 +1052,6 @@ namespace Cel.Interpreter
 
         /// <summary>
         /// Qualify implements the Qualifier interface method. </summary>
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings("rawtypes") @Override public Object qualify(Cel.Interpreter.Activation vars, Object obj)
         public object Qualify(global::Cel.Interpreter.Activation vars, object obj)
         {
             long i = value;
@@ -1208,8 +1171,6 @@ namespace Cel.Interpreter
 
         /// <summary>
         /// Qualify implements the Qualifier interface method. </summary>
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings("rawtypes") @Override public Object qualify(Cel.Interpreter.Activation vars, Object obj)
         public object Qualify(global::Cel.Interpreter.Activation vars, object obj)
         {
             long i = (long)value;
@@ -1301,8 +1262,6 @@ namespace Cel.Interpreter
 
         /// <summary>
         /// Qualify implements the Qualifier interface method. </summary>
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings("rawtypes") @Override public Object qualify(Cel.Interpreter.Activation vars, Object obj)
         public object Qualify(global::Cel.Interpreter.Activation vars, object obj)
         {
             bool b = value;

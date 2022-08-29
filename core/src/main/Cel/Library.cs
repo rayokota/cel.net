@@ -19,19 +19,6 @@ using Cel.Parser;
  */
 namespace Cel
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.EnvOption.declarations;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.EnvOption.macros;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.ProgramOption.functions;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.checker.Checker.StandardDeclarations;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.interpreter.functions.Overload.standardOverloads;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.parser.Macro.AllMacros;
-
     /// <summary>
     /// Library provides a collection of EnvOption and ProgramOption values used to confiugre a CEL
     /// environment for a particular use case or with a related set of functionality.

@@ -20,29 +20,6 @@ using Google.Protobuf;
  */
 namespace Cel.Common.Types
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.BoolT.False;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.BoolT.True;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.isError;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.newErr;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.newTypeConversionError;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.noMoreElements;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.noSuchOverload;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.valOrErr;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.IntT.intOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.StringT.stringOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Types.boolOf;
-
     using Any = Google.Protobuf.WellKnownTypes.Any;
     using ListValue = Google.Protobuf.WellKnownTypes.ListValue;
     using Value = Google.Protobuf.WellKnownTypes.Value;
@@ -103,8 +80,6 @@ namespace Cel.Common.Types
                 this.size = size;
             }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings("unchecked") @Override public <T> T convertToNative(Class<T> typeDesc)
             public override object? ConvertToNative(System.Type typeDesc)
             {
                 if (typeDesc.IsArray)
@@ -180,8 +155,6 @@ namespace Cel.Common.Types
                 return new List<object> { ConvertToNative(typeof(object[])) };
             }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings({"rawtypes", "unchecked"}) private <T> Object toJavaArray(Class<T> typeDesc)
             internal virtual object ToJavaArray<T>(System.Type typeDesc)
             {
                 int s = (int)size;

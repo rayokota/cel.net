@@ -18,17 +18,6 @@ using System.Collections.Generic;
  */
 namespace Cel
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.CEL.estimateCost;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Program.newEvalResult;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.interpreter.Activation.newActivation;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.interpreter.Activation.newHierarchicalActivation;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.interpreter.EvalState.newEvalState;
-
     using ErrException = global::Cel.Common.Types.Err.ErrException;
     using Val = global::Cel.Common.Types.Ref.Val;
     using Activation = global::Cel.Interpreter.Activation;

@@ -17,11 +17,6 @@
  */
 namespace Cel.Common.Types
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.noMoreElements;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Types.boolOf;
-
     using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
     using Type = global::Cel.Common.Types.Ref.Type;
     using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;

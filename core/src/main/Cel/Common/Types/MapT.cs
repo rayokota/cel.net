@@ -18,23 +18,6 @@ using Google.Protobuf;
  */
 namespace Cel.Common.Types
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.BoolT.False;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.BoolT.True;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.isError;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.newTypeConversionError;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.noSuchOverload;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.StringT.StringType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.TypeT.TypeType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Types.boolOf;
-
     using Any = Google.Protobuf.WellKnownTypes.Any;
     using Struct = Google.Protobuf.WellKnownTypes.Struct;
     using Value = Google.Protobuf.WellKnownTypes.Value;
@@ -99,8 +82,6 @@ namespace Cel.Common.Types
                 this.map = map;
             }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings("unchecked") @Override public <T> T convertToNative(Class<T> typeDesc)
             public override object? ConvertToNative(System.Type typeDesc)
             {
                 if (typeDesc.IsAssignableFrom(typeof(System.Collections.IDictionary)) || typeDesc == typeof(object))
@@ -154,8 +135,6 @@ namespace Cel.Common.Types
                 return value;
             }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings({"rawtypes", "unchecked"}) private java.util.Map toJavaMap()
             internal IDictionary<object, object> ToJavaMap()
             {
                 IDictionary<object, object> r = new Dictionary<object, object>();

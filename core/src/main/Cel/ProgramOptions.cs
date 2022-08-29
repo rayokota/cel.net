@@ -18,9 +18,6 @@ using Cel.Interpreter;
 
 namespace Cel
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.interpreter.Activation.newActivation;
-
     using InterpretableDecorator = global::Cel.Interpreter.InterpretableDecorator;
     using Overload = global::Cel.Interpreter.Functions.Overload;
 

@@ -17,9 +17,6 @@
  */
 namespace Cel.Common.Types
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.UnknownT.UnknownType;
-
     using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
     using Type = global::Cel.Common.Types.Ref.Type;
     using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
@@ -91,7 +88,6 @@ namespace Cel.Common.Types
 
         public static Val NoSuchOverload(Val val, string function, string overload, Val[] args)
         {
-//JAVA TO C# CONVERTER TODO TASK: Most Java stream collectors are not converted by Java to C# Converter:
             return NewErr("no such overload: {0}.{0}[{0}]({0})", val.Type().TypeName(), function, overload,
                 string.Join(", ", args.Select(a => a.Type().TypeName())));
         }

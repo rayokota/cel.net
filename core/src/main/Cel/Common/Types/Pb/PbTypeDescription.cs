@@ -19,11 +19,6 @@ using Google.Protobuf;
  */
 namespace Cel.Common.Types.Pb
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.Err.anyWithEmptyType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.pb.FieldDescription.newFieldDescription;
-
     using Any = Google.Protobuf.WellKnownTypes.Any;
     using BoolValue = Google.Protobuf.WellKnownTypes.BoolValue;
     using ByteString = Google.Protobuf.ByteString;
@@ -442,8 +437,6 @@ namespace Cel.Common.Types.Pb
             return msg;
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings("unchecked") private static Object unwrapDynamicAny(Db db, Description desc, Google.Protobuf.WellKnownTypes.Message refMsg)
         /*
         private static object UnwrapDynamicAny(Db db, Description desc, Message refMsg)
         {

@@ -18,17 +18,6 @@ using Cel.Common.Types.Ref;
 
 namespace Cel.Common.Types.Pb
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.Err.anyWithEmptyType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.Err.newErr;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.Err.unknownType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.pb.PbTypeDescription.typeNameFromMessage;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.@ref.TypeAdapterSupport.maybeNativeToValue;
-
     using Value = Google.Api.Expr.V1Alpha1.Value;
     using Message = Google.Protobuf.IMessage;
     using Err = global::Cel.Common.Types.Err;

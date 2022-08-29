@@ -18,15 +18,6 @@ using Cel.Common.Types;
  */
 namespace Cel.Interpreter
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.noSuchAttributeException;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.UnknownT.isUnknown;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.UnknownT.unknownOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Interpreter.AttributeFactory.newAttributeFactory;
-
     using Type = Google.Api.Expr.V1Alpha1.Type;
     using Container = global::Cel.Common.Containers.Container;
     using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
@@ -146,7 +137,6 @@ namespace Cel.Interpreter
 
         public override string ToString()
         {
-//JAVA TO C# CONVERTER TODO TASK: Most Java stream collectors are not converted by Java to C# Converter:
             return "AttributePattern{" + "variable='" + variable + '\'' + ", qualifierPatterns=" +
                    string.Join(",\n    ", qualifierPatterns.Select(o => o.ToString()));
         }
@@ -510,7 +500,6 @@ namespace Cel.Interpreter
 
             public override string ToString()
             {
-//JAVA TO C# CONVERTER TODO TASK: Most Java stream collectors are not converted by Java to C# Converter:
                 return "AttributeMatcher{" + "attr=" + attr + ", fac=" + fac + ", qualifiers=" +
                        string.Join(",\n    ", qualifiers.Select(o => o.ToString()));
             }

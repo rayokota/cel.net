@@ -18,29 +18,6 @@ using Google.Protobuf;
  */
 namespace Cel.Checker
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Checker.CheckerEnv.dynElementType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Checker.CheckerEnv.getObjectWellKnownType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Checker.CheckerEnv.isObjectWellKnownType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Checker.Mapping.newMapping;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Checker.Types.isDyn;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Checker.Types.isDynOrError;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Checker.Types.kindOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Checker.Types.mostGeneral;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Checker.Types.substitute;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Location.NoLocation;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Location.newLocation;
-
     using CheckedExpr = Google.Api.Expr.V1Alpha1.CheckedExpr;
     using Constant = Google.Api.Expr.V1Alpha1.Constant;
     using ConstantKindCase = Google.Api.Expr.V1Alpha1.Constant.ConstantKindOneofCase;

@@ -16,19 +16,6 @@
 
 namespace Cel.Interpreter
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Interpreter.Dispatcher.newDispatcher;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Interpreter.InterpretableDecorator.decDisableShortcircuits;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Interpreter.InterpretableDecorator.decObserveEval;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Interpreter.InterpretableDecorator.decOptimize;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Interpreter.InterpretablePlanner.newPlanner;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Interpreter.InterpretablePlanner.newUncheckedPlanner;
-
     using CheckedExpr = Google.Api.Expr.V1Alpha1.CheckedExpr;
     using Expr = Google.Api.Expr.V1Alpha1.Expr;
     using Container = global::Cel.Common.Containers.Container;

@@ -17,15 +17,6 @@
  */
 namespace Cel.Common.Types
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.newTypeConversionError;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.noSuchOverload;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.IntT.intOfCompare;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.StringT.stringOf;
-
     using Any = Google.Protobuf.WellKnownTypes.Any;
     using BoolValue = Google.Protobuf.WellKnownTypes.BoolValue;
     using Value = Google.Protobuf.WellKnownTypes.Value;
@@ -77,8 +68,6 @@ namespace Cel.Common.Types
 
         /// <summary>
         /// ConvertToNative implements the ref.Val interface method. </summary>
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings("unchecked") @Override public <T> T convertToNative(Class<T> typeDesc)
         public override object? ConvertToNative(System.Type typeDesc)
         {
             if (typeDesc == typeof(Boolean) || typeDesc == typeof(bool) || typeDesc == typeof(object))

@@ -19,37 +19,6 @@ using NodaTime;
  */
 namespace Cel.Common.Types.Ref
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.BytesT.bytesOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.DoubleT.doubleOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.DurationT.durationOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.IntT.intOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.ListT.newGenericArrayList;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.ListT.newJSONList;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.ListT.newStringArrayList;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.ListT.newValArrayList;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.MapT.newJSONStruct;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.MapT.newMaybeWrappedMap;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.StringT.stringOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.TimestampT.ZoneIdZ;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.TimestampT.timestampOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.Types.boolOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.common.types.UintT.uintOf;
-
     using ByteString = Google.Protobuf.ByteString;
     using EnumValueDescriptor = Google.Protobuf.Reflection.EnumValueDescriptor;
     using EnumValue = Google.Protobuf.WellKnownTypes.EnumValue;
@@ -94,15 +63,12 @@ namespace Cel.Common.Types.Ref
             NativeToValueExact[typeof(Timestamp)] = (a, value) => TimestampT.TimestampOf((Timestamp)value);
             NativeToValueExact[typeof(ZonedDateTime)] = (a, value) => TimestampT.TimestampOf((ZonedDateTime)value);
             NativeToValueExact[typeof(Instant)] = (a, value) => TimestampT.TimestampOf((Instant)value);
-//JAVA TO C# CONVERTER TODO TASK: Method reference constructor syntax is not converted by Java to C# Converter:
             NativeToValueExact[typeof(int[])] = (a, value) =>
                 ListT.NewValArrayList(DefaultTypeAdapter.Instance.ToTypeAdapter(),
                     ((int[])value).Select(i => IntT.IntOf(i)).ToArray());
-//JAVA TO C# CONVERTER TODO TASK: Method reference constructor syntax is not converted by Java to C# Converter:
             NativeToValueExact[typeof(long[])] = (a, value) =>
                 ListT.NewValArrayList(DefaultTypeAdapter.Instance.ToTypeAdapter(),
                     ((long[])value).Select(i => IntT.IntOf(i)).ToArray());
-//JAVA TO C# CONVERTER TODO TASK: Method reference constructor syntax is not converted by Java to C# Converter:
             NativeToValueExact[typeof(double[])] = (a, value) =>
                 ListT.NewValArrayList(DefaultTypeAdapter.Instance.ToTypeAdapter(),
                     ((double[])value).Select(i => DoubleT.DoubleOf(i)).ToArray());

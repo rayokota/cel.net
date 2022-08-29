@@ -19,25 +19,6 @@ using Cel.Common.Types.Pb;
  */
 namespace Cel.Checker
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Checker.Mapping.newMapping;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Checker.Scopes.newScopes;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Checker.Types.Kind.kindObject;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Checker.Types.formatCheckedType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Checker.Types.isAssignable;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Checker.Types.kindOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Checker.Types.substitute;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Err.ErrType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.pb.Checked.CheckedWellKnowns;
-
     using Constant = Google.Api.Expr.V1Alpha1.Constant;
     using Decl = Google.Api.Expr.V1Alpha1.Decl;
     using FunctionDecl = Google.Api.Expr.V1Alpha1.Decl.Types.FunctionDecl;

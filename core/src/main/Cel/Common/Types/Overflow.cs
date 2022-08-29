@@ -19,12 +19,6 @@ using NodaTime;
  */
 namespace Cel.Common.Types
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.TimestampT.maxUnixTime;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.TimestampT.minUnixTime;
-
-
     public sealed class Overflow
     {
         public sealed class OverflowException : Exception

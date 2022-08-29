@@ -22,15 +22,6 @@ namespace Cel.Interpreter
     //  subexpressions. This can be called before or after constant folding to find
     //  common subexpressions.
 
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.BoolT.True;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.IntT.intOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.UnknownT.isUnknown;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Cel.Common.Types.Util.isUnknownOrError;
-
     using Constant = Google.Api.Expr.V1Alpha1.Constant;
     using Expr = Google.Api.Expr.V1Alpha1.Expr;
     using Call = Google.Api.Expr.V1Alpha1.Expr.Types.Call;
