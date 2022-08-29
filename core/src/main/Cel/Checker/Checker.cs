@@ -67,7 +67,10 @@ public sealed class Checker
         // Walk over the final type map substituting any type parameters either by their bound value or
         // by DYN.
         IDictionary<long, Type> m = new Dictionary<long, Type>();
-        foreach (var entry in m) m.Add(entry.Key, Types.Substitute(c.mappings, entry.Value, true));
+        foreach (var entry in c.types)
+        {
+            m.Add(entry.Key, Types.Substitute(c.mappings, entry.Value, true));
+        }
 
         var checkedExpr = new CheckedExpr();
         checkedExpr.Expr = e;
@@ -273,7 +276,7 @@ public sealed class Checker
 
         // Regular static call with simple name.
         Decl fn;
-        if (Equals(call.Target, new Expr()))
+        if (call.Target == null || Equals(call.Target, new Expr()))
         {
             // Check for the existence of the function.
             fn = env.LookupFunction(fnName);
@@ -297,11 +300,6 @@ public sealed class Checker
         //
         // Check whether the target is a namespaced function name.
         var target = call.Target;
-        if (target == null)
-        {
-            target = new Expr();
-            call.Target = target;
-        }
         var qualifiedPrefix = Container.ToQualifiedName(target);
         if (!ReferenceEquals(qualifiedPrefix, null))
         {

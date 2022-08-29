@@ -162,7 +162,6 @@ namespace org.projectnessie.cel
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @Test void AstToString()
-/*
 		[Test]
 		public virtual void AstToString()
 		{
@@ -173,7 +172,6 @@ namespace org.projectnessie.cel
 			string expr = Cel.Cel.AstToString(astIss.Ast);
 			Assert.That(expr, Is.EqualTo(@in));
 		}
-		*/
 
 		/*
   //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
