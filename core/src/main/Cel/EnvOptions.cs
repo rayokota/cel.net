@@ -99,7 +99,7 @@ public class EnvOptions
 
     public static EnvOption Declarations(params Decl[] decls)
     {
-        return Declarations(decls.ToArray());
+        return Declarations(new List<Decl>(decls));
     }
 
     /// <summary>

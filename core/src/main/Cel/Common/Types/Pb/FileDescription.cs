@@ -72,7 +72,14 @@ public sealed class FileDescription
 
         IDictionary<string, PbTypeDescription> types = new Dictionary<string, PbTypeDescription>();
         foreach (var entry in metadata.msgTypes)
-            types.Add(entry.Key, PbTypeDescription.NewTypeDescription(entry.Key, entry.Value));
+        {
+            // TODO change this?
+            // Check if map
+            if (entry.Value.ClrType != null)
+            {
+                types.Add(entry.Key, PbTypeDescription.NewTypeDescription(entry.Key, entry.Value));
+            }
+        }
 
         return new FileDescription(types, enums);
     }

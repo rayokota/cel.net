@@ -184,7 +184,9 @@ public sealed class Operator
 
     public static Operator ById(string id)
     {
-        return operatorsById[id];
+        Operator op;
+        operatorsById.TryGetValue(id, out op);
+        return op;
     }
 
     // Find the internal function name for an operator, if the input text is one.

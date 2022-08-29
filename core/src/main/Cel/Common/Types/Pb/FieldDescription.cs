@@ -94,7 +94,7 @@ public sealed class FieldDescription : Description
     /// </summary>
     public static FieldDescription NewFieldDescription(FieldDescriptor fieldDesc)
     {
-        System.Type reflectType;
+        System.Type reflectType = null;
         Message zeroMsg = null;
         switch (fieldDesc.FieldType)
         {
@@ -102,8 +102,12 @@ public sealed class FieldDescription : Description
                 reflectType = typeof(Enum);
                 break;
             case FieldType.Message:
-                zeroMsg = (Message)Activator.CreateInstance(fieldDesc.MessageType.ClrType);
-                reflectType = PbTypeDescription.ReflectTypeOf(zeroMsg);
+                if (!fieldDesc.IsMap)
+                {
+                    System.Type type = fieldDesc.MessageType.ClrType;
+                    zeroMsg = (Message)Activator.CreateInstance(type);
+                    reflectType = PbTypeDescription.ReflectTypeOf(zeroMsg);
+                }
                 break;
             default:
                 reflectType = ReflectTypeOfField(fieldDesc);

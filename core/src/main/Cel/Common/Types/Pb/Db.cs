@@ -106,7 +106,8 @@ public sealed class Db
     public FileDescription RegisterDescriptor(FileDescriptor fileDesc)
     {
         var path = Path(fileDesc);
-        var fd = revFileDescriptorMap[path];
+        FileDescription fd;
+        revFileDescriptorMap.TryGetValue(path, out fd);
         if (fd != null) return fd;
 
         // Make sure to search the global registry to see if a protoreflect.FileDescriptor for
