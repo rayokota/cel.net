@@ -301,7 +301,7 @@ namespace Cel.Checker
 		if (primitive == PrimitiveType.Unspecified)
 		{
 		  // TODO: return an error
-		  throw new System.ArgumentException(System.String.Format("Wrapped type must be a primitive, but is '%s'", wrapped));
+		  throw new System.ArgumentException(System.String.Format("Wrapped type must be a primitive, but is '{0}'", wrapped));
 		}
 
 		Type type = new Type();

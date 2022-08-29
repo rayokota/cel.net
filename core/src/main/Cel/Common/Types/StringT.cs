@@ -194,7 +194,7 @@ namespace Cel.Common.Types
 		}
 		catch (Exception e)
 		{
-		  return Err.NewErr(e, "error during type conversion from '%s' to %s: %s", StringType, typeVal, e.ToString());
+		  return Err.NewErr(e, "error during type conversion from '{0}' to {0}: {0}", StringType, typeVal, e.ToString());
 		}
 	  }
 
@@ -224,7 +224,7 @@ namespace Cel.Common.Types
 		}
 		catch (Exception e)
 		{
-		  return Err.NewErr(e, "%s", e.Message);
+		  return Err.NewErr(e, "{0}", e.Message);
 		}
 	  }
 

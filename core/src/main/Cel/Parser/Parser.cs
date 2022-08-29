@@ -159,7 +159,7 @@ namespace Cel.Parser
             }
             catch (Exception e) when (e is RecoveryLimitError || e is RecursionError)
             {
-                errors.ReportError(Location.NoLocation, "%s", e.Message);
+                errors.ReportError(Location.NoLocation, "{0}", e.Message);
             }
 
             if (errors.HasErrors())
@@ -343,7 +343,7 @@ namespace Cel.Parser
 
             internal Expr ReportError(object ctx, string message)
             {
-                return ReportError(ctx, "%s", message);
+                return ReportError(ctx, "{0}", message);
             }
 
             internal Expr ReportError(object ctx, string format, params object[] args)
@@ -461,7 +461,7 @@ namespace Cel.Parser
                         txt = String.Format("<<{0}>>", tree.GetType().Name);
                     }
 
-                    return ReportError(Location.NoLocation, "unknown parse element encountered: %s", txt);
+                    return ReportError(Location.NoLocation, "unknown parse element encountered: {0}", txt);
                 }
 
                 return helper.NewExpr(Location.NoLocation);
@@ -883,7 +883,7 @@ namespace Cel.Parser
                 string id = ctx.id.Text;
                 if (reservedIds.Contains(id))
                 {
-                    return ReportError(ctx, "reserved identifier: %s", id);
+                    return ReportError(ctx, "reserved identifier: {0}", id);
                 }
 
                 identName += id;

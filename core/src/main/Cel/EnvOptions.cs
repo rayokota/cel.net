@@ -263,7 +263,7 @@ namespace Cel
 		{
 		  if (!(e.provider is TypeRegistry))
 		  {
-			throw new Exception(String.Format("custom types not supported by provider: %s", e.provider.GetType().ToString()));
+			throw new Exception(String.Format("custom types not supported by provider: {0}", e.provider.GetType().ToString()));
 		  }
 		  TypeRegistry reg = (TypeRegistry) e.provider;
 		  foreach (object t in addTypes)
@@ -294,7 +294,7 @@ namespace Cel
 	  //      if (!(e.provider instanceof TypeRegistry)) {
 	  //        throw new RuntimeException(
 	  //            String.Format(
-	  //                "custom types not supported by provider: %s", e.provider.getClass().getName()));
+	  //                "custom types not supported by provider: {0}", e.provider.getClass().getName()));
 	  //      }
 	  //      TypeRegistry reg = (TypeRegistry) e.provider;
 	  //      // Scan the input descriptors for FileDescriptorProto messages and accumulate them into a
@@ -304,7 +304,7 @@ namespace Cel
 	  //      for (Object d : descs) {
 	  //        if (d instanceof FileDescriptorProto) {
 	  //          throw new RuntimeException(
-	  //              String.Format("unsupported type descriptor: %s", d.getClass().getName()));
+	  //              String.Format("unsupported type descriptor: {0}", d.getClass().getName()));
 	  //          //				if (fds == null) {
 	  //          //					fds = &descpb.FileDescriptorSet{
 	  //          //						File: []*descpb.FileDescriptorProto{},
@@ -330,7 +330,7 @@ namespace Cel
 	  //
 	  //        } else {
 	  //          throw new RuntimeException(
-	  //              String.Format("unsupported type descriptor: %s", d.getClass().getName()));
+	  //              String.Format("unsupported type descriptor: {0}", d.getClass().getName()));
 	  //        }
 	  //      }
 	  //      return e;

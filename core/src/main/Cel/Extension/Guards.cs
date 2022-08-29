@@ -44,7 +44,7 @@ namespace Cel.extension
 	  }
 	  catch (Exception e)
 	  {
-		return Err.NewErr(e, "%s", e.Message);
+		return Err.NewErr(e, "{0}", e.Message);
 	  }
 		};
 	  }
@@ -59,7 +59,7 @@ namespace Cel.extension
 	  }
 	  catch (Exception e)
 	  {
-		return Err.NewErr(e, "%s", e.Message);
+		return Err.NewErr(e, "{0}", e.Message);
 	  }
 		};
 	  }
@@ -74,7 +74,7 @@ namespace Cel.extension
 	  }
 	  catch (Exception e)
 	  {
-		return Err.NewErr(e, "%s", e.Message);
+		return Err.NewErr(e, "{0}", e.Message);
 	  }
 		};
 	  }
@@ -89,7 +89,7 @@ namespace Cel.extension
 	  }
 	  catch (Exception e)
 	  {
-		return Err.NewErr(e, "%s", e.Message);
+		return Err.NewErr(e, "{0}", e.Message);
 	  }
 		};
 	  }
@@ -104,7 +104,7 @@ namespace Cel.extension
 	  }
 	  catch (Exception e)
 	  {
-		return Err.NewErr(e, "%s", e.Message);
+		return Err.NewErr(e, "{0}", e.Message);
 	  }
 		};
 	  }
@@ -119,7 +119,7 @@ namespace Cel.extension
 	  }
 	  catch (Exception e)
 	  {
-		return Err.NewErr(e, "%s", e.Message);
+		return Err.NewErr(e, "{0}", e.Message);
 	  }
 		};
 	  }
@@ -134,7 +134,7 @@ namespace Cel.extension
 	  }
 	  catch (Exception e)
 	  {
-		return Err.NewErr(e, "%s", e.Message);
+		return Err.NewErr(e, "{0}", e.Message);
 	  }
 		};
 	  }
@@ -149,7 +149,7 @@ namespace Cel.extension
 	  }
 	  catch (Exception e)
 	  {
-		return Err.NewErr(e, "%s", e.Message);
+		return Err.NewErr(e, "{0}", e.Message);
 	  }
 		};
 	  }
@@ -164,7 +164,7 @@ namespace Cel.extension
 	  }
 	  catch (Exception e)
 	  {
-		return Err.NewErr(e, "%s", e.Message);
+		return Err.NewErr(e, "{0}", e.Message);
 	  }
 		};
 	  }
@@ -182,7 +182,7 @@ namespace Cel.extension
 	  }
 	  catch (Exception e)
 	  {
-		return Err.NewErr(e, "%s", e.Message);
+		return Err.NewErr(e, "{0}", e.Message);
 	  }
 		};
 	  }
@@ -200,7 +200,7 @@ namespace Cel.extension
 	  }
 	  catch (Exception e)
 	  {
-		return Err.NewErr(e, "%s", e.Message);
+		return Err.NewErr(e, "{0}", e.Message);
 	  }
 		};
 	  }

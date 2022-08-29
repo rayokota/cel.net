@@ -83,7 +83,7 @@ namespace Cel.Interpreter
             }
 
             throw new System.ArgumentException(String.Format(
-                "activation input must be an activation or map[string]interface: got %s", bindings.GetType().Name));
+                "activation input must be an activation or map[string]interface: got {0}", bindings.GetType().Name));
         }
 
         /// <summary>

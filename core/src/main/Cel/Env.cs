@@ -230,7 +230,7 @@ namespace Cel
 		if (chkErr != null)
 		{
 		  Errors errs = new Errors(ast.Source);
-		  errs.ReportError(Location.NoLocation, "%s", chkErr.ToString());
+		  errs.ReportError(Location.NoLocation, "{0}", chkErr.ToString());
 		  return new AstIssuesTuple(null, Issues.NewIssues(errs));
 		}
 

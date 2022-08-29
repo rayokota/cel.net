@@ -426,7 +426,7 @@ namespace Cel.Common.Types.Pb
 	  /// <summary>
 	  /// String returns the fully qualified name of the field within its type as well as whether the
 	  /// field occurs within a oneof. func (fd *FieldDescription) String() string { return
-	  /// fmt.Sprintf("%v.%s `oneof=%t`", desc.ContainingMessage().FullName(), name(), isOneof()) }
+	  /// fmt.Sprintf("%v.{0} `oneof=%t`", desc.ContainingMessage().FullName(), name(), isOneof()) }
 	  /// 
 	  /// <para>/** Zero returns the zero value for the protobuf message represented by this field.
 	  /// 

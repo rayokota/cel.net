@@ -196,7 +196,7 @@ namespace Cel.Interpreter
 		  return new AttributeFactory_BoolQualifier(id, b, Types.BoolOf(b), adapter);
 		}
 
-		throw new System.InvalidOperationException(String.Format("invalid qualifier type: %s", v.GetType().ToString()));
+		throw new System.InvalidOperationException(String.Format("invalid qualifier type: {0}", v.GetType().ToString()));
 	  }
 
 	  /// <summary>

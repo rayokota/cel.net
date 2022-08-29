@@ -106,7 +106,7 @@ namespace Cel.Common.Types.Pb
 		  }
 		  return a(value);
 		}
-		return Err.NewErr("unsupported conversion from '%s' to value", value.GetType());
+		return Err.NewErr("unsupported conversion from '{0}' to value", value.GetType());
 	  }
 
 	  internal static object MaybeUnwrapValue(object value)

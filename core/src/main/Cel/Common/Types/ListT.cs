@@ -366,7 +366,7 @@ namespace Cel.Common.Types
 		{
 		  if (!(index is IntT))
 		  {
-			return Err.ValOrErr(index, "unsupported index type '%s' in list", index.Type());
+			return Err.ValOrErr(index, "unsupported index type '{0}' in list", index.Type());
 		  }
 		  int sz = array.Length;
 		  int i = (int) index.IntValue();
@@ -436,7 +436,7 @@ namespace Cel.Common.Types
 		{
 		  if (!(index is IntT))
 		  {
-			return Err.ValOrErr(index, "unsupported index type '%s' in list", index.Type());
+			return Err.ValOrErr(index, "unsupported index type '{0}' in list", index.Type());
 		  }
 		  int sz = array.Length;
 		  int i = (int) index.IntValue();

@@ -72,23 +72,23 @@ namespace Cel.Common.Types
 		if (val != null)
 		{
 		  Type vt = (val is Type) ? (Type) val : val.Type();
-		  return ValOrErr(other, "no such overload: %s.%s(%s)", vt.TypeName(), function, otName);
+		  return ValOrErr(other, "no such overload: {0}.{0}({0})", vt.TypeName(), function, otName);
 		}
 		else
 		{
-		  return ValOrErr(other, "no such overload: *.%s(%s)", function, otName);
+		  return ValOrErr(other, "no such overload: *.{0}({0})", function, otName);
 		}
 	  }
 
 	  public static Val NoSuchOverload(Val val, string function, Type argA, Type argB)
 	  {
-		return NewErr("no such overload: %s.%s(%s,%s,...)", val.Type().TypeName(), function, argA, argB);
+		return NewErr("no such overload: {0}.{0}({0},{0},...)", val.Type().TypeName(), function, argA, argB);
 	  }
 
 	  public static Val NoSuchOverload(Val val, string function, string overload, Val[] args)
 	  {
 //JAVA TO C# CONVERTER TODO TASK: Most Java stream collectors are not converted by Java to C# Converter:
-		  return NewErr("no such overload: %s.%s[%s](%s)", val.Type().TypeName(), function, overload,
+		  return NewErr("no such overload: {0}.{0}[{0}]({0})", val.Type().TypeName(), function, overload,
 			  string.Join(", ", args.Select(a => a.Type().TypeName())));
 	  }
 
@@ -129,7 +129,7 @@ namespace Cel.Common.Types
 	  /// </summary>
 	  public static Val UnsupportedRefValConversionErr(object val)
 	  {
-		return NewErr("unsupported conversion to ref.Val: (%s)%s", val.GetType().Name, val);
+		return NewErr("unsupported conversion to ref.Val: ({0}){0}", val.GetType().Name, val);
 	  }
 
 	  /// <summary>
@@ -151,12 +151,12 @@ namespace Cel.Common.Types
 
 	  public static Val NoSuchField(object field)
 	  {
-		return NewErr("no such field '%s'", field);
+		return NewErr("no such field '{0}'", field);
 	  }
 
 	  public static Val UnknownType(object field)
 	  {
-		return NewErr("unknown type '%s'", field);
+		return NewErr("unknown type '{0}'", field);
 	  }
 
 	  public static Val AnyWithEmptyType()
@@ -181,32 +181,32 @@ namespace Cel.Common.Types
 
 	  public static Val RangeError(object from, object to)
 	  {
-		return NewErr("range error converting %s to %s", from, to);
+		return NewErr("range error converting {0} to {0}", from, to);
 	  }
 
 	  public static Val NewTypeConversionError(object from, object to)
 	  {
-		return NewErr("type conversion error from '%s' to '%s'", from, to);
+		return NewErr("type conversion error from '{0}' to '{0}'", from, to);
 	  }
 
 	  public static Exception NoSuchAttributeException(object context)
 	  {
-		return new ErrException("undeclared reference to '%s' (in container '')", context);
+		return new ErrException("undeclared reference to '{0}' (in container '')", context);
 	  }
 
 	  public static Val NoSuchKey(object key)
 	  {
-		return NewErr("no such key: %s", key);
+		return NewErr("no such key: {0}", key);
 	  }
 
 	  public static Exception NoSuchKeyException(object key)
 	  {
-		return new ErrException("no such key: %s", key);
+		return new ErrException("no such key: {0}", key);
 	  }
 
 	  public static Exception IndexOutOfBoundsException(object i)
 	  {
-		return new System.InvalidOperationException(String.Format("index out of bounds: %s", i));
+		return new System.InvalidOperationException(String.Format("index out of bounds: {0}", i));
 	  }
 
 	  public sealed class ErrException : System.ArgumentException

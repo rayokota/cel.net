@@ -440,7 +440,7 @@ namespace Cel.Checker
 		  Type argType = GetType(target);
 		  if (argType == null)
 		  {
-			throw new ErrException("Could not resolve type for target '%s'", target);
+			throw new ErrException("Could not resolve type for target '{0}'", target);
 		  }
 		  argTypes.Add(argType);
 		}
@@ -450,7 +450,7 @@ namespace Cel.Checker
 		  Type argType = GetType(arg);
 		  if (argType == null)
 		  {
-			throw new ErrException("Could not resolve type for argument %d '%s'", i, arg);
+			throw new ErrException("Could not resolve type for argument %d '{0}'", i, arg);
 		  }
 		  argTypes.Add(argType);
 		}

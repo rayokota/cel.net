@@ -498,7 +498,7 @@ namespace Cel.Common.Types
 		}
 		catch (Exception e)
 		{
-		  return Err.NewErr(e, "no conversion of '%s' to time-zone '%s': %s", t, val, e);
+		  return Err.NewErr(e, "no conversion of '{0}' to time-zone '{0}': {0}", t, val, e);
 		}
 	  }
 

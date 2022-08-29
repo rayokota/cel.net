@@ -217,7 +217,7 @@ namespace Cel.Common.Types.Pb
 		EnumValueDescription enumVal = pbdb.DescribeEnum(enumName);
 		if (enumVal == null)
 		{
-		  return Err.NewErr("unknown enum name '%s'", enumName);
+		  return Err.NewErr("unknown enum name '{0}'", enumName);
 		}
 		return IntT.IntOf(enumVal.Value());
 	  }
