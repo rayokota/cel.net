@@ -255,7 +255,7 @@ namespace Cel.Parser
                     }
                 }
             }
-
+            buf.Seek(0, SeekOrigin.Begin);
             return buf;
         }
 
