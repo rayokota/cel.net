@@ -68,14 +68,13 @@ namespace Cel.Common
         public virtual string ToDisplayString()
         {
 //JAVA TO C# CONVERTER TODO TASK: Most Java stream collectors are not converted by Java to C# Converter:
-            return errors.OrderBy(c => c)
-                .Select(e => e.ToDisplayString(source))
-                .Aggregate((a, b) => a + "\n" + b);
+            return string.Join("\n", errors.OrderBy(c => c)
+                .Select(e => e.ToDisplayString(source)));
         }
 
         public virtual void SyntaxError(Location l, string msg)
         {
-            ReportError(l, "Syntax error: %s", msg);
+            ReportError(l, "Syntax error: {0}", msg);
         }
     }
 }

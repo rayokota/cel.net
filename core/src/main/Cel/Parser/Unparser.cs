@@ -93,7 +93,7 @@ namespace Cel.Parser
 			VisitStruct(expr.StructExpr);
 			break;
 		  default:
-			throw new System.NotSupportedException(string.Format("Unsupported expr: {0}", expr.GetType().Name));
+			throw new System.NotSupportedException(String.Format("Unsupported expr: {0}", expr.GetType().Name));
 		}
 	  }
 
@@ -160,7 +160,7 @@ namespace Cel.Parser
 		string unmangled = Operator.FindReverseBinaryOperator(fun);
 		if (string.ReferenceEquals(unmangled, null))
 		{
-		  throw new System.InvalidOperationException(string.Format("cannot unmangle operator: {0}", fun));
+		  throw new System.InvalidOperationException(String.Format("cannot unmangle operator: {0}", fun));
 		}
 		str.Append(" ");
 		str.Append(unmangled);
@@ -225,7 +225,7 @@ namespace Cel.Parser
 		string unmangled = Operator.FindReverse(fun);
 		if (string.ReferenceEquals(unmangled, null))
 		{
-		  throw new System.InvalidOperationException(string.Format("cannot unmangle operator: {0}", fun));
+		  throw new System.InvalidOperationException(String.Format("cannot unmangle operator: {0}", fun));
 		}
 		str.Append(unmangled);
 		bool nested = IsComplexOperator(args[0]);
@@ -236,7 +236,7 @@ namespace Cel.Parser
 	  {
 		// TODO: introduce a macro expansion map between the top-level comprehension id and the
 		// function call that the macro replaces.
-		throw new System.InvalidOperationException(string.Format("unimplemented : {0}", expr.GetType().Name));
+		throw new System.InvalidOperationException(String.Format("unimplemented : {0}", expr.GetType().Name));
 	  }
 
 	  internal void VisitConst(Constant v)

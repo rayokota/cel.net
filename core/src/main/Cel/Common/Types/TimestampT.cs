@@ -244,7 +244,7 @@ namespace Cel.Common.Types
 		}
 
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-		throw new Exception(string.Format("native type conversion error from '{0}' to '{1}'", TimestampType, typeDesc.FullName));
+		throw new Exception(String.Format("native type conversion error from '{0}' to '{1}'", TimestampType, typeDesc.FullName));
 	  }
 
 	  private long ToEpochMillis()
@@ -547,7 +547,7 @@ namespace Cel.Common.Types
 
 		  if (hours > 18 || minutes > 59 || seconds > 59)
 		  {
-			throw new Exception(string.Format("invalid hour/minute/second value in time zone: '{0}'", tz));
+			throw new Exception(String.Format("invalid hour/minute/second value in time zone: '{0}'", tz));
 		  }
 
 		  Offset offset;
@@ -598,7 +598,7 @@ namespace Cel.Common.Types
 			  }
 			  else if (c != ':')
 			  {
-				throw new Exception(string.Format("unexpected character '{0}' at index {1:D}", c, i[0]));
+				throw new Exception(String.Format("unexpected character '{0}' at index {1:D}", c, i[0]));
 			  }
 			}
 
@@ -606,7 +606,7 @@ namespace Cel.Common.Types
 		  }
 		  else
 		  {
-			throw new Exception(string.Format("unexpected character '{0}' at index {1:D}", c, i[0]));
+			throw new Exception(String.Format("unexpected character '{0}' at index {1:D}", c, i[0]));
 		  }
 		}
 

@@ -82,7 +82,7 @@ namespace Cel.Parser
 
         public Expr NewList(params Expr[] elems)
         {
-            return NewList(elems.ToArray());
+            return NewList(new List<Expr>(elems));
         }
 
         // NewMap implements the ExprHelper interface method.
@@ -131,7 +131,7 @@ namespace Cel.Parser
 
         public Expr GlobalCall(string function, params Expr[] args)
         {
-            return GlobalCall(function, args.ToArray());
+            return GlobalCall(function, new List<Expr>(args));
         }
 
         // ReceiverCall implements the ExprHelper interface method.

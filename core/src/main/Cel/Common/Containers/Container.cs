@@ -264,7 +264,7 @@ namespace Cel.Common.Containers
 		int ind = qn.LastIndexOf('.');
 		if (ind <= 0 || ind >= qn.Length - 1)
 		{
-		  throw new System.ArgumentException(string.Format("invalid qualified name: {0}, wanted name of the form 'qualified.name'", qn));
+		  throw new System.ArgumentException(String.Format("invalid qualified name: {0}, wanted name of the form 'qualified.name'", qn));
 		}
 		string alias = qn.Substring(ind + 1);
 		c = AliasAs("abbreviation", qn, alias)(c);
@@ -296,26 +296,26 @@ namespace Cel.Common.Containers
 		{
 	  if (alias.Length == 0 || alias.IndexOf('.') != -1)
 	  {
-		throw new System.ArgumentException(string.Format("{0} must be non-empty and simple (not qualified): {1}={2}", kind, kind, alias));
+		throw new System.ArgumentException(String.Format("{0} must be non-empty and simple (not qualified): {1}={2}", kind, kind, alias));
 	  }
 
 	  if (qualifiedName[0] == '.')
 	  {
-		throw new System.ArgumentException(string.Format("qualified name must not begin with a leading '.': {0}", qualifiedName));
+		throw new System.ArgumentException(String.Format("qualified name must not begin with a leading '.': {0}", qualifiedName));
 	  }
 	  int ind = qualifiedName.LastIndexOf('.');
 	  if (ind <= 0 || ind == qualifiedName.Length - 1)
 	  {
-		throw new System.ArgumentException(string.Format("{0} must refer to a valid qualified name: {1}", kind, qualifiedName));
+		throw new System.ArgumentException(String.Format("{0} must refer to a valid qualified name: {1}", kind, qualifiedName));
 	  }
 	  string aliasRef = c.AliasSet()[alias];
 	  if (!string.ReferenceEquals(aliasRef, null))
 	  {
-		throw new System.ArgumentException(string.Format("{0} collides with existing reference: name={1}, {2}={3}, existing={4}", kind, qualifiedName, kind, alias, aliasRef));
+		throw new System.ArgumentException(String.Format("{0} collides with existing reference: name={1}, {2}={3}, existing={4}", kind, qualifiedName, kind, alias, aliasRef));
 	  }
 	  if (c.Name().StartsWith(alias + ".") || c.Name().Equals(alias))
 	  {
-		throw new System.ArgumentException(string.Format("{0} collides with container name: name={1}, {2}={3}, container={4}", kind, qualifiedName, kind, alias, c.Name()));
+		throw new System.ArgumentException(String.Format("{0} collides with container name: name={1}, {2}={3}, container={4}", kind, qualifiedName, kind, alias, c.Name()));
 	  }
 	  IDictionary<string, string> aliases = new Dictionary<string, string>(c.AliasSet());
 	  aliases[alias] = qualifiedName;
@@ -332,7 +332,7 @@ namespace Cel.Common.Containers
 		{
 	  if (name.Length > 0 && name[0] == '.')
 	  {
-		throw new System.ArgumentException(string.Format("container name must not contain a leading '.': {0}", name));
+		throw new System.ArgumentException(String.Format("container name must not contain a leading '.': {0}", name));
 	  }
 	  if (c.name.Equals(name))
 	  {

@@ -110,7 +110,7 @@ namespace Cel.Checker
 	  /// Add adds new Decl protos to the Env. Returns an error for identifier redeclarations. </summary>
 	  public void Add(params Decl[] decls)
 	  {
-		  Add(decls.ToArray());
+		  Add(new List<Decl>(decls));
 	  }
 
 	  /// <summary>
@@ -409,17 +409,17 @@ namespace Cel.Checker
 
 	  internal string OverlappingIdentifierError(string name)
 	  {
-		return string.Format("overlapping identifier for name '{0}'", name);
+		return String.Format("overlapping identifier for name '{0}'", name);
 	  }
 
 	  internal string OverlappingOverloadError(string name, string overloadID1, Type f1, string overloadID2, Type f2)
 	  {
-		return string.Format("overlapping overload for name '{0}' (type '{1}' with overloadId: '{2}' " + "cannot be distinguished from '{3}' with overloadId: '{4}')", name, Types.FormatCheckedType(f1), overloadID1, Types.FormatCheckedType(f2), overloadID2);
+		return String.Format("overlapping overload for name '{0}' (type '{1}' with overloadId: '{2}' " + "cannot be distinguished from '{3}' with overloadId: '{4}')", name, Types.FormatCheckedType(f1), overloadID1, Types.FormatCheckedType(f2), overloadID2);
 	  }
 
 	  internal string OverlappingMacroError(string name, int argCount)
 	  {
-		return string.Format("overlapping macro for name '{0}' with {1:D} args", name, argCount);
+		return String.Format("overlapping macro for name '{0}' with {1:D} args", name, argCount);
 	  }
 	}
 

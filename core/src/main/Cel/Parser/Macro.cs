@@ -73,12 +73,12 @@ namespace Cel.Parser
 
         internal static string MakeMacroKey(string name, int args, bool receiverStyle)
         {
-            return string.Format("{0}:{1:D}:{2}", name, args, receiverStyle);
+            return String.Format("{0}:{1:D}:{2}", name, args, receiverStyle);
         }
 
         internal static string MakeVarArgMacroKey(string name, bool receiverStyle)
         {
-            return string.Format("{0}:*:{1}", name, receiverStyle);
+            return String.Format("{0}:*:{1}", name, receiverStyle);
         }
 
         /// <summary>
@@ -165,7 +165,7 @@ namespace Cel.Parser
                     result = eh.GlobalCall(Operator.Equals.id, accuIdent(), oneExpr);
                     break;
                 default:
-                    throw new ErrorWithLocation(null, string.Format("unrecognized quantifier '{0}'", kind));
+                    throw new ErrorWithLocation(null, String.Format("unrecognized quantifier '{0}'", kind));
             }
 
             return eh.Fold(v, target, AccumulatorName, init, condition, step, result);

@@ -908,7 +908,7 @@ namespace Cel.Interpreter
 	public override string ToString()
 	{
 	  return "EvalVarArgs{" + "id=" + id + ", function='" + function + '\'' + ", overload='" + overload + '\'' + ", args=" 
-	         + "[" + args.Select(o => o.ToString()).Aggregate((x, y) => x + ", " + y) + "]" + ", trait=" + trait + ", impl=" + impl + '}';
+	         + "[" + string.Join(", ", args.Select(o => o.ToString())) + "]" + ", trait=" + trait + ", impl=" + impl + '}';
 	}
 	  }
 
@@ -952,7 +952,7 @@ namespace Cel.Interpreter
 	public override string ToString()
 	{
 	  return "EvalList{" + "id=" + id + ", elems=" + "[" 
-	         + elems.Select(o => o.ToString()).Aggregate((x, y) => x + ", " + y) + "]" + '}';
+	         + string.Join(", ", elems.Select(o => o.ToString())) + "]" + '}';
 	}
 	  }
 
@@ -1005,8 +1005,8 @@ namespace Cel.Interpreter
 	public override string ToString()
 	{
 	  return "EvalMap{" + "id=" + id + ", keys=" + "[" 
-	         + keys.Select(o => o.ToString()).Aggregate((x, y) => x + ", " + y) + "]" + ", vals=" + "[" 
-	         + vals.Select(o => o.ToString()).Aggregate((x, y) => x + ", " + y) + "]" + '}';
+	         + string.Join(", ", keys.Select(o => o.ToString())) + "]" + ", vals=" + "[" 
+	         + string.Join(", ", vals.Select(o => o.ToString())) + "]" + '}';
 	}
 	  }
 
@@ -1054,7 +1054,7 @@ namespace Cel.Interpreter
 	public override string ToString()
 	{
 	  return "EvalObj{" + "id=" + id + ", typeName='" + typeName + '\'' + ", fields=" + "[" + string.Join(", ", fields) + "]" + ", vals=" + "[" 
-	         + vals.Select(o => o.ToString()).Aggregate((x, y) => x + ", " + y) + "]" + ", provider=" + provider + '}';
+	         + string.Join(", ", vals.Select(o => o.ToString())) + "]" + ", provider=" + provider + '}';
 	}
 	  }
 
@@ -1342,7 +1342,7 @@ namespace Cel.Interpreter
 	  }
 	  else
 	  {
-		val = Err.NewErr(string.Format("qualify failed, vars={0}, obj={1}", vars, obj));
+		val = Err.NewErr(String.Format("qualify failed, vars={0}, obj={1}", vars, obj));
 	  }
 	  observer(Id(), val);
 	  return @out;
@@ -1757,7 +1757,7 @@ namespace Cel.Interpreter
 		{
 		  return adapter(v);
 		}
-		return Err.NewErr(string.Format("eval failed, ctx: {0}", ctx));
+		return Err.NewErr(String.Format("eval failed, ctx: {0}", ctx));
 	  }
 	  catch (Exception e)
 	  {

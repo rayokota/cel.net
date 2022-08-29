@@ -77,7 +77,7 @@ namespace Cel.Interpreter
 		// add the overload unless an overload of the same name has already been provided.
 		if (this.overloads.ContainsKey(o.@operator))
 		{
-		  throw new System.ArgumentException(string.Format("overload already exists '{0}'", o.@operator));
+		  throw new System.ArgumentException(String.Format("overload already exists '{0}'", o.@operator));
 		}
 		// index the overload by function name.
 		this.overloads[o.@operator] = o;

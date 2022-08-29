@@ -92,7 +92,7 @@ namespace Cel
 		  if (p == null)
 		  {
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-			throw new System.NullReferenceException(string.Format("program option of type '{0}' returned null", opt.GetType().FullName));
+			throw new System.NullReferenceException(String.Format("program option of type '{0}' returned null", opt.GetType().FullName));
 		  }
 		}
 

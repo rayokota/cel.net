@@ -191,7 +191,7 @@ namespace Cel.Checker
 				return;
 			}
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-			throw new System.ArgumentException(string.Format("Unrecognized ast type: {0}", e.GetType().FullName));
+			throw new System.ArgumentException(String.Format("Unrecognized ast type: {0}", e.GetType().FullName));
 		  case Expr.ExprKindOneofCase.IdentExpr:
 			CheckIdent(e);
 			return;
@@ -212,7 +212,7 @@ namespace Cel.Checker
 			return;
 		  default:
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-			throw new System.ArgumentException(string.Format("Unrecognized ast type: {0}", e.GetType().FullName));
+			throw new System.ArgumentException(String.Format("Unrecognized ast type: {0}", e.GetType().FullName));
 		}
 	  }
 
@@ -714,7 +714,7 @@ namespace Cel.Checker
 	  {
 		int id = freeTypeVarCounter;
 		freeTypeVarCounter++;
-		return Decls.NewTypeParamType(string.Format("_var{0:D}", id));
+		return Decls.NewTypeParamType(String.Format("_var{0:D}", id));
 	  }
 
 	  internal bool IsAssignable(Type t1, Type t2)
@@ -765,7 +765,7 @@ namespace Cel.Checker
 		Type old = types[e.Id];
 		if (old != null && !old.Equals(t))
 		{
-		  throw new System.InvalidOperationException(string.Format("(Incompatible) Type already exists for expression: {0}({1:D}) old:{2}, new:{3}", e, e.Id, old, t));
+		  throw new System.InvalidOperationException(String.Format("(Incompatible) Type already exists for expression: {0}({1:D}) old:{2}, new:{3}", e, e.Id, old, t));
 		}
 		types[e.Id] = t;
 	  }
@@ -780,7 +780,7 @@ namespace Cel.Checker
 		Reference old = references[e.Id];
 		if (old != null && !old.Equals(r))
 		{
-		  throw new System.InvalidOperationException(string.Format("Reference already exists for expression: {0}({1:D}) old:{2}, new:{3}", e, e.Id, old, r));
+		  throw new System.InvalidOperationException(String.Format("Reference already exists for expression: {0}({1:D}) old:{2}, new:{3}", e, e.Id, old, r));
 		}
 		references[e.Id] = r;
 	  }

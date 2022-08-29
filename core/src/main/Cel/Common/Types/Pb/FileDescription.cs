@@ -189,7 +189,7 @@ namespace Cel.Common.Types.Pb
 			IList<EnumValueDescriptor> enumTypeValues = enumType.Values;
 			foreach (EnumValueDescriptor enumValue in enumTypeValues)
 			{
-			  string enumValueName = string.Format("{0}.{1}", enumType.FullName, enumValue.Name);
+			  string enumValueName = String.Format("{0}.{1}", enumType.FullName, enumValue.Name);
 			  enumValueMap[enumValueName] = enumValue;
 			}
 		  }

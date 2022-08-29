@@ -143,7 +143,7 @@ namespace Cel.Common.Types
 			return any;
 		  }
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-		  throw new System.ArgumentException(string.Format("Unsupported conversion of '{0}' to '{1}'", ListType, typeDesc.FullName));
+		  throw new System.ArgumentException(String.Format("Unsupported conversion of '{0}' to '{1}'", ListType, typeDesc.FullName));
 		}
 
 		internal virtual Value ToPbValue()

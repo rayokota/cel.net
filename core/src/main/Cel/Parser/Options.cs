@@ -50,7 +50,9 @@ namespace Cel.Parser
 
         public Macro GetMacro(string name)
         {
-            return macros[name];
+            Macro macro = null;
+            macros.TryGetValue(name, out macro);
+            return macro;
         }
 
         public static Builder NewBuilder()
@@ -80,7 +82,7 @@ namespace Cel.Parser
             {
                 if (maxRecursionDepth < -1)
                 {
-                    throw new System.ArgumentException(string.Format(
+                    throw new System.ArgumentException(String.Format(
                         "max recursion depth must be greater than or equal to -1: {0:D}", maxRecursionDepth));
                 }
                 else if (maxRecursionDepth == -1)
@@ -96,7 +98,7 @@ namespace Cel.Parser
             {
                 if (errorRecoveryLimit < -1)
                 {
-                    throw new System.ArgumentException(string.Format(
+                    throw new System.ArgumentException(String.Format(
                         "error recovery limit must be greater than or equal to -1: {0:D}", errorRecoveryLimit));
                 }
                 else if (errorRecoveryLimit == -1)
@@ -112,7 +114,7 @@ namespace Cel.Parser
             {
                 if (expressionSizeCodePointLimit < -1)
                 {
-                    throw new System.ArgumentException(string.Format(
+                    throw new System.ArgumentException(String.Format(
                         "expression size code point limit must be greater than or equal to -1: {0:D}",
                         expressionSizeCodePointLimit));
                 }

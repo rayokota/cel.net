@@ -98,7 +98,7 @@ namespace Cel
 		}
 		catch (Exception e)
 		{
-		  throw new Exception(string.Format("internal error: {0}", e.Message), e);
+		  throw new Exception(String.Format("internal error: {0}", e.Message), e);
 		}
 
 		// The output of an internal Eval may have a value (`v`) that is a types.Err. This step

@@ -145,7 +145,7 @@ namespace Cel.Interpreter
 		case Expr.ExprKindOneofCase.ConstExpr:
 		  return Decorate(PlanConst(expr));
 	  }
-	  throw new System.ArgumentException(string.Format("unsupported expr of kind {0}: '{1}'", expr.ExprKindCase, expr));
+	  throw new System.ArgumentException(String.Format("unsupported expr of kind {0}: '{1}'", expr.ExprKindCase, expr));
 	}
 
 	/// <summary>
@@ -199,7 +199,7 @@ namespace Cel.Interpreter
 		Val cVal = provider.FindIdent(identRef.Name);
 		if (cVal == null)
 		{
-		  throw new System.InvalidOperationException(string.Format("reference to undefined type: {0}", identRef.Name));
+		  throw new System.InvalidOperationException(String.Format("reference to undefined type: {0}", identRef.Name));
 		}
 		return Interpretable.NewConstValue(id, cVal);
 	  }
@@ -376,7 +376,7 @@ namespace Cel.Interpreter
 	{
 	  if (impl == null || impl.function == null)
 	  {
-		throw new System.ArgumentException(string.Format("no such overload: {0}()", function));
+		throw new System.ArgumentException(String.Format("no such overload: {0}()", function));
 	  }
 	  return new Interpretable_EvalZeroArity(expr.Id, function, overload, impl.function);
 	}
@@ -391,7 +391,7 @@ namespace Cel.Interpreter
 	  {
 		if (impl.unary == null)
 		{
-		  throw new System.InvalidOperationException(string.Format("no such overload: {0}(arg)", function));
+		  throw new System.InvalidOperationException(String.Format("no such overload: {0}(arg)", function));
 		}
 		fn = impl.unary;
 		trait = impl.operandTrait;
@@ -409,7 +409,7 @@ namespace Cel.Interpreter
 	  {
 		if (impl.binary == null)
 		{
-		  throw new System.InvalidOperationException(string.Format("no such overload: {0}(lhs, rhs)", function));
+		  throw new System.InvalidOperationException(String.Format("no such overload: {0}(lhs, rhs)", function));
 		}
 		fn = impl.binary;
 		trait = impl.operandTrait;
@@ -427,7 +427,7 @@ namespace Cel.Interpreter
 	  {
 		if (impl.function == null)
 		{
-		  throw new System.InvalidOperationException(string.Format("no such overload: {0}(...)", function));
+		  throw new System.InvalidOperationException(String.Format("no such overload: {0}(...)", function));
 		}
 		fn = impl.function;
 		trait = impl.operandTrait;
@@ -600,7 +600,7 @@ namespace Cel.Interpreter
 	  string typeName = ResolveTypeName(obj.MessageName);
 	  if (string.ReferenceEquals(typeName, null))
 	  {
-		throw new System.InvalidOperationException(string.Format("unknown type: {0}", obj.MessageName));
+		throw new System.InvalidOperationException(String.Format("unknown type: {0}", obj.MessageName));
 	  }
 	  IList<Entry> entries = obj.Entries;
 	  string[] fields = new string[entries.Count];
@@ -691,7 +691,7 @@ namespace Cel.Interpreter
 		case Constant.ConstantKindOneofCase.Uint64Value:
 		  return UintT.UintOf(c.Uint64Value);
 	  }
-	  throw new System.ArgumentException(string.Format("unknown constant type: '{0}' of kind '{1}'", c, c.ConstantKindCase));
+	  throw new System.ArgumentException(String.Format("unknown constant type: '{0}' of kind '{1}'", c, c.ConstantKindCase));
 	}
 
 	/// <summary>
@@ -826,7 +826,7 @@ namespace Cel.Interpreter
 	  if (!(decAttr is Interpretable_InterpretableAttribute))
 	  {
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-		throw new System.InvalidOperationException(string.Format("invalid attribute decoration: {0}({1})", decAttr, decAttr.GetType().FullName));
+		throw new System.InvalidOperationException(String.Format("invalid attribute decoration: {0}({1})", decAttr, decAttr.GetType().FullName));
 	  }
 	  eAttr = (Interpretable_InterpretableAttribute) decAttr;
 	  return eAttr;

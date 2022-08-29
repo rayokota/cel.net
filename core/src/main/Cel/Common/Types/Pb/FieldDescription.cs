@@ -253,7 +253,7 @@ namespace Cel.Common.Types.Pb
 		if (!(target is Message))
 		{
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-		  throw new System.ArgumentException(string.Format("unsupported field selection target: ({0}){1}", target.GetType().FullName, target));
+		  throw new System.ArgumentException(String.Format("unsupported field selection target: ({0}){1}", target.GetType().FullName, target));
 		}
 		Message v = (Message) target;
 		// pbRef = v.protoReflect();
@@ -575,12 +575,12 @@ namespace Cel.Common.Types.Pb
 				}
 				else
 				{
-				  throw new System.ArgumentException(string.Format("Unexpected {0} ({1}) in list of map fields, dynamic message with != 2 fields", e.GetType(), e));
+				  throw new System.ArgumentException(String.Format("Unexpected {0} ({1}) in list of map fields, dynamic message with != 2 fields", e.GetType(), e));
 				}
 			  }
 			  else
 			  {
-				throw new System.ArgumentException(string.Format("Unexpected {0} ({1}) in list of map fields", e.GetType(), e));
+				throw new System.ArgumentException(String.Format("Unexpected {0} ({1}) in list of map fields", e.GetType(), e));
 			  }
 			  map[key] = value;
 			}

@@ -88,8 +88,8 @@ namespace Cel.Common.Types
 	  public static Val NoSuchOverload(Val val, string function, string overload, Val[] args)
 	  {
 //JAVA TO C# CONVERTER TODO TASK: Most Java stream collectors are not converted by Java to C# Converter:
-		return NewErr("no such overload: %s.%s[%s](%s)", val.Type().TypeName(), function, overload, 
-			args.Select(a => a.Type().TypeName()).Aggregate((x, y) => x + ", " + y));
+		  return NewErr("no such overload: %s.%s[%s](%s)", val.Type().TypeName(), function, overload,
+			  string.Join(", ", args.Select(a => a.Type().TypeName())));
 	  }
 
 	  /// <summary>

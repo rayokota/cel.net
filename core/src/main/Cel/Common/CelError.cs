@@ -90,7 +90,7 @@ namespace Cel.Common
         /// ToDisplayString decorates the error message with the source location. </summary>
         public string ToDisplayString(Source source)
         {
-            StringBuilder result = new StringBuilder(string.Format("ERROR: {0}:{1:D}:{2:D}: {3}", source.Description(),
+            StringBuilder result = new StringBuilder(String.Format("ERROR: {0}:{1:D}:{2:D}: {3}", source.Description(),
                 location.Line(), location.Column() + 1, message));
 
             string snippet = source.Snippet(location.Line());

@@ -645,7 +645,7 @@ namespace Cel.extension
             if (start > end)
             {
                 throw new System.IndexOutOfRangeException(
-                    string.Format("invalid substring range. start: {0:D}, end: {1:D}", start, end));
+                    String.Format("invalid substring range. start: {0:D}, end: {1:D}", start, end));
             }
 
             return str.Substring(start, end - start);

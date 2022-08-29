@@ -68,7 +68,7 @@ namespace Cel
 			e = opt(e);
 			if (e == null)
 			{
-			  throw new System.NullReferenceException(string.Format("env option of type '%s' returned null", opt.GetType().ToString()));
+			  throw new System.NullReferenceException(String.Format("env option of type '%s' returned null", opt.GetType().ToString()));
 			}
 		  }
 		  e.AddProgOpts(l.ProgramOptions);

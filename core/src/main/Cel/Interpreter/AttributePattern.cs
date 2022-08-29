@@ -148,7 +148,7 @@ namespace Cel.Interpreter
         {
 //JAVA TO C# CONVERTER TODO TASK: Most Java stream collectors are not converted by Java to C# Converter:
             return "AttributePattern{" + "variable='" + variable + '\'' + ", qualifierPatterns=" +
-                   qualifierPatterns.Select(o => o.ToString()).Aggregate((x, y) => x + ",\n    " + y) +'}';
+                   string.Join(",\n    ", qualifierPatterns.Select(o => o.ToString()));
         }
 
         /// <summary>
@@ -512,7 +512,7 @@ namespace Cel.Interpreter
             {
 //JAVA TO C# CONVERTER TODO TASK: Most Java stream collectors are not converted by Java to C# Converter:
                 return "AttributeMatcher{" + "attr=" + attr + ", fac=" + fac + ", qualifiers=" +
-                       qualifiers.Select(o => o.ToString()).Aggregate((x, y) => x + (",\n    ") + y) + '}';
+                       string.Join(",\n    ", qualifiers.Select(o => o.ToString()));
             }
         }
     }

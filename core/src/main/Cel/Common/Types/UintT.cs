@@ -189,7 +189,7 @@ namespace Cel.Common.Types
 		}
 
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-		throw new Exception(string.Format("native type conversion error from '{0}' to '{1}'", UintType, typeDesc.FullName));
+		throw new Exception(String.Format("native type conversion error from '{0}' to '{1}'", UintType, typeDesc.FullName));
 	  }
 
 	  /// <summary>

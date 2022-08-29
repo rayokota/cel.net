@@ -82,7 +82,7 @@ namespace Cel.Interpreter
                 return new Activation_MapActivation((IDictionary<string, object>)bindings);
             }
 
-            throw new System.ArgumentException(string.Format(
+            throw new System.ArgumentException(String.Format(
                 "activation input must be an activation or map[string]interface: got %s", bindings.GetType().Name));
         }
 

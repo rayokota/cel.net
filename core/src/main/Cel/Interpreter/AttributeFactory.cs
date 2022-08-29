@@ -196,7 +196,7 @@ namespace Cel.Interpreter
 		  return new AttributeFactory_BoolQualifier(id, b, Types.BoolOf(b), adapter);
 		}
 
-		throw new System.InvalidOperationException(string.Format("invalid qualifier type: %s", v.GetType().ToString()));
+		throw new System.InvalidOperationException(String.Format("invalid qualifier type: %s", v.GetType().ToString()));
 	  }
 
 	  /// <summary>
@@ -623,7 +623,7 @@ namespace Cel.Interpreter
 	/// String is an implementation of the Stringer interface method. </summary>
 	public override string ToString()
 	{
-	  return string.Format("id: {0:D}, truthy attribute: {1}, falsy attribute: {2}", id, truthy, falsy);
+	  return String.Format("id: {0:D}, truthy attribute: {1}, falsy attribute: {2}", id, truthy, falsy);
 	}
 	  }
 
@@ -724,7 +724,7 @@ namespace Cel.Interpreter
 		  for (int i = 0; i < candidateVars.Length; i++)
 		  {
 			string name = candidateVars[i];
-			augmentedNames[i] = string.Format("{0}.{1}", name, str);
+			augmentedNames[i] = String.Format("{0}.{1}", name, str);
 		  }
 		}
 		attr.AddQualifier(qual);
@@ -777,7 +777,7 @@ namespace Cel.Interpreter
 	/// String is an implementation of the Stringer interface method. </summary>
 	public override string ToString()
 	{
-	  return string.Format("id: {0}, attributes: {1}", id, attrs);
+	  return String.Format("id: {0}, attributes: {1}", id, attrs);
 	}
 	  }
 
@@ -881,7 +881,7 @@ namespace Cel.Interpreter
 	/// String is an implementation of the Stringer interface method. </summary>
 	public override string ToString()
 	{
-	  return string.Format("id: {0:D}, operand: {1}", id, operand);
+	  return String.Format("id: {0:D}, operand: {1}", id, operand);
 	}
 	  }
 

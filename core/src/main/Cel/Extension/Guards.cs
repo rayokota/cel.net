@@ -210,7 +210,7 @@ namespace Cel.extension
 		long longValue = (long) value.Value();
 		if (longValue > int.MaxValue || (longValue < int.MinValue))
 		{
-		  throw new Exception(string.Format("Integer {0:D} value overflow", longValue));
+		  throw new Exception(String.Format("Integer {0:D} value overflow", longValue));
 		}
 
 		return (int)longValue;

@@ -208,7 +208,7 @@ namespace Cel.Common.Types.Pb
 		else
 		{
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-		  throw new Exception(string.Format("unsupported type: {0}", t.GetType().FullName));
+		  throw new Exception(String.Format("unsupported type: {0}", t.GetType().FullName));
 		}
 	  }
 

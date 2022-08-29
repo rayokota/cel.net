@@ -200,7 +200,7 @@ namespace Cel.Common.Types
 		  return value;
 		}
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-		throw new Exception(string.Format("native type conversion error from '{0}' to '{1}'", DurationType, typeDesc.FullName));
+		throw new Exception(String.Format("native type conversion error from '{0}' to '{1}'", DurationType, typeDesc.FullName));
 	  }
 
 	  private Duration PbVal()
@@ -223,10 +223,10 @@ namespace Cel.Common.Types
 		long micros = d.Nanoseconds / 1000;
 		if (micros == 0L)
 		{
-		  return string.Format("{0:D}s", d.Seconds);
+		  return String.Format("{0:D}s", d.Seconds);
 		}
 
-		return string.Format("{0:D}.{1:D6}s", d.Seconds, micros);
+		return String.Format("{0:D}.{1:D6}s", d.Seconds, micros);
 	  }
 
 	  /// <summary>

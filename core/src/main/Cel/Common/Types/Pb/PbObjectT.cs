@@ -179,7 +179,7 @@ namespace Cel.Common.Types.Pb
 		catch (Exception e)
 		{
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-		  throw new Exception(string.Format("{0}: {1}", Err.NewTypeConversionError(value.GetType().FullName, typeDesc), e));
+		  throw new Exception(String.Format("{0}: {1}", Err.NewTypeConversionError(value.GetType().FullName, typeDesc), e));
 		}
 	  }
 	}

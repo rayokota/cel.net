@@ -229,7 +229,7 @@ namespace Cel.Parser
                     if (this.depth >= this.maxDepth)
                     {
                         this.depth++;
-                        throw new RecursionError(string.Format("expression recursion limit exceeded: {0:D}", maxDepth));
+                        throw new RecursionError(String.Format("expression recursion limit exceeded: {0:D}", maxDepth));
                     }
 
                     this.depth++;
@@ -293,7 +293,7 @@ namespace Cel.Parser
                 if (attempts >= maxAttempts)
                 {
                     attempts++;
-                    string msg = string.Format("error recovery attempt limit exceeded: {0:D}", maxAttempts);
+                    string msg = String.Format("error recovery attempt limit exceeded: {0:D}", maxAttempts);
                     recognizer.NotifyErrorListeners(null, msg, null);
                     throw new RecoveryLimitError(msg, recognizer, null, null);
                 }
@@ -458,7 +458,7 @@ namespace Cel.Parser
                     string txt = "<<nil>>";
                     if (tree != null)
                     {
-                        txt = string.Format("<<{0}>>", tree.GetType().Name);
+                        txt = String.Format("<<{0}>>", tree.GetType().Name);
                     }
 
                     return ReportError(Location.NoLocation, "unknown parse element encountered: %s", txt);
@@ -1012,7 +1012,7 @@ namespace Cel.Parser
 
             internal Expr globalCallOrMacro(long exprID, string function, params Expr[] args)
             {
-                return globalCallOrMacro(exprID, function, args.ToArray());
+                return globalCallOrMacro(exprID, function, new List<Expr>(args));
             }
 
             internal Expr globalCallOrMacro(long exprID, string function, IList<Expr> args)

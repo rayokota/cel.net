@@ -107,7 +107,7 @@ namespace Cel.Checker
 	  /// NewFunction creates a named function declaration with one or more overloads. </summary>
 	  public static Decl NewFunction(string name, params Decl.Types.FunctionDecl.Types.Overload[] overloads)
 	  {
-		  return NewFunction(name, overloads.ToArray());
+		  return NewFunction(name, new List<Overload>(overloads));
 	  }
 
 	  /// <summary>
@@ -301,7 +301,7 @@ namespace Cel.Checker
 		if (primitive == PrimitiveType.Unspecified)
 		{
 		  // TODO: return an error
-		  throw new System.ArgumentException(string.Format("Wrapped type must be a primitive, but is '%s'", wrapped));
+		  throw new System.ArgumentException(System.String.Format("Wrapped type must be a primitive, but is '%s'", wrapped));
 		}
 
 		Type type = new Type();
