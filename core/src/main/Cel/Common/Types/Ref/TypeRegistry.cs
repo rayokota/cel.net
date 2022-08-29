@@ -14,32 +14,33 @@
  * limitations under the License.
  */
 
-namespace Cel.Common.Types.Ref
+namespace Cel.Common.Types.Ref;
+
+/// <summary>
+///     TypeRegistry allows third-parties to add custom types to CEL. Not all `TypeProvider`
+///     implementations support type-customization, so these features are optional. However, a
+///     `TypeRegistry` should be a `TypeProvider` and a `TypeAdapter` to ensure that types which are
+///     registered can be converted to CEL representations.
+/// </summary>
+public interface TypeRegistry : TypeAdapterProvider, TypeProvider
 {
     /// <summary>
-    /// TypeRegistry allows third-parties to add custom types to CEL. Not all `TypeProvider`
-    /// implementations support type-customization, so these features are optional. However, a
-    /// `TypeRegistry` should be a `TypeProvider` and a `TypeAdapter` to ensure that types which are
-    /// registered can be converted to CEL representations.
+    ///     Copy the TypeRegistry and return a new registry whose mutable state is isolated.
     /// </summary>
-    public interface TypeRegistry : TypeAdapterProvider, TypeProvider
-    {
-        /// <summary>
-        /// Copy the TypeRegistry and return a new registry whose mutable state is isolated. </summary>
-        TypeRegistry Copy();
+    TypeRegistry Copy();
 
-        /// <summary>
-        /// Register a type via a materialized object, which the provider can turn into a type. </summary>
-        void Register(object t);
+    /// <summary>
+    ///     Register a type via a materialized object, which the provider can turn into a type.
+    /// </summary>
+    void Register(object t);
 
-        /// <summary>
-        /// RegisterType registers a type value with the provider which ensures the provider is aware of
-        /// how to map the type to an identifier.
-        /// 
-        /// <para>If a type is provided more than once with an alternative definition, the call will result in
-        /// an error.
-        /// </para>
-        /// </summary>
-        void RegisterType(params Type[] types);
-    }
+    /// <summary>
+    ///     RegisterType registers a type value with the provider which ensures the provider is aware of
+    ///     how to map the type to an identifier.
+    ///     <para>
+    ///         If a type is provided more than once with an alternative definition, the call will result in
+    ///         an error.
+    ///     </para>
+    /// </summary>
+    void RegisterType(params Type[] types);
 }

@@ -14,45 +14,45 @@
  * limitations under the License.
  */
 
-namespace Cel
+using Cel.Interpreter;
+
+namespace Cel;
+
+internal sealed class ProgGen : Program, Coster
 {
-    using Coster = global::Cel.Interpreter.Coster;
-    using EvalState = global::Cel.Interpreter.EvalState;
+    private readonly ProgFactory factory;
 
-    internal sealed class ProgGen : Program, Coster
+    internal ProgGen(ProgFactory factory)
     {
-        private readonly ProgFactory factory;
+        this.factory = factory;
+    }
 
-        internal ProgGen(ProgFactory factory)
-        {
-            this.factory = factory;
-        }
+    /// <summary>
+    ///     Cost implements the Coster interface method.
+    /// </summary>
+    public Coster_Cost Cost()
+    {
+        // Use an empty state value since no evaluation is performed.
+        var p = factory(Prog.EmptyEvalState);
+        return Cel.EstimateCost(p);
+    }
 
-        /// <summary>
-        /// Eval implements the Program interface method. </summary>
-        public Program_EvalResult Eval(object input)
-        {
-            // The factory based Eval() differs from the standard evaluation model in that it generates a
-            // new EvalState instance for each call to ensure that unique evaluations yield unique stateful
-            // results.
-            EvalState state = EvalState.NewEvalState();
+    /// <summary>
+    ///     Eval implements the Program interface method.
+    /// </summary>
+    public Program_EvalResult Eval(object input)
+    {
+        // The factory based Eval() differs from the standard evaluation model in that it generates a
+        // new EvalState instance for each call to ensure that unique evaluations yield unique stateful
+        // results.
+        var state = EvalState.NewEvalState();
 
-            // Generate a new instance of the interpretable using the factory configured during the call to
-            // newProgram(). It is incredibly unlikely that the factory call will generate an error given
-            // the factory test performed within the Program() call.
-            Program p = factory(state);
+        // Generate a new instance of the interpretable using the factory configured during the call to
+        // newProgram(). It is incredibly unlikely that the factory call will generate an error given
+        // the factory test performed within the Program() call.
+        var p = factory(state);
 
-            // Evaluate the input, returning the result and the 'state' within EvalDetails.
-            return p.Eval(input);
-        }
-
-        /// <summary>
-        /// Cost implements the Coster interface method. </summary>
-        public Interpreter.Coster_Cost Cost()
-        {
-            // Use an empty state value since no evaluation is performed.
-            Program p = factory(Prog.EmptyEvalState);
-            return Cel.EstimateCost(p);
-        }
+        // Evaluate the input, returning the result and the 'state' within EvalDetails.
+        return p.Eval(input);
     }
 }

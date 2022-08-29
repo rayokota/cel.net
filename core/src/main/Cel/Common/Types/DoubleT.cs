@@ -1,7 +1,8 @@
-﻿using System;
-using System.Numerics;
+﻿using System.Numerics;
 using Cel.Common.Types.Ref;
 using Cel.Common.Types.Traits;
+using Google.Protobuf.WellKnownTypes;
+using Type = Cel.Common.Types.Ref.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -18,274 +19,229 @@ using Cel.Common.Types.Traits;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.Common.Types
+namespace Cel.Common.Types;
+
+/// <summary>
+///     Double type that implements ref.Val, comparison, and mathematical operations.
+/// </summary>
+public sealed class DoubleT : BaseVal, Adder, Comparer, Divider, Multiplier, Negater, Subtractor
 {
-    using Any = Google.Protobuf.WellKnownTypes.Any;
-    using DoubleValue = Google.Protobuf.WellKnownTypes.DoubleValue;
-    using FloatValue = Google.Protobuf.WellKnownTypes.FloatValue;
-    using Value = Google.Protobuf.WellKnownTypes.Value;
-    using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
-    using Type = global::Cel.Common.Types.Ref.Type;
-    using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
-    using Val = global::Cel.Common.Types.Ref.Val;
-    using Adder = global::Cel.Common.Types.Traits.Adder;
-    using Comparer = global::Cel.Common.Types.Traits.Comparer;
-    using Divider = global::Cel.Common.Types.Traits.Divider;
-    using Multiplier = global::Cel.Common.Types.Traits.Multiplier;
-    using Negater = global::Cel.Common.Types.Traits.Negater;
-    using Subtractor = global::Cel.Common.Types.Traits.Subtractor;
-    using Trait = global::Cel.Common.Types.Traits.Trait;
+    /// <summary>
+    ///     DoubleType singleton.
+    /// </summary>
+    public static readonly Type DoubleType = TypeT.NewTypeValue(TypeEnum.Double, Trait.AdderType,
+        Trait.ComparerType, Trait.DividerType, Trait.MultiplierType, Trait.NegatorType, Trait.SubtractorType);
+
+    private static readonly BigInteger MAX_UINT64 = BigInteger.Subtract(BigInteger.One << 64, BigInteger.One);
+
+    private readonly double d;
+
+    private DoubleT(double d)
+    {
+        this.d = d;
+    }
 
     /// <summary>
-    /// Double type that implements ref.Val, comparison, and mathematical operations. </summary>
-    public sealed class DoubleT : BaseVal, Adder, Comparer, Divider, Multiplier, Negater, Subtractor
+    ///     Add implements traits.Adder.Add.
+    /// </summary>
+    public Val Add(Val other)
     {
-        /// <summary>
-        /// DoubleType singleton. </summary>
-        public static readonly Type DoubleType = TypeT.NewTypeValue(TypeEnum.Double, Trait.AdderType,
-            Trait.ComparerType, Trait.DividerType, Trait.MultiplierType, Trait.NegatorType, Trait.SubtractorType);
+        if (!(other is DoubleT)) return Err.NoSuchOverload(this, "add", other);
 
-        public static DoubleT DoubleOf(double d)
+        return DoubleOf(d + ((DoubleT)other).d);
+    }
+
+    /// <summary>
+    ///     Compare implements traits.Comparer.Compare.
+    /// </summary>
+    public Val Compare(Val other)
+    {
+        if (!(other is DoubleT)) return Err.NoSuchOverload(this, "compare", other);
+
+        var od = ((DoubleT)other).d;
+        if (d == od)
+            // work around for special case of -0.0d == 0.0d (IEEE 754)
+            return IntT.IntZero;
+
+        return IntT.IntOfCompare(d.CompareTo(od));
+    }
+
+    /// <summary>
+    ///     Divide implements traits.Divider.Divide.
+    /// </summary>
+    public Val Divide(Val other)
+    {
+        if (!(other is DoubleT)) return Err.NoSuchOverload(this, "divide", other);
+
+        return DoubleOf(d / ((DoubleT)other).d);
+    }
+
+    /// <summary>
+    ///     Multiply implements traits.Multiplier.Multiply.
+    /// </summary>
+    public Val Multiply(Val other)
+    {
+        if (!(other is DoubleT)) return Err.NoSuchOverload(this, "multiply", other);
+
+        return DoubleOf(d * ((DoubleT)other).d);
+    }
+
+    /// <summary>
+    ///     Negate implements traits.Negater.Negate.
+    /// </summary>
+    public Val Negate()
+    {
+        return DoubleOf(-d);
+    }
+
+    /// <summary>
+    ///     Subtract implements traits.Subtractor.Subtract.
+    /// </summary>
+    public Val Subtract(Val other)
+    {
+        if (!(other is DoubleT)) return Err.NoSuchOverload(this, "subtract", other);
+
+        return DoubleOf(d - ((DoubleT)other).d);
+    }
+
+    public static DoubleT DoubleOf(double d)
+    {
+        return new DoubleT(d);
+    }
+
+    /// <summary>
+    ///     ConvertToNative implements ref.Val.ConvertToNative.
+    /// </summary>
+    public override object? ConvertToNative(System.Type typeDesc)
+    {
+        if (typeDesc == typeof(double) || typeDesc == typeof(double) || typeDesc == typeof(object))
+            return Convert.ToDouble(d);
+
+        if (typeDesc == typeof(float) || typeDesc == typeof(float))
+            // TODO needs overflow check
+            return Convert.ToSingle((float)d);
+
+        if (typeDesc == typeof(Any))
         {
-            return new DoubleT(d);
+            var value = new DoubleValue();
+            value.Value = d;
+            return Any.Pack(value);
         }
 
-        private readonly double d;
-
-        private DoubleT(double d)
+        if (typeDesc == typeof(DoubleValue))
         {
-            this.d = d;
+            var value = new DoubleValue();
+            value.Value = d;
+            return value;
         }
 
-        /// <summary>
-        /// Add implements traits.Adder.Add. </summary>
-        public Val Add(Val other)
+        if (typeDesc == typeof(FloatValue))
         {
-            if (!(other is DoubleT))
-            {
-                return Err.NoSuchOverload(this, "add", other);
-            }
-
-            return DoubleOf(d + ((DoubleT)other).d);
+            // TODO needs overflow check
+            var value = new FloatValue();
+            value.Value = (float)d;
+            return value;
         }
 
-        /// <summary>
-        /// Compare implements traits.Comparer.Compare. </summary>
-        public Val Compare(Val other)
+        if (typeDesc == typeof(Val) || typeDesc == typeof(DoubleT)) return this;
+
+        if (typeDesc == typeof(Value))
         {
-            if (!(other is DoubleT))
-            {
-                return Err.NoSuchOverload(this, "compare", other);
-            }
-
-            double od = ((DoubleT)other).d;
-            if (d == od)
-            {
-                // work around for special case of -0.0d == 0.0d (IEEE 754)
-                return IntT.IntZero;
-            }
-
-            return IntT.IntOfCompare(d.CompareTo(od));
+            var value = new Value();
+            value.NumberValue = d;
+            return value;
         }
-
-        /// <summary>
-        /// ConvertToNative implements ref.Val.ConvertToNative. </summary>
-        public override object? ConvertToNative(System.Type typeDesc)
-        {
-            if (typeDesc == typeof(Double) || typeDesc == typeof(double) || typeDesc == typeof(object))
-            {
-                return Convert.ToDouble(d);
-            }
-
-            if (typeDesc == typeof(float) || typeDesc == typeof(float))
-            {
-                // TODO needs overflow check
-                return Convert.ToSingle((float)d);
-            }
-
-            if (typeDesc == typeof(Any))
-            {
-                DoubleValue value = new DoubleValue();
-                value.Value = d;
-                return Any.Pack(value);
-            }
-
-            if (typeDesc == typeof(DoubleValue))
-            {
-                DoubleValue value = new DoubleValue();
-                value.Value = d;
-                return value;
-            }
-
-            if (typeDesc == typeof(FloatValue))
-            {
-                // TODO needs overflow check
-                FloatValue value = new FloatValue();
-                value.Value = (float)d;
-                return value;
-            }
-
-            if (typeDesc == typeof(Val) || typeDesc == typeof(DoubleT))
-            {
-                return this;
-            }
-
-            if (typeDesc == typeof(Value))
-            {
-                Value value = new Value();
-                value.NumberValue = d;
-                return value;
-            }
 
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-            throw new Exception(String.Format("native type conversion error from '{0}' to '{1}'", DoubleType,
-                typeDesc.FullName));
+        throw new Exception(string.Format("native type conversion error from '{0}' to '{1}'", DoubleType,
+            typeDesc.FullName));
+    }
+
+    /// <summary>
+    ///     ConvertToType implements ref.Val.ConvertToType.
+    /// </summary>
+    public override Val ConvertToType(Type typeValue)
+    {
+        // NOTE: the original Go test assert on `intOf(-5)`, because Go's implementation uses
+        // the Go `math.Round(float64)` function. The implementation of Go's `math.Round(float64)`
+        // behaves differently to Java's `Math.round(double)` (or `Math.rint()`).
+        // Further, the CEL-spec conformance tests assert on a different behavior and therefore those
+        // conformance-tests fail against the Go implementation.
+        // Even more complicated: the CEL-spec says: "CEL provides no way to control the finer points
+        // of floating-point arithmetic, such as expression evaluation, rounding mode, or exception
+        // handling. However, any two not-a-number values will compare equal even if their underlying
+        // properties are different."
+        // (see https://github.com/google/cel-spec/blob/master/doc/langdef.md#numeric-values)
+        switch (typeValue.TypeEnum().InnerEnumValue)
+        {
+            case TypeEnum.InnerEnum.Int:
+                var r = (long)d; // ?? Math.round(d);
+                if (r == long.MinValue || r == long.MaxValue) return Err.RangeError(d, "int");
+
+                return IntT.IntOf(r);
+            case TypeEnum.InnerEnum.Uint:
+                // hack to support uint64
+                var dec = new decimal(d);
+                var bi = (BigInteger)d;
+                if (d < 0 || bi.CompareTo(MAX_UINT64) > 0) return Err.RangeError(d, "int");
+
+                return UintT.UintOf((ulong)bi);
+            case TypeEnum.InnerEnum.Double:
+                return this;
+            case TypeEnum.InnerEnum.String:
+                return StringT.StringOf(Convert.ToString(d));
+            case TypeEnum.InnerEnum.Type:
+                return DoubleType;
         }
 
-        private static readonly BigInteger MAX_UINT64 = BigInteger.Subtract(BigInteger.One << 64, BigInteger.One);
+        return Err.NewTypeConversionError(DoubleType, typeValue);
+    }
+
+    /// <summary>
+    ///     Equal implements ref.Val.Equal.
+    /// </summary>
+    public override Val Equal(Val other)
+    {
+        if (!(other is DoubleT)) return Err.NoSuchOverload(this, "equal", other);
 
         /// <summary>
-        /// ConvertToType implements ref.Val.ConvertToType. </summary>
-        public override Val ConvertToType(Type typeValue)
-        {
-            // NOTE: the original Go test assert on `intOf(-5)`, because Go's implementation uses
-            // the Go `math.Round(float64)` function. The implementation of Go's `math.Round(float64)`
-            // behaves differently to Java's `Math.round(double)` (or `Math.rint()`).
-            // Further, the CEL-spec conformance tests assert on a different behavior and therefore those
-            // conformance-tests fail against the Go implementation.
-            // Even more complicated: the CEL-spec says: "CEL provides no way to control the finer points
-            // of floating-point arithmetic, such as expression evaluation, rounding mode, or exception
-            // handling. However, any two not-a-number values will compare equal even if their underlying
-            // properties are different."
-            // (see https://github.com/google/cel-spec/blob/master/doc/langdef.md#numeric-values)
-            switch (typeValue.TypeEnum().InnerEnumValue)
-            {
-                case TypeEnum.InnerEnum.Int:
-                    long r = (long)d; // ?? Math.round(d);
-                    if (r == long.MinValue || r == long.MaxValue)
-                    {
-                        return Err.RangeError(d, "int");
-                    }
+        /// TODO: Handle NaNs properly. </summary>
+        return Types.BoolOf(d == ((DoubleT)other).d);
+    }
 
-                    return IntT.IntOf(r);
-                case TypeEnum.InnerEnum.Uint:
-                    // hack to support uint64
-                    decimal dec = new decimal(d);
-                    BigInteger bi = (BigInteger)d;
-                    if (d < 0 || bi.CompareTo(MAX_UINT64) > 0)
-                    {
-                        return Err.RangeError(d, "int");
-                    }
+    /// <summary>
+    ///     Type implements ref.Val.Type.
+    /// </summary>
+    public override Type Type()
+    {
+        return DoubleType;
+    }
 
-                    return UintT.UintOf((ulong)bi);
-                case TypeEnum.InnerEnum.Double:
-                    return this;
-                case TypeEnum.InnerEnum.String:
-                    return StringT.StringOf(Convert.ToString(d));
-                case TypeEnum.InnerEnum.Type:
-                    return DoubleType;
-            }
+    /// <summary>
+    ///     Value implements ref.Val.Value.
+    /// </summary>
+    public override object Value()
+    {
+        return d;
+    }
 
-            return Err.NewTypeConversionError(DoubleType, typeValue);
-        }
+    public override bool Equals(object o)
+    {
+        if (this == o) return true;
 
-        /// <summary>
-        /// Divide implements traits.Divider.Divide. </summary>
-        public Val Divide(Val other)
-        {
-            if (!(other is DoubleT))
-            {
-                return Err.NoSuchOverload(this, "divide", other);
-            }
+        if (o == null || GetType() != o.GetType()) return false;
 
-            return DoubleOf(d / ((DoubleT)other).d);
-        }
+        var doubleT = (DoubleT)o;
+        var od = ((DoubleT)o).d;
+        if (d == od)
+            // work around for special case of -0.0d == 0.0d (IEEE 754)
+            return true;
 
-        /// <summary>
-        /// Equal implements ref.Val.Equal. </summary>
-        public override Val Equal(Val other)
-        {
-            if (!(other is DoubleT))
-            {
-                return Err.NoSuchOverload(this, "equal", other);
-            }
+        return doubleT.d.CompareTo(d) == 0;
+    }
 
-            /// <summary>
-            /// TODO: Handle NaNs properly. </summary>
-            return Types.BoolOf(d == ((DoubleT)other).d);
-        }
-
-        /// <summary>
-        /// Multiply implements traits.Multiplier.Multiply. </summary>
-        public Val Multiply(Val other)
-        {
-            if (!(other is DoubleT))
-            {
-                return Err.NoSuchOverload(this, "multiply", other);
-            }
-
-            return DoubleOf(d * ((DoubleT)other).d);
-        }
-
-        /// <summary>
-        /// Negate implements traits.Negater.Negate. </summary>
-        public Val Negate()
-        {
-            return DoubleOf(-d);
-        }
-
-        /// <summary>
-        /// Subtract implements traits.Subtractor.Subtract. </summary>
-        public Val Subtract(Val other)
-        {
-            if (!(other is DoubleT))
-            {
-                return Err.NoSuchOverload(this, "subtract", other);
-            }
-
-            return DoubleOf(d - ((DoubleT)other).d);
-        }
-
-        /// <summary>
-        /// Type implements ref.Val.Type. </summary>
-        public override Type Type()
-        {
-            return DoubleType;
-        }
-
-        /// <summary>
-        /// Value implements ref.Val.Value. </summary>
-        public override object Value()
-        {
-            return d;
-        }
-
-        public override bool Equals(object o)
-        {
-            if (this == o)
-            {
-                return true;
-            }
-
-            if (o == null || this.GetType() != o.GetType())
-            {
-                return false;
-            }
-
-            DoubleT doubleT = (DoubleT)o;
-            double od = ((DoubleT)o).d;
-            if (d == od)
-            {
-                // work around for special case of -0.0d == 0.0d (IEEE 754)
-                return true;
-            }
-
-            return doubleT.d.CompareTo(d) == 0;
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(base.GetHashCode(), d);
-        }
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(base.GetHashCode(), d);
     }
 }

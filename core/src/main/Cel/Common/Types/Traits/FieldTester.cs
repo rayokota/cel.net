@@ -14,22 +14,21 @@
  * limitations under the License.
  */
 
-namespace Cel.Common.Types.Traits
-{
-    using Val = global::Cel.Common.Types.Ref.Val;
+using Cel.Common.Types.Ref;
 
+namespace Cel.Common.Types.Traits;
+
+/// <summary>
+///     FieldTester indicates if a defined field on an object type is set to a non-default value.
+///     <para>
+///         For use with the `has()` macro.
+///     </para>
+/// </summary>
+public interface FieldTester
+{
     /// <summary>
-    /// FieldTester indicates if a defined field on an object type is set to a non-default value.
-    /// 
-    /// <para>For use with the `has()` macro.
-    /// </para>
+    ///     IsSet returns true if the field is defined and set to a non-default value. The method will
+    ///     return false if defined and not set, and an error if the field is not defined.
     /// </summary>
-    public interface FieldTester
-    {
-        /// <summary>
-        /// IsSet returns true if the field is defined and set to a non-default value. The method will
-        /// return false if defined and not set, and an error if the field is not defined.
-        /// </summary>
-        Val IsSet(Val field);
-    }
+    Val IsSet(Val field);
 }

@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-namespace Cel.Common.Types.Traits
-{
-    using Val = global::Cel.Common.Types.Ref.Val;
+using Cel.Common.Types.Ref;
 
+namespace Cel.Common.Types.Traits;
+
+/// <summary>
+///     Indexer permits random access of elements by index 'a[b()]'.
+/// </summary>
+public interface Indexer
+{
     /// <summary>
-    /// Indexer permits random access of elements by index 'a[b()]'. </summary>
-    public interface Indexer
-    {
-        /// <summary>
-        /// Get the value at the specified index or error. </summary>
-        Val Get(Val index);
-    }
+    ///     Get the value at the specified index or error.
+    /// </summary>
+    Val Get(Val index);
 }

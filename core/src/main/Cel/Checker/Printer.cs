@@ -1,4 +1,6 @@
 ﻿using System.Text;
+using Cel.Common.Debug;
+using Google.Api.Expr.V1Alpha1;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -15,88 +17,69 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.Checker
+namespace Cel.Checker;
+
+public sealed class Printer
 {
-    using CheckedExpr = Google.Api.Expr.V1Alpha1.CheckedExpr;
-    using Expr = Google.Api.Expr.V1Alpha1.Expr;
-    using Reference = Google.Api.Expr.V1Alpha1.Reference;
-    using Type = Google.Api.Expr.V1Alpha1.Type;
-    using Debug = global::Cel.Common.Debug.Debug;
-    using Adorner = global::Cel.Common.Debug.Debug.Adorner;
-
-    public sealed class Printer
+    /// <summary>
+    ///     Print returns a string representation of the Expr message, annotated with types from the
+    ///     CheckedExpr. The Expr must be a sub-expression embedded in the CheckedExpr.
+    /// </summary>
+    public static string Print(Expr e, CheckedExpr checks)
     {
-        internal sealed class SemanticAdorner : Debug.Adorner
+        var a = new SemanticAdorner(checks);
+        return Debug.ToAdornedDebugString(e, a);
+    }
+
+    internal sealed class SemanticAdorner : Debug.Adorner
+    {
+        internal readonly CheckedExpr checks;
+
+        internal SemanticAdorner(CheckedExpr checks)
         {
-            internal readonly CheckedExpr checks;
-
-            internal SemanticAdorner(CheckedExpr checks)
-            {
-                this.checks = checks;
-            }
-
-            public string GetMetadata(object elem)
-            {
-                if (!(elem is Expr))
-                {
-                    return "";
-                }
-
-                StringBuilder result = new StringBuilder();
-                Expr e = (Expr)elem;
-                Type t = checks.TypeMap[e.Id];
-                if (t != null)
-                {
-                    result.Append("~");
-                    result.Append(Types.FormatCheckedType(t));
-                }
-
-                switch (e.ExprKindCase)
-                {
-                    case Expr.ExprKindOneofCase.IdentExpr:
-                    case Expr.ExprKindOneofCase.CallExpr:
-                    case Expr.ExprKindOneofCase.StructExpr:
-                    case Expr.ExprKindOneofCase.SelectExpr:
-                        Reference @ref = checks.ReferenceMap[e.Id];
-                        if (@ref != null)
-                        {
-                            if (@ref.OverloadId.Count == 0)
-                            {
-                                result.Append("^").Append(@ref.Name);
-                            }
-                            else
-                            {
-                                for (int i = 0; i < @ref.OverloadId.Count; i++)
-                                {
-                                    if (i == 0)
-                                    {
-                                        result.Append("^");
-                                    }
-                                    else
-                                    {
-                                        result.Append("|");
-                                    }
-
-                                    result.Append(@ref.OverloadId[i]);
-                                }
-                            }
-                        }
-
-                        break;
-                }
-
-                return result.ToString();
-            }
+            this.checks = checks;
         }
 
-        /// <summary>
-        /// Print returns a string representation of the Expr message, annotated with types from the
-        /// CheckedExpr. The Expr must be a sub-expression embedded in the CheckedExpr.
-        /// </summary>
-        public static string Print(Expr e, CheckedExpr checks)
+        public string GetMetadata(object elem)
         {
-            SemanticAdorner a = new SemanticAdorner(checks);
-            return Debug.ToAdornedDebugString(e, a);
+            if (!(elem is Expr)) return "";
+
+            var result = new StringBuilder();
+            var e = (Expr)elem;
+            var t = checks.TypeMap[e.Id];
+            if (t != null)
+            {
+                result.Append("~");
+                result.Append(Types.FormatCheckedType(t));
+            }
+
+            switch (e.ExprKindCase)
+            {
+                case Expr.ExprKindOneofCase.IdentExpr:
+                case Expr.ExprKindOneofCase.CallExpr:
+                case Expr.ExprKindOneofCase.StructExpr:
+                case Expr.ExprKindOneofCase.SelectExpr:
+                    var @ref = checks.ReferenceMap[e.Id];
+                    if (@ref != null)
+                    {
+                        if (@ref.OverloadId.Count == 0)
+                            result.Append("^").Append(@ref.Name);
+                        else
+                            for (var i = 0; i < @ref.OverloadId.Count; i++)
+                            {
+                                if (i == 0)
+                                    result.Append("^");
+                                else
+                                    result.Append("|");
+
+                                result.Append(@ref.OverloadId[i]);
+                            }
+                    }
+
+                    break;
+            }
+
+            return result.ToString();
         }
     }
 }

@@ -14,29 +14,32 @@
  * limitations under the License.
  */
 
-namespace Cel.Common.Types.Ref
+namespace Cel.Common.Types.Ref;
+
+/// <summary>
+///     FieldType represents a field's type value and whether that field supports presence detection.
+/// </summary>
+public class FieldType
 {
     /// <summary>
-    /// FieldType represents a field's type value and whether that field supports presence detection. </summary>
-    public class FieldType
+    ///     GetFrom retrieves the field value on the input object, if set.
+    /// </summary>
+    public readonly FieldGetter getFrom;
+
+    /// <summary>
+    ///     IsSet indicates whether the field is set on an input object.
+    /// </summary>
+    public readonly FieldTester isSet;
+
+    /// <summary>
+    ///     Type of the field.
+    /// </summary>
+    public readonly Google.Api.Expr.V1Alpha1.Type type;
+
+    public FieldType(Google.Api.Expr.V1Alpha1.Type type, FieldTester isSet, FieldGetter getFrom)
     {
-        /// <summary>
-        /// Type of the field. </summary>
-        public readonly Google.Api.Expr.V1Alpha1.Type type;
-
-        /// <summary>
-        /// IsSet indicates whether the field is set on an input object. </summary>
-        public readonly FieldTester isSet;
-
-        /// <summary>
-        /// GetFrom retrieves the field value on the input object, if set. </summary>
-        public readonly FieldGetter getFrom;
-
-        public FieldType(Google.Api.Expr.V1Alpha1.Type type, FieldTester isSet, FieldGetter getFrom)
-        {
-            this.type = type;
-            this.isSet = isSet;
-            this.getFrom = getFrom;
-        }
+        this.type = type;
+        this.isSet = isSet;
+        this.getFrom = getFrom;
     }
 }

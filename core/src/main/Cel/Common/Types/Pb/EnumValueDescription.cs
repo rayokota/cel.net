@@ -14,65 +14,61 @@
  * limitations under the License.
  */
 
-namespace Cel.Common.Types.Pb
+using Google.Protobuf.Reflection;
+
+namespace Cel.Common.Types.Pb;
+
+/// <summary>
+///     EnumValueDescription maps a fully-qualified enum value name to its numeric value.
+/// </summary>
+public sealed class EnumValueDescription
 {
-    using EnumValueDescriptor = Google.Protobuf.Reflection.EnumValueDescriptor;
+    private readonly EnumValueDescriptor desc;
+    private readonly string enumValueName;
+
+    private EnumValueDescription(string enumValueName, EnumValueDescriptor desc)
+    {
+        this.enumValueName = enumValueName;
+        this.desc = desc;
+    }
 
     /// <summary>
-    /// EnumValueDescription maps a fully-qualified enum value name to its numeric value. </summary>
-    public sealed class EnumValueDescription
+    ///     NewEnumValueDescription produces an enum value description with the fully qualified enum value
+    ///     name and the enum value descriptor.
+    /// </summary>
+    public static EnumValueDescription NewEnumValueDescription(string name, EnumValueDescriptor desc)
     {
-        private readonly string enumValueName;
-        private readonly EnumValueDescriptor desc;
+        return new EnumValueDescription(name, desc);
+    }
 
-        private EnumValueDescription(string enumValueName, EnumValueDescriptor desc)
-        {
-            this.enumValueName = enumValueName;
-            this.desc = desc;
-        }
+    /// <summary>
+    ///     Name returns the fully-qualified identifier name for the enum value.
+    /// </summary>
+    public string Name()
+    {
+        return enumValueName;
+    }
 
-        /// <summary>
-        /// NewEnumValueDescription produces an enum value description with the fully qualified enum value
-        /// name and the enum value descriptor.
-        /// </summary>
-        public static EnumValueDescription NewEnumValueDescription(string name, EnumValueDescriptor desc)
-        {
-            return new EnumValueDescription(name, desc);
-        }
+    /// <summary>
+    ///     Value returns the (numeric) value of the enum.
+    /// </summary>
+    public int Value()
+    {
+        return desc.Number;
+    }
 
-        /// <summary>
-        /// Name returns the fully-qualified identifier name for the enum value. </summary>
-        public string Name()
-        {
-            return enumValueName;
-        }
+    public override bool Equals(object o)
+    {
+        if (this == o) return true;
 
-        /// <summary>
-        /// Value returns the (numeric) value of the enum. </summary>
-        public int Value()
-        {
-            return desc.Number;
-        }
+        if (o == null || GetType() != o.GetType()) return false;
 
-        public override bool Equals(object o)
-        {
-            if (this == o)
-            {
-                return true;
-            }
+        var that = (EnumValueDescription)o;
+        return Equals(enumValueName, that.enumValueName) && Equals(desc, that.desc);
+    }
 
-            if (o == null || this.GetType() != o.GetType())
-            {
-                return false;
-            }
-
-            EnumValueDescription that = (EnumValueDescription)o;
-            return Object.Equals(enumValueName, that.enumValueName) && Object.Equals(desc, that.desc);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(enumValueName, desc);
-        }
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(enumValueName, desc);
     }
 }

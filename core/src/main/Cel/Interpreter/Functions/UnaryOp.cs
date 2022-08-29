@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-namespace Cel.Interpreter.Functions
-{
-    using Val = global::Cel.Common.Types.Ref.Val;
+using Cel.Common.Types.Ref;
 
-    /// <summary>
-    /// UnaryOp is a function that takes a single value and produces an output. </summary>
-    public delegate Val UnaryOp(Val val);
-}
+namespace Cel.Interpreter.Functions;
+
+/// <summary>
+///     UnaryOp is a function that takes a single value and produces an output.
+/// </summary>
+public delegate Val UnaryOp(Val val);

@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using Cel.Checker;
+using Cel.Common;
+using Google.Api.Expr.V1Alpha1;
+using Type = Google.Api.Expr.V1Alpha1.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -15,93 +18,69 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel
+namespace Cel;
+
+/// <summary>
+///     Ast representing the checked or unchecked expression, its source, and related metadata such as
+///     source position information.
+/// </summary>
+public sealed class Ast
 {
-    using Expr = Google.Api.Expr.V1Alpha1.Expr;
-    using Reference = Google.Api.Expr.V1Alpha1.Reference;
-    using SourceInfo = Google.Api.Expr.V1Alpha1.SourceInfo;
-    using Type = Google.Api.Expr.V1Alpha1.Type;
-    using Decls = global::Cel.Checker.Decls;
-    using Source = global::Cel.Common.Source;
+    internal readonly IDictionary<long, Reference> refMap;
+    internal readonly IDictionary<long, Type> typeMap;
+
+    public Ast(Expr expr, SourceInfo info, Source source) : this(expr, info, source,
+        new Dictionary<long, Reference>(), new Dictionary<long, Type>())
+    {
+    }
+
+    public Ast(Expr expr, SourceInfo info, Source source, IDictionary<long, Reference> refMap,
+        IDictionary<long, Type> typeMap)
+    {
+        this.Expr = expr;
+        this.SourceInfo = info;
+        this.Source = source;
+        this.refMap = refMap;
+        this.typeMap = typeMap;
+    }
 
     /// <summary>
-    /// Ast representing the checked or unchecked expression, its source, and related metadata such as
-    /// source position information.
+    ///     Expr returns the proto serializable instance of the parsed/checked expression.
     /// </summary>
-    public sealed class Ast
+    public Expr Expr { get; }
+
+    /// <summary>
+    ///     IsChecked returns whether the Ast value has been successfully type-checked.
+    /// </summary>
+    public bool Checked => typeMap != null && typeMap.Count > 0;
+
+    public Source Source { get; }
+
+    /// <summary>
+    ///     SourceInfo returns character offset and newling position information about expression elements.
+    /// </summary>
+    public SourceInfo SourceInfo { get; }
+
+    /// <summary>
+    ///     ResultType returns the output type of the expression if the Ast has been type-checked, else
+    ///     returns decls.Dyn as the parse step cannot infer the type.
+    /// </summary>
+    public Type ResultType
     {
-        private readonly Expr expr;
-        private readonly SourceInfo info;
-        private readonly Source source;
-        internal readonly IDictionary<long, Reference> refMap;
-        internal readonly IDictionary<long, Type> typeMap;
-
-        public Ast(Expr expr, SourceInfo info, Source source) : this(expr, info, source,
-            new Dictionary<long, Reference>(), new Dictionary<long, Type>())
+        get
         {
-        }
+            if (!Checked) return Decls.Dyn;
 
-        public Ast(Expr expr, SourceInfo info, Source source, IDictionary<long, Reference> refMap,
-            IDictionary<long, Type> typeMap)
-        {
-            this.expr = expr;
-            this.info = info;
-            this.source = source;
-            this.refMap = refMap;
-            this.typeMap = typeMap;
+            return typeMap[Expr.Id];
         }
+    }
 
-        /// <summary>
-        /// Expr returns the proto serializable instance of the parsed/checked expression. </summary>
-        public Expr Expr
-        {
-            get { return expr; }
-        }
-
-        /// <summary>
-        /// IsChecked returns whether the Ast value has been successfully type-checked. </summary>
-        public bool Checked
-        {
-            get { return typeMap != null && typeMap.Count > 0; }
-        }
-
-        public Source Source
-        {
-            get { return source; }
-        }
-
-        /// <summary>
-        /// SourceInfo returns character offset and newling position information about expression elements.
-        /// </summary>
-        public SourceInfo SourceInfo
-        {
-            get { return info; }
-        }
-
-        /// <summary>
-        /// ResultType returns the output type of the expression if the Ast has been type-checked, else
-        /// returns decls.Dyn as the parse step cannot infer the type.
-        /// </summary>
-        public Type ResultType
-        {
-            get
-            {
-                if (!Checked)
-                {
-                    return Decls.Dyn;
-                }
-
-                return typeMap[expr.Id];
-            }
-        }
-
-        /// <summary>
-        /// Source returns a view of the input used to create the Ast. This source may be complete or
-        /// constructed from the SourceInfo.
-        /// </summary>
-        public override string ToString()
-        {
-            return source.Content();
-        }
+    /// <summary>
+    ///     Source returns a view of the input used to create the Ast. This source may be complete or
+    ///     constructed from the SourceInfo.
+    /// </summary>
+    public override string ToString()
+    {
+        return Source.Content();
     }
 }

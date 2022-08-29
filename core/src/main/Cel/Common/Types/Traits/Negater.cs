@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-namespace Cel.Common.Types.Traits
-{
-    using Val = global::Cel.Common.Types.Ref.Val;
+using Cel.Common.Types.Ref;
 
+namespace Cel.Common.Types.Traits;
+
+/// <summary>
+///     Negater interface to support unary '-' and '!' operator overloads.
+/// </summary>
+public interface Negater
+{
     /// <summary>
-    /// Negater interface to support unary '-' and '!' operator overloads. </summary>
-    public interface Negater
-    {
-        /// <summary>
-        /// Negate returns the complement of the current value. </summary>
-        Val Negate();
-    }
+    ///     Negate returns the complement of the current value.
+    /// </summary>
+    Val Negate();
 }

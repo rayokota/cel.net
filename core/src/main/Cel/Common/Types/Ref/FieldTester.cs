@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-namespace Cel.Common.Types.Ref
-{
-    /// <summary>
-    /// FieldTester is used to test field presence on an input object. </summary>
-    public delegate bool FieldTester(object target);
-}
+namespace Cel.Common.Types.Ref;
+
+/// <summary>
+///     FieldTester is used to test field presence on an input object.
+/// </summary>
+public delegate bool FieldTester(object target);

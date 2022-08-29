@@ -14,108 +14,79 @@
  * limitations under the License.
  */
 
-namespace Cel.Parser
+using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
+
+namespace Cel.Parser;
+
+public sealed class StringCharStream : ICharStream
 {
-    using Antlr4.Runtime;
+    private readonly string buf;
 
-    public sealed class StringCharStream : ICharStream
+    public StringCharStream(string buf, string src)
     {
-        private readonly string buf;
-        private readonly string src;
-        private int pos;
+        this.buf = buf;
+        this.SourceName = src;
+    }
 
-        public StringCharStream(string buf, string src)
+    public void Consume()
+    {
+        if (Index >= buf.Length) throw new Exception("cannot consume EOF");
+
+        Index++;
+    }
+
+    public int LA(int offset)
+    {
+        if (offset == 0) return 0;
+
+        if (offset < 0) offset++;
+
+        Index = Index + offset - 1;
+        if (Index < 0 || Index >= buf.Length) return -1;
+
+        return buf[Index];
+    }
+
+    public int Mark()
+    {
+        return -1;
+    }
+
+    public void Release(int marker)
+    {
+    }
+
+    public int Index { get; private set; }
+
+    public void Seek(int index)
+    {
+        if (index <= Index)
         {
-            this.buf = buf;
-            this.src = src;
+            Index = index;
+            return;
         }
 
-        public void Consume()
-        {
-            if (pos >= buf.Length)
-            {
-                throw new Exception("cannot consume EOF");
-            }
+        Index = Math.Min(index, buf.Length);
+    }
 
-            pos++;
-        }
+    public int Size => buf.Length;
 
-        public int LA(int offset)
-        {
-            if (offset == 0)
-            {
-                return 0;
-            }
+    public string SourceName { get; }
 
-            if (offset < 0)
-            {
-                offset++;
-            }
+    public string GetText(Interval interval)
+    {
+        var start = interval.a;
+        var stop = interval.b;
+        if (stop >= buf.Length) stop = buf.Length - 1;
 
-            pos = pos + offset - 1;
-            if (pos < 0 || pos >= buf.Length)
-            {
-                return -1;
-            }
+        if (start >= buf.Length) return "";
 
-            return buf[pos];
-        }
+        return buf.Substring(start, stop + 1 - start);
+    }
 
-        public int Mark()
-        {
-            return -1;
-        }
-
-        public void Release(int marker)
-        {
-        }
-
-        public int Index
-        {
-            get { return pos; }
-        }
-
-        public void Seek(int index)
-        {
-            if (index <= pos)
-            {
-                pos = index;
-                return;
-            }
-
-            pos = Math.Min(index, buf.Length);
-        }
-
-        public int Size
-        {
-            get { return buf.Length; }
-        }
-
-        public string SourceName
-        {
-            get { return src; }
-        }
-
-        public string GetText(Antlr4.Runtime.Misc.Interval interval)
-        {
-            int start = interval.a;
-            int stop = interval.b;
-            if (stop >= buf.Length)
-            {
-                stop = buf.Length - 1;
-            }
-
-            if (start >= buf.Length)
-            {
-                return "";
-            }
-
-            return buf.Substring(start, (stop + 1) - start);
-        }
-
-        public override string ToString()
-        {
-            return buf;
-        }
+    public override string ToString()
+    {
+        return buf;
     }
 }

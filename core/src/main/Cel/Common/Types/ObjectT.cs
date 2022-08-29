@@ -15,102 +15,85 @@
  */
 
 using Cel.Common.Types.Ref;
+using Cel.Common.Types.Traits;
+using FieldTester = Cel.Common.Types.Traits.FieldTester;
+using Type = Cel.Common.Types.Ref.Type;
 
-namespace Cel.Common.Types
+namespace Cel.Common.Types;
+
+public abstract class ObjectT : BaseVal, FieldTester, Indexer, TypeAdapterProvider
 {
-    using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
-    using Type = global::Cel.Common.Types.Ref.Type;
-    using TypeAdapter = global::Cel.Common.Types.Ref.TypeAdapter;
-    using TypeDescription = global::Cel.Common.Types.Ref.TypeDescription;
-    using Val = global::Cel.Common.Types.Ref.Val;
-    using FieldTester = global::Cel.Common.Types.Traits.FieldTester;
-    using Indexer = global::Cel.Common.Types.Traits.Indexer;
+    protected internal readonly TypeAdapter adapter;
+    protected internal readonly TypeDescription typeDesc;
+    protected internal readonly Type typeValue;
+    protected internal readonly object value;
 
-    public abstract class ObjectT : BaseVal, FieldTester, Indexer, TypeAdapterProvider
+    protected internal ObjectT(TypeAdapter adapter, object value, TypeDescription typeDesc, Type typeValue)
     {
-        public abstract Val Get(Ref.Val index);
-        public abstract Val IsSet(Ref.Val field);
-        protected internal readonly TypeAdapter adapter;
-        protected internal readonly object value;
-        protected internal readonly TypeDescription typeDesc;
-        protected internal readonly Type typeValue;
+        this.adapter = adapter;
+        this.value = value;
+        this.typeDesc = typeDesc;
+        this.typeValue = typeValue;
+    }
 
-        protected internal ObjectT(TypeAdapter adapter, object value, TypeDescription typeDesc, Type typeValue)
+    public abstract Val IsSet(Val field);
+    public abstract Val Get(Val index);
+
+    public TypeAdapter ToTypeAdapter()
+    {
+        return NativeToValue;
+    }
+
+    public override Val ConvertToType(Type typeVal)
+    {
+        switch (typeVal.TypeEnum().InnerEnumValue)
         {
-            this.adapter = adapter;
-            this.value = value;
-            this.typeDesc = typeDesc;
-            this.typeValue = typeValue;
+            case TypeEnum.InnerEnum.Type:
+                return typeValue;
+            case TypeEnum.InnerEnum.Object:
+                if (Type().TypeName().Equals(typeVal.TypeName())) return this;
+
+                break;
         }
 
-        public override Val ConvertToType(Type typeVal)
-        {
-            switch (typeVal.TypeEnum().InnerEnumValue)
-            {
-                case TypeEnum.InnerEnum.Type:
-                    return typeValue;
-                case global::Cel.Common.Types.Ref.TypeEnum.InnerEnum.Object:
-                    if (Type().TypeName().Equals(typeVal.TypeName()))
-                    {
-                        return this;
-                    }
+        return Err.NewTypeConversionError(typeDesc.Name(), typeVal);
+    }
 
-                    break;
-            }
+    public override Val Equal(Val other)
+    {
+        if (!typeDesc.Name().Equals(other.Type().TypeName())) return Err.NoSuchOverload(this, "equal", other);
 
-            return Err.NewTypeConversionError(typeDesc.Name(), typeVal);
-        }
+        return Types.BoolOf(value.Equals(other.Value()));
+    }
 
-        public override Val Equal(Val other)
-        {
-            if (!typeDesc.Name().Equals(other.Type().TypeName()))
-            {
-                return Err.NoSuchOverload(this, "equal", other);
-            }
+    public override Type Type()
+    {
+        return typeValue;
+    }
 
-            return Types.BoolOf(this.value.Equals(other.Value()));
-        }
+    public override object Value()
+    {
+        return value;
+    }
 
-        public override Type Type()
-        {
-            return typeValue;
-        }
+    public virtual Val NativeToValue(object value)
+    {
+        return adapter(value);
+    }
 
-        public override object Value()
-        {
-            return value;
-        }
+    public override bool Equals(object o)
+    {
+        if (this == o) return true;
 
-        public TypeAdapter ToTypeAdapter()
-        {
-            return NativeToValue;
-        }
+        if (o == null || GetType() != o.GetType()) return false;
 
-        public virtual Val NativeToValue(object value)
-        {
-            return adapter(value);
-        }
+        var objectT = (ObjectT)o;
+        return Equals(value, objectT.value) && Equals(typeDesc, objectT.typeDesc) &&
+               Equals(typeValue, objectT.typeValue);
+    }
 
-        public override bool Equals(object o)
-        {
-            if (this == o)
-            {
-                return true;
-            }
-
-            if (o == null || this.GetType() != o.GetType())
-            {
-                return false;
-            }
-
-            ObjectT objectT = (ObjectT)o;
-            return Object.Equals(value, objectT.value) && Object.Equals(typeDesc, objectT.typeDesc) &&
-                   Object.Equals(typeValue, objectT.typeValue);
-        }
-
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(base.GetHashCode(), value, typeDesc, typeValue);
-        }
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(base.GetHashCode(), value, typeDesc, typeValue);
     }
 }

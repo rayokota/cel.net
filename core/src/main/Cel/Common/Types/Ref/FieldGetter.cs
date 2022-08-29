@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-namespace Cel.Common.Types.Ref
-{
-    /// <summary>
-    /// FieldGetter is used to get the field value from an input object, if set. </summary>
-    public delegate object FieldGetter(object target);
-}
+namespace Cel.Common.Types.Ref;
+
+/// <summary>
+///     FieldGetter is used to get the field value from an input object, if set.
+/// </summary>
+public delegate object FieldGetter(object target);

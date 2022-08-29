@@ -14,44 +14,40 @@
  * limitations under the License.
  */
 
-namespace Cel.Common.Types.Ref
+namespace Cel.Common.Types.Ref;
+
+public abstract class BaseVal : Val
 {
-    public abstract class BaseVal : Val
+    public abstract object Value();
+    public abstract Type Type();
+    public abstract Val Equal(Val other);
+    public abstract Val ConvertToType(Type typeValue);
+    public abstract object? ConvertToNative(System.Type typeDesc);
+
+    public virtual bool BooleanValue()
     {
-        public abstract object Value();
-        public abstract Type Type();
-        public abstract Val Equal(Val other);
-        public abstract Val ConvertToType(Type typeValue);
-        public abstract object? ConvertToNative(System.Type typeDesc);
+        return ConvertToType(BoolT.BoolType).BooleanValue();
+    }
 
-        public override int GetHashCode()
-        {
-            return Value().GetHashCode();
-        }
+    public virtual long IntValue()
+    {
+        return ConvertToType(IntT.IntType).IntValue();
+    }
 
-        public override bool Equals(object obj)
-        {
-            if (obj is Val)
-            {
-                return Equal((Val)obj) == BoolT.True;
-            }
+    public override int GetHashCode()
+    {
+        return Value().GetHashCode();
+    }
 
-            return Value().Equals(obj);
-        }
+    public override bool Equals(object obj)
+    {
+        if (obj is Val) return Equal((Val)obj) == BoolT.True;
 
-        public override string ToString()
-        {
-            return String.Format("{0}{{{1}}}", Type().TypeName(), Value());
-        }
+        return Value().Equals(obj);
+    }
 
-        public virtual bool BooleanValue()
-        {
-            return ConvertToType(BoolT.BoolType).BooleanValue();
-        }
-
-        public virtual long IntValue()
-        {
-            return ConvertToType(IntT.IntType).IntValue();
-        }
+    public override string ToString()
+    {
+        return string.Format("{0}{{{1}}}", Type().TypeName(), Value());
     }
 }

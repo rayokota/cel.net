@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-namespace Cel.Common.Types.Traits
-{
-    using Val = global::Cel.Common.Types.Ref.Val;
+using Cel.Common.Types.Ref;
 
+namespace Cel.Common.Types.Traits;
+
+/// <summary>
+///     Matcher interface for supporting 'matches()' overloads.
+/// </summary>
+public interface Matcher
+{
     /// <summary>
-    /// Matcher interface for supporting 'matches()' overloads. </summary>
-    public interface Matcher
-    {
-        /// <summary>
-        /// Match returns true if the pattern matches the current value. </summary>
-        Val Match(Val pattern);
-    }
+    ///     Match returns true if the pattern matches the current value.
+    /// </summary>
+    Val Match(Val pattern);
 }

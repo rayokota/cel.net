@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Cel.Interpreter.Functions;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -15,99 +15,96 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.Interpreter
+namespace Cel.Interpreter;
+
+/// <summary>
+///     Dispatcher resolves function calls to their appropriate overload.
+/// </summary>
+public interface Dispatcher
 {
-    using Overload = global::Cel.Interpreter.Functions.Overload;
+    /// <summary>
+    ///     Add one or more overloads, returning an error if any Overload has the same Overload#Name.
+    /// </summary>
+    void Add(params Overload[] overloads);
 
     /// <summary>
-    /// Dispatcher resolves function calls to their appropriate overload. </summary>
-    public interface Dispatcher
+    ///     FindOverload returns an Overload definition matching the provided name.
+    /// </summary>
+    Overload FindOverload(string overload);
+
+    /// <summary>
+    ///     OverloadIds returns the set of all overload identifiers configured for dispatch.
+    /// </summary>
+    string[] OverloadIds();
+
+    /// <summary>
+    ///     NewDispatcher returns an empty Dispatcher instance.
+    /// </summary>
+    static Dispatcher NewDispatcher()
     {
-        /// <summary>
-        /// Add one or more overloads, returning an error if any Overload has the same Overload#Name. </summary>
-        void Add(params Overload[] overloads);
-
-        /// <summary>
-        /// FindOverload returns an Overload definition matching the provided name. </summary>
-        Overload FindOverload(string overload);
-
-        /// <summary>
-        /// OverloadIds returns the set of all overload identifiers configured for dispatch. </summary>
-        string[] OverloadIds();
-
-        /// <summary>
-        /// NewDispatcher returns an empty Dispatcher instance. </summary>
-        static Dispatcher NewDispatcher()
-        {
-            return new Dispatcher_DefaultDispatcher(null, new Dictionary<string, Overload>());
-        }
-
-        /// <summary>
-        /// ExtendDispatcher returns a Dispatcher which inherits the overloads of its parent, and provides
-        /// an isolation layer between built-ins and extension functions which is useful for forward
-        /// compatibility.
-        /// </summary>
-        static Dispatcher ExtendDispatcher(Dispatcher parent)
-        {
-            return new Dispatcher_DefaultDispatcher(parent, new Dictionary<string, Overload>());
-        }
-
-        /// <summary>
-        /// defaultDispatcher struct which contains an overload map. </summary>
+        return new Dispatcher_DefaultDispatcher(null, new Dictionary<string, Overload>());
     }
 
-    public sealed class Dispatcher_DefaultDispatcher : Dispatcher
+    /// <summary>
+    ///     ExtendDispatcher returns a Dispatcher which inherits the overloads of its parent, and provides
+    ///     an isolation layer between built-ins and extension functions which is useful for forward
+    ///     compatibility.
+    /// </summary>
+    static Dispatcher ExtendDispatcher(Dispatcher parent)
     {
-        internal readonly Dispatcher parent;
-        internal readonly IDictionary<string, Overload> overloads;
+        return new Dispatcher_DefaultDispatcher(parent, new Dictionary<string, Overload>());
+    }
 
-        internal Dispatcher_DefaultDispatcher(Dispatcher parent, IDictionary<string, Overload> overloads)
+    /// <summary>
+    /// defaultDispatcher struct which contains an overload map. </summary>
+}
+
+public sealed class Dispatcher_DefaultDispatcher : Dispatcher
+{
+    internal readonly IDictionary<string, Overload> overloads;
+    internal readonly Dispatcher parent;
+
+    internal Dispatcher_DefaultDispatcher(Dispatcher parent, IDictionary<string, Overload> overloads)
+    {
+        this.parent = parent;
+        this.overloads = overloads;
+    }
+
+    /// <summary>
+    ///     Add implements the Dispatcher.Add interface method.
+    /// </summary>
+    public void Add(params Overload[] overloads)
+    {
+        foreach (var o in overloads)
         {
-            this.parent = parent;
-            this.overloads = overloads;
+            // add the overload unless an overload of the same name has already been provided.
+            if (this.overloads.ContainsKey(o.@operator))
+                throw new ArgumentException(string.Format("overload already exists '{0}'", o.@operator));
+
+            // index the overload by function name.
+            this.overloads[o.@operator] = o;
         }
+    }
 
-        /// <summary>
-        /// Add implements the Dispatcher.Add interface method. </summary>
-        public void Add(params Overload[] overloads)
-        {
-            foreach (Overload o in overloads)
-            {
-                // add the overload unless an overload of the same name has already been provided.
-                if (this.overloads.ContainsKey(o.@operator))
-                {
-                    throw new System.ArgumentException(String.Format("overload already exists '{0}'", o.@operator));
-                }
+    /// <summary>
+    ///     FindOverload implements the Dispatcher.FindOverload interface method.
+    /// </summary>
+    public Overload FindOverload(string overload)
+    {
+        var o = overloads[overload];
+        if (o != null) return o;
 
-                // index the overload by function name.
-                this.overloads[o.@operator] = o;
-            }
-        }
+        return parent != null ? parent.FindOverload(overload) : null;
+    }
 
-        /// <summary>
-        /// FindOverload implements the Dispatcher.FindOverload interface method. </summary>
-        public Overload FindOverload(string overload)
-        {
-            Overload o = overloads[overload];
-            if (o != null)
-            {
-                return o;
-            }
+    /// <summary>
+    ///     OverloadIds implements the Dispatcher interface method.
+    /// </summary>
+    public string[] OverloadIds()
+    {
+        var r = new List<string>(overloads.Keys);
+        if (parent != null) r.AddRange(parent.OverloadIds());
 
-            return parent != null ? parent.FindOverload(overload) : null;
-        }
-
-        /// <summary>
-        /// OverloadIds implements the Dispatcher interface method. </summary>
-        public string[] OverloadIds()
-        {
-            List<string> r = new List<string>(overloads.Keys);
-            if (parent != null)
-            {
-                r.AddRange(parent.OverloadIds());
-            }
-
-            return r.ToArray();
-        }
+        return r.ToArray();
     }
 }

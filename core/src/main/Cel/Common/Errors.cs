@@ -14,66 +14,65 @@
  * limitations under the License.
  */
 
-namespace Cel.Common
+namespace Cel.Common;
+
+public class Errors
 {
-    public class Errors
+    private readonly IList<CelError> errors = new List<CelError>();
+    private readonly Source source;
+
+    public Errors(Source source)
     {
-        private readonly IList<CelError> errors = new List<CelError>();
-        private readonly Source source;
+        this.source = source;
+    }
 
-        public Errors(Source source)
-        {
-            this.source = source;
-        }
+    /// <summary>
+    ///     GetErrors returns the list of observed errors.
+    /// </summary>
+    public virtual IList<CelError> GetErrors => errors;
 
-        /// <summary>
-        /// ReportError records an error at a source location. </summary>
-        public virtual void ReportError(Location l, string format, params object[] args)
-        {
-            CelError err = new CelError(l, String.Format(format, args));
-            errors.Add(err);
-        }
+    /// <summary>
+    ///     ReportError records an error at a source location.
+    /// </summary>
+    public virtual void ReportError(Location l, string format, params object[] args)
+    {
+        var err = new CelError(l, string.Format(format, args));
+        errors.Add(err);
+    }
 
-        /// <summary>
-        /// GetErrors returns the list of observed errors. </summary>
-        public virtual IList<CelError> GetErrors
-        {
-            get { return errors; }
-        }
+    public virtual bool HasErrors()
+    {
+        return errors.Count > 0;
+    }
 
-        public virtual bool HasErrors()
-        {
-            return errors.Count > 0;
-        }
+    /// <summary>
+    ///     Append takes an Errors object as input creates a new Errors object with the current and input
+    ///     errors.
+    /// </summary>
+    public virtual Errors Append(IList<CelError> errors)
+    {
+        var errs = new Errors(source);
+        ((List<CelError>)errs.errors).AddRange(this.errors);
+        ((List<CelError>)errs.errors).AddRange(errors);
+        return errs;
+    }
 
-        /// <summary>
-        /// Append takes an Errors object as input creates a new Errors object with the current and input
-        /// errors.
-        /// </summary>
-        public virtual Errors Append(IList<CelError> errors)
-        {
-            Errors errs = new Errors(source);
-            ((List<CelError>)errs.errors).AddRange(this.errors);
-            ((List<CelError>)errs.errors).AddRange(errors);
-            return errs;
-        }
+    public override string ToString()
+    {
+        return ToDisplayString();
+    }
 
-        public override string ToString()
-        {
-            return ToDisplayString();
-        }
+    /// <summary>
+    ///     ToDisplayString returns the error set to a newline delimited string.
+    /// </summary>
+    public virtual string ToDisplayString()
+    {
+        return string.Join("\n", errors.OrderBy(c => c)
+            .Select(e => e.ToDisplayString(source)));
+    }
 
-        /// <summary>
-        /// ToDisplayString returns the error set to a newline delimited string. </summary>
-        public virtual string ToDisplayString()
-        {
-            return string.Join("\n", errors.OrderBy(c => c)
-                .Select(e => e.ToDisplayString(source)));
-        }
-
-        public virtual void SyntaxError(Location l, string msg)
-        {
-            ReportError(l, "Syntax error: {0}", msg);
-        }
+    public virtual void SyntaxError(Location l, string msg)
+    {
+        ReportError(l, "Syntax error: {0}", msg);
     }
 }

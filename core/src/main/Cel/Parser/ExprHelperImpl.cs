@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Cel.Common;
+using Google.Api.Expr.V1Alpha1;
+using Google.Protobuf;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -15,147 +17,141 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.Parser
+namespace Cel.Parser;
+
+public sealed class ExprHelperImpl : ExprHelper
 {
-    using Expr = Google.Api.Expr.V1Alpha1.Expr;
-    using Entry = Google.Api.Expr.V1Alpha1.Expr.Types.CreateStruct.Types.Entry;
-    using ByteString = Google.Protobuf.ByteString;
-    using Location = global::Cel.Common.Location;
+    internal readonly long id;
+    internal readonly Helper parserHelper;
 
-    public sealed class ExprHelperImpl : ExprHelper
+    public ExprHelperImpl(Helper parserHelper, long id)
     {
-        internal readonly Helper parserHelper;
-        internal readonly long id;
+        this.parserHelper = parserHelper;
+        this.id = id;
+    }
 
-        public ExprHelperImpl(Helper parserHelper, long id)
-        {
-            this.parserHelper = parserHelper;
-            this.id = id;
-        }
+    // LiteralBool implements the ExprHelper interface method.
+    public Expr LiteralBool(bool value)
+    {
+        return parserHelper.NewLiteralBool(NextMacroID(), value);
+    }
 
-        internal long NextMacroID()
-        {
-            return parserHelper.Id(parserHelper.GetLocation(id));
-        }
+    // LiteralBytes implements the ExprHelper interface method.
+    public Expr LiteralBytes(ByteString value)
+    {
+        return parserHelper.NewLiteralBytes(NextMacroID(), value);
+    }
 
-        // LiteralBool implements the ExprHelper interface method.
-        public Expr LiteralBool(bool value)
-        {
-            return parserHelper.NewLiteralBool(NextMacroID(), value);
-        }
+    // LiteralDouble implements the ExprHelper interface method.
+    public Expr LiteralDouble(double value)
+    {
+        return parserHelper.NewLiteralDouble(NextMacroID(), value);
+    }
 
-        // LiteralBytes implements the ExprHelper interface method.
-        public Expr LiteralBytes(ByteString value)
-        {
-            return parserHelper.NewLiteralBytes(NextMacroID(), value);
-        }
+    // LiteralInt implements the ExprHelper interface method.
+    public Expr LiteralInt(long value)
+    {
+        return parserHelper.NewLiteralInt(NextMacroID(), value);
+    }
 
-        // LiteralDouble implements the ExprHelper interface method.
-        public Expr LiteralDouble(double value)
-        {
-            return parserHelper.NewLiteralDouble(NextMacroID(), value);
-        }
+    // LiteralString implements the ExprHelper interface method.
+    public Expr LiteralString(string value)
+    {
+        return parserHelper.NewLiteralString(NextMacroID(), value);
+    }
 
-        // LiteralInt implements the ExprHelper interface method.
-        public Expr LiteralInt(long value)
-        {
-            return parserHelper.NewLiteralInt(NextMacroID(), value);
-        }
+    // LiteralUint implements the ExprHelper interface method.
+    public Expr LiteralUint(ulong value)
+    {
+        return parserHelper.NewLiteralUint(NextMacroID(), value);
+    }
 
-        // LiteralString implements the ExprHelper interface method.
-        public Expr LiteralString(string value)
-        {
-            return parserHelper.NewLiteralString(NextMacroID(), value);
-        }
+    // NewList implements the ExprHelper interface method.
+    public Expr NewList(IList<Expr> elems)
+    {
+        return parserHelper.NewList(NextMacroID(), elems);
+    }
 
-        // LiteralUint implements the ExprHelper interface method.
-        public Expr LiteralUint(ulong value)
-        {
-            return parserHelper.NewLiteralUint(NextMacroID(), value);
-        }
+    public Expr NewList(params Expr[] elems)
+    {
+        return NewList(new List<Expr>(elems));
+    }
 
-        // NewList implements the ExprHelper interface method.
-        public Expr NewList(IList<Expr> elems)
-        {
-            return parserHelper.NewList(NextMacroID(), elems);
-        }
+    // NewMap implements the ExprHelper interface method.
+    public Expr NewMap(IList<Expr.Types.CreateStruct.Types.Entry> entries)
+    {
+        return parserHelper.NewMap(NextMacroID(), entries);
+    }
 
-        public Expr NewList(params Expr[] elems)
-        {
-            return NewList(new List<Expr>(elems));
-        }
+    // NewMapEntry implements the ExprHelper interface method.
+    public Expr.Types.CreateStruct.Types.Entry NewMapEntry(Expr key, Expr val)
+    {
+        return parserHelper.NewMapEntry(NextMacroID(), key, val);
+    }
 
-        // NewMap implements the ExprHelper interface method.
-        public Expr NewMap(IList<Expr.Types.CreateStruct.Types.Entry> entries)
-        {
-            return parserHelper.NewMap(NextMacroID(), entries);
-        }
+    // NewObject implements the ExprHelper interface method.
+    public Expr NewObject(string typeName, IList<Expr.Types.CreateStruct.Types.Entry> fieldInits)
+    {
+        return parserHelper.NewObject(NextMacroID(), typeName, fieldInits);
+    }
 
-        // NewMapEntry implements the ExprHelper interface method.
-        public Expr.Types.CreateStruct.Types.Entry NewMapEntry(Expr key, Expr val)
-        {
-            return parserHelper.NewMapEntry(NextMacroID(), key, val);
-        }
+    // NewObjectFieldInit implements the ExprHelper interface method.
+    public Expr.Types.CreateStruct.Types.Entry NewObjectFieldInit(string field, Expr init)
+    {
+        return parserHelper.NewObjectField(NextMacroID(), field, init);
+    }
 
-        // NewObject implements the ExprHelper interface method.
-        public Expr NewObject(string typeName, IList<Expr.Types.CreateStruct.Types.Entry> fieldInits)
-        {
-            return parserHelper.NewObject(NextMacroID(), typeName, fieldInits);
-        }
+    // Fold implements the ExprHelper interface method.
+    public Expr Fold(string iterVar, Expr iterRange, string accuVar, Expr accuInit, Expr condition, Expr step,
+        Expr result)
+    {
+        return parserHelper.NewComprehension(NextMacroID(), iterVar, iterRange, accuVar, accuInit, condition, step,
+            result);
+    }
 
-        // NewObjectFieldInit implements the ExprHelper interface method.
-        public Expr.Types.CreateStruct.Types.Entry NewObjectFieldInit(string field, Expr init)
-        {
-            return parserHelper.NewObjectField(NextMacroID(), field, init);
-        }
+    // Ident implements the ExprHelper interface method.
+    public Expr Ident(string name)
+    {
+        return parserHelper.NewIdent(NextMacroID(), name);
+    }
 
-        // Fold implements the ExprHelper interface method.
-        public Expr Fold(string iterVar, Expr iterRange, string accuVar, Expr accuInit, Expr condition, Expr step,
-            Expr result)
-        {
-            return parserHelper.NewComprehension(NextMacroID(), iterVar, iterRange, accuVar, accuInit, condition, step,
-                result);
-        }
+    // GlobalCall implements the ExprHelper interface method.
+    public Expr GlobalCall(string function, IList<Expr> args)
+    {
+        return parserHelper.NewGlobalCall(NextMacroID(), function, args);
+    }
 
-        // Ident implements the ExprHelper interface method.
-        public Expr Ident(string name)
-        {
-            return parserHelper.NewIdent(NextMacroID(), name);
-        }
+    public Expr GlobalCall(string function, params Expr[] args)
+    {
+        return GlobalCall(function, new List<Expr>(args));
+    }
 
-        // GlobalCall implements the ExprHelper interface method.
-        public Expr GlobalCall(string function, IList<Expr> args)
-        {
-            return parserHelper.NewGlobalCall(NextMacroID(), function, args);
-        }
+    // ReceiverCall implements the ExprHelper interface method.
+    public Expr ReceiverCall(string function, Expr target, IList<Expr> args)
+    {
+        return parserHelper.NewReceiverCall(NextMacroID(), function, target, args);
+    }
 
-        public Expr GlobalCall(string function, params Expr[] args)
-        {
-            return GlobalCall(function, new List<Expr>(args));
-        }
+    // PresenceTest implements the ExprHelper interface method.
+    public Expr PresenceTest(Expr operand, string field)
+    {
+        return parserHelper.NewPresenceTest(NextMacroID(), operand, field);
+    }
 
-        // ReceiverCall implements the ExprHelper interface method.
-        public Expr ReceiverCall(string function, Expr target, IList<Expr> args)
-        {
-            return parserHelper.NewReceiverCall(NextMacroID(), function, target, args);
-        }
+    // Select implements the ExprHelper interface method.
+    public Expr Select(Expr operand, string field)
+    {
+        return parserHelper.NewSelect(NextMacroID(), operand, field);
+    }
 
-        // PresenceTest implements the ExprHelper interface method.
-        public Expr PresenceTest(Expr operand, string field)
-        {
-            return parserHelper.NewPresenceTest(NextMacroID(), operand, field);
-        }
+    // OffsetLocation implements the ExprHelper interface method.
+    public Location OffsetLocation(long exprID)
+    {
+        return parserHelper.GetLocation(exprID);
+    }
 
-        // Select implements the ExprHelper interface method.
-        public Expr Select(Expr operand, string field)
-        {
-            return parserHelper.NewSelect(NextMacroID(), operand, field);
-        }
-
-        // OffsetLocation implements the ExprHelper interface method.
-        public Location OffsetLocation(long exprID)
-        {
-            return parserHelper.GetLocation(exprID);
-        }
+    internal long NextMacroID()
+    {
+        return parserHelper.Id(parserHelper.GetLocation(id));
     }
 }

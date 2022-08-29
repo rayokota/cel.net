@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Cel.Common.Types.Ref;
+using Type = Cel.Common.Types.Ref.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -15,116 +16,105 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.Common.Types
+namespace Cel.Common.Types;
+
+/// <summary>
+///     Unknown type implementation which collects expression ids which caused the current value to
+///     become unknown.
+/// </summary>
+public sealed class UnknownT : BaseVal
 {
-    using BaseVal = global::Cel.Common.Types.Ref.BaseVal;
-    using Type = global::Cel.Common.Types.Ref.Type;
-    using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
-    using Val = global::Cel.Common.Types.Ref.Val;
+    /// <summary>
+    ///     UnknownType singleton.
+    /// </summary>
+    public static readonly Type UnknownType = TypeT.NewTypeValue(TypeEnum.Unknown);
+
+    private readonly long value;
+
+    private UnknownT(long value)
+    {
+        this.value = value;
+    }
+
+    public static UnknownT UnknownOf(long value)
+    {
+        return new UnknownT(value);
+    }
 
     /// <summary>
-    /// Unknown type implementation which collects expression ids which caused the current value to
-    /// become unknown.
+    ///     ConvertToNative implements ref.Val.ConvertToNative.
     /// </summary>
-    public sealed class UnknownT : BaseVal
+    public override object? ConvertToNative(System.Type typeDesc)
     {
-        /// <summary>
-        /// UnknownType singleton. </summary>
-        public static readonly Type UnknownType = TypeT.NewTypeValue(TypeEnum.Unknown);
-
-        public static UnknownT UnknownOf(long value)
-        {
-            return new UnknownT(value);
-        }
-
-        private readonly long value;
-
-        private UnknownT(long value)
-        {
-            this.value = value;
-        }
-
-        /// <summary>
-        /// ConvertToNative implements ref.Val.ConvertToNative. </summary>
-        public override object? ConvertToNative(System.Type typeDesc)
-        {
-            if (typeDesc.IsAssignableFrom(typeof(long)) || typeDesc.IsAssignableFrom(typeof(long)) ||
-                typeDesc == typeof(object))
-            {
-                return value;
-            }
-
-            if (typeDesc == typeof(Val) || typeDesc == typeof(UnknownT))
-            {
-                return this;
-            }
-
-//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-            throw new Exception(String.Format("native type conversion error from '{0}' to '{1}'", UnknownType,
-                typeDesc.FullName));
-        }
-
-        public override long IntValue()
-        {
+        if (typeDesc.IsAssignableFrom(typeof(long)) || typeDesc.IsAssignableFrom(typeof(long)) ||
+            typeDesc == typeof(object))
             return value;
-        }
 
-        /// <summary>
-        /// ConvertToType implements ref.Val.ConvertToType. </summary>
-        public override Val ConvertToType(Type typeVal)
-        {
-            return this;
-        }
+        if (typeDesc == typeof(Val) || typeDesc == typeof(UnknownT)) return this;
 
-        /// <summary>
-        /// Equal implements ref.Val.Equal. </summary>
-        public override Val Equal(Val other)
-        {
-            return this;
-        }
+        //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
+        throw new Exception(string.Format("native type conversion error from '{0}' to '{1}'", UnknownType,
+            typeDesc.FullName));
+    }
 
-        /// <summary>
-        /// Type implements ref.Val.Type. </summary>
-        public override Type Type()
-        {
-            return UnknownType;
-        }
+    public override long IntValue()
+    {
+        return value;
+    }
 
-        /// <summary>
-        /// Value implements ref.Val.Value. </summary>
-        public override object Value()
-        {
-            return value;
-        }
+    /// <summary>
+    ///     ConvertToType implements ref.Val.ConvertToType.
+    /// </summary>
+    public override Val ConvertToType(Type typeVal)
+    {
+        return this;
+    }
 
-        public override bool Equals(object o)
-        {
-            if (this == o)
-            {
-                return true;
-            }
+    /// <summary>
+    ///     Equal implements ref.Val.Equal.
+    /// </summary>
+    public override Val Equal(Val other)
+    {
+        return this;
+    }
 
-            if (o == null || this.GetType() != o.GetType())
-            {
-                return false;
-            }
+    /// <summary>
+    ///     Type implements ref.Val.Type.
+    /// </summary>
+    public override Type Type()
+    {
+        return UnknownType;
+    }
 
-            UnknownT unknownT = (UnknownT)o;
-            return value == unknownT.value;
-        }
+    /// <summary>
+    ///     Value implements ref.Val.Value.
+    /// </summary>
+    public override object Value()
+    {
+        return value;
+    }
 
-        public override int GetHashCode()
-        {
-            return HashCode.Combine(base.GetHashCode(), value);
-        }
+    public override bool Equals(object o)
+    {
+        if (this == o) return true;
 
-        /// <summary>
-        /// IsUnknown returns whether the element ref.Type or ref.Val is equal to the UnknownType
-        /// singleton.
-        /// </summary>
-        public static bool IsUnknown(object val)
-        {
-            return val != null && val.GetType() == typeof(UnknownT);
-        }
+        if (o == null || GetType() != o.GetType()) return false;
+
+        var unknownT = (UnknownT)o;
+        return value == unknownT.value;
+    }
+
+    public override int GetHashCode()
+    {
+        return HashCode.Combine(base.GetHashCode(), value);
+    }
+
+    /// <summary>
+    ///     IsUnknown returns whether the element ref.Type or ref.Val is equal to the UnknownType
+    ///     singleton.
+    /// </summary>
+    public static bool IsUnknown(object val)
+    {
+        return val != null && val.GetType() == typeof(UnknownT);
     }
 }

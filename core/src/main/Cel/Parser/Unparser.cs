@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
+using Cel.Common.Debug;
+using Cel.Common.Operators;
+using Google.Api.Expr.V1Alpha1;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -16,434 +18,373 @@ using System.Text;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.Parser
+namespace Cel.Parser;
+
+using ExprKindCase = Expr.ExprKindOneofCase;
+
+/// <summary>
+///     Unparse takes an input expression and source position information and generates a human-readable
+///     expression.
+///     <para>
+///         Note, unparsing an AST will often generate the same expression as was originally parsed, but
+///         some formatting may be lost in translation, notably:
+///     </para>
+///     <para>
+///         - All quoted literals are doubled quoted. - Byte literals are represented as octal escapes
+///         (same as Google SQL). - Floating point values are converted to the small number of digits needed
+///         to represent the value. - Spacing around punctuation marks may be lost. - Parentheses will only
+///         be applied when they affect operator precedence.
+///     </para>
+/// </summary>
+public sealed class Unparser
 {
-    using Constant = Google.Api.Expr.V1Alpha1.Constant;
-    using Expr = Google.Api.Expr.V1Alpha1.Expr;
-    using Call = Google.Api.Expr.V1Alpha1.Expr.Types.Call;
-    using Comprehension = Google.Api.Expr.V1Alpha1.Expr.Types.Comprehension;
-    using CreateList = Google.Api.Expr.V1Alpha1.Expr.Types.CreateList;
-    using CreateStruct = Google.Api.Expr.V1Alpha1.Expr.Types.CreateStruct;
-    using Entry = Google.Api.Expr.V1Alpha1.Expr.Types.CreateStruct.Types.Entry;
-    using ExprKindCase = Google.Api.Expr.V1Alpha1.Expr.ExprKindOneofCase;
-    using Ident = Google.Api.Expr.V1Alpha1.Expr.Types.Ident;
-    using Select = Google.Api.Expr.V1Alpha1.Expr.Types.Select;
-    using SourceInfo = Google.Api.Expr.V1Alpha1.SourceInfo;
-    using Debug = global::Cel.Common.Debug.Debug;
-    using Operator = global::Cel.Common.Operators.Operator;
+    private readonly SourceInfo info;
+    private readonly StringBuilder str;
+
+    private Unparser(SourceInfo info)
+    {
+        this.info = info;
+        str = new StringBuilder();
+    }
 
     /// <summary>
-    /// Unparse takes an input expression and source position information and generates a human-readable
-    /// expression.
-    /// 
-    /// <para>Note, unparsing an AST will often generate the same expression as was originally parsed, but
-    /// some formatting may be lost in translation, notably:
-    /// 
-    /// </para>
-    /// <para>- All quoted literals are doubled quoted. - Byte literals are represented as octal escapes
-    /// (same as Google SQL). - Floating point values are converted to the small number of digits needed
-    /// to represent the value. - Spacing around punctuation marks may be lost. - Parentheses will only
-    /// be applied when they affect operator precedence.
-    /// </para>
+    ///     unparser visits an expression to reconstruct a human-readable string from an AST.
     /// </summary>
-    public sealed class Unparser
+    public static string Unparse(Expr expr, SourceInfo info)
     {
-        private readonly SourceInfo info;
-        private readonly StringBuilder str;
+        var unparser = new Unparser(info);
+        unparser.Visit(expr);
+        return unparser.str.ToString();
+    }
 
-        /// <summary>
-        /// unparser visits an expression to reconstruct a human-readable string from an AST. </summary>
-        public static string Unparse(Expr expr, SourceInfo info)
+    internal void Visit(Expr expr)
+    {
+        switch (expr.ExprKindCase)
         {
-            Unparser unparser = new Unparser(info);
-            unparser.Visit(expr);
-            return unparser.str.ToString();
+            case ExprKindCase.CallExpr:
+                VisitCall(expr.CallExpr);
+                break;
+            case ExprKindCase.ComprehensionExpr:
+                VisitComprehension(expr.ComprehensionExpr);
+                break;
+            case ExprKindCase.ConstExpr:
+                VisitConst(expr.ConstExpr);
+                break;
+            case ExprKindCase.IdentExpr:
+                VisitIdent(expr.IdentExpr);
+                break;
+            case ExprKindCase.ListExpr:
+                VisitList(expr.ListExpr);
+                break;
+            case ExprKindCase.SelectExpr:
+                VisitSelect(expr.SelectExpr);
+                break;
+            case ExprKindCase.StructExpr:
+                VisitStruct(expr.StructExpr);
+                break;
+            default:
+                throw new NotSupportedException(string.Format("Unsupported expr: {0}", expr.GetType().Name));
         }
+    }
 
-        private Unparser(SourceInfo info)
-        {
-            this.info = info;
-            str = new StringBuilder();
-        }
-
-        internal void Visit(Expr expr)
-        {
-            switch (expr.ExprKindCase)
+    internal void VisitCall(Expr.Types.Call expr)
+    {
+        var op = Operator.ById(expr.Function);
+        if (op != null)
+            switch (op.innerEnumValue)
             {
-                case ExprKindCase.CallExpr:
-                    VisitCall(expr.CallExpr);
-                    break;
-                case ExprKindCase.ComprehensionExpr:
-                    VisitComprehension(expr.ComprehensionExpr);
-                    break;
-                case ExprKindCase.ConstExpr:
-                    VisitConst(expr.ConstExpr);
-                    break;
-                case ExprKindCase.IdentExpr:
-                    VisitIdent(expr.IdentExpr);
-                    break;
-                case ExprKindCase.ListExpr:
-                    VisitList(expr.ListExpr);
-                    break;
-                case ExprKindCase.SelectExpr:
-                    VisitSelect(expr.SelectExpr);
-                    break;
-                case ExprKindCase.StructExpr:
-                    VisitStruct(expr.StructExpr);
-                    break;
-                default:
-                    throw new System.NotSupportedException(String.Format("Unsupported expr: {0}", expr.GetType().Name));
-            }
-        }
-
-        internal void VisitCall(Call expr)
-        {
-            Operator op = Operator.ById(expr.Function);
-            if (op != null)
-            {
-                switch (op.innerEnumValue)
-                {
-                    // ternary operator
-                    case Operator.InnerEnum.Conditional:
-                        VisitCallConditional(expr);
-                        return;
-                    // index operator
-                    case Operator.InnerEnum.Index:
-                        VisitCallIndex(expr);
-                        return;
-                    // unary operators
-                    case Operator.InnerEnum.LogicalNot:
-                    case Operator.InnerEnum.Negate:
-                        VisitCallUnary(expr);
-                        return;
-                    // binary operators
-                    case Operator.InnerEnum.Add:
-                    case Operator.InnerEnum.Divide:
-                    case Operator.InnerEnum.Equals:
-                    case Operator.InnerEnum.Greater:
-                    case Operator.InnerEnum.GreaterEquals:
-                    case Operator.InnerEnum.In:
-                    case Operator.InnerEnum.Less:
-                    case Operator.InnerEnum.LessEquals:
-                    case Operator.InnerEnum.LogicalAnd:
-                    case Operator.InnerEnum.LogicalOr:
-                    case Operator.InnerEnum.Modulo:
-                    case Operator.InnerEnum.Multiply:
-                    case Operator.InnerEnum.NotEquals:
-                    case Operator.InnerEnum.OldIn:
-                    case Operator.InnerEnum.Subtract:
-                        VisitCallBinary(expr);
-                        return;
-                }
+                // ternary operator
+                case Operator.InnerEnum.Conditional:
+                    VisitCallConditional(expr);
+                    return;
+                // index operator
+                case Operator.InnerEnum.Index:
+                    VisitCallIndex(expr);
+                    return;
+                // unary operators
+                case Operator.InnerEnum.LogicalNot:
+                case Operator.InnerEnum.Negate:
+                    VisitCallUnary(expr);
+                    return;
+                // binary operators
+                case Operator.InnerEnum.Add:
+                case Operator.InnerEnum.Divide:
+                case Operator.InnerEnum.Equals:
+                case Operator.InnerEnum.Greater:
+                case Operator.InnerEnum.GreaterEquals:
+                case Operator.InnerEnum.In:
+                case Operator.InnerEnum.Less:
+                case Operator.InnerEnum.LessEquals:
+                case Operator.InnerEnum.LogicalAnd:
+                case Operator.InnerEnum.LogicalOr:
+                case Operator.InnerEnum.Modulo:
+                case Operator.InnerEnum.Multiply:
+                case Operator.InnerEnum.NotEquals:
+                case Operator.InnerEnum.OldIn:
+                case Operator.InnerEnum.Subtract:
+                    VisitCallBinary(expr);
+                    return;
             }
 
-            // standard function calls.
-            VisitCallFunc(expr);
-        }
+        // standard function calls.
+        VisitCallFunc(expr);
+    }
 
-        internal void VisitCallBinary(Call expr)
+    internal void VisitCallBinary(Expr.Types.Call expr)
+    {
+        var fun = expr.Function;
+        IList<Expr> args = expr.Args;
+        var lhs = args[0];
+        // add parens if the current operator is lower precedence than the lhs expr operator.
+        var lhsParen = IsComplexOperatorWithRespectTo(fun, lhs);
+        var rhs = args[1];
+        // add parens if the current operator is lower precedence than the rhs expr operator,
+        // or the same precedence and the operator is left recursive.
+        var rhsParen = IsComplexOperatorWithRespectTo(fun, rhs);
+        if (!rhsParen && IsLeftRecursive(fun)) rhsParen = IsSamePrecedence(Operator.Precedence(fun), rhs);
+
+        VisitMaybeNested(lhs, lhsParen);
+        var unmangled = Operator.FindReverseBinaryOperator(fun);
+        if (ReferenceEquals(unmangled, null))
+            throw new InvalidOperationException(string.Format("cannot unmangle operator: {0}", fun));
+
+        str.Append(" ");
+        str.Append(unmangled);
+        str.Append(" ");
+        VisitMaybeNested(rhs, rhsParen);
+    }
+
+    internal void VisitCallConditional(Expr.Types.Call expr)
+    {
+        IList<Expr> args = expr.Args;
+        // add parens if operand is a conditional itself.
+        var nested = IsSamePrecedence(Operator.Conditional.precedence, args[0]) || IsComplexOperator(args[0]);
+        VisitMaybeNested(args[0], nested);
+        str.Append(" ? ");
+        // add parens if operand is a conditional itself.
+        nested = IsSamePrecedence(Operator.Conditional.precedence, args[1]) || IsComplexOperator(args[1]);
+        VisitMaybeNested(args[1], nested);
+        str.Append(" : ");
+        // add parens if operand is a conditional itself.
+        nested = IsSamePrecedence(Operator.Conditional.precedence, args[2]) || IsComplexOperator(args[2]);
+
+        VisitMaybeNested(args[2], nested);
+    }
+
+    internal void VisitCallFunc(Expr.Types.Call expr)
+    {
+        var fun = expr.Function;
+        IList<Expr> args = expr.Args;
+        if (expr.Target != null)
         {
-            string fun = expr.Function;
-            IList<Expr> args = expr.Args;
-            Expr lhs = args[0];
-            // add parens if the current operator is lower precedence than the lhs expr operator.
-            bool lhsParen = IsComplexOperatorWithRespectTo(fun, lhs);
-            Expr rhs = args[1];
-            // add parens if the current operator is lower precedence than the rhs expr operator,
-            // or the same precedence and the operator is left recursive.
-            bool rhsParen = IsComplexOperatorWithRespectTo(fun, rhs);
-            if (!rhsParen && IsLeftRecursive(fun))
-            {
-                rhsParen = IsSamePrecedence(Operator.Precedence(fun), rhs);
-            }
-
-            VisitMaybeNested(lhs, lhsParen);
-            string unmangled = Operator.FindReverseBinaryOperator(fun);
-            if (string.ReferenceEquals(unmangled, null))
-            {
-                throw new System.InvalidOperationException(String.Format("cannot unmangle operator: {0}", fun));
-            }
-
-            str.Append(" ");
-            str.Append(unmangled);
-            str.Append(" ");
-            VisitMaybeNested(rhs, rhsParen);
-        }
-
-        internal void VisitCallConditional(Call expr)
-        {
-            IList<Expr> args = expr.Args;
-            // add parens if operand is a conditional itself.
-            bool nested = IsSamePrecedence(Operator.Conditional.precedence, args[0]) || IsComplexOperator(args[0]);
-            VisitMaybeNested(args[0], nested);
-            str.Append(" ? ");
-            // add parens if operand is a conditional itself.
-            nested = IsSamePrecedence(Operator.Conditional.precedence, args[1]) || IsComplexOperator(args[1]);
-            VisitMaybeNested(args[1], nested);
-            str.Append(" : ");
-            // add parens if operand is a conditional itself.
-            nested = IsSamePrecedence(Operator.Conditional.precedence, args[2]) || IsComplexOperator(args[2]);
-
-            VisitMaybeNested(args[2], nested);
-        }
-
-        internal void VisitCallFunc(Call expr)
-        {
-            string fun = expr.Function;
-            IList<Expr> args = expr.Args;
-            if (expr.Target != null)
-            {
-                bool nested = IsBinaryOrTernaryOperator(expr.Target);
-                VisitMaybeNested(expr.Target, nested);
-                str.Append(".");
-            }
-
-            str.Append(fun);
-            str.Append("(");
-            for (int i = 0; i < args.Count; i++)
-            {
-                if (i > 0)
-                {
-                    str.Append(", ");
-                }
-
-                Visit(args[i]);
-            }
-
-            str.Append(")");
-        }
-
-        internal void VisitCallIndex(Call expr)
-        {
-            IList<Expr> args = expr.Args;
-            bool nested = IsBinaryOrTernaryOperator(args[0]);
-            VisitMaybeNested(args[0], nested);
-            str.Append("[");
-            Visit(args[1]);
-            str.Append("]");
-        }
-
-        internal void VisitCallUnary(Call expr)
-        {
-            string fun = expr.Function;
-            IList<Expr> args = expr.Args;
-            string unmangled = Operator.FindReverse(fun);
-            if (string.ReferenceEquals(unmangled, null))
-            {
-                throw new System.InvalidOperationException(String.Format("cannot unmangle operator: {0}", fun));
-            }
-
-            str.Append(unmangled);
-            bool nested = IsComplexOperator(args[0]);
-            VisitMaybeNested(args[0], nested);
-        }
-
-        internal void VisitComprehension(Comprehension expr)
-        {
-            // TODO: introduce a macro expansion map between the top-level comprehension id and the
-            // function call that the macro replaces.
-            throw new System.InvalidOperationException(String.Format("unimplemented : {0}", expr.GetType().Name));
-        }
-
-        internal void VisitConst(Constant v)
-        {
-            str.Append(Debug.FormatLiteral(v));
-        }
-
-        internal void VisitIdent(Ident expr)
-        {
-            str.Append(expr.Name);
-        }
-
-        internal void VisitList(CreateList expr)
-        {
-            IList<Expr> elems = expr.Elements;
-            str.Append("[");
-            for (int i = 0; i < elems.Count; i++)
-            {
-                if (i > 0)
-                {
-                    str.Append(", ");
-                }
-
-                Expr elem = elems[i];
-                Visit(elem);
-            }
-
-            str.Append("]");
-        }
-
-        internal void VisitSelect(Select expr)
-        {
-            // handle the case when the select expression was generated by the has() macro.
-            if (expr.TestOnly)
-            {
-                str.Append("has(");
-            }
-
-            bool nested = !expr.TestOnly && IsBinaryOrTernaryOperator(expr.Operand);
-            VisitMaybeNested(expr.Operand, nested);
+            var nested = IsBinaryOrTernaryOperator(expr.Target);
+            VisitMaybeNested(expr.Target, nested);
             str.Append(".");
-            str.Append(expr.Field);
-            if (expr.TestOnly)
-            {
-                str.Append(")");
-            }
         }
 
-        internal void VisitStruct(CreateStruct expr)
+        str.Append(fun);
+        str.Append("(");
+        for (var i = 0; i < args.Count; i++)
         {
-            // If the message name is non-empty, then this should be treated as message construction.
-            if (expr.MessageName.Length != 0)
-            {
-                VisitStructMsg(expr);
-            }
-            else
-            {
-                // Otherwise, build a map.
-                VisitStructMap(expr);
-            }
+            if (i > 0) str.Append(", ");
+
+            Visit(args[i]);
         }
 
-        internal void VisitStructMsg(CreateStruct expr)
+        str.Append(")");
+    }
+
+    internal void VisitCallIndex(Expr.Types.Call expr)
+    {
+        IList<Expr> args = expr.Args;
+        var nested = IsBinaryOrTernaryOperator(args[0]);
+        VisitMaybeNested(args[0], nested);
+        str.Append("[");
+        Visit(args[1]);
+        str.Append("]");
+    }
+
+    internal void VisitCallUnary(Expr.Types.Call expr)
+    {
+        var fun = expr.Function;
+        IList<Expr> args = expr.Args;
+        var unmangled = Operator.FindReverse(fun);
+        if (ReferenceEquals(unmangled, null))
+            throw new InvalidOperationException(string.Format("cannot unmangle operator: {0}", fun));
+
+        str.Append(unmangled);
+        var nested = IsComplexOperator(args[0]);
+        VisitMaybeNested(args[0], nested);
+    }
+
+    internal void VisitComprehension(Expr.Types.Comprehension expr)
+    {
+        // TODO: introduce a macro expansion map between the top-level comprehension id and the
+        // function call that the macro replaces.
+        throw new InvalidOperationException(string.Format("unimplemented : {0}", expr.GetType().Name));
+    }
+
+    internal void VisitConst(Constant v)
+    {
+        str.Append(Debug.FormatLiteral(v));
+    }
+
+    internal void VisitIdent(Expr.Types.Ident expr)
+    {
+        str.Append(expr.Name);
+    }
+
+    internal void VisitList(Expr.Types.CreateList expr)
+    {
+        IList<Expr> elems = expr.Elements;
+        str.Append("[");
+        for (var i = 0; i < elems.Count; i++)
         {
-            IList<Entry> entries = expr.Entries;
-            str.Append(expr.MessageName);
-            str.Append("{");
-            for (int i = 0; i < entries.Count; i++)
-            {
-                if (i > 0)
-                {
-                    str.Append(", ");
-                }
+            if (i > 0) str.Append(", ");
 
-                Entry entry = entries[i];
-                string f = entry.FieldKey;
-                str.Append(f);
-                str.Append(": ");
-                Expr v = entry.Value;
-                Visit(v);
-            }
-
-            str.Append("}");
+            var elem = elems[i];
+            Visit(elem);
         }
 
-        internal void VisitStructMap(CreateStruct expr)
+        str.Append("]");
+    }
+
+    internal void VisitSelect(Expr.Types.Select expr)
+    {
+        // handle the case when the select expression was generated by the has() macro.
+        if (expr.TestOnly) str.Append("has(");
+
+        var nested = !expr.TestOnly && IsBinaryOrTernaryOperator(expr.Operand);
+        VisitMaybeNested(expr.Operand, nested);
+        str.Append(".");
+        str.Append(expr.Field);
+        if (expr.TestOnly) str.Append(")");
+    }
+
+    internal void VisitStruct(Expr.Types.CreateStruct expr)
+    {
+        // If the message name is non-empty, then this should be treated as message construction.
+        if (expr.MessageName.Length != 0)
+            VisitStructMsg(expr);
+        else
+            // Otherwise, build a map.
+            VisitStructMap(expr);
+    }
+
+    internal void VisitStructMsg(Expr.Types.CreateStruct expr)
+    {
+        IList<Expr.Types.CreateStruct.Types.Entry> entries = expr.Entries;
+        str.Append(expr.MessageName);
+        str.Append("{");
+        for (var i = 0; i < entries.Count; i++)
         {
-            IList<Entry> entries = expr.Entries;
-            str.Append("{");
-            for (int i = 0; i < entries.Count; i++)
-            {
-                if (i > 0)
-                {
-                    str.Append(", ");
-                }
+            if (i > 0) str.Append(", ");
 
-                Entry entry = entries[i];
-                Expr k = entry.MapKey;
-                Visit(k);
-                str.Append(": ");
-                Expr v = entry.Value;
-                Visit(v);
-            }
-
-            str.Append("}");
+            var entry = entries[i];
+            var f = entry.FieldKey;
+            str.Append(f);
+            str.Append(": ");
+            var v = entry.Value;
+            Visit(v);
         }
 
-        internal void VisitMaybeNested(Expr expr, bool nested)
+        str.Append("}");
+    }
+
+    internal void VisitStructMap(Expr.Types.CreateStruct expr)
+    {
+        IList<Expr.Types.CreateStruct.Types.Entry> entries = expr.Entries;
+        str.Append("{");
+        for (var i = 0; i < entries.Count; i++)
         {
-            if (nested)
-            {
-                str.Append("(");
-            }
+            if (i > 0) str.Append(", ");
 
-            Visit(expr);
-            if (nested)
-            {
-                str.Append(")");
-            }
+            var entry = entries[i];
+            var k = entry.MapKey;
+            Visit(k);
+            str.Append(": ");
+            var v = entry.Value;
+            Visit(v);
         }
 
-        /// <summary>
-        /// isLeftRecursive indicates whether the parser resolves the call in a left-recursive manner as
-        /// this can have an effect of how parentheses affect the order of operations in the AST.
-        /// </summary>
-        internal bool IsLeftRecursive(string op)
-        {
-            Operator o = Operator.ById(op);
-            return o != Operator.LogicalAnd && o != Operator.LogicalOr;
-        }
+        str.Append("}");
+    }
 
-        /// <summary>
-        ///* isSamePrecedence indicates whether the precedence of the input operator is the same as the
-        /// precedence of the (possible) operation represented in the input Expr.
-        /// 
-        /// If the expr is not a Call, the result is false. 
-        /// </summary>
-        internal bool IsSamePrecedence(int opPrecedence, Expr expr)
-        {
-            if (expr.ExprKindCase != ExprKindCase.CallExpr)
-            {
-                return false;
-            }
+    internal void VisitMaybeNested(Expr expr, bool nested)
+    {
+        if (nested) str.Append("(");
 
-            string other = expr.CallExpr.Function;
-            return opPrecedence == Operator.Precedence(other);
-        }
+        Visit(expr);
+        if (nested) str.Append(")");
+    }
 
-        /// <summary>
-        /// isLowerPrecedence indicates whether the precedence of the input operator is lower precedence
-        /// than the (possible) operation represented in the input Expr.
-        /// 
-        /// <para>If the expr is not a Call, the result is false.
-        /// </para>
-        /// </summary>
-        internal bool IsLowerPrecedence(string op, Expr expr)
-        {
-            if (expr.ExprKindCase != ExprKindCase.CallExpr)
-            {
-                return false;
-            }
+    /// <summary>
+    ///     isLeftRecursive indicates whether the parser resolves the call in a left-recursive manner as
+    ///     this can have an effect of how parentheses affect the order of operations in the AST.
+    /// </summary>
+    internal bool IsLeftRecursive(string op)
+    {
+        var o = Operator.ById(op);
+        return o != Operator.LogicalAnd && o != Operator.LogicalOr;
+    }
 
-            string other = expr.CallExpr.Function;
-            return Operator.Precedence(op) < Operator.Precedence(other);
-        }
+    /// <summary>
+    ///     * isSamePrecedence indicates whether the precedence of the input operator is the same as the
+    ///     precedence of the (possible) operation represented in the input Expr.
+    ///     If the expr is not a Call, the result is false.
+    /// </summary>
+    internal bool IsSamePrecedence(int opPrecedence, Expr expr)
+    {
+        if (expr.ExprKindCase != ExprKindCase.CallExpr) return false;
 
-        /// <summary>
-        /// Indicates whether the expr is a complex operator, i.e., a call expression with 2 or more
-        /// arguments.
-        /// </summary>
-        internal bool IsComplexOperator(Expr expr)
-        {
-            return expr.ExprKindCase == ExprKindCase.CallExpr && expr.CallExpr.Args.Count >= 2;
-        }
+        var other = expr.CallExpr.Function;
+        return opPrecedence == Operator.Precedence(other);
+    }
 
-        /// <summary>
-        /// Indicates whether it is a complex operation compared to another. expr is *not* considered
-        /// complex if it is not a call expression or has less than two arguments, or if it has a higher
-        /// precedence than op.
-        /// </summary>
-        internal bool IsComplexOperatorWithRespectTo(string op, Expr expr)
-        {
-            if (!IsComplexOperator(expr))
-            {
-                return false;
-            }
+    /// <summary>
+    ///     isLowerPrecedence indicates whether the precedence of the input operator is lower precedence
+    ///     than the (possible) operation represented in the input Expr.
+    ///     <para>
+    ///         If the expr is not a Call, the result is false.
+    ///     </para>
+    /// </summary>
+    internal bool IsLowerPrecedence(string op, Expr expr)
+    {
+        if (expr.ExprKindCase != ExprKindCase.CallExpr) return false;
 
-            return IsLowerPrecedence(op, expr);
-        }
+        var other = expr.CallExpr.Function;
+        return Operator.Precedence(op) < Operator.Precedence(other);
+    }
 
-        /// <summary>
-        /// Indicate whether this is a binary or ternary operator. </summary>
-        internal bool IsBinaryOrTernaryOperator(Expr expr)
-        {
-            if (!IsComplexOperator(expr))
-            {
-                return false;
-            }
+    /// <summary>
+    ///     Indicates whether the expr is a complex operator, i.e., a call expression with 2 or more
+    ///     arguments.
+    /// </summary>
+    internal bool IsComplexOperator(Expr expr)
+    {
+        return expr.ExprKindCase == ExprKindCase.CallExpr && expr.CallExpr.Args.Count >= 2;
+    }
 
-            bool isBinaryOp = Operator.FindReverseBinaryOperator(expr.CallExpr.Function) != null;
-            return isBinaryOp || IsSamePrecedence(Operator.Conditional.precedence, expr);
-        }
+    /// <summary>
+    ///     Indicates whether it is a complex operation compared to another. expr is *not* considered
+    ///     complex if it is not a call expression or has less than two arguments, or if it has a higher
+    ///     precedence than op.
+    /// </summary>
+    internal bool IsComplexOperatorWithRespectTo(string op, Expr expr)
+    {
+        if (!IsComplexOperator(expr)) return false;
+
+        return IsLowerPrecedence(op, expr);
+    }
+
+    /// <summary>
+    ///     Indicate whether this is a binary or ternary operator.
+    /// </summary>
+    internal bool IsBinaryOrTernaryOperator(Expr expr)
+    {
+        if (!IsComplexOperator(expr)) return false;
+
+        var isBinaryOp = Operator.FindReverseBinaryOperator(expr.CallExpr.Function) != null;
+        return isBinaryOp || IsSamePrecedence(Operator.Conditional.precedence, expr);
     }
 }

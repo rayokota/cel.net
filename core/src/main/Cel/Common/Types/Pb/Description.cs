@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-namespace Cel.Common.Types.Pb
-{
-    using Message = Google.Protobuf.IMessage;
+using Google.Protobuf;
 
+namespace Cel.Common.Types.Pb;
+
+using Message = IMessage;
+
+/// <summary>
+///     description is a private interface used to make it convenient to perform type unwrapping at the
+///     TypeDescription or FieldDescription level.
+/// </summary>
+public abstract class Description
+{
     /// <summary>
-    /// description is a private interface used to make it convenient to perform type unwrapping at the
-    /// TypeDescription or FieldDescription level.
+    ///     Zero returns an empty immutable protobuf message when the description is a protobuf message
+    ///     type.
     /// </summary>
-    public abstract class Description
-    {
-        /// <summary>
-        /// Zero returns an empty immutable protobuf message when the description is a protobuf message
-        /// type.
-        /// </summary>
-        public abstract Message Zero();
-    }
+    public abstract Message Zero();
 }

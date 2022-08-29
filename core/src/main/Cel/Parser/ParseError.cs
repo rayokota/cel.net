@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Cel.Common;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -15,22 +15,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.Parser
+namespace Cel.Parser;
+
+public sealed class ParseError : Exception
 {
-    using Location = global::Cel.Common.Location;
-
-    public sealed class ParseError : Exception
+    public ParseError(Location location, string message) : base(message)
     {
-        private readonly Location location;
-
-        public ParseError(Location location, string message) : base(message)
-        {
-            this.location = location;
-        }
-
-        public Location Location
-        {
-            get { return location; }
-        }
+        this.Location = location;
     }
+
+    public Location Location { get; }
 }

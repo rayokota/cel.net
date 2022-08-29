@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-namespace Cel.Common
+namespace Cel.Common;
+
+public sealed class ErrorWithLocation : Exception
 {
-    public sealed class ErrorWithLocation : Exception
+    public ErrorWithLocation(Location location, string message) : base(message)
     {
-        private readonly Location location;
-
-        public ErrorWithLocation(Location location, string message) : base(message)
-        {
-            this.location = location;
-        }
-
-        public Location Location
-        {
-            get { return location; }
-        }
+        this.Location = location;
     }
+
+    public Location Location { get; }
 }

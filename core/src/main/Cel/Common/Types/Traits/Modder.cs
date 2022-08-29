@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-namespace Cel.Common.Types.Traits
-{
-    using Val = global::Cel.Common.Types.Ref.Val;
+using Cel.Common.Types.Ref;
 
+namespace Cel.Common.Types.Traits;
+
+/// <summary>
+///     Modder interface to support '%' operator overloads.
+/// </summary>
+public interface Modder
+{
     /// <summary>
-    /// Modder interface to support '%' operator overloads. </summary>
-    public interface Modder
-    {
-        /// <summary>
-        /// Modulo returns the result of taking the modulus of the current value by the denominator.
-        /// 
-        /// <para>A denominator value of zero results in an error.
-        /// </para>
-        /// </summary>
-        Val Modulo(Val denominator);
-    }
+    ///     Modulo returns the result of taking the modulus of the current value by the denominator.
+    ///     <para>
+    ///         A denominator value of zero results in an error.
+    ///     </para>
+    /// </summary>
+    Val Modulo(Val denominator);
 }

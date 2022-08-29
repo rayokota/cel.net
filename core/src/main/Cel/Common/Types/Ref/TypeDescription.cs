@@ -14,19 +14,20 @@
  * limitations under the License.
  */
 
-namespace Cel.Common.Types.Ref
+namespace Cel.Common.Types.Ref;
+
+/// <summary>
+///     TypeDescription is a collection of type metadata relevant to expression checking and evaluation.
+/// </summary>
+public interface TypeDescription
 {
     /// <summary>
-    /// TypeDescription is a collection of type metadata relevant to expression checking and evaluation.
+    ///     Name returns the fully-qualified name of the type.
     /// </summary>
-    public interface TypeDescription
-    {
-        /// <summary>
-        /// Name returns the fully-qualified name of the type. </summary>
-        string Name();
+    string Name();
 
-        /// <summary>
-        /// ReflectType returns the Golang reflect.Type for this type. </summary>
-        System.Type ReflectType();
-    }
+    /// <summary>
+    ///     ReflectType returns the Golang reflect.Type for this type.
+    /// </summary>
+    System.Type ReflectType();
 }

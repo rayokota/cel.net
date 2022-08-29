@@ -14,20 +14,20 @@
  * limitations under the License.
  */
 
-namespace Cel.Common.Types.Traits
-{
-    using Val = global::Cel.Common.Types.Ref.Val;
+using Cel.Common.Types.Ref;
 
+namespace Cel.Common.Types.Traits;
+
+/// <summary>
+///     Adder interface to support '+' operator overloads.
+/// </summary>
+public interface Adder
+{
     /// <summary>
-    /// Adder interface to support '+' operator overloads. </summary>
-    public interface Adder
-    {
-        /// <summary>
-        /// Add returns a combination of the current value and other value.
-        /// 
-        /// <para>If the other value is an unsupported type, an error is returned.
-        /// </para>
-        /// </summary>
-        Val Add(Val other);
-    }
+    ///     Add returns a combination of the current value and other value.
+    ///     <para>
+    ///         If the other value is an unsupported type, an error is returned.
+    ///     </para>
+    /// </summary>
+    Val Add(Val other);
 }

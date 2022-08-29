@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-namespace Cel.Common.Types.Traits
-{
-    using Val = global::Cel.Common.Types.Ref.Val;
+using Cel.Common.Types.Ref;
 
+namespace Cel.Common.Types.Traits;
+
+/// <summary>
+///     Receiver interface for routing instance method calls within a value.
+/// </summary>
+public interface Receiver
+{
     /// <summary>
-    /// Receiver interface for routing instance method calls within a value. </summary>
-    public interface Receiver
-    {
-        /// <summary>
-        /// Receive accepts a function name, overload id, and arguments and returns a value. </summary>
-        Val Receive(string function, string overload, params Val[] args);
-    }
+    ///     Receive accepts a function name, overload id, and arguments and returns a value.
+    /// </summary>
+    Val Receive(string function, string overload, params Val[] args);
 }

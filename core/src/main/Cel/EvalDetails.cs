@@ -14,28 +14,23 @@
  * limitations under the License.
  */
 
-namespace Cel
+using Cel.Interpreter;
+
+namespace Cel;
+
+/// <summary>
+///     EvalDetails holds additional information observed during the Eval() call.
+/// </summary>
+public sealed class EvalDetails
 {
-    using EvalState = global::Cel.Interpreter.EvalState;
+    public EvalDetails(EvalState state)
+    {
+        this.State = state;
+    }
 
     /// <summary>
-    /// EvalDetails holds additional information observed during the Eval() call. </summary>
-    public sealed class EvalDetails
-    {
-        private readonly EvalState state;
-
-        public EvalDetails(EvalState state)
-        {
-            this.state = state;
-        }
-
-        /// <summary>
-        /// State of the evaluation, non-nil if the OptTrackState or OptExhaustiveEval is specified within
-        /// EvalOptions.
-        /// </summary>
-        public EvalState State
-        {
-            get { return state; }
-        }
-    }
+    ///     State of the evaluation, non-nil if the OptTrackState or OptExhaustiveEval is specified within
+    ///     EvalOptions.
+    /// </summary>
+    public EvalState State { get; }
 }

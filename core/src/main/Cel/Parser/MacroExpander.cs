@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using Google.Api.Expr.V1Alpha1;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -15,16 +15,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.Parser
-{
-    using Expr = Google.Api.Expr.V1Alpha1.Expr;
-    using ErrorWithLocation = global::Cel.Common.ErrorWithLocation;
+namespace Cel.Parser;
 
-    /// <summary>
-    /// MacroExpander converts the target and args of a function call that matches a Macro.
-    /// 
-    /// <para>Note: when the Macros.IsReceiverStyle() is true, the target argument will be nil.
-    /// </para>
-    /// </summary>
-    public delegate Expr MacroExpander(ExprHelper eh, Expr target, IList<Expr> args);
-}
+/// <summary>
+///     MacroExpander converts the target and args of a function call that matches a Macro.
+///     <para>
+///         Note: when the Macros.IsReceiverStyle() is true, the target argument will be nil.
+///     </para>
+/// </summary>
+public delegate Expr MacroExpander(ExprHelper eh, Expr target, IList<Expr> args);

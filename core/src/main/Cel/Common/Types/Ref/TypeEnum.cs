@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -15,110 +15,101 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.Common.Types.Ref
+namespace Cel.Common.Types.Ref;
+
+public sealed class TypeEnum
 {
-    public sealed class TypeEnum
+    public enum InnerEnum
     {
-        public static readonly TypeEnum Bool = new TypeEnum(InnerEnum.Bool, "bool");
-        public static readonly TypeEnum Bytes = new TypeEnum(InnerEnum.Bytes, "bytes");
-        public static readonly TypeEnum Double = new TypeEnum(InnerEnum.Double, "double");
-        public static readonly TypeEnum Duration = new TypeEnum(InnerEnum.Duration, "google.protobuf.Duration");
-        public static readonly TypeEnum Err = new TypeEnum(InnerEnum.Err, "error");
-        public static readonly TypeEnum Int = new TypeEnum(InnerEnum.Int, "int");
-        public static readonly TypeEnum List = new TypeEnum(InnerEnum.List, "list");
-        public static readonly TypeEnum Map = new TypeEnum(InnerEnum.Map, "map");
-        public static readonly TypeEnum Null = new TypeEnum(InnerEnum.Null, "null_type");
-        public static readonly TypeEnum Object = new TypeEnum(InnerEnum.Object, "object");
-        public static readonly TypeEnum String = new TypeEnum(InnerEnum.String, "string");
-        public static readonly TypeEnum Timestamp = new TypeEnum(InnerEnum.Timestamp, "google.protobuf.Timestamp");
-        public static readonly TypeEnum Type = new TypeEnum(InnerEnum.Type, "type");
-        public static readonly TypeEnum Uint = new TypeEnum(InnerEnum.Uint, "uint");
-        public static readonly TypeEnum Unknown = new TypeEnum(InnerEnum.Unknown, "unknown");
+        Bool,
+        Bytes,
+        Double,
+        Duration,
+        Err,
+        Int,
+        List,
+        Map,
+        Null,
+        Object,
+        String,
+        Timestamp,
+        Type,
+        Uint,
+        Unknown
+    }
 
-        private static readonly List<TypeEnum> valueList = new List<TypeEnum>();
+    public static readonly TypeEnum Bool = new(InnerEnum.Bool, "bool");
+    public static readonly TypeEnum Bytes = new(InnerEnum.Bytes, "bytes");
+    public static readonly TypeEnum Double = new(InnerEnum.Double, "double");
+    public static readonly TypeEnum Duration = new(InnerEnum.Duration, "google.protobuf.Duration");
+    public static readonly TypeEnum Err = new(InnerEnum.Err, "error");
+    public static readonly TypeEnum Int = new(InnerEnum.Int, "int");
+    public static readonly TypeEnum List = new(InnerEnum.List, "list");
+    public static readonly TypeEnum Map = new(InnerEnum.Map, "map");
+    public static readonly TypeEnum Null = new(InnerEnum.Null, "null_type");
+    public static readonly TypeEnum Object = new(InnerEnum.Object, "object");
+    public static readonly TypeEnum String = new(InnerEnum.String, "string");
+    public static readonly TypeEnum Timestamp = new(InnerEnum.Timestamp, "google.protobuf.Timestamp");
+    public static readonly TypeEnum Type = new(InnerEnum.Type, "type");
+    public static readonly TypeEnum Uint = new(InnerEnum.Uint, "uint");
+    public static readonly TypeEnum Unknown = new(InnerEnum.Unknown, "unknown");
 
-        static TypeEnum()
-        {
-            valueList.Add(Bool);
-            valueList.Add(Bytes);
-            valueList.Add(Double);
-            valueList.Add(Duration);
-            valueList.Add(Err);
-            valueList.Add(Int);
-            valueList.Add(List);
-            valueList.Add(Map);
-            valueList.Add(Null);
-            valueList.Add(Object);
-            valueList.Add(String);
-            valueList.Add(Timestamp);
-            valueList.Add(Type);
-            valueList.Add(Uint);
-            valueList.Add(Unknown);
-        }
+    private static readonly List<TypeEnum> valueList = new();
+    private static int nextOrdinal;
 
-        public enum InnerEnum
-        {
-            Bool,
-            Bytes,
-            Double,
-            Duration,
-            Err,
-            Int,
-            List,
-            Map,
-            Null,
-            Object,
-            String,
-            Timestamp,
-            Type,
-            Uint,
-            Unknown
-        }
+    public readonly InnerEnum InnerEnumValue;
 
-        public readonly InnerEnum InnerEnumValue;
-        private readonly int ordinalValue;
-        private static int nextOrdinal = 0;
+    private readonly int ordinalValue;
 
-        private readonly string name;
+    static TypeEnum()
+    {
+        valueList.Add(Bool);
+        valueList.Add(Bytes);
+        valueList.Add(Double);
+        valueList.Add(Duration);
+        valueList.Add(Err);
+        valueList.Add(Int);
+        valueList.Add(List);
+        valueList.Add(Map);
+        valueList.Add(Null);
+        valueList.Add(Object);
+        valueList.Add(String);
+        valueList.Add(Timestamp);
+        valueList.Add(Type);
+        valueList.Add(Uint);
+        valueList.Add(Unknown);
+    }
 
-        internal TypeEnum(InnerEnum innerEnum, string name)
-        {
-            this.name = name;
-            ordinalValue = nextOrdinal++;
-            InnerEnumValue = innerEnum;
-        }
+    internal TypeEnum(InnerEnum innerEnum, string name)
+    {
+        this.Name = name;
+        ordinalValue = nextOrdinal++;
+        InnerEnumValue = innerEnum;
+    }
 
-        public string Name
-        {
-            get { return name; }
-        }
+    public string Name { get; }
 
-        public static TypeEnum[] Values()
-        {
-            return valueList.ToArray();
-        }
+    public static TypeEnum[] Values()
+    {
+        return valueList.ToArray();
+    }
 
-        public int Ordinal()
-        {
-            return ordinalValue;
-        }
+    public int Ordinal()
+    {
+        return ordinalValue;
+    }
 
-        public override string ToString()
-        {
-            return name;
-        }
+    public override string ToString()
+    {
+        return Name;
+    }
 
-        public static TypeEnum ValueOf(string name)
-        {
-            foreach (TypeEnum enumInstance in TypeEnum.valueList)
-            {
-                if (enumInstance.name == name)
-                {
-                    return enumInstance;
-                }
-            }
+    public static TypeEnum ValueOf(string name)
+    {
+        foreach (var enumInstance in valueList)
+            if (enumInstance.Name == name)
+                return enumInstance;
 
-            throw new System.ArgumentException(name);
-        }
+        throw new ArgumentException(name);
     }
 }

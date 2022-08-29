@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -15,138 +15,107 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.Parser
+namespace Cel.Parser;
+
+public sealed class Options
 {
-    public sealed class Options
+    private readonly IDictionary<string, Macro> macros;
+
+    private Options(int maxRecursionDepth, int errorRecoveryLimit, int expressionSizeCodePointLimit,
+        IDictionary<string, Macro> macros)
     {
-        private readonly int maxRecursionDepth;
-        private readonly int errorRecoveryLimit;
-        private readonly int expressionSizeCodePointLimit;
-        private readonly IDictionary<string, Macro> macros;
+        this.MaxRecursionDepth = maxRecursionDepth;
+        this.ErrorRecoveryLimit = errorRecoveryLimit;
+        this.ExpressionSizeCodePointLimit = expressionSizeCodePointLimit;
+        this.macros = macros;
+    }
 
-        private Options(int maxRecursionDepth, int errorRecoveryLimit, int expressionSizeCodePointLimit,
-            IDictionary<string, Macro> macros)
-        {
-            this.maxRecursionDepth = maxRecursionDepth;
-            this.errorRecoveryLimit = errorRecoveryLimit;
-            this.expressionSizeCodePointLimit = expressionSizeCodePointLimit;
-            this.macros = macros;
-        }
+    public int MaxRecursionDepth { get; }
 
-        public int MaxRecursionDepth
-        {
-            get { return maxRecursionDepth; }
-        }
+    public int ErrorRecoveryLimit { get; }
 
-        public int ErrorRecoveryLimit
-        {
-            get { return errorRecoveryLimit; }
-        }
+    public int ExpressionSizeCodePointLimit { get; }
 
-        public int ExpressionSizeCodePointLimit
-        {
-            get { return expressionSizeCodePointLimit; }
-        }
+    public Macro GetMacro(string name)
+    {
+        Macro macro = null;
+        macros.TryGetValue(name, out macro);
+        return macro;
+    }
 
-        public Macro GetMacro(string name)
-        {
-            Macro macro = null;
-            macros.TryGetValue(name, out macro);
-            return macro;
-        }
+    public static Builder NewBuilder()
+    {
+        return new Builder();
+    }
 
-        public static Builder NewBuilder()
-        {
-            return new Builder();
-        }
-
-        public sealed class Builder
-        {
+    public sealed class Builder
+    {
 //JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
-            internal readonly IDictionary<string, Macro> macros_Conflict = new Dictionary<string, Macro>();
+        internal readonly IDictionary<string, Macro> macros_Conflict = new Dictionary<string, Macro>();
 
 //JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
-            internal int maxRecursionDepth_Conflict = 250;
+        internal int errorRecoveryLimit_Conflict = 30;
 
 //JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
-            internal int errorRecoveryLimit_Conflict = 30;
+        internal int expressionSizeCodePointLimit_Conflict = 100_000;
 
 //JAVA TO C# CONVERTER NOTE: Field name conflicts with a method name of the current type:
-            internal int expressionSizeCodePointLimit_Conflict = 100_000;
+        internal int maxRecursionDepth_Conflict = 250;
 
-            internal Builder()
-            {
-            }
+        internal Builder()
+        {
+        }
 
-            public Builder MaxRecursionDepth(int maxRecursionDepth)
-            {
-                if (maxRecursionDepth < -1)
-                {
-                    throw new System.ArgumentException(String.Format(
-                        "max recursion depth must be greater than or equal to -1: {0:D}", maxRecursionDepth));
-                }
-                else if (maxRecursionDepth == -1)
-                {
-                    maxRecursionDepth = int.MaxValue;
-                }
+        public Builder MaxRecursionDepth(int maxRecursionDepth)
+        {
+            if (maxRecursionDepth < -1)
+                throw new ArgumentException(string.Format(
+                    "max recursion depth must be greater than or equal to -1: {0:D}", maxRecursionDepth));
+            if (maxRecursionDepth == -1) maxRecursionDepth = int.MaxValue;
 
-                this.maxRecursionDepth_Conflict = maxRecursionDepth;
-                return this;
-            }
+            maxRecursionDepth_Conflict = maxRecursionDepth;
+            return this;
+        }
 
-            public Builder ErrorRecoveryLimit(int errorRecoveryLimit)
-            {
-                if (errorRecoveryLimit < -1)
-                {
-                    throw new System.ArgumentException(String.Format(
-                        "error recovery limit must be greater than or equal to -1: {0:D}", errorRecoveryLimit));
-                }
-                else if (errorRecoveryLimit == -1)
-                {
-                    errorRecoveryLimit = int.MaxValue;
-                }
+        public Builder ErrorRecoveryLimit(int errorRecoveryLimit)
+        {
+            if (errorRecoveryLimit < -1)
+                throw new ArgumentException(string.Format(
+                    "error recovery limit must be greater than or equal to -1: {0:D}", errorRecoveryLimit));
+            if (errorRecoveryLimit == -1) errorRecoveryLimit = int.MaxValue;
 
-                this.errorRecoveryLimit_Conflict = errorRecoveryLimit;
-                return this;
-            }
+            errorRecoveryLimit_Conflict = errorRecoveryLimit;
+            return this;
+        }
 
-            public Builder ExpressionSizeCodePointLimit(int expressionSizeCodePointLimit)
-            {
-                if (expressionSizeCodePointLimit < -1)
-                {
-                    throw new System.ArgumentException(String.Format(
-                        "expression size code point limit must be greater than or equal to -1: {0:D}",
-                        expressionSizeCodePointLimit));
-                }
-                else if (expressionSizeCodePointLimit == -1)
-                {
-                    expressionSizeCodePointLimit = int.MaxValue;
-                }
+        public Builder ExpressionSizeCodePointLimit(int expressionSizeCodePointLimit)
+        {
+            if (expressionSizeCodePointLimit < -1)
+                throw new ArgumentException(string.Format(
+                    "expression size code point limit must be greater than or equal to -1: {0:D}",
+                    expressionSizeCodePointLimit));
+            if (expressionSizeCodePointLimit == -1) expressionSizeCodePointLimit = int.MaxValue;
 
-                this.expressionSizeCodePointLimit_Conflict = expressionSizeCodePointLimit;
-                return this;
-            }
+            expressionSizeCodePointLimit_Conflict = expressionSizeCodePointLimit;
+            return this;
+        }
 
-            public Builder Macros(params Macro[] macros)
-            {
-                return this.Macros(macros.ToList());
-            }
+        public Builder Macros(params Macro[] macros)
+        {
+            return Macros(macros.ToList());
+        }
 
-            public Builder Macros(IList<Macro> macros)
-            {
-                foreach (Macro macro in macros)
-                {
-                    this.macros_Conflict[macro.MacroKey()] = macro;
-                }
+        public Builder Macros(IList<Macro> macros)
+        {
+            foreach (var macro in macros) macros_Conflict[macro.MacroKey()] = macro;
 
-                return this;
-            }
+            return this;
+        }
 
-            public Options Build()
-            {
-                return new Options(maxRecursionDepth_Conflict, errorRecoveryLimit_Conflict,
-                    expressionSizeCodePointLimit_Conflict, new Dictionary<string, Macro>(macros_Conflict));
-            }
+        public Options Build()
+        {
+            return new Options(maxRecursionDepth_Conflict, errorRecoveryLimit_Conflict,
+                expressionSizeCodePointLimit_Conflict, new Dictionary<string, Macro>(macros_Conflict));
         }
     }
 }

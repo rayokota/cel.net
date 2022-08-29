@@ -14,33 +14,34 @@
  * limitations under the License.
  */
 
-namespace Cel.Common.Types.Ref
+using Cel.Common.Types.Traits;
+
+namespace Cel.Common.Types.Ref;
+
+/// <summary>
+///     Type interface indicate the name of a given type.
+/// </summary>
+public interface Type : Val
 {
-    using Trait = global::Cel.Common.Types.Traits.Trait;
+    /// <summary>
+    ///     HasTrait returns whether the type has a given trait associated with it.
+    ///     <para>
+    ///         See common/types/traits/traits.go for a list of supported traits.
+    ///     </para>
+    /// </summary>
+    bool HasTrait(Trait trait);
 
     /// <summary>
-    /// Type interface indicate the name of a given type. </summary>
-    public interface Type : Val
-    {
-        /// <summary>
-        /// HasTrait returns whether the type has a given trait associated with it.
-        /// 
-        /// <para>See common/types/traits/traits.go for a list of supported traits.
-        /// </para>
-        /// </summary>
-        bool HasTrait(Trait trait);
+    ///     TypeName returns the qualified type name of the type.
+    ///     <para>
+    ///         The type name is also used as the type's identifier name at type-check and interpretation
+    ///         time.
+    ///     </para>
+    /// </summary>
+    string TypeName();
 
-        /// <summary>
-        /// TypeName returns the qualified type name of the type.
-        /// 
-        /// <para>The type name is also used as the type's identifier name at type-check and interpretation
-        /// time.
-        /// </para>
-        /// </summary>
-        string TypeName();
-
-        /// <summary>
-        /// Get the type enum. </summary>
-        TypeEnum TypeEnum();
-    }
+    /// <summary>
+    ///     Get the type enum.
+    /// </summary>
+    TypeEnum TypeEnum();
 }

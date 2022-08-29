@@ -14,10 +14,9 @@
  * limitations under the License.
  */
 
-namespace Cel.Common.Types.Ref
-{
-    /// <summary>
-    /// TypeAdapter converts native Go values of varying type and complexity to equivalent CEL values.
-    /// </summary>
-    public delegate Val TypeAdapter(object value);
-}
+namespace Cel.Common.Types.Ref;
+
+/// <summary>
+///     TypeAdapter converts native Go values of varying type and complexity to equivalent CEL values.
+/// </summary>
+public delegate Val TypeAdapter(object value);

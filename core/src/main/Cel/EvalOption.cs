@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -15,107 +15,100 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel
+namespace Cel;
+
+/// <summary>
+///     EvalOption indicates an evaluation option that may affect the evaluation behavior or information
+///     in the output result.
+/// </summary>
+public sealed class EvalOption
 {
-    /// <summary>
-    /// EvalOption indicates an evaluation option that may affect the evaluation behavior or information
-    /// in the output result.
-    /// </summary>
-    public sealed class EvalOption
+    public enum InnerEnum
     {
-        /// <summary>
-        /// OptTrackState will cause the runtime to return an immutable EvalState value in the Result. </summary>
-        public static readonly EvalOption OptTrackState = new EvalOption("OptTrackState", InnerEnum.OptTrackState, 1);
+        OptTrackState,
+        OptExhaustiveEval,
+        OptOptimize,
+        OptPartialEval
+    }
 
-        /// <summary>
-        /// OptExhaustiveEval causes the runtime to disable short-circuits and track state. </summary>
-        public static readonly EvalOption OptExhaustiveEval =
-            new EvalOption("OptExhaustiveEval", InnerEnum.OptExhaustiveEval, 2 | OptTrackState.mask);
+    /// <summary>
+    ///     OptTrackState will cause the runtime to return an immutable EvalState value in the Result.
+    /// </summary>
+    public static readonly EvalOption OptTrackState = new("OptTrackState", InnerEnum.OptTrackState, 1);
 
-        /// <summary>
-        /// OptOptimize precomputes functions and operators with constants as arguments at program creation
-        /// time. This flag is useful when the expression will be evaluated repeatedly against a series of
-        /// different inputs.
-        /// </summary>
-        public static readonly EvalOption OptOptimize = new EvalOption("OptOptimize", InnerEnum.OptOptimize, 4);
+    /// <summary>
+    ///     OptExhaustiveEval causes the runtime to disable short-circuits and track state.
+    /// </summary>
+    public static readonly EvalOption OptExhaustiveEval =
+        new("OptExhaustiveEval", InnerEnum.OptExhaustiveEval, 2 | OptTrackState.Mask);
 
-        /// <summary>
-        /// OptPartialEval enables the evaluation of a partial state where the input data that may be known
-        /// to be missing, either as top-level variables, or somewhere within a variable's object member
-        /// graph.
-        /// 
-        /// <para>By itself, OptPartialEval does not change evaluation behavior unless the input to the
-        /// Program Eval is an PartialVars.
-        /// </para>
-        /// </summary>
-        public static readonly EvalOption
-            OptPartialEval = new EvalOption("OptPartialEval", InnerEnum.OptPartialEval, 8);
+    /// <summary>
+    ///     OptOptimize precomputes functions and operators with constants as arguments at program creation
+    ///     time. This flag is useful when the expression will be evaluated repeatedly against a series of
+    ///     different inputs.
+    /// </summary>
+    public static readonly EvalOption OptOptimize = new("OptOptimize", InnerEnum.OptOptimize, 4);
 
-        private static readonly List<EvalOption> valueList = new List<EvalOption>();
+    /// <summary>
+    ///     OptPartialEval enables the evaluation of a partial state where the input data that may be known
+    ///     to be missing, either as top-level variables, or somewhere within a variable's object member
+    ///     graph.
+    ///     <para>
+    ///         By itself, OptPartialEval does not change evaluation behavior unless the input to the
+    ///         Program Eval is an PartialVars.
+    ///     </para>
+    /// </summary>
+    public static readonly EvalOption
+        OptPartialEval = new("OptPartialEval", InnerEnum.OptPartialEval, 8);
 
-        static EvalOption()
-        {
-            valueList.Add(OptTrackState);
-            valueList.Add(OptExhaustiveEval);
-            valueList.Add(OptOptimize);
-            valueList.Add(OptPartialEval);
-        }
+    private static readonly List<EvalOption> valueList = new();
+    private static int nextOrdinal;
 
-        public enum InnerEnum
-        {
-            OptTrackState,
-            OptExhaustiveEval,
-            OptOptimize,
-            OptPartialEval
-        }
+    public readonly InnerEnum innerEnumValue;
 
-        public readonly InnerEnum innerEnumValue;
-        private readonly string nameValue;
-        private readonly int ordinalValue;
-        private static int nextOrdinal = 0;
+    private readonly string nameValue;
+    private readonly int ordinalValue;
 
-        private readonly int mask;
+    static EvalOption()
+    {
+        valueList.Add(OptTrackState);
+        valueList.Add(OptExhaustiveEval);
+        valueList.Add(OptOptimize);
+        valueList.Add(OptPartialEval);
+    }
 
-        internal EvalOption(string name, InnerEnum innerEnum, int mask)
-        {
-            this.mask = mask;
+    internal EvalOption(string name, InnerEnum innerEnum, int mask)
+    {
+        this.Mask = mask;
 
-            nameValue = name;
-            ordinalValue = nextOrdinal++;
-            innerEnumValue = innerEnum;
-        }
+        nameValue = name;
+        ordinalValue = nextOrdinal++;
+        innerEnumValue = innerEnum;
+    }
 
-        public int Mask
-        {
-            get { return mask; }
-        }
+    public int Mask { get; }
 
-        public static EvalOption[] values()
-        {
-            return valueList.ToArray();
-        }
+    public static EvalOption[] values()
+    {
+        return valueList.ToArray();
+    }
 
-        public int ordinal()
-        {
-            return ordinalValue;
-        }
+    public int ordinal()
+    {
+        return ordinalValue;
+    }
 
-        public override string ToString()
-        {
-            return nameValue;
-        }
+    public override string ToString()
+    {
+        return nameValue;
+    }
 
-        public static EvalOption valueOf(string name)
-        {
-            foreach (EvalOption enumInstance in EvalOption.valueList)
-            {
-                if (enumInstance.nameValue == name)
-                {
-                    return enumInstance;
-                }
-            }
+    public static EvalOption valueOf(string name)
+    {
+        foreach (var enumInstance in valueList)
+            if (enumInstance.nameValue == name)
+                return enumInstance;
 
-            throw new System.ArgumentException(name);
-        }
+        throw new ArgumentException(name);
     }
 }

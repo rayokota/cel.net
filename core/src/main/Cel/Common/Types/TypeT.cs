@@ -14,166 +14,166 @@
  * limitations under the License.
  */
 
-namespace Cel.Common.Types
+using Cel.Common.Types.Ref;
+using Cel.Common.Types.Traits;
+using Type = Cel.Common.Types.Ref.Type;
+
+namespace Cel.Common.Types;
+
+/// <summary>
+///     TypeValue is an instance of a Value that describes a value's type.
+/// </summary>
+public class TypeT : Type, Val
 {
-    using Type = global::Cel.Common.Types.Ref.Type;
-    using TypeEnum = global::Cel.Common.Types.Ref.TypeEnum;
-    using Val = global::Cel.Common.Types.Ref.Val;
-    using Trait = global::Cel.Common.Types.Traits.Trait;
+    /// <summary>
+    ///     TypeType is the type of a TypeValue.
+    /// </summary>
+    public static readonly Type TypeType = NewTypeValue(Ref.TypeEnum.Type);
+
+    private readonly ISet<Trait> traitMask;
+
+    private readonly TypeEnum typeEnum;
+
+    internal TypeT(TypeEnum typeEnum, params Trait[] traits)
+    {
+        this.typeEnum = typeEnum;
+        traitMask = new HashSet<Trait>(traits);
+    }
+
+    public virtual bool BooleanValue()
+    {
+        throw new NotSupportedException();
+    }
+
+    public virtual long IntValue()
+    {
+        throw new NotSupportedException();
+    }
 
     /// <summary>
-    /// TypeValue is an instance of a Value that describes a value's type. </summary>
-    public class TypeT : Type, Val
+    ///     ConvertToNative implements ref.Val.ConvertToNative.
+    /// </summary>
+    public virtual object? ConvertToNative(System.Type typeDesc)
     {
-        /// <summary>
-        /// TypeType is the type of a TypeValue. </summary>
-        public static readonly Type TypeType = NewTypeValue(Ref.TypeEnum.Type);
+        throw new NotSupportedException("type conversion not supported for 'type'");
+    }
 
-        private readonly TypeEnum typeEnum;
-        private readonly ISet<Trait> traitMask;
-
-        internal TypeT(TypeEnum typeEnum, params Trait[] traits)
+    /// <summary>
+    ///     ConvertToType implements ref.Val.ConvertToType.
+    /// </summary>
+    public virtual Val ConvertToType(Type typeVal)
+    {
+        switch (typeVal.TypeEnum().InnerEnumValue)
         {
-            this.typeEnum = typeEnum;
-            this.traitMask = new HashSet<Trait>(traits);
+            case Ref.TypeEnum.InnerEnum.Type:
+                return TypeType;
+            case Ref.TypeEnum.InnerEnum.String:
+                return StringT.StringOf(TypeName());
         }
 
-        /// <summary>
-        /// NewTypeValue returns *TypeValue which is both a ref.Type and ref.Val. </summary>
-        internal static Type NewTypeValue(TypeEnum typeEnum, params Trait[] traits)
+        return Err.NewTypeConversionError(TypeType, typeVal);
+    }
+
+    /// <summary>
+    ///     Equal implements ref.Val.Equal.
+    /// </summary>
+    public virtual Val Equal(Val other)
+    {
+        if (TypeType != other.Type()) return Err.NoSuchOverload(this, "equal", other);
+
+        return Types.BoolOf(Equals(other));
+    }
+
+    /// <summary>
+    ///     HasTrait indicates whether the type supports the given trait. Trait codes are defined in the
+    ///     traits package, e.g. see traits.AdderType.
+    /// </summary>
+    public virtual bool HasTrait(Trait trait)
+    {
+        return traitMask.Contains(trait);
+    }
+
+    public virtual TypeEnum TypeEnum()
+    {
+        return typeEnum;
+    }
+
+    /// <summary>
+    ///     Type implements ref.Val.Type.
+    /// </summary>
+    public virtual Type Type()
+    {
+        return TypeType;
+    }
+
+    /// <summary>
+    ///     TypeName gives the type's name as a string.
+    /// </summary>
+    public virtual string TypeName()
+    {
+        return typeEnum.Name;
+    }
+
+    /// <summary>
+    ///     Value implements ref.Val.Value.
+    /// </summary>
+    public virtual object Value()
+    {
+        return TypeName();
+    }
+
+    /// <summary>
+    ///     NewTypeValue returns *TypeValue which is both a ref.Type and ref.Val.
+    /// </summary>
+    internal static Type NewTypeValue(TypeEnum typeEnum, params Trait[] traits)
+    {
+        return new TypeT(typeEnum, traits);
+    }
+
+    /// <summary>
+    ///     NewObjectTypeValue returns a *TypeValue based on the input name, which is annotated with the
+    ///     traits relevant to all objects.
+    /// </summary>
+    public static Type NewObjectTypeValue(string name)
+    {
+        return new ObjectTypeT(name);
+    }
+
+    /// <summary>
+    ///     String implements fmt.Stringer.
+    /// </summary>
+    public override string ToString()
+    {
+        return TypeName();
+    }
+
+    public override bool Equals(object o)
+    {
+        if (this == o) return true;
+
+        if (o == null || GetType() != o.GetType()) return false;
+
+        var typeValue = (Type)o;
+        return typeEnum == typeValue.TypeEnum() && TypeName().Equals(typeValue.TypeName());
+    }
+
+    public override int GetHashCode()
+    {
+        return TypeName().GetHashCode();
+    }
+
+    internal sealed class ObjectTypeT : TypeT
+    {
+        internal readonly string typeName;
+
+        internal ObjectTypeT(string typeName) : base(Ref.TypeEnum.Object, Trait.FieldTesterType, Trait.IndexerType)
         {
-            return new TypeT(typeEnum, traits);
+            this.typeName = typeName;
         }
 
-        /// <summary>
-        /// NewObjectTypeValue returns a *TypeValue based on the input name, which is annotated with the
-        /// traits relevant to all objects.
-        /// </summary>
-        public static Type NewObjectTypeValue(string name)
+        public override string TypeName()
         {
-            return new ObjectTypeT(name);
-        }
-
-        internal sealed class ObjectTypeT : TypeT
-        {
-            internal readonly string typeName;
-
-            internal ObjectTypeT(string typeName) : base(Ref.TypeEnum.Object, Trait.FieldTesterType, Trait.IndexerType)
-            {
-                this.typeName = typeName;
-            }
-
-            public override string TypeName()
-            {
-                return typeName;
-            }
-        }
-
-        public virtual bool BooleanValue()
-        {
-            throw new System.NotSupportedException();
-        }
-
-        public virtual long IntValue()
-        {
-            throw new System.NotSupportedException();
-        }
-
-        /// <summary>
-        /// ConvertToNative implements ref.Val.ConvertToNative. </summary>
-        public virtual object? ConvertToNative(System.Type typeDesc)
-        {
-            throw new System.NotSupportedException("type conversion not supported for 'type'");
-        }
-
-        /// <summary>
-        /// ConvertToType implements ref.Val.ConvertToType. </summary>
-        public virtual Val ConvertToType(Type typeVal)
-        {
-            switch (typeVal.TypeEnum().InnerEnumValue)
-            {
-                case Ref.TypeEnum.InnerEnum.Type:
-                    return TypeType;
-                case Ref.TypeEnum.InnerEnum.String:
-                    return StringT.StringOf(TypeName());
-            }
-
-            return Err.NewTypeConversionError(TypeType, typeVal);
-        }
-
-        /// <summary>
-        /// Equal implements ref.Val.Equal. </summary>
-        public virtual Val Equal(Val other)
-        {
-            if (TypeType != other.Type())
-            {
-                return Err.NoSuchOverload(this, "equal", other);
-            }
-
-            return Types.BoolOf(this.Equals(other));
-        }
-
-        /// <summary>
-        /// HasTrait indicates whether the type supports the given trait. Trait codes are defined in the
-        /// traits package, e.g. see traits.AdderType.
-        /// </summary>
-        public virtual bool HasTrait(Trait trait)
-        {
-            return traitMask.Contains(trait);
-        }
-
-        public virtual TypeEnum TypeEnum()
-        {
-            return typeEnum;
-        }
-
-        /// <summary>
-        /// String implements fmt.Stringer. </summary>
-        public override string ToString()
-        {
-            return TypeName();
-        }
-
-        /// <summary>
-        /// Type implements ref.Val.Type. </summary>
-        public virtual Type Type()
-        {
-            return TypeType;
-        }
-
-        /// <summary>
-        /// TypeName gives the type's name as a string. </summary>
-        public virtual string TypeName()
-        {
-            return typeEnum.Name;
-        }
-
-        /// <summary>
-        /// Value implements ref.Val.Value. </summary>
-        public virtual object Value()
-        {
-            return TypeName();
-        }
-
-        public override bool Equals(object o)
-        {
-            if (this == o)
-            {
-                return true;
-            }
-
-            if (o == null || this.GetType() != o.GetType())
-            {
-                return false;
-            }
-
-            Type typeValue = (Type)o;
-            return typeEnum == typeValue.TypeEnum() && TypeName().Equals(typeValue.TypeName());
-        }
-
-        public override int GetHashCode()
-        {
-            return TypeName().GetHashCode();
+            return typeName;
         }
     }
 }

@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-namespace Cel.Common.Types.Traits
-{
-    using IterableT = global::Cel.Common.Types.IterableT;
-    using Val = global::Cel.Common.Types.Ref.Val;
+using Cel.Common.Types.Ref;
 
-    /// <summary>
-    /// Lister interface which aggregates the traits of a list. </summary>
-    public interface Lister : Val, Adder, Container, Indexer, IterableT, Sizer
-    {
-    }
+namespace Cel.Common.Types.Traits;
+
+/// <summary>
+///     Lister interface which aggregates the traits of a list.
+/// </summary>
+public interface Lister : Val, Adder, Container, Indexer, IterableT, Sizer
+{
 }
