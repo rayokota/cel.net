@@ -108,7 +108,7 @@ public interface AttributeFactory
 
     static AttributeFactory_Qualifier NewQualifierStatic(TypeAdapter adapter, long id, object v)
     {
-        if (v is Attribute) return new AttributeFactory_AttrQualifier(id, (AttributeFactory_Attribute)v);
+        if (v is AttributeFactory_Attribute) return new AttributeFactory_AttrQualifier(id, (AttributeFactory_Attribute)v);
 
         var c = v.GetType();
 
@@ -924,12 +924,14 @@ public sealed class AttributeFactory_StringQualifier : Coster, AttributeFactory_
         var s = value;
         if (obj is IDictionary)
         {
-            var m = (Dictionary<string, object>)obj;
-            m.TryGetValue(s, out obj);
-            if (obj == null)
+            var m = (IDictionary)obj;
+            if (m.Contains(s))
             {
-                if (m.ContainsKey(s)) return NullT.NullValue;
-
+                obj = m[s];
+                if (obj == null) return NullT.NullValue;
+            }
+            else
+            {
                 throw Err.NoSuchKeyException(s);
             }
         }
@@ -1003,23 +1005,23 @@ public sealed class AttributeFactory_IntQualifier : Coster, AttributeFactory_Con
     /// </summary>
     public object Qualify(Activation vars, object obj)
     {
-        var i = value;
+        long i = value;
         if (obj is IDictionary)
         {
-            var m = (Dictionary<object, object>)obj;
-            m.TryGetValue(i, out obj);
-            if (obj == null)
+            var m = (IDictionary)obj;
+            if (m.Contains(i))
             {
-                obj = m.TryGetValue((int)i, out obj);
+                obj = m[i];
+                if (obj == null) throw Err.NoSuchKeyException(i);
             }
-
-            if (obj == null)
+            else
             {
-                if (m.ContainsKey(i) || m.ContainsKey((int)i)) return null;
-
-                throw Err.NoSuchKeyException(i);
+                if (m.Contains((int)i))
+                {
+                    obj = m[i];
+                    if (obj == null) throw Err.NoSuchKeyException(i);
+                } 
             }
-
             return obj;
         }
 
@@ -1108,13 +1110,15 @@ public sealed class AttributeFactory_UintQualifier : Coster, AttributeFactory_Co
     /// </summary>
     public object Qualify(Activation vars, object obj)
     {
-        var i = (long)value;
+        ulong i = value;
         if (obj is IDictionary)
         {
-            var m = (Dictionary<object, object>)obj;
-            m.TryGetValue(i, out obj);
-            if (obj == null) throw Err.NoSuchKeyException(i);
-
+            var m = (IDictionary)obj;
+            if (m.Contains(i))
+            {
+                obj = m[i];
+                if (obj == null) throw Err.NoSuchKeyException(i);
+            }
             return obj;
         }
 
@@ -1122,7 +1126,7 @@ public sealed class AttributeFactory_UintQualifier : Coster, AttributeFactory_Co
         {
             var array = (object[])obj;
             var l = array.Length;
-            if (i < 0 && i >= l) throw Err.IndexOutOfBoundsException(i);
+            if (i < 0 || i >= (ulong)l) throw Err.IndexOutOfBoundsException(i);
 
             obj = array[(int)i];
             return obj;
@@ -1194,13 +1198,11 @@ public sealed class AttributeFactory_BoolQualifier : Coster, AttributeFactory_Co
         var b = value;
         if (obj is IDictionary)
         {
-            var m = (Dictionary<object, object>)obj;
-            m.TryGetValue(b, out obj);
-            if (obj == null)
+            var m = (IDictionary)obj;
+            if (m.Contains(b))
             {
-                if (m.ContainsKey(b)) return null;
-
-                throw Err.NoSuchKeyException(b);
+                obj = m[b];
+                if (obj == null) throw Err.NoSuchKeyException(b);
             }
         }
         else if (UnknownT.IsUnknown(obj))

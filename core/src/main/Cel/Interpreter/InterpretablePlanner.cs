@@ -462,28 +462,29 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
         if (opAttr == null) return null;
 
         Expr target = expr.CallExpr.Target;
-        if (target != null)
+        if (target == null)
         {
-            var opType = typeMap[target.Id];
-            if (ind is Interpretable_InterpretableConst)
-            {
-                var indConst = (Interpretable_InterpretableConst)ind;
-                var qual = attrFactory.NewQualifier(opType, expr.Id, indConst.Value());
-                if (qual == null) return null;
+            target = new Expr();
+        }
+        typeMap.TryGetValue(target.Id, out Type opType);
+        if (ind is Interpretable_InterpretableConst)
+        {
+            var indConst = (Interpretable_InterpretableConst)ind;
+            var qual = attrFactory.NewQualifier(opType, expr.Id, indConst.Value());
+            if (qual == null) return null;
 
-                opAttr.AddQualifier(qual);
-                return opAttr;
-            }
-            
-            if (ind is Interpretable_InterpretableAttribute)
-            {
-                var indAttr = (Interpretable_InterpretableAttribute)ind;
-                var qual = attrFactory.NewQualifier(opType, expr.Id, indAttr);
-                if (qual == null) return null;
+            opAttr.AddQualifier(qual);
+            return opAttr;
+        }
+        
+        if (ind is Interpretable_InterpretableAttribute)
+        {
+            var indAttr = (Interpretable_InterpretableAttribute)ind;
+            var qual = attrFactory.NewQualifier(opType, expr.Id, indAttr);
+            if (qual == null) return null;
 
-                opAttr.AddQualifier(qual);
-                return opAttr;
-            }
+            opAttr.AddQualifier(qual);
+            return opAttr;
         }
 
         var indQual = RelativeAttr(expr.Id, ind);

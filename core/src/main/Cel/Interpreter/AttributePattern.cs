@@ -332,7 +332,7 @@ public sealed class AttributePattern
             for (var i = 0; i < qualifiers.Count; i++)
             {
                 var qual = qualifiers[i];
-                if (qual is Attribute)
+                if (qual is AttributeFactory_Attribute)
                 {
                     var val = ((AttributeFactory_Attribute)qual).Resolve(vars);
                     if (UnknownT.IsUnknown(val)) return val;

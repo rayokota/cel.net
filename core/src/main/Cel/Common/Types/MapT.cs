@@ -51,10 +51,10 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
         return new ValMapT(adapter, value);
     }
 
-    public static Val NewMaybeWrappedMap<T1, T2>(TypeAdapter adapter, IDictionary<T1, T2> value)
+    public static Val NewMaybeWrappedMap(TypeAdapter adapter, IDictionary value)
     {
         IDictionary<Val, Val> newMap = new Dictionary<Val, Val>(value.Count * 4 / 3 + 1);
-        foreach (var entry in value) newMap.Add(adapter(entry.Key), adapter(entry.Value));
+        foreach (DictionaryEntry entry in value) newMap.Add(adapter(entry.Key), adapter(entry.Value));
 
         return NewWrappedMap(adapter, newMap);
     }
@@ -68,7 +68,7 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
     /// </summary>
     public static Val NewJSONStruct(TypeAdapter adapter, Struct value)
     {
-        IDictionary<string, Value> fields = value.Fields;
+        IDictionary fields = value.Fields;
         return NewMaybeWrappedMap(adapter, fields);
     }
 
@@ -124,11 +124,10 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
             return value;
         }
 
-        internal IDictionary<object, object> ToJavaMap()
+        internal IDictionary ToJavaMap()
         {
-            IDictionary<object, object> r = new Dictionary<object, object>();
+            IDictionary r = new Hashtable();
             foreach (var entry in map) r.Add(entry.Key.Value(), entry.Value.Value());
-
             return r;
         }
 

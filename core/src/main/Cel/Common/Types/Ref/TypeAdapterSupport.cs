@@ -90,7 +90,7 @@ public sealed class TypeAdapterSupport
             return ListT.NewGenericArrayList(a, ((IList<object>)value).ToArray());
 
         if (value is IDictionary)
-            return MapT.NewMaybeWrappedMap(a, (IDictionary<object, object>)value);
+            return MapT.NewMaybeWrappedMap(a, (IDictionary)value);
 
         if (value is ByteString) return BytesT.BytesOf((ByteString)value);
 
