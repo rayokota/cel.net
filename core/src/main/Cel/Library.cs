@@ -92,5 +92,5 @@ public sealed class StdLibrary : Library
     ///     ProgramOptions returns function implementations for the standard CEL functions.
     /// </summary>
     public IList<ProgramOption> ProgramOptions => new List<ProgramOption>
-        { global::Cel.IProgramOption.Functions(Overload.StandardOverloads()) };
+        { IProgramOption.Functions(Overload.StandardOverloads()) };
 }

@@ -756,7 +756,8 @@ internal class ParserTest
             new[]
             {
                 "125", "{:a}", "",
-                "ERROR: <input>:1:2: Syntax error: extraneous input ':' expecting {'[', '{', '}', '(', '.', ',', '-', '!', 'true', 'false', 'null', NUM_FLOAT, NUM_INT, NUM_UINT, STRING, BYTES, IDENTIFIER}\n | {:a}\n" + " | .^\n" +
+                "ERROR: <input>:1:2: Syntax error: extraneous input ':' expecting {'[', '{', '}', '(', '.', ',', '-', '!', 'true', 'false', 'null', NUM_FLOAT, NUM_INT, NUM_UINT, STRING, BYTES, IDENTIFIER}\n | {:a}\n" +
+                " | .^\n" +
                 "ERROR: <input>:1:4: Syntax error: mismatched input '}' expecting ':'\n | {:a}\n | ...^",
                 // TODO remove?
                 //"ERROR: <input>:1:2: Syntax error: extraneous input ':' expecting {'[', '{', '}', '(', '.', ',', '-', '!', 'true', 'false', 'null', NUM_FLOAT, NUM_INT, NUM_UINT, STRING, BYTES, IDENTIFIER}\n | {:a}\n" + " | .^\n" +

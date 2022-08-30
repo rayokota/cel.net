@@ -1313,6 +1313,14 @@ public abstract class AbstractEvalWatch<T> : AbstractEval, Coster,
     }
 
     /// <summary>
+    ///     Cost implements the Coster interface method.
+    /// </summary>
+    public virtual Cost Cost()
+    {
+        return global::Cel.Interpreter.Cost.EstimateCost(@delegate);
+    }
+
+    /// <summary>
     ///     Qualify observes the qualification of a object via a value computed at runtime.
     /// </summary>
     public virtual object Qualify(Activation vars, object obj)
@@ -1326,14 +1334,6 @@ public abstract class AbstractEvalWatch<T> : AbstractEval, Coster,
 
         observer(Id(), val);
         return @out;
-    }
-
-    /// <summary>
-    ///     Cost implements the Coster interface method.
-    /// </summary>
-    public virtual Cost Cost()
-    {
-        return global::Cel.Interpreter.Cost.EstimateCost(@delegate);
     }
 
     public abstract override Val Eval(Activation activation);

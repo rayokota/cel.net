@@ -264,7 +264,7 @@ public class StringsLib : Library
         get
         {
             IList<ProgramOption> list = new List<ProgramOption>();
-            var functions = global::Cel.IProgramOption.Functions(
+            var functions = IProgramOption.Functions(
                 Overload.Binary(CHAR_AT, Guards.CallInStrIntOutStr(CharAt)),
                 Overload.overload(INDEX_OF, Trait.None, null, Guards.CallInStrStrOutInt(IndexOf),
                     Guards.CallInStrStrIntOutInt(IndexOfOffset)),

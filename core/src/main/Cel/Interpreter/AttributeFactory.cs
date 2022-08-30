@@ -383,6 +383,25 @@ public sealed class AbsoluteAttribute : Qualifier,
     }
 
     /// <summary>
+    ///     Cost implements the Coster interface method.
+    /// </summary>
+    public Cost Cost()
+    {
+        var min = 0L;
+        var max = 0L;
+        foreach (var q in qualifiers)
+        {
+            var qc = global::Cel.Interpreter.Cost.EstimateCost(q);
+            min += qc.min;
+            max += qc.max;
+        }
+
+        min++; // For object retrieval.
+        max++;
+        return Coster.CostOf(min, max);
+    }
+
+    /// <summary>
     ///     AddQualifier implements the Attribute interface method.
     /// </summary>
     public Attribute AddQualifier(Qualifier q)
@@ -483,25 +502,6 @@ public sealed class AbsoluteAttribute : Qualifier,
     }
 
     /// <summary>
-    ///     Cost implements the Coster interface method.
-    /// </summary>
-    public Cost Cost()
-    {
-        var min = 0L;
-        var max = 0L;
-        foreach (var q in qualifiers)
-        {
-            var qc = global::Cel.Interpreter.Cost.EstimateCost(q);
-            min += qc.min;
-            max += qc.max;
-        }
-
-        min++; // For object retrieval.
-        max++;
-        return Coster.CostOf(min, max);
-    }
-
-    /// <summary>
     ///     String implements the Stringer interface method.
     /// </summary>
     public override string ToString()
@@ -562,6 +562,19 @@ public sealed class ConditionalAttribute : Qualifier, Attribute,
     }
 
     /// <summary>
+    ///     Cost provides the heuristic cost of a ternary operation {@code &lt;expr&gt; ? &lt;t&gt; :
+    ///     &lt;f&gt;}. The cost is computed as {@code cost(expr)} plus the min/max costs of evaluating
+    ///     either `t` or `f`.
+    /// </summary>
+    public Cost Cost()
+    {
+        var t = global::Cel.Interpreter.Cost.EstimateCost(truthy);
+        var f = global::Cel.Interpreter.Cost.EstimateCost(falsy);
+        var e = global::Cel.Interpreter.Cost.EstimateCost(expr);
+        return Coster.CostOf(e.min + Math.Min(t.min, f.min), e.max + Math.Max(t.max, f.max));
+    }
+
+    /// <summary>
     ///     ID is an implementation of the Attribute interface method.
     /// </summary>
     public long Id()
@@ -579,19 +592,6 @@ public sealed class ConditionalAttribute : Qualifier, Attribute,
 
         var qual = fac.NewQualifier(null, id, val);
         return qual.Qualify(vars, obj);
-    }
-
-    /// <summary>
-    ///     Cost provides the heuristic cost of a ternary operation {@code &lt;expr&gt; ? &lt;t&gt; :
-    ///     &lt;f&gt;}. The cost is computed as {@code cost(expr)} plus the min/max costs of evaluating
-    ///     either `t` or `f`.
-    /// </summary>
-    public Cost Cost()
-    {
-        var t = global::Cel.Interpreter.Cost.EstimateCost(truthy);
-        var f = global::Cel.Interpreter.Cost.EstimateCost(falsy);
-        var e = global::Cel.Interpreter.Cost.EstimateCost(expr);
-        return Coster.CostOf(e.min + Math.Min(t.min, f.min), e.max + Math.Max(t.max, f.max));
     }
 
     /// <summary>
@@ -820,6 +820,24 @@ public sealed class RelativeAttribute : Coster, Qualifier,
     }
 
     /// <summary>
+    ///     Cost implements the Coster interface method.
+    /// </summary>
+    public Cost Cost()
+    {
+        var c = global::Cel.Interpreter.Cost.EstimateCost(operand);
+        var min = c.min;
+        var max = c.max;
+        foreach (var qual in qualifiers)
+        {
+            var q = global::Cel.Interpreter.Cost.EstimateCost(qual);
+            min += q.min;
+            max += q.max;
+        }
+
+        return Coster.CostOf(min, max);
+    }
+
+    /// <summary>
     ///     ID is an implementation of the Attribute interface method.
     /// </summary>
     public long Id()
@@ -837,24 +855,6 @@ public sealed class RelativeAttribute : Coster, Qualifier,
 
         var qual = fac.NewQualifier(null, id, val);
         return qual.Qualify(vars, obj);
-    }
-
-    /// <summary>
-    ///     Cost implements the Coster interface method.
-    /// </summary>
-    public Cost Cost()
-    {
-        var c = global::Cel.Interpreter.Cost.EstimateCost(operand);
-        var min = c.min;
-        var max = c.max;
-        foreach (var qual in qualifiers)
-        {
-            var q = global::Cel.Interpreter.Cost.EstimateCost(qual);
-            min += q.min;
-            max += q.max;
-        }
-
-        return Coster.CostOf(min, max);
     }
 
     /// <summary>
