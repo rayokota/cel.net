@@ -223,7 +223,7 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
 
         public override string ToString()
         {
-            return "JavaMapT{" + "adapter=" + adapter + ", map=" + map + '}';
+            return "MapT{" + "adapter=" + adapter + ", map=" + map + '}';
         }
     }
 }

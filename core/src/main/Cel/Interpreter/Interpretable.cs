@@ -669,7 +669,7 @@ public sealed class Interpretable_EvalUnary : Interpretable_AbstractEval, Interp
 
         // If the implementation is bound and the argument value has the right traits required to
         // invoke it, then call the implementation.
-        if (impl != null && (trait == null || argVal.Type().HasTrait(trait))) return impl.Invoke(argVal);
+        if (impl != null && (trait == Trait.None || argVal.Type().HasTrait(trait))) return impl.Invoke(argVal);
 
         // Otherwise, if the argument is a ReceiverType attempt to invoke the receiver method on the
         // operand (arg0).
@@ -739,7 +739,7 @@ public sealed class Interpretable_EvalBinary : Interpretable_AbstractEvalLhsRhs,
 
         // If the implementation is bound and the argument value has the right traits required to
         // invoke it, then call the implementation.
-        if (impl != null && (trait == null || lVal.Type().HasTrait(trait))) return impl.Invoke(lVal, rVal);
+        if (impl != null && (trait == Trait.None || lVal.Type().HasTrait(trait))) return impl.Invoke(lVal, rVal);
 
         // Otherwise, if the argument is a ReceiverType attempt to invoke the receiver method on the
         // operand (arg0).
@@ -831,7 +831,7 @@ public sealed class Interpretable_EvalVarArgs : Interpretable_AbstractEval, Cost
         // If the implementation is bound and the argument value has the right traits required to
         // invoke it, then call the implementation.
         var arg0 = argVals[0];
-        if (impl != null && (trait == null || arg0.Type().HasTrait(trait))) return impl.Invoke(argVals);
+        if (impl != null && (trait == Trait.None || arg0.Type().HasTrait(trait))) return impl.Invoke(argVals);
 
         // Otherwise, if the argument is a ReceiverType attempt to invoke the receiver method on the
         // operand (arg0).
