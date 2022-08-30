@@ -60,8 +60,7 @@ public sealed class Checker
         var errors = new TypeErrors(source);
         var c = new Checker(env, errors, Mapping.NewMapping(), 0, parsedExpr.SourceInfo);
 
-        var e = new Expr();
-        e.MergeFrom(parsedExpr.Expr.ToByteArray());
+        var e = parsedExpr.Expr;
         c.Check(e);
 
         // Walk over the final type map substituting any type parameters either by their bound value or
@@ -176,6 +175,11 @@ public sealed class Checker
     internal void CheckIdent(Expr e)
     {
         var identExpr = e.IdentExpr;
+        if (identExpr == null)
+        {
+            identExpr = new Expr.Types.Ident();
+            e.IdentExpr = identExpr;
+        }
         // Check to see if the identifier is declared.
         var ident = env.LookupIdent(identExpr.Name);
         if (ident != null)
@@ -194,6 +198,11 @@ public sealed class Checker
     internal void CheckSelect(Expr e)
     {
         var sel = e.SelectExpr;
+        if (sel == null)
+        {
+            sel = new Expr.Types.Select();
+            e.SelectExpr = sel;
+        }
         // Before traversing down the tree, try to interpret as qualified name.
         var qname = Container.ToQualifiedName(e);
         if (!ReferenceEquals(qname, null))
@@ -213,12 +222,23 @@ public sealed class Checker
                 SetType(e, ident.Ident.Type);
                 SetReference(e, NewIdentReference(ident.Name, ident.Ident.Value));
                 var identName = ident.Name;
-                e.IdentExpr.Name = identName;
+                var identExpr = e.IdentExpr;
+                if (identExpr == null)
+                {
+                    identExpr = new Expr.Types.Ident();
+                    e.IdentExpr = identExpr;
+                }
+                identExpr.Name = identName;
                 return;
             }
         }
 
         // Interpret as field selection, first traversing down the operand.
+        if (sel.Operand == null)
+        {
+            sel.Operand = new Expr();
+
+        }
         Check(sel.Operand);
 
         var targetType = GetType(sel.Operand);
@@ -268,6 +288,11 @@ public sealed class Checker
         // please consider the impact on planner.go and consolidate implementations or mirror code
         // as appropriate.
         var call = e.CallExpr;
+        if (call == null)
+        {
+            call = new Expr.Types.Call();
+            e.CallExpr = call;
+        }
         IList<Expr> args = call.Args;
         var fnName = call.Function;
 
@@ -300,6 +325,11 @@ public sealed class Checker
         //
         // Check whether the target is a namespaced function name.
         var target = call.Target;
+        if (target == null)
+        {
+            target = new Expr();
+            call.Target = target;
+        }
         var qualifiedPrefix = Container.ToQualifiedName(target);
         if (!ReferenceEquals(qualifiedPrefix, null))
         {
@@ -423,6 +453,11 @@ public sealed class Checker
     internal void CheckCreateList(Expr e)
     {
         var create = e.ListExpr;
+        if (create == null)
+        {
+            create = new Expr.Types.CreateList();
+            e.ListExpr = create;
+        }
         Type elemType = null;
         for (var i = 0; i < create.Elements.Count; i++)
         {
@@ -441,6 +476,11 @@ public sealed class Checker
     internal void CheckCreateStruct(Expr e)
     {
         var str = e.StructExpr;
+        if (str == null)
+        {
+            str = new Expr.Types.CreateStruct();
+            e.StructExpr = str;
+        }
         if (str.MessageName.Length == 0)
             CheckCreateMessage(e);
         else
@@ -450,15 +490,30 @@ public sealed class Checker
     internal void CheckCreateMap(Expr e)
     {
         var mapVal = e.StructExpr;
+        if (mapVal == null)
+        {
+            mapVal = new Expr.Types.CreateStruct();
+            e.StructExpr = mapVal;
+        }
         Type keyType = null;
         Type valueType = null;
         foreach (var ent in mapVal.Entries)
         {
             var key = ent.MapKey;
+            if (key == null)
+            {
+                key = new Expr();
+                ent.MapKey = key;
+            }
             Check(key);
             keyType = JoinTypes(LocationByExpr(key), keyType, GetType(key));
 
             var val = ent.Value;
+            if (val == null)
+            {
+                val = new Expr();
+                ent.Value = val;
+            }
             Check(val);
             valueType = JoinTypes(LocationByExpr(val), valueType, GetType(val));
         }
@@ -476,6 +531,11 @@ public sealed class Checker
     internal void CheckCreateMessage(Expr e)
     {
         var msgVal = e.StructExpr;
+        if (msgVal == null)
+        {
+            msgVal = new Expr.Types.CreateStruct();
+            e.StructExpr = msgVal;
+        }
         // Determine the type of the message.
         var messageType = Decls.Error;
         var decl = env.LookupIdent(msgVal.MessageName);
@@ -517,6 +577,11 @@ public sealed class Checker
         {
             var field = ent.FieldKey;
             var value = ent.Value;
+            if (value == null)
+            {
+                value = new Expr();
+                ent.Value = value;
+            }
             Check(value);
 
             var fieldType = Decls.Error;
@@ -531,6 +596,20 @@ public sealed class Checker
     internal void CheckComprehension(Expr e)
     {
         var comp = e.ComprehensionExpr;
+        if (comp == null)
+        {
+            comp = new Expr.Types.Comprehension();
+            e.ComprehensionExpr = comp;
+        }
+
+        if (comp.IterRange == null)
+        {
+            comp.IterRange = new Expr(); 
+        }
+        if (comp.AccuInit == null)
+        {
+            comp.AccuInit = new Expr(); 
+        }
         Check(comp.IterRange);
         Check(comp.AccuInit);
         var accuType = GetType(comp.AccuInit);
@@ -570,12 +649,24 @@ public sealed class Checker
         env = env.EnterScope();
         env.Add(Decls.NewVar(comp.IterVar, varType));
         // Check the variable references in the condition and step.
+        if (comp.LoopCondition == null)
+        {
+            comp.LoopCondition = new Expr();
+        }
+        if (comp.LoopStep == null)
+        {
+            comp.LoopStep = new Expr();
+        }
         Check(comp.LoopCondition);
         AssertType(comp.LoopCondition, Decls.Bool);
         Check(comp.LoopStep);
         AssertType(comp.LoopStep, accuType);
         // Exit the loop's block scope before checking the result.
         env = env.ExitScope();
+        if (comp.Result == null)
+        {
+            comp.Result = new Expr();
+        }
         Check(comp.Result);
         // Exit the comprehension scope.
         env = env.ExitScope();

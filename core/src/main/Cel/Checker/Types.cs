@@ -111,7 +111,7 @@ public sealed class Types
                 FormatCheckedTypePrimitive(sb, t.Primitive);
                 return;
             case Kind.kindType:
-                if (Equals(t.Type_, new Type()))
+                if (t.Type_ == null || Equals(t.Type_, new Type()))
                 {
                     sb.Append("type");
                     return;
@@ -612,7 +612,10 @@ public sealed class Types
                 return Decls.NewMapType(Substitute(m, mt.KeyType, typeParamToDyn),
                     Substitute(m, mt.ValueType, typeParamToDyn));
             case Kind.kindType:
-                if (Equals(t.Type_, new Type())) return Decls.NewTypeType(Substitute(m, t.Type_, typeParamToDyn));
+                if (t.Type_ == null || Equals(t.Type_, new Type()))
+                {
+                    return Decls.NewTypeType(Substitute(m, t.Type_, typeParamToDyn));
+                }
 
                 return t;
             default:

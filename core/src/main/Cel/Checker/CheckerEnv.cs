@@ -196,7 +196,6 @@ public sealed class CheckerEnv
 
         if (hasErr) return f;
 
-        function = new Decl.Types.FunctionDecl();
         function.Overloads.Add(overload);
         f.Function = function;
         return f;

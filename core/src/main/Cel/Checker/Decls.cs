@@ -103,7 +103,7 @@ public sealed class Decls
     public static Decl NewFunction(string name, IList<Decl.Types.FunctionDecl.Types.Overload> overloads)
     {
         var functionDecl = new Decl.Types.FunctionDecl();
-        functionDecl.Overloads.Add(overloads);
+        functionDecl.Overloads.AddRange(overloads);
         var decl = new Decl();
         decl.Name = name;
         decl.Function = functionDecl;

@@ -152,7 +152,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
     internal Interpretable PlanCheckedIdent(long id, Reference identRef)
     {
         // Plan a constant reference if this is the case for this simple identifier.
-        if (!Equals(identRef.Value, new Reference().Value))
+        if (identRef.Value != null && !Equals(identRef.Value, new Reference().Value))
         {
             var expr = new Expr();
             expr.Id = id;
@@ -163,7 +163,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
         // Check to see whether the type map indicates this is a type name. All types should be
         // registered with the provider.
         typeMap.TryGetValue(id, out Type cType);
-        if (cType != null && !Equals(cType.Type_, new Type()))
+        if (cType.Type_ != null && !Equals(cType.Type_, new Type()))
         {
             var cVal = provider.FindIdent(identRef.Name);
             if (cVal == null)
@@ -461,25 +461,29 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
         var opAttr = RelativeAttr(op.Id(), op);
         if (opAttr == null) return null;
 
-        var opType = typeMap[expr.CallExpr.Target.Id];
-        if (ind is Interpretable_InterpretableConst)
+        Expr target = expr.CallExpr.Target;
+        if (target != null)
         {
-            var indConst = (Interpretable_InterpretableConst)ind;
-            var qual = attrFactory.NewQualifier(opType, expr.Id, indConst.Value());
-            if (qual == null) return null;
+            var opType = typeMap[target.Id];
+            if (ind is Interpretable_InterpretableConst)
+            {
+                var indConst = (Interpretable_InterpretableConst)ind;
+                var qual = attrFactory.NewQualifier(opType, expr.Id, indConst.Value());
+                if (qual == null) return null;
 
-            opAttr.AddQualifier(qual);
-            return opAttr;
-        }
+                opAttr.AddQualifier(qual);
+                return opAttr;
+            }
+            
+            if (ind is Interpretable_InterpretableAttribute)
+            {
+                var indAttr = (Interpretable_InterpretableAttribute)ind;
+                var qual = attrFactory.NewQualifier(opType, expr.Id, indAttr);
+                if (qual == null) return null;
 
-        if (ind is Interpretable_InterpretableAttribute)
-        {
-            var indAttr = (Interpretable_InterpretableAttribute)ind;
-            var qual = attrFactory.NewQualifier(opType, expr.Id, indAttr);
-            if (qual == null) return null;
-
-            opAttr.AddQualifier(qual);
-            return opAttr;
+                opAttr.AddQualifier(qual);
+                return opAttr;
+            }
         }
 
         var indQual = RelativeAttr(expr.Id, ind);

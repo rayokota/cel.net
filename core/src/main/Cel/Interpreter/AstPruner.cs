@@ -347,7 +347,7 @@ public sealed class AstPruner
                     var entry = entries[i];
                     newEntries.Add(entry);
                     var mapKey = entry.MapKey;
-                    var newKey = mapKey != new Expr.Types.CreateStruct.Types.Entry().MapKey ? Prune(mapKey) : null;
+                    var newKey = mapKey != null && !mapKey.Equals(new Expr.Types.CreateStruct.Types.Entry().MapKey) ? Prune(mapKey) : null;
                     var newValue = Prune(entry.Value);
                     if ((newKey == null || newKey == mapKey) && (newValue == null || newValue == entry.Value)) continue;
 

@@ -306,51 +306,51 @@ public sealed class PbTypeDescription : Description, TypeDescription
                 throw new NotImplementedException();
             //return UnwrapDynamicAny(db, desc, refMsg);
             case "google.protobuf.BoolValue":
-                if (Equals(msg, new BoolValue())) return NullValue.NullValue;
+                if (msg == null || Equals(msg, new BoolValue())) return NullValue.NullValue;
 
                 valueField = msg.Descriptor.FindFieldByName("value");
                 return valueField.Accessor.GetValue(msg);
             case "google.protobuf.BytesValue":
-                if (Equals(msg, new BytesValue())) return NullValue.NullValue;
+                if (msg == null || Equals(msg, new BytesValue())) return NullValue.NullValue;
 
                 valueField = msg.Descriptor.FindFieldByName("value");
                 return valueField.Accessor.GetValue(msg);
             case "google.protobuf.DoubleValue":
-                if (Equals(msg, new DoubleValue())) return NullValue.NullValue;
+                if (msg == null || Equals(msg, new DoubleValue())) return NullValue.NullValue;
 
                 valueField = msg.Descriptor.FindFieldByName("value");
                 return valueField.Accessor.GetValue(msg);
             case "google.protobuf.FloatValue":
-                if (Equals(msg, new FloatValue())) return NullValue.NullValue;
+                if (msg == null || Equals(msg, new FloatValue())) return NullValue.NullValue;
 
                 valueField = msg.Descriptor.FindFieldByName("value");
                 return valueField.Accessor.GetValue(msg);
             case "google.protobuf.Int32Value":
-                if (Equals(msg, new Int32Value())) return NullValue.NullValue;
+                if (msg == null || Equals(msg, new Int32Value())) return NullValue.NullValue;
 
                 valueField = msg.Descriptor.FindFieldByName("value");
                 return valueField.Accessor.GetValue(msg);
             case "google.protobuf.Int64Value":
-                if (Equals(msg, new Int64Value())) return NullValue.NullValue;
+                if (msg == null || Equals(msg, new Int64Value())) return NullValue.NullValue;
 
                 valueField = msg.Descriptor.FindFieldByName("value");
                 return valueField.Accessor.GetValue(msg);
             case "google.protobuf.StringValue":
                 // The msg value is ignored when dealing with wrapper types as they have a null or value
                 // behavior, rather than the standard zero value behavior of other proto message types.
-                if (Equals(msg, new StringValue())) return NullValue.NullValue;
+                if (msg == null || Equals(msg, new StringValue())) return NullValue.NullValue;
 
                 valueField = msg.Descriptor.FindFieldByName("value");
                 return valueField.Accessor.GetValue(msg);
             case "google.protobuf.UInt32Value":
-                if (Equals(msg, new UInt32Value())) return NullValue.NullValue;
+                if (msg == null || Equals(msg, new UInt32Value())) return NullValue.NullValue;
 
                 valueField = msg.Descriptor.FindFieldByName("value");
                 return (ulong)valueField.Accessor.GetValue(msg);
             case "google.protobuf.UInt64Value":
                 // The msg value is ignored when dealing with wrapper types as they have a null or value
                 // behavior, rather than the standard zero value behavior of other proto message types.
-                if (Equals(msg, new UInt64Value())) return NullValue.NullValue;
+                if (msg == null || Equals(msg, new UInt64Value())) return NullValue.NullValue;
 
                 valueField = msg.Descriptor.FindFieldByName("value");
                 return (ulong)valueField.Accessor.GetValue(msg);
