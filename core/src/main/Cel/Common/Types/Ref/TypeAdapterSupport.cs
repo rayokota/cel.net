@@ -87,7 +87,12 @@ public sealed class TypeAdapterSupport
         if (value is object[]) return ListT.NewGenericArrayList(a, (object[])value);
 
         if (value is IList)
-            return ListT.NewGenericArrayList(a, ((IList<object>)value).ToArray());
+        {
+            IList list = (IList)value;
+            object[] array = new object[list.Count];
+            list.CopyTo(array, 0);
+            return ListT.NewGenericArrayList(a, array);
+        }
 
         if (value is IDictionary)
             return MapT.NewMaybeWrappedMap(a, (IDictionary)value);

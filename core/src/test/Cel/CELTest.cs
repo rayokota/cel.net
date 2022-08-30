@@ -350,15 +350,18 @@ namespace Cel
             Ident ident1 = new Ident();
             ident1.Name = "a";
             Ident ident2 = new Ident();
-            Expr expr1 = new Expr();
-            expr1.IdentExpr = ident1;
             ident2.Name = "b";
+            Expr expr1 = new Expr();
+            expr1.Id = 1;
+            expr1.IdentExpr = ident1;
             Expr expr3 = new Expr();
+            expr3.Id = 3;
             expr3.IdentExpr = ident2;
             Call call = new Call();
             call.Function = "_==_";
             call.Args.Add(new List<Expr> { expr1, expr3 });
             Expr expr2 = new Expr();
+            expr2.Id = 2;
             expr2.CallExpr = call;
             object vars = TestUtil.MapOf<string, object>("expr", expr2);
             Program_EvalResult @out = prg.Eval(vars);
@@ -547,7 +550,7 @@ namespace Cel
             // })
 
             // t.Run("local_default", func(t *testing.T) {
-            vars = TestUtil.MapOf<string, object>("attrs", TestUtil.MapOf<string, object>("default", "fourth"));
+            vars = TestUtil.MapOf<string, object>("attrs", TestUtil.MapOf<string, object>(), "default", "fourth");
             @out = prg.Eval(vars);
             Assert.That(@out.Val.Equal(StringT.StringOf("fourth")), Is.SameAs(BoolT.True));
             // })

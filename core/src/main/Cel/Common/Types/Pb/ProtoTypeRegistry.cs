@@ -57,7 +57,7 @@ public sealed class ProtoTypeRegistry : TypeRegistry
 
             RegisterMessage((Message)t);
         }
-        else if (t is Google.Api.Expr.V1Alpha1.Type)
+        else if (t is Type)
         {
             RegisterType((Type)t);
         }
@@ -214,23 +214,33 @@ public sealed class ProtoTypeRegistry : TypeRegistry
             //  then to a protobuf struct. The intermediate step (the Java map) could be omitted.
 
             var value = nv.Value.ConvertToNative(field.ReflectType());
-            if (value.GetType().IsArray) value = new List<object>((object[])value);
+            if (value.GetType().IsArray) value = new ArrayList((object[])value);
 
             var pbDesc = field.Descriptor();
 
             if (pbDesc.FieldType == Google.Protobuf.Reflection.FieldType.Enum)
                 value = IntToProtoEnumValues(field, value);
 
-            // TODO
-            /*
-            if (pbDesc.IsMap)
+            if (pbDesc.IsRepeated)
             {
-              value = ToProtoMapStructure(pbDesc, value);
+                IList list = (IList)pbDesc.Accessor.GetValue(builder);
+                foreach (object o in (IList)value)
+                {
+                    list.Add(o);
+                }
             }
-            */
-
-
-            pbDesc.Accessor.SetValue(builder, value);
+            else if (pbDesc.IsMap)
+            {
+                IDictionary map = (IDictionary)pbDesc.Accessor.GetValue(builder);
+                foreach (DictionaryEntry entry in (IDictionary)value)
+                {
+                    map[entry.Key] = entry.Value;
+                }
+            }
+            else
+            {
+                pbDesc.Accessor.SetValue(builder, value);
+            }
         }
 
         return null;

@@ -137,7 +137,25 @@ public interface AttributeFactory
             return new AttributeFactory_UintQualifier(id, l, UintT.UintOf(l), adapter);
         }
 
-        if (c == typeof(byte) || c == typeof(short) || c == typeof(int) || c == typeof(long))
+        if (c == typeof(byte))
+        {
+            var i = (byte)v;
+            return new AttributeFactory_IntQualifier(id, i, IntT.IntOf(i), adapter);
+        }
+
+        if (c == typeof(short))
+        {
+            var i = (short)v;
+            return new AttributeFactory_IntQualifier(id, i, IntT.IntOf(i), adapter);
+        }
+
+        if (c == typeof(int))
+        {
+            var i = (int)v;
+            return new AttributeFactory_IntQualifier(id, i, IntT.IntOf(i), adapter);
+        }
+
+        if (c == typeof(long))
         {
             var i = (long)v;
             return new AttributeFactory_IntQualifier(id, i, IntT.IntOf(i), adapter);
@@ -1062,7 +1080,10 @@ public sealed class AttributeFactory_IntQualifier : Coster, AttributeFactory_Con
     {
         if (value is ulong) return false;
 
-        if (value is byte || value is short || value is int || value is long) return this.value == (long)value;
+        if (value is byte) return this.value == (byte)value;
+        if (value is short) return this.value == (short)value;
+        if (value is int) return this.value == (int)value;
+        if (value is long) return this.value == (long)value;
 
         return false;
     }

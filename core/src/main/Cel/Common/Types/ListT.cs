@@ -91,7 +91,7 @@ public abstract class ListT : BaseVal, Lister
                 return array;
             }
 
-            if (typeDesc == typeof(IList) || typeDesc == typeof(object)) return ToJavaList();
+            if (typeDesc == typeof(IList) || typeDesc == typeof(object)) return ToArrayList();
 
             if (typeDesc == typeof(ListValue)) return ToPbListValue();
 
@@ -142,9 +142,9 @@ public abstract class ListT : BaseVal, Lister
             return list;
         }
 
-        internal virtual IList<object> ToJavaList()
+        internal virtual IList ToArrayList()
         {
-            return new List<object> { ConvertToNative(typeof(object[])) };
+            return new ArrayList() { ConvertToNative(typeof(object[])) };
         }
 
         internal virtual object ToJavaArray<T>(System.Type typeDesc)

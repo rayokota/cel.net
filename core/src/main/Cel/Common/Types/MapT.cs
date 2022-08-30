@@ -85,7 +85,7 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
 
         public override object? ConvertToNative(System.Type typeDesc)
         {
-            if (typeDesc.IsAssignableFrom(typeof(IDictionary)) || typeDesc == typeof(object)) return ToJavaMap();
+            if (typeDesc.IsAssignableFrom(typeof(IDictionary)) || typeDesc == typeof(object)) return ToHashtable();
 
             if (typeDesc == typeof(Struct)) return ToPbStruct();
 
@@ -124,7 +124,7 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
             return value;
         }
 
-        internal IDictionary ToJavaMap()
+        internal IDictionary ToHashtable()
         {
             IDictionary r = new Hashtable();
             foreach (var entry in map) r.Add(entry.Key.Value(), entry.Value.Value());
@@ -180,7 +180,7 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
         public override object Value()
         {
             // TODO this is expensive :(
-            var nativeMap = ToJavaMap();
+            var nativeMap = ToHashtable();
             return nativeMap;
         }
 
