@@ -83,7 +83,7 @@ public sealed class EvalState_EvalStateImpl : EvalState
     /// </summary>
     public void SetValue(long id, Val v)
     {
-        values.Add(id, v);
+        values[id] = v;
     }
 
     /// <summary>

@@ -317,7 +317,7 @@ public sealed class AttributeFactory_AttrFactory : AttributeFactory
         if (val is string)
         {
             var str = (string)val;
-            if (objType != null && objType.MessageType.Length != 0)
+            if (objType != null && objType.MessageType.Length > 0)
             {
                 var ft = provider.FindFieldType(objType.MessageType, str);
                 if (ft != null && ft.isSet != null && ft.getFrom != null)
@@ -924,7 +924,7 @@ public sealed class AttributeFactory_StringQualifier : Coster, AttributeFactory_
         var s = value;
         if (obj is IDictionary)
         {
-            var m = (Dictionary<object, object>)obj;
+            var m = (Dictionary<string, object>)obj;
             m.TryGetValue(s, out obj);
             if (obj == null)
             {

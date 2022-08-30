@@ -69,7 +69,7 @@ public sealed class Decls
     {
         var abstractType = new Type.Types.AbstractType();
         abstractType.Name = name;
-        abstractType.ParameterTypes.Add(paramTypes);
+        abstractType.ParameterTypes.AddRange(paramTypes);
         var type = new Type();
         type.AbstractType = abstractType;
         return type;
@@ -83,7 +83,7 @@ public sealed class Decls
     {
         var functionType = new Type.Types.FunctionType();
         functionType.ResultType = resultType;
-        functionType.ArgTypes.Add(argTypes);
+        functionType.ArgTypes.AddRange(argTypes);
         var type = new Type();
         type.Function = functionType;
         return type;
@@ -157,7 +157,7 @@ public sealed class Decls
         var overload = new Decl.Types.FunctionDecl.Types.Overload();
         overload.OverloadId = id;
         overload.ResultType = resultType;
-        overload.Params.Add(argTypes);
+        overload.Params.AddRange(argTypes);
         overload.IsInstanceFunction = true;
         return overload;
     }
@@ -208,7 +208,7 @@ public sealed class Decls
         var overload = new Decl.Types.FunctionDecl.Types.Overload();
         overload.OverloadId = id;
         overload.ResultType = resultType;
-        overload.Params.Add(argTypes);
+        overload.Params.AddRange(argTypes);
         overload.IsInstanceFunction = false;
         return overload;
     }
@@ -222,8 +222,8 @@ public sealed class Decls
         var overload = new Decl.Types.FunctionDecl.Types.Overload();
         overload.OverloadId = id;
         overload.ResultType = resultType;
-        overload.Params.Add(argTypes);
-        overload.TypeParams.Add(typeParams);
+        overload.Params.AddRange(argTypes);
+        overload.TypeParams.AddRange(typeParams);
         overload.IsInstanceFunction = true;
         return overload;
     }
@@ -237,8 +237,8 @@ public sealed class Decls
         var overload = new Decl.Types.FunctionDecl.Types.Overload();
         overload.OverloadId = id;
         overload.ResultType = resultType;
-        overload.Params.Add(argTypes);
-        overload.TypeParams.Add(typeParams);
+        overload.Params.AddRange(argTypes);
+        overload.TypeParams.AddRange(typeParams);
         overload.IsInstanceFunction = false;
         return overload;
     }

@@ -481,7 +481,7 @@ public sealed class Checker
             str = new Expr.Types.CreateStruct();
             e.StructExpr = str;
         }
-        if (str.MessageName.Length == 0)
+        if (str.MessageName.Length > 0)
             CheckCreateMessage(e);
         else
             CheckCreateMap(e);

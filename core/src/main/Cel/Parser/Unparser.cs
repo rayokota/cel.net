@@ -264,7 +264,7 @@ public sealed class Unparser
     internal void VisitStruct(Expr.Types.CreateStruct expr)
     {
         // If the message name is non-empty, then this should be treated as message construction.
-        if (expr.MessageName.Length != 0)
+        if (expr.MessageName.Length > 0)
             VisitStructMsg(expr);
         else
             // Otherwise, build a map.

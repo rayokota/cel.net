@@ -201,7 +201,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
         // Determine the field type if this is a proto message type.
         FieldType fieldType = null;
         typeMap.TryGetValue(sel.Operand.Id, out Type opType);
-        if (opType != null && opType.MessageType.Length != 0)
+        if (opType != null && opType.MessageType.Length > 0)
         {
             var ft = provider.FindFieldType(opType.MessageType, sel.Field);
             if (ft != null && ft.isSet != null && ft.getFrom != null) fieldType = ft;
@@ -518,7 +518,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
     internal Interpretable PlanCreateStruct(Expr expr)
     {
         var str = expr.StructExpr;
-        if (str.MessageName.Length != 0) return PlanCreateObj(expr);
+        if (str.MessageName.Length > 0) return PlanCreateObj(expr);
 
         IList<Expr.Types.CreateStruct.Types.Entry> entries = str.Entries;
         var keys = new Interpretable[entries.Count];

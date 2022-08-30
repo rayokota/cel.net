@@ -308,7 +308,7 @@ public sealed class Debug
 
         internal void AppendStruct(Expr.Types.CreateStruct obj)
         {
-            if (obj.MessageName.Length != 0)
+            if (obj.MessageName.Length > 0)
                 AppendObject(obj);
             else
                 AppendMap(obj);
