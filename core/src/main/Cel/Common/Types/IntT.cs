@@ -231,7 +231,7 @@ public sealed class IntT : BaseVal, Adder, Comparer, Divider, Modder, Multiplier
         if (typeDesc == typeof(int) || typeDesc == typeof(int) || typeDesc == typeof(Enum))
         {
             if (i < int.MinValue || i > int.MaxValue)
-                Err.ThrowErrorAsIllegalStateException(Err.RangeError(i, "Java int"));
+                Err.ThrowErrorAsIllegalStateException(Err.RangeError(i, "int"));
 
             return Convert.ToInt32((int)i);
         }

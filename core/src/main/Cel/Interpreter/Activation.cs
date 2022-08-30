@@ -147,7 +147,7 @@ public sealed class Activation_MapActivation : Activation
     /// </summary>
     public object ResolveName(string name)
     {
-        bindings.TryGetValue(name, out object obj);
+        bindings.TryGetValue(name, out var obj);
         if (obj == null) return null;
 
         if (obj is Func<object>)

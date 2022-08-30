@@ -155,14 +155,14 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
     {
         if (typeDesc == typeof(long) || typeDesc == typeof(object))
         {
-            if (i < 0) Err.ThrowErrorAsIllegalStateException(Err.RangeError(i, "Java long"));
+            if (i < 0) Err.ThrowErrorAsIllegalStateException(Err.RangeError(i, "long"));
 
             return Convert.ToInt64(i);
         }
 
         if (typeDesc == typeof(int))
         {
-            if (i < 0 || i > int.MaxValue) Err.ThrowErrorAsIllegalStateException(Err.RangeError(i, "Java int"));
+            if (i < 0 || i > int.MaxValue) Err.ThrowErrorAsIllegalStateException(Err.RangeError(i, "int"));
 
             return Convert.ToInt32((int)i);
         }

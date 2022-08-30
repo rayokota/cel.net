@@ -1,6 +1,4 @@
-﻿
-
-/*
+﻿/*
  * Copyright (C) 2022 Robert Yokota
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel;
 
 /// <summary>
@@ -79,7 +78,7 @@ public sealed class EvalOption
 
     internal EvalOption(string name, InnerEnum innerEnum, int mask)
     {
-        this.Mask = mask;
+        Mask = mask;
 
         nameValue = name;
         ordinalValue = nextOrdinal++;

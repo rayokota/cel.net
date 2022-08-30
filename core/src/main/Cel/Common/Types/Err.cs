@@ -67,7 +67,7 @@ public sealed class Err : BaseVal
     private Err(string error, Exception cause)
     {
         this.error = error;
-        this.Cause = cause;
+        Cause = cause;
     }
 
     public Exception Cause { get; }

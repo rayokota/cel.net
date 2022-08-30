@@ -185,7 +185,7 @@ public sealed class Container
             qualifier = name.Substring(dot);
         }
 
-        AliasSet().TryGetValue(simple, out string alias);
+        AliasSet().TryGetValue(simple, out var alias);
         if (ReferenceEquals(alias, null)) return null;
 
         return alias + qualifier;
@@ -297,7 +297,7 @@ public sealed class Container
                 throw new ArgumentException(string.Format("{0} must refer to a valid qualified name: {1}",
                     kind, qualifiedName));
 
-            c.AliasSet().TryGetValue(alias, out string aliasRef);
+            c.AliasSet().TryGetValue(alias, out var aliasRef);
             if (!ReferenceEquals(aliasRef, null))
                 throw new ArgumentException(string.Format(
                     "{0} collides with existing reference: name={1}, {2}={3}, existing={4}", kind, qualifiedName,

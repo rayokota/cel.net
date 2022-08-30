@@ -23,7 +23,7 @@ namespace Cel.Common.Types;
 /// </summary>
 public interface IteratorT : Val
 {
-    static IteratorT JavaIterator<T1>(TypeAdapter adapter, IEnumerator<T1> iterator)
+    static IteratorT Iterator<T1>(TypeAdapter adapter, IEnumerator<T1> iterator)
     {
         return new IteratorAdapter<T1>(adapter, iterator);
     }

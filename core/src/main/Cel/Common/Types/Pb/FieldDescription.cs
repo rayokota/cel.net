@@ -104,10 +104,11 @@ public sealed class FieldDescription : Description
             case FieldType.Message:
                 if (!fieldDesc.IsMap)
                 {
-                    System.Type type = fieldDesc.MessageType.ClrType;
+                    var type = fieldDesc.MessageType.ClrType;
                     zeroMsg = (Message)Activator.CreateInstance(type);
                     reflectType = PbTypeDescription.ReflectTypeOf(zeroMsg);
                 }
+
                 break;
             default:
                 reflectType = ReflectTypeOfField(fieldDesc);
@@ -419,7 +420,7 @@ public sealed class FieldDescription : Description
         {
             case FieldType.Message:
                 var msgType = desc.MessageType.FullName;
-                Checked.CheckedWellKnowns.TryGetValue(msgType, out Type wk);
+                Checked.CheckedWellKnowns.TryGetValue(msgType, out var wk);
                 if (wk != null) return wk;
 
                 return Checked.CheckedMessageType(msgType);
@@ -461,7 +462,7 @@ public sealed class FieldDescription : Description
         if (o == null || GetType() != o.GetType()) return false;
 
         var that = (FieldDescription)o;
-        return object.Equals(desc, that.desc) && object.Equals(reflectType, that.reflectType);
+        return Equals(desc, that.desc) && Equals(reflectType, that.reflectType);
     }
 
     public override int GetHashCode()
@@ -510,8 +511,6 @@ public sealed class FieldDescription : Description
           //  for the generated map accessor methods like 'getXXXTypeOrThrow()'), too.
           if (v is System.Collections.IList)
           {
-//JAVA TO C# CONVERTER WARNING: Java wildcard generics have no direct equivalent in C#:
-//ORIGINAL LINE: java.util.List<?> lst = (java.util.List<?>) v;
             IList<object> lst = (IList<object>) v;
             IDictionary<object, object> map = new Dictionary<object, object>(lst.Count * 4 / 3 + 1);
             foreach (object e in lst)
@@ -520,11 +519,7 @@ public sealed class FieldDescription : Description
               object value;
               if (e is MapEntry)
               {
-//JAVA TO C# CONVERTER WARNING: Java wildcard generics have no direct equivalent in C#:
-//ORIGINAL LINE: key = ((Google.Protobuf.WellKnownTypes.MapEntry<?, ?>) e).getKey();
                 key = ((MapEntry<object, object>) e).getKey();
-//JAVA TO C# CONVERTER WARNING: Java wildcard generics have no direct equivalent in C#:
-//ORIGINAL LINE: value = ((Google.Protobuf.WellKnownTypes.MapEntry<?, ?>) e).getValue();
                 value = ((MapEntry<object, object>) e).getValue();
               }
               else if (e is DynamicMessage)
@@ -558,7 +553,7 @@ public sealed class FieldDescription : Description
     {
         if (desc.FieldType != FieldType.Message) return false;
 
-        Checked.CheckedWellKnowns.TryGetValue(desc.MessageType.FullName, out Type wellKnown);
+        Checked.CheckedWellKnowns.TryGetValue(desc.MessageType.FullName, out var wellKnown);
         if (wellKnown == null) return false;
 
         return wellKnown.TypeKindCase == Type.TypeKindOneofCase.Wrapper;

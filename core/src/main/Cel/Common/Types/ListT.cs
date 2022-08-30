@@ -86,7 +86,7 @@ public abstract class ListT : BaseVal, Lister
         {
             if (typeDesc.IsArray)
             {
-                var array = ToJavaArray<object>(typeDesc);
+                var array = ToArray<object>(typeDesc);
 
                 return array;
             }
@@ -144,10 +144,10 @@ public abstract class ListT : BaseVal, Lister
 
         internal virtual IList ToArrayList()
         {
-            return new ArrayList() { ConvertToNative(typeof(object[])) };
+            return new ArrayList { ConvertToNative(typeof(object[])) };
         }
 
-        internal virtual object ToJavaArray<T>(System.Type typeDesc)
+        internal virtual object ToArray<T>(System.Type typeDesc)
         {
             var s = (int)size;
             var compType = typeDesc.GetElementType();

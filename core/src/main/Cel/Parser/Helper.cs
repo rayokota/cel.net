@@ -253,7 +253,7 @@ public sealed class Helper
 
     internal Location GetLocation(long id)
     {
-        positions.TryGetValue(id, out int characterOffset);
+        positions.TryGetValue(id, out var characterOffset);
         return source.OffsetLocation(characterOffset);
     }
 

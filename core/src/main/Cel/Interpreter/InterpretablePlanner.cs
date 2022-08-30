@@ -141,7 +141,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
     internal Interpretable PlanIdent(Expr expr)
     {
         // Establish whether the identifier is in the reference map.
-        refMap.TryGetValue(expr.Id, out Reference identRef);
+        refMap.TryGetValue(expr.Id, out var identRef);
         if (identRef != null) return PlanCheckedIdent(expr.Id, identRef);
 
         // Create the possible attribute list for the unresolved reference.
@@ -162,7 +162,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
 
         // Check to see whether the type map indicates this is a type name. All types should be
         // registered with the provider.
-        typeMap.TryGetValue(id, out Type cType);
+        typeMap.TryGetValue(id, out var cType);
         if (cType.Type_ != null && !Equals(cType.Type_, new Type()))
         {
             var cVal = provider.FindIdent(identRef.Name);
@@ -191,7 +191,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
     {
         // If the Select id appears in the reference map from the CheckedExpr proto then it is either
         // a namespaced identifier or enum value.
-        refMap.TryGetValue(expr.Id, out Reference identRef);
+        refMap.TryGetValue(expr.Id, out var identRef);
         if (identRef != null) return PlanCheckedIdent(expr.Id, identRef);
 
         var sel = expr.SelectExpr;
@@ -200,7 +200,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
 
         // Determine the field type if this is a proto message type.
         FieldType fieldType = null;
-        typeMap.TryGetValue(sel.Operand.Id, out Type opType);
+        typeMap.TryGetValue(sel.Operand.Id, out var opType);
         if (opType != null && opType.MessageType.Length > 0)
         {
             var ft = provider.FindFieldType(opType.MessageType, sel.Field);
@@ -461,12 +461,9 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
         var opAttr = RelativeAttr(op.Id(), op);
         if (opAttr == null) return null;
 
-        Expr target = expr.CallExpr.Target;
-        if (target == null)
-        {
-            target = new Expr();
-        }
-        typeMap.TryGetValue(target.Id, out Type opType);
+        var target = expr.CallExpr.Target;
+        if (target == null) target = new Expr();
+        typeMap.TryGetValue(target.Id, out var opType);
         if (ind is Interpretable_InterpretableConst)
         {
             var indConst = (Interpretable_InterpretableConst)ind;
@@ -476,7 +473,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
             opAttr.AddQualifier(qual);
             return opAttr;
         }
-        
+
         if (ind is Interpretable_InterpretableAttribute)
         {
             var indAttr = (Interpretable_InterpretableAttribute)ind;
@@ -673,7 +670,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
         // Checked expressions always have a reference map entry, and _should_ have the fully
         // qualified
         // function name as the fnName value.
-        refMap.TryGetValue(expr.Id, out Reference oRef);
+        refMap.TryGetValue(expr.Id, out var oRef);
         if (oRef != null)
         {
             if (oRef.OverloadId.Count == 1) return new ResolvedFunction(target, fnName, oRef.OverloadId[0]);

@@ -171,10 +171,7 @@ public sealed class Cel
     public static Ast ParsedExprToAst(ParsedExpr parsedExpr)
     {
         var si = parsedExpr.SourceInfo;
-        if (si == null)
-        {
-            si = new SourceInfo();
-        }
+        if (si == null) si = new SourceInfo();
         return new Ast(parsedExpr.Expr, si, Source.NewInfoSource(si));
     }
 

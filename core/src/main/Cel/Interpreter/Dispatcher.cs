@@ -91,7 +91,7 @@ public sealed class Dispatcher_DefaultDispatcher : Dispatcher
     /// </summary>
     public Overload FindOverload(string overload)
     {
-        overloads.TryGetValue(overload, out Overload o);
+        overloads.TryGetValue(overload, out var o);
         if (o != null) return o;
 
         return parent != null ? parent.FindOverload(overload) : null;

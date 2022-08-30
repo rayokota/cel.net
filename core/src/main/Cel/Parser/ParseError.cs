@@ -21,7 +21,7 @@ public sealed class ParseError : Exception
 {
     public ParseError(Location location, string message) : base(message)
     {
-        this.Location = location;
+        Location = location;
     }
 
     public Location Location { get; }

@@ -24,7 +24,7 @@ using Duration = NodaTime.Duration;
 namespace Cel.Common.Types.Ref;
 
 /// <summary>
-///     Helper class for <seealso cref="TypeAdapter" /> implementations to convert from a Java type to a CEL type.
+///     Helper class for <seealso cref="TypeAdapter" /> implementations to convert from a C# type to a CEL type.
 /// </summary>
 public sealed class TypeAdapterSupport
 {
@@ -81,15 +81,15 @@ public sealed class TypeAdapterSupport
     {
         if (value == null) return NullT.NullValue;
 
-        NativeToValueExact.TryGetValue(value.GetType(), out Func<TypeAdapter, object, Val> conv);
+        NativeToValueExact.TryGetValue(value.GetType(), out var conv);
         if (conv != null) return conv(a, value);
 
         if (value is object[]) return ListT.NewGenericArrayList(a, (object[])value);
 
         if (value is IList)
         {
-            IList list = (IList)value;
-            object[] array = new object[list.Count];
+            var list = (IList)value;
+            var array = new object[list.Count];
             list.CopyTo(array, 0);
             return ListT.NewGenericArrayList(a, array);
         }

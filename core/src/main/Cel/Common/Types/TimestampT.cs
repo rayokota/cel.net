@@ -122,12 +122,12 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
         switch (args.Length)
         {
             case 0:
-                timestampZeroArgOverloads.TryGetValue(function, out Func<ZonedDateTime, Val> f0);
+                timestampZeroArgOverloads.TryGetValue(function, out var f0);
                 if (f0 != null) return f0(t);
 
                 break;
             case 1:
-                timestampOneArgOverloads.TryGetValue(function, out Func<ZonedDateTime, Val, Val> f1);
+                timestampOneArgOverloads.TryGetValue(function, out var f1);
                 if (f1 != null) return f1(t, args[0]);
 
                 break;
@@ -525,9 +525,7 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
                     }
 
                     if (c != ':')
-                    {
                         throw new Exception(string.Format("unexpected character '{0}' at index {1:D}", c, i[0]));
-                    }
                 }
 
                 return dig1;

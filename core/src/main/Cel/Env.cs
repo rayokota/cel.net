@@ -100,7 +100,7 @@ public sealed class Env
             IList<AttributePattern> unknownPatterns = new List<AttributePattern>();
             foreach (var d in declarations)
                 if (d.DeclKindCase == DeclKindCase.Ident)
-                    unknownPatterns.Add(AttributePattern.NewAttributePattern((string)d.Name));
+                    unknownPatterns.Add(AttributePattern.NewAttributePattern(d.Name));
 
             return Cel.PartialVars(Activation.EmptyActivation(),
                 ((List<AttributePattern>)unknownPatterns).ToArray());

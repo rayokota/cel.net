@@ -88,7 +88,7 @@ public sealed class ProtoTypeRegistry : TypeRegistry
 
     public Val FindIdent(string identName)
     {
-        revTypeMap.TryGetValue(identName, out Type t);
+        revTypeMap.TryGetValue(identName, out var t);
         if (t != null) return t;
 
         var enumVal = pbdb.DescribeEnum(identName);
@@ -207,7 +207,7 @@ public sealed class ProtoTypeRegistry : TypeRegistry
         foreach (var nv in fields)
         {
             var name = nv.Key;
-            fieldMap.TryGetValue(name, out FieldDescription field);
+            fieldMap.TryGetValue(name, out var field);
             if (field == null) return Err.NoSuchField(name);
 
             // TODO resolve inefficiency for maps: first converted from a MapT to a native Java map and
@@ -223,19 +223,13 @@ public sealed class ProtoTypeRegistry : TypeRegistry
 
             if (pbDesc.IsRepeated)
             {
-                IList list = (IList)pbDesc.Accessor.GetValue(builder);
-                foreach (object o in (IList)value)
-                {
-                    list.Add(o);
-                }
+                var list = (IList)pbDesc.Accessor.GetValue(builder);
+                foreach (var o in (IList)value) list.Add(o);
             }
             else if (pbDesc.IsMap)
             {
-                IDictionary map = (IDictionary)pbDesc.Accessor.GetValue(builder);
-                foreach (DictionaryEntry entry in (IDictionary)value)
-                {
-                    map[entry.Key] = entry.Value;
-                }
+                var map = (IDictionary)pbDesc.Accessor.GetValue(builder);
+                foreach (DictionaryEntry entry in (IDictionary)value) map[entry.Key] = entry.Value;
             }
             else
             {
@@ -261,8 +255,6 @@ public sealed class ProtoTypeRegistry : TypeRegistry
       if (value is System.Collections.IDictionary)
       {
         System.Collections.IList newList = new ArrayList();
-//JAVA TO C# CONVERTER WARNING: Java wildcard generics have no direct equivalent in C#:
-//ORIGINAL LINE: for (java.util.Map.Entry e : ((java.util.Map<?, ?>) value).entrySet())
         foreach (DictionaryEntry e in ((IDictionary<object, object>) value).SetOfKeyValuePairs())
         {
           object v = e.Value;

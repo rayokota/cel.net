@@ -20,7 +20,7 @@ public sealed class ErrorWithLocation : Exception
 {
     public ErrorWithLocation(Location location, string message) : base(message)
     {
-        this.Location = location;
+        Location = location;
     }
 
     public Location Location { get; }

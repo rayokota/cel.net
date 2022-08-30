@@ -25,7 +25,7 @@ public sealed class EvalDetails
 {
     public EvalDetails(EvalState state)
     {
-        this.State = state;
+        State = state;
     }
 
     /// <summary>

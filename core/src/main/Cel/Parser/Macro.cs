@@ -52,8 +52,8 @@ public sealed class Macro
     public Macro(string function, bool receiverStyle, bool varArgStyle, int argCount, MacroExpander expander)
     {
         this.function = function;
-        this.ReceiverStyle = receiverStyle;
-        this.VarArgStyle = varArgStyle;
+        ReceiverStyle = receiverStyle;
+        VarArgStyle = varArgStyle;
         this.argCount = argCount;
         this.expander = expander;
     }

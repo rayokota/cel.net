@@ -26,7 +26,7 @@ public sealed class StringCharStream : ICharStream
     public StringCharStream(string buf, string src)
     {
         this.buf = buf;
-        this.SourceName = src;
+        SourceName = src;
     }
 
     public void Consume()

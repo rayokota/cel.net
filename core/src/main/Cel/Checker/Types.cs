@@ -613,9 +613,7 @@ public sealed class Types
                     Substitute(m, mt.ValueType, typeParamToDyn));
             case Kind.kindType:
                 if (t.Type_ == null || Equals(t.Type_, new Type()))
-                {
                     return Decls.NewTypeType(Substitute(m, t.Type_, typeParamToDyn));
-                }
 
                 return t;
             default:

@@ -108,7 +108,8 @@ public interface AttributeFactory
 
     static AttributeFactory_Qualifier NewQualifierStatic(TypeAdapter adapter, long id, object v)
     {
-        if (v is AttributeFactory_Attribute) return new AttributeFactory_AttrQualifier(id, (AttributeFactory_Attribute)v);
+        if (v is AttributeFactory_Attribute)
+            return new AttributeFactory_AttrQualifier(id, (AttributeFactory_Attribute)v);
 
         var c = v.GetType();
 
@@ -1023,7 +1024,7 @@ public sealed class AttributeFactory_IntQualifier : Coster, AttributeFactory_Con
     /// </summary>
     public object Qualify(Activation vars, object obj)
     {
-        long i = value;
+        var i = value;
         if (obj is IDictionary)
         {
             var m = (IDictionary)obj;
@@ -1038,8 +1039,9 @@ public sealed class AttributeFactory_IntQualifier : Coster, AttributeFactory_Con
                 {
                     obj = m[i];
                     if (obj == null) throw Err.NoSuchKeyException(i);
-                } 
+                }
             }
+
             return obj;
         }
 
@@ -1131,7 +1133,7 @@ public sealed class AttributeFactory_UintQualifier : Coster, AttributeFactory_Co
     /// </summary>
     public object Qualify(Activation vars, object obj)
     {
-        ulong i = value;
+        var i = value;
         if (obj is IDictionary)
         {
             var m = (IDictionary)obj;
@@ -1140,6 +1142,7 @@ public sealed class AttributeFactory_UintQualifier : Coster, AttributeFactory_Co
                 obj = m[i];
                 if (obj == null) throw Err.NoSuchKeyException(i);
             }
+
             return obj;
         }
 

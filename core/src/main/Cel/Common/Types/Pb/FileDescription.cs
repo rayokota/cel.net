@@ -72,14 +72,10 @@ public sealed class FileDescription
 
         IDictionary<string, PbTypeDescription> types = new Dictionary<string, PbTypeDescription>();
         foreach (var entry in metadata.msgTypes)
-        {
             // TODO change this?
             // Check if map
             if (entry.Value.ClrType != null)
-            {
                 types.Add(entry.Key, PbTypeDescription.NewTypeDescription(entry.Key, entry.Value));
-            }
-        }
 
         return new FileDescription(types, enums);
     }
@@ -90,7 +86,7 @@ public sealed class FileDescription
     /// </summary>
     public EnumValueDescription GetEnumDescription(string enumName)
     {
-        enums.TryGetValue(SanitizeProtoName(enumName), out EnumValueDescription ed);
+        enums.TryGetValue(SanitizeProtoName(enumName), out var ed);
         return ed;
     }
 
@@ -100,7 +96,7 @@ public sealed class FileDescription
     /// </summary>
     public PbTypeDescription GetTypeDescription(string typeName)
     {
-        types.TryGetValue(SanitizeProtoName(typeName), out PbTypeDescription pd);
+        types.TryGetValue(SanitizeProtoName(typeName), out var pd);
         return pd;
     }
 

@@ -52,8 +52,8 @@ public sealed class PbTypeDescription : Description, TypeDescription
         MessageToObjectExact[typeof(UInt32Value)] = msg => ((UInt32Value)msg).Value;
         MessageToObjectExact[typeof(UInt64Value)] = msg => ((UInt64Value)msg).Value;
         MessageToObjectExact[typeof(Google.Protobuf.WellKnownTypes.Duration)] =
-            msg => AsJavaDuration((Google.Protobuf.WellKnownTypes.Duration)msg);
-        MessageToObjectExact[typeof(Timestamp)] = msg => AsJavaTimestamp((Timestamp)msg);
+            msg => AsDuration((Google.Protobuf.WellKnownTypes.Duration)msg);
+        MessageToObjectExact[typeof(Timestamp)] = msg => AsTimestamp((Timestamp)msg);
         zeroValueMap["google.protobuf.Any"] = (Message)Activator.CreateInstance(typeof(Any));
         zeroValueMap["google.protobuf.Duration"] =
             (Message)Activator.CreateInstance(typeof(Google.Protobuf.WellKnownTypes.Duration));
@@ -76,7 +76,7 @@ public sealed class PbTypeDescription : Description, TypeDescription
         Type reflectType, Message zeroMsg)
     {
         this.typeName = typeName;
-        this.Descriptor = desc;
+        Descriptor = desc;
         this.fieldMap = fieldMap;
         this.reflectType = reflectType;
         this.zeroMsg = zeroMsg;
@@ -133,7 +133,7 @@ public sealed class PbTypeDescription : Description, TypeDescription
     /// </summary>
     public FieldDescription FieldByName(string name)
     {
-        fieldMap.TryGetValue(name, out FieldDescription fd);
+        fieldMap.TryGetValue(name, out var fd);
         return fd;
     }
 
@@ -232,7 +232,7 @@ public sealed class PbTypeDescription : Description, TypeDescription
     /// </summary>
     internal static object Unwrap(Db db, Description desc, Message msg)
     {
-        MessageToObjectExact.TryGetValue(msg.GetType(), out Func<Message, object> conv);
+        MessageToObjectExact.TryGetValue(msg.GetType(), out var conv);
         if (conv != null) return conv(msg);
 
         if (msg is Any)
@@ -271,12 +271,12 @@ public sealed class PbTypeDescription : Description, TypeDescription
         return msg;
     }
 
-    private static Duration AsJavaDuration(Google.Protobuf.WellKnownTypes.Duration d)
+    private static Duration AsDuration(Google.Protobuf.WellKnownTypes.Duration d)
     {
         return Duration.FromNanoseconds(d.Seconds * 1000000000 + d.Nanos);
     }
 
-    private static ZonedDateTime AsJavaTimestamp(Timestamp t)
+    private static ZonedDateTime AsTimestamp(Timestamp t)
     {
         var instant = Instant.FromUnixTimeSeconds(t.Seconds);
         instant.PlusNanoseconds(t.Nanos);
@@ -357,7 +357,7 @@ public sealed class PbTypeDescription : Description, TypeDescription
             case "google.protobuf.Duration":
                 var duration = new Google.Protobuf.WellKnownTypes.Duration();
                 duration.MergeFrom(msg.ToByteArray());
-                return AsJavaDuration(duration);
+                return AsDuration(duration);
             case "google.protobuf.ListValue":
                 var listValue = new ListValue();
                 listValue.MergeFrom(msg.ToByteArray());
@@ -371,7 +371,7 @@ public sealed class PbTypeDescription : Description, TypeDescription
             case "google.protobuf.Timestamp":
                 var timestamp = new Timestamp();
                 timestamp.MergeFrom(msg.ToByteArray());
-                return AsJavaTimestamp(timestamp);
+                return AsTimestamp(timestamp);
             case "google.protobuf.Value":
                 var value = new Value();
                 value.MergeFrom(msg.ToByteArray());
@@ -451,6 +451,6 @@ public sealed class PbTypeDescription : Description, TypeDescription
         if (msg == null) return null;
 
         var typeName = msg.Descriptor.FullName;
-        return zeroValueMap.TryGetValue(typeName, out Message result) ? result : msg;
+        return zeroValueMap.TryGetValue(typeName, out var result) ? result : msg;
     }
 }

@@ -1,6 +1,4 @@
-﻿
-
-/*
+﻿/*
  * Copyright (C) 2022 Robert Yokota
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel.Parser;
 
 public sealed class Options
@@ -24,9 +23,9 @@ public sealed class Options
     private Options(int maxRecursionDepth, int errorRecoveryLimit, int expressionSizeCodePointLimit,
         IDictionary<string, Macro> macros)
     {
-        this.MaxRecursionDepth = maxRecursionDepth;
-        this.ErrorRecoveryLimit = errorRecoveryLimit;
-        this.ExpressionSizeCodePointLimit = expressionSizeCodePointLimit;
+        MaxRecursionDepth = maxRecursionDepth;
+        ErrorRecoveryLimit = errorRecoveryLimit;
+        ExpressionSizeCodePointLimit = expressionSizeCodePointLimit;
         this.macros = macros;
     }
 
@@ -38,7 +37,7 @@ public sealed class Options
 
     public Macro GetMacro(string name)
     {
-        macros.TryGetValue(name, out Macro macro);
+        macros.TryGetValue(name, out var macro);
         return macro;
     }
 

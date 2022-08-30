@@ -1,11 +1,9 @@
-﻿using System.Reflection;
-using Cel.Common;
+﻿using Cel.Common;
 using Cel.Common.Containers;
 using Cel.Common.Types;
 using Cel.Common.Types.Ref;
 using Google.Api.Expr.V1Alpha1;
 using Google.Protobuf;
-using SharpCompress.Archives.Tar;
 using Type = Google.Api.Expr.V1Alpha1.Type;
 
 /*
@@ -66,10 +64,7 @@ public sealed class Checker
         // Walk over the final type map substituting any type parameters either by their bound value or
         // by DYN.
         IDictionary<long, Type> m = new Dictionary<long, Type>();
-        foreach (var entry in c.types)
-        {
-            m.Add(entry.Key, Types.Substitute(c.mappings, entry.Value, true));
-        }
+        foreach (var entry in c.types) m.Add(entry.Key, Types.Substitute(c.mappings, entry.Value, true));
 
         var checkedExpr = new CheckedExpr();
         checkedExpr.Expr = e;
@@ -180,6 +175,7 @@ public sealed class Checker
             identExpr = new Expr.Types.Ident();
             e.IdentExpr = identExpr;
         }
+
         // Check to see if the identifier is declared.
         var ident = env.LookupIdent(identExpr.Name);
         if (ident != null)
@@ -203,6 +199,7 @@ public sealed class Checker
             sel = new Expr.Types.Select();
             e.SelectExpr = sel;
         }
+
         // Before traversing down the tree, try to interpret as qualified name.
         var qname = Container.ToQualifiedName(e);
         if (!ReferenceEquals(qname, null))
@@ -228,17 +225,14 @@ public sealed class Checker
                     identExpr = new Expr.Types.Ident();
                     e.IdentExpr = identExpr;
                 }
+
                 identExpr.Name = identName;
                 return;
             }
         }
 
         // Interpret as field selection, first traversing down the operand.
-        if (sel.Operand == null)
-        {
-            sel.Operand = new Expr();
-
-        }
+        if (sel.Operand == null) sel.Operand = new Expr();
         Check(sel.Operand);
 
         var targetType = GetType(sel.Operand);
@@ -293,6 +287,7 @@ public sealed class Checker
             call = new Expr.Types.Call();
             e.CallExpr = call;
         }
+
         IList<Expr> args = call.Args;
         var fnName = call.Function;
 
@@ -330,6 +325,7 @@ public sealed class Checker
             target = new Expr();
             call.Target = target;
         }
+
         var qualifiedPrefix = Container.ToQualifiedName(target);
         if (!ReferenceEquals(qualifiedPrefix, null))
         {
@@ -458,6 +454,7 @@ public sealed class Checker
             create = new Expr.Types.CreateList();
             e.ListExpr = create;
         }
+
         Type elemType = null;
         for (var i = 0; i < create.Elements.Count; i++)
         {
@@ -481,6 +478,7 @@ public sealed class Checker
             str = new Expr.Types.CreateStruct();
             e.StructExpr = str;
         }
+
         if (str.MessageName.Length > 0)
             CheckCreateMessage(e);
         else
@@ -495,6 +493,7 @@ public sealed class Checker
             mapVal = new Expr.Types.CreateStruct();
             e.StructExpr = mapVal;
         }
+
         Type keyType = null;
         Type valueType = null;
         foreach (var ent in mapVal.Entries)
@@ -505,6 +504,7 @@ public sealed class Checker
                 key = new Expr();
                 ent.MapKey = key;
             }
+
             Check(key);
             keyType = JoinTypes(LocationByExpr(key), keyType, GetType(key));
 
@@ -514,6 +514,7 @@ public sealed class Checker
                 val = new Expr();
                 ent.Value = val;
             }
+
             Check(val);
             valueType = JoinTypes(LocationByExpr(val), valueType, GetType(val));
         }
@@ -536,6 +537,7 @@ public sealed class Checker
             msgVal = new Expr.Types.CreateStruct();
             e.StructExpr = msgVal;
         }
+
         // Determine the type of the message.
         var messageType = Decls.Error;
         var decl = env.LookupIdent(msgVal.MessageName);
@@ -582,6 +584,7 @@ public sealed class Checker
                 value = new Expr();
                 ent.Value = value;
             }
+
             Check(value);
 
             var fieldType = Decls.Error;
@@ -602,14 +605,8 @@ public sealed class Checker
             e.ComprehensionExpr = comp;
         }
 
-        if (comp.IterRange == null)
-        {
-            comp.IterRange = new Expr(); 
-        }
-        if (comp.AccuInit == null)
-        {
-            comp.AccuInit = new Expr(); 
-        }
+        if (comp.IterRange == null) comp.IterRange = new Expr();
+        if (comp.AccuInit == null) comp.AccuInit = new Expr();
         Check(comp.IterRange);
         Check(comp.AccuInit);
         var accuType = GetType(comp.AccuInit);
@@ -649,24 +646,15 @@ public sealed class Checker
         env = env.EnterScope();
         env.Add(Decls.NewVar(comp.IterVar, varType));
         // Check the variable references in the condition and step.
-        if (comp.LoopCondition == null)
-        {
-            comp.LoopCondition = new Expr();
-        }
-        if (comp.LoopStep == null)
-        {
-            comp.LoopStep = new Expr();
-        }
+        if (comp.LoopCondition == null) comp.LoopCondition = new Expr();
+        if (comp.LoopStep == null) comp.LoopStep = new Expr();
         Check(comp.LoopCondition);
         AssertType(comp.LoopCondition, Decls.Bool);
         Check(comp.LoopStep);
         AssertType(comp.LoopStep, accuType);
         // Exit the loop's block scope before checking the result.
         env = env.ExitScope();
-        if (comp.Result == null)
-        {
-            comp.Result = new Expr();
-        }
+        if (comp.Result == null) comp.Result = new Expr();
         Check(comp.Result);
         // Exit the comprehension scope.
         env = env.ExitScope();
@@ -742,7 +730,7 @@ public sealed class Checker
 
     internal void SetType(Expr e, Type t)
     {
-        types.TryGetValue(e.Id, out Type old);
+        types.TryGetValue(e.Id, out var old);
         if (old != null && !old.Equals(t))
             throw new InvalidOperationException(string.Format(
                 "(Incompatible) Type already exists for expression: {0}({1:D}) old:{2}, new:{3}", e, e.Id, old, t));
@@ -752,13 +740,13 @@ public sealed class Checker
 
     internal Type GetType(Expr e)
     {
-        types.TryGetValue(e.Id, out Type type);
+        types.TryGetValue(e.Id, out var type);
         return type;
     }
 
     internal void SetReference(Expr e, Reference r)
     {
-        references.TryGetValue(e.Id, out Reference old);
+        references.TryGetValue(e.Id, out var old);
         if (old != null && !old.Equals(r))
             throw new InvalidOperationException(string.Format(
                 "Reference already exists for expression: {0}({1:D}) old:{2}, new:{3}", e, e.Id, old, r));
@@ -785,7 +773,7 @@ public sealed class Checker
     {
         IDictionary<long, int> positions = sourceInfo.Positions;
         var line = 1;
-        int offset = -1;
+        var offset = -1;
         positions.TryGetValue(id, out offset);
         if (offset >= 0)
         {
@@ -794,7 +782,7 @@ public sealed class Checker
                 if (lineOffset < offset)
                 {
                     line++;
-                    col = offset- lineOffset.Value;
+                    col = offset - lineOffset.Value;
                 }
                 else
                 {

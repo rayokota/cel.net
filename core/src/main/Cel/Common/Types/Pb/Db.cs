@@ -106,7 +106,7 @@ public sealed class Db
     public FileDescription RegisterDescriptor(FileDescriptor fileDesc)
     {
         var path = Path(fileDesc);
-        revFileDescriptorMap.TryGetValue(path, out FileDescription fd);
+        revFileDescriptorMap.TryGetValue(path, out var fd);
         if (fd != null) return fd;
 
         // Make sure to search the global registry to see if a protoreflect.FileDescriptor for
@@ -117,7 +117,7 @@ public sealed class Db
         // equivalence. This choice means that a FieldDescriptor generated from a FileDescriptorProto
         // will be incompatible with the FieldDescriptor in the global registry and any message created
         // from that global registry.
-        // TODO is there something like this in Java ??
+        //
         //    globalFD := protoregistry.GlobalFiles.FindFileByPath(fileDesc.Path())
         //    if err == nil {
         //      fileDesc = globalFD
@@ -148,7 +148,7 @@ public sealed class Db
         var msgDesc = message.Descriptor;
         var msgName = msgDesc.FullName;
         var typeName = FileDescription.SanitizeProtoName(msgName);
-        revFileDescriptorMap.TryGetValue(typeName, out FileDescription fd);
+        revFileDescriptorMap.TryGetValue(typeName, out var fd);
         if (fd == null)
         {
             fd = RegisterDescriptor(msgDesc.File);
@@ -166,7 +166,7 @@ public sealed class Db
     public EnumValueDescription DescribeEnum(string enumName)
     {
         enumName = FileDescription.SanitizeProtoName(enumName);
-        revFileDescriptorMap.TryGetValue(enumName, out FileDescription fd);
+        revFileDescriptorMap.TryGetValue(enumName, out var fd);
         return fd != null ? fd.GetEnumDescription(enumName) : null;
     }
 
@@ -176,7 +176,7 @@ public sealed class Db
     public PbTypeDescription DescribeType(string typeName)
     {
         typeName = FileDescription.SanitizeProtoName(typeName);
-        revFileDescriptorMap.TryGetValue(typeName, out FileDescription fd);
+        revFileDescriptorMap.TryGetValue(typeName, out var fd);
         return fd != null ? fd.GetTypeDescription(typeName) : null;
     }
 

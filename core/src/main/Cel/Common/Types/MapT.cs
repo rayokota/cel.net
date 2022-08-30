@@ -142,7 +142,7 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
 
         public override IteratorT Iterator()
         {
-            return IteratorT.JavaIterator(adapter, map.Keys.GetEnumerator());
+            return IteratorT.Iterator(adapter, map.Keys.GetEnumerator());
         }
 
         public override Val Equal(Val other)
@@ -191,7 +191,7 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
 
         public override Val Get(Val index)
         {
-            map.TryGetValue(index, out Val v);
+            map.TryGetValue(index, out var v);
             return v;
         }
 
@@ -202,7 +202,7 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
 
         public override Val Find(Val key)
         {
-            map.TryGetValue(key, out Val v);
+            map.TryGetValue(key, out var v);
             return v;
         }
 

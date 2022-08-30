@@ -18,10 +18,6 @@ using System.Text;
 
 namespace Cel.Common;
 
-/// <summary>
-///     Note: This class is called {@code Error} in Go, but that name is occupied by {@code
-///     java.lang.Error}.
-/// </summary>
 public sealed class CelError : IComparable<CelError>
 {
     private const char dot = '.';
@@ -33,8 +29,8 @@ public sealed class CelError : IComparable<CelError>
 
     public CelError(Location location, string message)
     {
-        this.Location = location;
-        this.Message = message;
+        Location = location;
+        Message = message;
     }
 
     public Location Location { get; }

@@ -155,7 +155,7 @@ public sealed class Operator
         valueList.Add(In);
         valueList.Add(OldNotStrictlyFalse);
         valueList.Add(OldIn);
-        
+
         {
             var m = new Dictionary<string, Operator>();
             foreach (var op in Values()) m.Add(op.id, op);
@@ -184,14 +184,14 @@ public sealed class Operator
 
     public static Operator ById(string id)
     {
-        operatorsById.TryGetValue(id, out Operator op);
+        operatorsById.TryGetValue(id, out var op);
         return op;
     }
 
     // Find the internal function name for an operator, if the input text is one.
     public static Operator Find(string text)
     {
-        operators.TryGetValue(text, out Operator op);
+        operators.TryGetValue(text, out var op);
         return op;
     }
 

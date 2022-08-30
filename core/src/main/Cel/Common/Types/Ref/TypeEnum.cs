@@ -1,6 +1,4 @@
-﻿
-
-/*
+﻿/*
  * Copyright (C) 2022 Robert Yokota
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 namespace Cel.Common.Types.Ref;
 
 public sealed class TypeEnum
@@ -82,7 +81,7 @@ public sealed class TypeEnum
 
     internal TypeEnum(InnerEnum innerEnum, string name)
     {
-        this.Name = name;
+        Name = name;
         ordinalValue = nextOrdinal++;
         InnerEnumValue = innerEnum;
     }

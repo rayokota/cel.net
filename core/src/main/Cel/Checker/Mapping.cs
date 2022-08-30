@@ -62,7 +62,7 @@ public sealed class Mapping
 
     internal Type Find(Type from)
     {
-        mapping.TryGetValue(KeyForType(from), out Type type);
+        mapping.TryGetValue(KeyForType(from), out var type);
         return type;
     }
 

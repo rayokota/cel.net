@@ -125,7 +125,7 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
     {
         if (args.Length == 0)
         {
-            durationZeroArgOverloads.TryGetValue(function, out Func<Period, Val> f);
+            durationZeroArgOverloads.TryGetValue(function, out var f);
             if (f != null) return f(d);
         }
 
@@ -187,7 +187,7 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
 
         if (typeof(Any) == typeDesc) return Any.Pack(PbVal());
 
-        if (typeof(long) == typeDesc) return Convert.ToInt64(ToJavaLong());
+        if (typeof(long) == typeDesc) return Convert.ToInt64(ToLong());
 
         if (typeof(string) == typeDesc)
             // CEL follows the proto3 to JSON conversion.
@@ -215,7 +215,7 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
         return duration;
     }
 
-    private long ToJavaLong()
+    private long ToLong()
     {
         return d.Seconds * 1000000000 + d.Nanoseconds;
     }
@@ -239,7 +239,7 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
             case TypeEnum.InnerEnum.String:
                 return StringT.StringOf(ToPbString());
             case TypeEnum.InnerEnum.Int:
-                return IntT.IntOf(ToJavaLong());
+                return IntT.IntOf(ToLong());
             case TypeEnum.InnerEnum.Duration:
                 return this;
             case TypeEnum.InnerEnum.Type:

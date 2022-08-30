@@ -37,9 +37,9 @@ public sealed class Ast
     public Ast(Expr expr, SourceInfo info, Source source, IDictionary<long, Reference> refMap,
         IDictionary<long, Type> typeMap)
     {
-        this.Expr = expr;
-        this.SourceInfo = info;
-        this.Source = source;
+        Expr = expr;
+        SourceInfo = info;
+        Source = source;
         this.refMap = refMap;
         this.typeMap = typeMap;
     }
@@ -71,7 +71,7 @@ public sealed class Ast
         {
             if (!Checked) return Decls.Dyn;
 
-            typeMap.TryGetValue(Expr.Id, out Type t);
+            typeMap.TryGetValue(Expr.Id, out var t);
             return t;
         }
     }

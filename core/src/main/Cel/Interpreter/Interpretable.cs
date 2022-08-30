@@ -838,7 +838,6 @@ public sealed class Interpretable_EvalVarArgs : Interpretable_AbstractEval, Cost
         if (arg0.Type().HasTrait(Trait.ReceiverType))
         {
             var newArgVals = new Val[argVals.Length - 1];
-            // TODO does Java have bug?
             Array.Copy(argVals, 1, newArgVals, 0, argVals.Length - 1);
             return ((Receiver)arg0).Receive(function, overload, newArgVals);
         }
