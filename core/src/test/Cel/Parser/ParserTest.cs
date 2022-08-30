@@ -511,8 +511,9 @@ internal class ParserTest
             new[]
             {
                 "82", "1 + 2\n" + "3 +", "",
-                "ERROR: <input>:2:1: Syntax error: mismatched input '3' expecting {<EOF>, '==', '!=', 'in', '<', '<=', '>=', '>', '&&', '||', '[', '{', '.', '-', '?', '+', '*', '/', '%'}\n" +
-                " | 3 +\n" + " | ^",
+                "ERROR: <input>:2:1: Syntax error: mismatched input '3' expecting <EOF>\n | 3 +\n | ^",
+                // TODO remove?
+                //"ERROR: <input>:2:1: Syntax error: mismatched input '3' expecting {<EOF>, '==', '!=', 'in', '<', '<=', '>=', '>', '&&', '||', '[', '{', '.', '-', '?', '+', '*', '/', '%'}\n" + " | 3 +\n | ^",
                 ""
             },
             new[] { "83", "\"\\\"\"", "\"\\\"\"^#1:*expr.Constant_StringValue#", "", "" },
@@ -747,17 +748,20 @@ internal class ParserTest
             new[]
             {
                 "124", "{a}", "",
-                "ERROR: <input>:1:3: Syntax error: mismatched input '}' expecting {'==', '!=', 'in', '<', '<=', '>=', '>', '&&', '||', '[', '{', '(', '.', '-', '?', ':', '+', '*', '/', '%'}\n" +
-                " | {a}\n" + " | ..^",
+                "ERROR: <input>:1:3: Syntax error: mismatched input '}' expecting ':'\n | {a}\n | ..^",
+                // TODO remove?
+                //"ERROR: <input>:1:3: Syntax error: mismatched input '}' expecting {'==', '!=', 'in', '<', '<=', '>=', '>', '&&', '||', '[', '{', '(', '.', '-', '?', ':', '+', '*', '/', '%'}\n | {a}\n" + " | ..^",
                 ""
             },
             new[]
             {
                 "125", "{:a}", "",
-                "ERROR: <input>:1:2: Syntax error: extraneous input ':' expecting {'[', '{', '}', '(', '.', ',', '-', '!', 'true', 'false', 'null', NUM_FLOAT, NUM_INT, NUM_UINT, STRING, BYTES, IDENTIFIER}\n" +
-                " | {:a}\n" + " | .^\n" +
-                "ERROR: <input>:1:4: Syntax error: mismatched input '}' expecting {'==', '!=', 'in', '<', '<=', '>=', '>', '&&', '||', '[', '{', '(', '.', '-', '?', ':', '+', '*', '/', '%'}\n" +
-                " | {:a}\n" + " | ...^",
+                "ERROR: <input>:1:2: Syntax error: extraneous input ':' expecting {'[', '{', '}', '(', '.', ',', '-', '!', 'true', 'false', 'null', NUM_FLOAT, NUM_INT, NUM_UINT, STRING, BYTES, IDENTIFIER}\n | {:a}\n" + " | .^\n" +
+                "ERROR: <input>:1:4: Syntax error: mismatched input '}' expecting ':'\n | {:a}\n | ...^",
+                // TODO remove?
+                //"ERROR: <input>:1:2: Syntax error: extraneous input ':' expecting {'[', '{', '}', '(', '.', ',', '-', '!', 'true', 'false', 'null', NUM_FLOAT, NUM_INT, NUM_UINT, STRING, BYTES, IDENTIFIER}\n | {:a}\n" + " | .^\n" +
+                //"ERROR: <input>:1:4: Syntax error: mismatched input '}' expecting {'==', '!=', 'in', '<', '<=', '>=', '>', '&&', '||', '[', '{', '(', '.', '-', '?', ':', '+', '*', '/', '%'}\n" +
+                //" | {:a}\n" + " | ...^",
                 ""
             },
             new[]
