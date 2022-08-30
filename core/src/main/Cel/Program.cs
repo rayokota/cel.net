@@ -23,9 +23,9 @@ namespace Cel;
 /// </summary>
 public interface Program
 {
-    static Program_EvalResult NewEvalResult(Val val, EvalDetails evalDetails)
+    static EvalResult NewEvalResult(Val val, EvalDetails evalDetails)
     {
-        return new Program_EvalResult(val, evalDetails);
+        return new EvalResult(val, evalDetails);
     }
 
     /// <summary>
@@ -50,15 +50,15 @@ public interface Program
     ///         program.
     ///     </para>
     /// </summary>
-    Program_EvalResult Eval(object vars);
+    EvalResult Eval(object vars);
 }
 
-public sealed class Program_EvalResult
+public sealed class EvalResult
 {
     internal readonly EvalDetails evalDetails;
     internal readonly Val val;
 
-    internal Program_EvalResult(Val val, EvalDetails evalDetails)
+    internal EvalResult(Val val, EvalDetails evalDetails)
     {
         this.val = val;
         this.evalDetails = evalDetails;

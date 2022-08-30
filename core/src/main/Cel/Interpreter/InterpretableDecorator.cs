@@ -36,22 +36,22 @@ public interface IInterpretableDecorator
     /// <summary>
     ///     decObserveEval records evaluation state into an EvalState object.
     /// </summary>
-    static InterpretableDecorator DecObserveEval(InterpretableDecorator_EvalObserver observer)
+    static InterpretableDecorator DecObserveEval(EvalObserver observer)
     {
         return i =>
         {
-            if (i is Interpretable_EvalWatch || i is Interpretable_EvalWatchAttr ||
-                i is Interpretable_EvalWatchConst)
+            if (i is EvalWatch || i is EvalWatchAttr ||
+                i is EvalWatchConst)
                 // these instruction are already watching, return straight-away.
                 return i;
 
-            if (i is Interpretable_InterpretableAttribute)
-                return new Interpretable_EvalWatchAttr((Interpretable_InterpretableAttribute)i, observer);
+            if (i is InterpretableAttribute)
+                return new EvalWatchAttr((InterpretableAttribute)i, observer);
 
-            if (i is Interpretable_InterpretableConst)
-                return new Interpretable_EvalWatchConst((Interpretable_InterpretableConst)i, observer);
+            if (i is InterpretableConst)
+                return new EvalWatchConst((InterpretableConst)i, observer);
 
-            return new Interpretable_EvalWatch(i, observer);
+            return new EvalWatch(i, observer);
         };
     }
 
@@ -63,31 +63,31 @@ public interface IInterpretableDecorator
     {
         return i =>
         {
-            if (i is Interpretable_EvalOr)
+            if (i is EvalOr)
             {
-                var expr = (Interpretable_EvalOr)i;
-                return new Interpretable_EvalExhaustiveOr(expr.id, expr.lhs, expr.rhs);
+                var expr = (EvalOr)i;
+                return new EvalExhaustiveOr(expr.id, expr.lhs, expr.rhs);
             }
 
-            if (i is Interpretable_EvalAnd)
+            if (i is EvalAnd)
             {
-                var expr = (Interpretable_EvalAnd)i;
-                return new Interpretable_EvalExhaustiveAnd(expr.id, expr.lhs, expr.rhs);
+                var expr = (EvalAnd)i;
+                return new EvalExhaustiveAnd(expr.id, expr.lhs, expr.rhs);
             }
 
-            if (i is Interpretable_EvalFold)
+            if (i is EvalFold)
             {
-                var expr = (Interpretable_EvalFold)i;
-                return new Interpretable_EvalExhaustiveFold(expr.id, expr.accu, expr.accuVar, expr.iterRange,
+                var expr = (EvalFold)i;
+                return new EvalExhaustiveFold(expr.id, expr.accu, expr.accuVar, expr.iterRange,
                     expr.iterVar, expr.cond, expr.step, expr.result);
             }
 
-            if (i is Interpretable_InterpretableAttribute)
+            if (i is InterpretableAttribute)
             {
-                var expr = (Interpretable_InterpretableAttribute)i;
-                if (expr.Attr() is AttributeFactory_ConditionalAttribute)
-                    return new Interpretable_EvalExhaustiveConditional(i.Id(), expr.Adapter(),
-                        (AttributeFactory_ConditionalAttribute)expr.Attr());
+                var expr = (InterpretableAttribute)i;
+                if (expr.Attr() is ConditionalAttribute)
+                    return new EvalExhaustiveConditional(i.Id(), expr.Adapter(),
+                        (ConditionalAttribute)expr.Attr());
             }
 
             return i;
@@ -107,13 +107,13 @@ public interface IInterpretableDecorator
     {
         return i =>
         {
-            if (i is Interpretable_EvalList) return MaybeBuildListLiteral(i, (Interpretable_EvalList)i);
+            if (i is EvalList) return MaybeBuildListLiteral(i, (EvalList)i);
 
-            if (i is Interpretable_EvalMap) return MaybeBuildMapLiteral(i, (Interpretable_EvalMap)i);
+            if (i is EvalMap) return MaybeBuildMapLiteral(i, (EvalMap)i);
 
-            if (i is Interpretable_InterpretableCall)
+            if (i is InterpretableCall)
             {
-                var inst = (Interpretable_InterpretableCall)i;
+                var inst = (InterpretableCall)i;
                 if (inst.OverloadID().Equals(Overloads.InList)) return MaybeOptimizeSetMembership(i, inst);
 
                 if (Overloads.IsTypeConversionFunction(inst.Function())) return MaybeOptimizeConstUnary(i, inst);
@@ -123,34 +123,34 @@ public interface IInterpretableDecorator
         };
     }
 
-    static Interpretable MaybeOptimizeConstUnary(Interpretable i, Interpretable_InterpretableCall call)
+    static Interpretable MaybeOptimizeConstUnary(Interpretable i, InterpretableCall call)
     {
         var args = call.Args();
         if (args.Length != 1) return i;
 
-        if (!(args[0] is Interpretable_InterpretableConst)) return i;
+        if (!(args[0] is InterpretableConst)) return i;
 
         var val = call.Eval(Activation.EmptyActivation());
         Err.ThrowErrorAsIllegalStateException(val);
         return Interpretable.NewConstValue(call.Id(), val);
     }
 
-    static Interpretable MaybeBuildListLiteral(Interpretable i, Interpretable_EvalList l)
+    static Interpretable MaybeBuildListLiteral(Interpretable i, EvalList l)
     {
         foreach (var elem in l.elems)
-            if (!(elem is Interpretable_InterpretableConst))
+            if (!(elem is InterpretableConst))
                 return i;
 
         return Interpretable.NewConstValue(l.Id(), l.Eval(Activation.EmptyActivation()));
     }
 
-    static Interpretable MaybeBuildMapLiteral(Interpretable i, Interpretable_EvalMap mp)
+    static Interpretable MaybeBuildMapLiteral(Interpretable i, EvalMap mp)
     {
         for (var idx = 0; idx < mp.keys.Length; idx++)
         {
-            if (!(mp.keys[idx] is Interpretable_InterpretableConst)) return i;
+            if (!(mp.keys[idx] is InterpretableConst)) return i;
 
-            if (!(mp.vals[idx] is Interpretable_InterpretableConst)) return i;
+            if (!(mp.vals[idx] is InterpretableConst)) return i;
         }
 
         return Interpretable.NewConstValue(mp.Id(), mp.Eval(Activation.EmptyActivation()));
@@ -165,14 +165,14 @@ public interface IInterpretableDecorator
     ///             <li>the elements are all of primitive type.
     ///     </ul>
     /// </summary>
-    static Interpretable MaybeOptimizeSetMembership(Interpretable i, Interpretable_InterpretableCall inlist)
+    static Interpretable MaybeOptimizeSetMembership(Interpretable i, InterpretableCall inlist)
     {
         var args = inlist.Args();
         var lhs = args[0];
         var rhs = args[1];
-        if (!(rhs is Interpretable_InterpretableConst)) return i;
+        if (!(rhs is InterpretableConst)) return i;
 
-        var l = (Interpretable_InterpretableConst)rhs;
+        var l = (InterpretableConst)rhs;
         // When the incoming binary call is flagged with as the InList overload, the value will
         // always be convertible to a `traits.Lister` type.
         var list = (Lister)l.Value();
@@ -195,8 +195,8 @@ public interface IInterpretableDecorator
             valueSet.Add(elem);
         }
 
-        return new Interpretable_EvalSetMembership(inlist, lhs, typ.TypeName(), valueSet);
+        return new EvalSetMembership(inlist, lhs, typ.TypeName(), valueSet);
     }
 }
 
-public delegate void InterpretableDecorator_EvalObserver(long id, Val v);
+public delegate void EvalObserver(long id, Val v);

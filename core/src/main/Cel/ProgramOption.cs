@@ -21,7 +21,7 @@ namespace Cel;
 
 public delegate Prog ProgramOption(Prog prog);
 
-public class ProgramOptions
+public interface IProgramOption
 {
     /// <summary>
     ///     CustomDecorator appends an InterpreterDecorator to the program.

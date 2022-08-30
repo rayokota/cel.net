@@ -216,7 +216,7 @@ public sealed class Cel
     ///         interpreter.NewActivation call.
     ///     </para>
     /// </summary>
-    public static Activation_PartialActivation PartialVars(object vars, params AttributePattern[] unknowns)
+    public static PartialActivation PartialVars(object vars, params AttributePattern[] unknowns)
     {
         return Activation.NewPartialActivation(vars, unknowns);
     }
@@ -250,10 +250,10 @@ public sealed class Cel
     /// <summary>
     ///     EstimateCost returns the heuristic cost interval for the program.
     /// </summary>
-    public static Coster_Cost EstimateCost(object p)
+    public static Cost EstimateCost(object p)
     {
         if (p is Coster) return ((Coster)p).Cost();
 
-        return Coster_Cost.Unknown;
+        return Cost.Unknown;
     }
 }

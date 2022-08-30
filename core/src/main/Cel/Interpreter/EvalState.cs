@@ -50,14 +50,14 @@ public interface EvalState
     /// </summary>
     static EvalState NewEvalState()
     {
-        return new EvalState_EvalStateImpl();
+        return new EvalStateImpl();
     }
 
     /// <summary>
     /// evalState permits the mutation of evaluation state for a given expression id. </summary>
 }
 
-public sealed class EvalState_EvalStateImpl : EvalState
+public sealed class EvalStateImpl : EvalState
 {
     internal readonly IDictionary<long, Val> values = new Dictionary<long, Val>();
 

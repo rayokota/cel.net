@@ -42,7 +42,7 @@ public interface Dispatcher
     /// </summary>
     static Dispatcher NewDispatcher()
     {
-        return new Dispatcher_DefaultDispatcher(null, new Dictionary<string, Overload>());
+        return new DefaultDispatcher(null, new Dictionary<string, Overload>());
     }
 
     /// <summary>
@@ -52,19 +52,19 @@ public interface Dispatcher
     /// </summary>
     static Dispatcher ExtendDispatcher(Dispatcher parent)
     {
-        return new Dispatcher_DefaultDispatcher(parent, new Dictionary<string, Overload>());
+        return new DefaultDispatcher(parent, new Dictionary<string, Overload>());
     }
 
     /// <summary>
     /// defaultDispatcher struct which contains an overload map. </summary>
 }
 
-public sealed class Dispatcher_DefaultDispatcher : Dispatcher
+public sealed class DefaultDispatcher : Dispatcher
 {
     internal readonly IDictionary<string, Overload> overloads;
     internal readonly Dispatcher parent;
 
-    internal Dispatcher_DefaultDispatcher(Dispatcher parent, IDictionary<string, Overload> overloads)
+    internal DefaultDispatcher(Dispatcher parent, IDictionary<string, Overload> overloads)
     {
         this.parent = parent;
         this.overloads = overloads;

@@ -182,7 +182,7 @@ public sealed class AttributePattern
         ///     qualifierValueEquator interface and its IsValueEqualTo returns true for the qualifier
         ///     pattern.
         /// </summary>
-        public bool Matches(AttributeFactory_Qualifier q)
+        public bool Matches(Qualifier q)
         {
             if (wildcard) return true;
 
@@ -240,18 +240,18 @@ public sealed class AttributePattern
             this.provider = provider;
         }
 
-        public AttributeFactory_Attribute ConditionalAttribute(long id, Interpretable expr,
-            AttributeFactory_Attribute t, AttributeFactory_Attribute f)
+        public Attribute ConditionalAttribute(long id, Interpretable expr,
+            Attribute t, Attribute f)
         {
             return fac.ConditionalAttribute(id, expr, t, f);
         }
 
-        public AttributeFactory_Attribute RelativeAttribute(long id, Interpretable operand)
+        public Attribute RelativeAttribute(long id, Interpretable operand)
         {
             return fac.RelativeAttribute(id, operand);
         }
 
-        public AttributeFactory_Qualifier NewQualifier(Type objType, long qualID, object val)
+        public Qualifier NewQualifier(Type objType, long qualID, object val)
         {
             return fac.NewQualifier(objType, qualID, val);
         }
@@ -261,10 +261,10 @@ public sealed class AttributePattern
         ///     NamespacedAttribute resolution in an internal attributeMatcher object to dynamically match
         ///     unknown patterns from PartialActivation inputs if given.
         /// </summary>
-        public AttributeFactory_NamespacedAttribute AbsoluteAttribute(long id, params string[] names)
+        public NamespacedAttribute AbsoluteAttribute(long id, params string[] names)
         {
             var attr = fac.AbsoluteAttribute(id, names);
-            return new AttributeMatcher(this, attr, new List<AttributeFactory_Qualifier>());
+            return new AttributeMatcher(this, attr, new List<Qualifier>());
         }
 
         /// <summary>
@@ -272,11 +272,11 @@ public sealed class AttributePattern
         ///     'maybe' NamespacedAttribute values are produced using the PartialAttributeFactory rather than
         ///     the base AttributeFactory implementation.
         /// </summary>
-        public AttributeFactory_Attribute MaybeAttribute(long id, string name)
+        public Attribute MaybeAttribute(long id, string name)
         {
-            IList<AttributeFactory_NamespacedAttribute> attrs = new List<AttributeFactory_NamespacedAttribute>();
+            IList<NamespacedAttribute> attrs = new List<NamespacedAttribute>();
             attrs.Add(AbsoluteAttribute(id, container.ResolveCandidateNames(name)));
-            return new AttributeFactory_MaybeAttribute(id, attrs, adapter, provider, this);
+            return new MaybeAttribute(id, attrs, adapter, provider, this);
         }
 
         /// <summary>
@@ -307,8 +307,8 @@ public sealed class AttributePattern
         ///         Unknown.
         ///     </para>
         /// </summary>
-        internal object MatchesUnknownPatterns(Activation_PartialActivation vars, long attrID,
-            string[] variableNames, IList<AttributeFactory_Qualifier> qualifiers)
+        internal object MatchesUnknownPatterns(PartialActivation vars, long attrID,
+            string[] variableNames, IList<Qualifier> qualifiers)
         {
             var patterns = vars.UnknownAttributePatterns();
             ISet<int> candidateIndices = new HashSet<int>();
@@ -328,13 +328,13 @@ public sealed class AttributePattern
             // Resolve the attribute qualifiers into a static set. This prevents more dynamic
             // Attribute resolutions than necessary when there are multiple unknown patterns
             // that traverse the same Attribute-based qualifier field.
-            var newQuals = new AttributeFactory_Qualifier[qualifiers.Count];
+            var newQuals = new Qualifier[qualifiers.Count];
             for (var i = 0; i < qualifiers.Count; i++)
             {
                 var qual = qualifiers[i];
-                if (qual is AttributeFactory_Attribute)
+                if (qual is Attribute)
                 {
-                    var val = ((AttributeFactory_Attribute)qual).Resolve(vars);
+                    var val = ((Attribute)qual).Resolve(vars);
                     if (UnknownT.IsUnknown(val)) return val;
 
                     // If this resolution behavior ever changes, new implementations of the
@@ -381,14 +381,14 @@ public sealed class AttributePattern
     ///     AttributePattern matching against Attribute values without having to modify the code paths that
     ///     identify Attributes in expressions.
     /// </summary>
-    internal sealed class AttributeMatcher : AttributeFactory_NamespacedAttribute
+    internal sealed class AttributeMatcher : NamespacedAttribute
     {
-        internal readonly AttributeFactory_NamespacedAttribute attr;
+        internal readonly NamespacedAttribute attr;
         internal readonly PartialAttributeFactory fac;
-        internal readonly IList<AttributeFactory_Qualifier> qualifiers;
+        internal readonly IList<Qualifier> qualifiers;
 
-        internal AttributeMatcher(PartialAttributeFactory fac, AttributeFactory_NamespacedAttribute attr,
-            IList<AttributeFactory_Qualifier> qualifiers)
+        internal AttributeMatcher(PartialAttributeFactory fac, NamespacedAttribute attr,
+            IList<Qualifier> qualifiers)
         {
             this.fac = fac;
             this.attr = attr;
@@ -405,7 +405,7 @@ public sealed class AttributePattern
             return attr.CandidateVariableNames();
         }
 
-        public IList<AttributeFactory_Qualifier> Qualifiers()
+        public IList<Qualifier> Qualifiers()
         {
             return attr.Qualifiers();
         }
@@ -413,7 +413,7 @@ public sealed class AttributePattern
         /// <summary>
         ///     AddQualifier implements the Attribute interface method.
         /// </summary>
-        public AttributeFactory_Attribute AddQualifier(AttributeFactory_Qualifier qual)
+        public Attribute AddQualifier(Qualifier qual)
         {
             // Add the qualifier to the embedded NamespacedAttribute. If the input to the Resolve
             // method is not a PartialActivation, or does not match an unknown attribute pattern, the
@@ -450,9 +450,9 @@ public sealed class AttributePattern
         public object TryResolve(Activation vars)
         {
             var id = attr.Id();
-            if (vars is Activation_PartialActivation)
+            if (vars is PartialActivation)
             {
-                var partial = (Activation_PartialActivation)vars;
+                var partial = (PartialActivation)vars;
                 var unk = fac.MatchesUnknownPatterns(partial, id, CandidateVariableNames(), qualifiers);
                 if (unk != null) return unk;
             }

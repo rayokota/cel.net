@@ -71,7 +71,7 @@ public interface Activation
         if (bindings is Activation) return (Activation)bindings;
 
         if (bindings is IDictionary<string, object>)
-            return new Activation_MapActivation((IDictionary<string, object>)bindings);
+            return new MapActivation((IDictionary<string, object>)bindings);
 
         throw new ArgumentException(string.Format(
             "activation input must be an activation or map[string]interface: got {0}", bindings.GetType().FullName));
@@ -93,7 +93,7 @@ public interface Activation
     /// </summary>
     static Activation NewHierarchicalActivation(Activation parent, Activation child)
     {
-        return new Activation_HierarchicalActivation(parent, child);
+        return new HierarchicalActivation(parent, child);
     }
 
     /// <summary>
@@ -104,10 +104,10 @@ public interface Activation
     ///         but is typically either an existing Activation or map[string]interface{}.
     ///     </para>
     /// </summary>
-    static Activation_PartialActivation NewPartialActivation(object bindings, params AttributePattern[] unknowns)
+    static PartialActivation NewPartialActivation(object bindings, params AttributePattern[] unknowns)
     {
         var a = NewActivation(bindings);
-        return new Activation_PartActivation(a, unknowns);
+        return new PartActivation(a, unknowns);
     }
 
     /// <summary>
@@ -125,11 +125,11 @@ public interface Activation
     /// </summary>
 }
 
-public sealed class Activation_MapActivation : Activation
+public sealed class MapActivation : Activation
 {
     internal readonly IDictionary<string, object> bindings;
 
-    internal Activation_MapActivation(IDictionary<string, object> bindings)
+    internal MapActivation(IDictionary<string, object> bindings)
     {
         this.bindings = bindings;
     }
@@ -165,12 +165,12 @@ public sealed class Activation_MapActivation : Activation
     }
 }
 
-public sealed class Activation_HierarchicalActivation : Activation
+public sealed class HierarchicalActivation : Activation
 {
     internal readonly Activation child;
     internal readonly Activation parent;
 
-    internal Activation_HierarchicalActivation(Activation parent, Activation child)
+    internal HierarchicalActivation(Activation parent, Activation child)
     {
         this.parent = parent;
         this.child = child;
@@ -201,7 +201,7 @@ public sealed class Activation_HierarchicalActivation : Activation
     }
 }
 
-public interface Activation_PartialActivation : Activation
+public interface PartialActivation : Activation
 {
     /// <summary>
     ///     UnknownAttributePaths returns a set of AttributePattern values which match Attribute
@@ -210,12 +210,12 @@ public interface Activation_PartialActivation : Activation
     AttributePattern[] UnknownAttributePatterns();
 }
 
-public sealed class Activation_PartActivation : Activation_PartialActivation
+public sealed class PartActivation : PartialActivation
 {
     internal readonly Activation @delegate;
     internal readonly AttributePattern[] unknowns;
 
-    internal Activation_PartActivation(Activation @delegate, AttributePattern[] unknowns)
+    internal PartActivation(Activation @delegate, AttributePattern[] unknowns)
     {
         this.@delegate = @delegate;
         this.unknowns = unknowns;
@@ -246,13 +246,13 @@ public sealed class Activation_PartActivation : Activation_PartialActivation
     }
 }
 
-public sealed class Activation_VarActivation : Activation
+public sealed class VarActivation : Activation
 {
     internal string name;
     internal Activation parent;
     internal Val val;
 
-    internal Activation_VarActivation()
+    internal VarActivation()
     {
     }
 

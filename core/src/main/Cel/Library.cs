@@ -67,7 +67,7 @@ public interface Library
     /// </summary>
     static EnvOption StdLib()
     {
-        return Lib(new Library_StdLibrary());
+        return Lib(new StdLibrary());
     }
 
     /// <summary>
@@ -76,7 +76,7 @@ public interface Library
     /// </summary>
 }
 
-public sealed class Library_StdLibrary : Library
+public sealed class StdLibrary : Library
 {
     /// <summary>
     ///     EnvOptions returns options for the standard CEL function declarations and macros.
@@ -84,13 +84,13 @@ public sealed class Library_StdLibrary : Library
     public IList<EnvOption> CompileOptions =>
         new List<EnvOption>
         {
-            EnvOptions.Declarations(Checker.Checker.StandardDeclarations),
-            EnvOptions.Macros(Macro.AllMacros)
+            IEnvOption.Declarations(Checker.Checker.StandardDeclarations),
+            IEnvOption.Macros(Macro.AllMacros)
         };
 
     /// <summary>
     ///     ProgramOptions returns function implementations for the standard CEL functions.
     /// </summary>
     public IList<ProgramOption> ProgramOptions => new List<ProgramOption>
-        { global::Cel.ProgramOptions.Functions(Overload.StandardOverloads()) };
+        { global::Cel.IProgramOption.Functions(Overload.StandardOverloads()) };
 }

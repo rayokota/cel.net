@@ -30,7 +30,7 @@ internal sealed class ProgGen : Program, Coster
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
         // Use an empty state value since no evaluation is performed.
         var p = factory(Prog.EmptyEvalState);
@@ -40,7 +40,7 @@ internal sealed class ProgGen : Program, Coster
     /// <summary>
     ///     Eval implements the Program interface method.
     /// </summary>
-    public Program_EvalResult Eval(object input)
+    public EvalResult Eval(object input)
     {
         // The factory based Eval() differs from the standard evaluation model in that it generates a
         // new EvalState instance for each call to ensure that unique evaluations yield unique stateful

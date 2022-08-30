@@ -44,7 +44,7 @@ public interface InterpretablePlanner
         AttributeFactory attrFactory, Container cont, CheckedExpr @checked,
         params InterpretableDecorator[] decorators)
     {
-        return new InterpretablePlanner_Planner(disp, provider, adapter, attrFactory, cont, @checked.ReferenceMap,
+        return new Planner(disp, provider, adapter, attrFactory, cont, @checked.ReferenceMap,
             @checked.TypeMap, decorators);
     }
 
@@ -56,7 +56,7 @@ public interface InterpretablePlanner
     static InterpretablePlanner NewUncheckedPlanner(Dispatcher disp, TypeProvider provider, TypeAdapter adapter,
         AttributeFactory attrFactory, Container cont, params InterpretableDecorator[] decorators)
     {
-        return new InterpretablePlanner_Planner(disp, provider, adapter, attrFactory, cont,
+        return new Planner(disp, provider, adapter, attrFactory, cont,
             new Dictionary<long, Reference>(), new Dictionary<long, Type>(), decorators);
     }
 
@@ -64,7 +64,7 @@ public interface InterpretablePlanner
     /// planner is an implementatio of the interpretablePlanner interface. </summary>
 }
 
-public sealed class InterpretablePlanner_Planner : InterpretablePlanner
+public sealed class Planner : InterpretablePlanner
 {
     internal readonly TypeAdapter adapter;
     internal readonly AttributeFactory attrFactory;
@@ -75,7 +75,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
     internal readonly IDictionary<long, Reference> refMap;
     internal readonly IDictionary<long, Type> typeMap;
 
-    internal InterpretablePlanner_Planner(Dispatcher disp, TypeProvider provider, TypeAdapter adapter,
+    internal Planner(Dispatcher disp, TypeProvider provider, TypeAdapter adapter,
         AttributeFactory attrFactory, Container container, IDictionary<long, Reference> refMap,
         IDictionary<long, Type> typeMap, InterpretableDecorator[] decorators)
     {
@@ -146,7 +146,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
 
         // Create the possible attribute list for the unresolved reference.
         var ident = expr.IdentExpr;
-        return new Interpretable_EvalAttr(adapter, attrFactory.MaybeAttribute(expr.Id, ident.Name));
+        return new EvalAttr(adapter, attrFactory.MaybeAttribute(expr.Id, ident.Name));
     }
 
     internal Interpretable PlanCheckedIdent(long id, Reference identRef)
@@ -174,7 +174,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
         }
 
         // Otherwise, return the attribute for the resolved identifier name.
-        return new Interpretable_EvalAttr(adapter, attrFactory.AbsoluteAttribute(id, identRef.Name));
+        return new EvalAttr(adapter, attrFactory.AbsoluteAttribute(id, identRef.Name));
     }
 
     /// <summary>
@@ -222,16 +222,16 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
         // values.
         if (sel.TestOnly)
             // Return the test only eval expression.
-            return new Interpretable_EvalTestOnly(expr.Id, op, StringT.StringOf(sel.Field), fieldType);
+            return new EvalTestOnly(expr.Id, op, StringT.StringOf(sel.Field), fieldType);
 
         // Build a qualifier.
         var qual = attrFactory.NewQualifier(opType, expr.Id, sel.Field);
         if (qual == null) return null;
 
         // Lastly, create a field selection Interpretable.
-        if (op is Interpretable_InterpretableAttribute)
+        if (op is InterpretableAttribute)
         {
-            var attr = (Interpretable_InterpretableAttribute)op;
+            var attr = (InterpretableAttribute)op;
             attr.AddQualifier(qual);
             return attr;
         }
@@ -320,7 +320,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
         if (impl == null || impl.function == null)
             throw new ArgumentException(string.Format("no such overload: {0}()", function));
 
-        return new Interpretable_EvalZeroArity(expr.Id, function, overload, impl.function);
+        return new EvalZeroArity(expr.Id, function, overload, impl.function);
     }
 
     /// <summary>
@@ -340,7 +340,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
             trait = impl.operandTrait;
         }
 
-        return new Interpretable_EvalUnary(expr.Id, function, overload, args[0], trait, fn);
+        return new EvalUnary(expr.Id, function, overload, args[0], trait, fn);
     }
 
     /// <summary>
@@ -361,7 +361,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
             trait = impl.operandTrait;
         }
 
-        return new Interpretable_EvalBinary(expr.Id, function, overload, args[0], args[1], trait, fn);
+        return new EvalBinary(expr.Id, function, overload, args[0], args[1], trait, fn);
     }
 
     /// <summary>
@@ -381,7 +381,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
             trait = impl.operandTrait;
         }
 
-        return new Interpretable_EvalVarArgs(expr.Id, function, overload, args, trait, fn);
+        return new EvalVarArgs(expr.Id, function, overload, args, trait, fn);
     }
 
     /// <summary>
@@ -389,7 +389,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
     /// </summary>
     internal Interpretable PlanCallEqual(Expr expr, params Interpretable[] args)
     {
-        return new Interpretable_EvalEq(expr.Id, args[0], args[1]);
+        return new EvalEq(expr.Id, args[0], args[1]);
     }
 
     /// <summary>
@@ -397,7 +397,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
     /// </summary>
     internal Interpretable PlanCallNotEqual(Expr expr, params Interpretable[] args)
     {
-        return new Interpretable_EvalNe(expr.Id, args[0], args[1]);
+        return new EvalNe(expr.Id, args[0], args[1]);
     }
 
     /// <summary>
@@ -405,7 +405,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
     /// </summary>
     internal Interpretable PlanCallLogicalAnd(Expr expr, params Interpretable[] args)
     {
-        return new Interpretable_EvalAnd(expr.Id, args[0], args[1]);
+        return new EvalAnd(expr.Id, args[0], args[1]);
     }
 
     /// <summary>
@@ -413,7 +413,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
     /// </summary>
     internal Interpretable PlanCallLogicalOr(Expr expr, params Interpretable[] args)
     {
-        return new Interpretable_EvalOr(expr.Id, args[0], args[1]);
+        return new EvalOr(expr.Id, args[0], args[1]);
     }
 
     /// <summary>
@@ -424,10 +424,10 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
         var cond = args[0];
 
         var t = args[1];
-        AttributeFactory_Attribute tAttr;
-        if (t is Interpretable_InterpretableAttribute)
+        Attribute tAttr;
+        if (t is InterpretableAttribute)
         {
-            var truthyAttr = (Interpretable_InterpretableAttribute)t;
+            var truthyAttr = (InterpretableAttribute)t;
             tAttr = truthyAttr.Attr();
         }
         else
@@ -436,10 +436,10 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
         }
 
         var f = args[2];
-        AttributeFactory_Attribute fAttr;
-        if (f is Interpretable_InterpretableAttribute)
+        Attribute fAttr;
+        if (f is InterpretableAttribute)
         {
-            var falsyAttr = (Interpretable_InterpretableAttribute)f;
+            var falsyAttr = (InterpretableAttribute)f;
             fAttr = falsyAttr.Attr();
         }
         else
@@ -447,7 +447,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
             fAttr = attrFactory.RelativeAttribute(f.Id(), f);
         }
 
-        return new Interpretable_EvalAttr(adapter, attrFactory.ConditionalAttribute(expr.Id, cond, tAttr, fAttr));
+        return new EvalAttr(adapter, attrFactory.ConditionalAttribute(expr.Id, cond, tAttr, fAttr));
     }
 
     /// <summary>
@@ -464,9 +464,9 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
         var target = expr.CallExpr.Target;
         if (target == null) target = new Expr();
         typeMap.TryGetValue(target.Id, out var opType);
-        if (ind is Interpretable_InterpretableConst)
+        if (ind is InterpretableConst)
         {
-            var indConst = (Interpretable_InterpretableConst)ind;
+            var indConst = (InterpretableConst)ind;
             var qual = attrFactory.NewQualifier(opType, expr.Id, indConst.Value());
             if (qual == null) return null;
 
@@ -474,9 +474,9 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
             return opAttr;
         }
 
-        if (ind is Interpretable_InterpretableAttribute)
+        if (ind is InterpretableAttribute)
         {
-            var indAttr = (Interpretable_InterpretableAttribute)ind;
+            var indAttr = (InterpretableAttribute)ind;
             var qual = attrFactory.NewQualifier(opType, expr.Id, indAttr);
             if (qual == null) return null;
 
@@ -507,7 +507,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
             elems[i] = elemVal;
         }
 
-        return new Interpretable_EvalList(expr.Id, elems, adapter);
+        return new EvalList(expr.Id, elems, adapter);
     }
 
     /// <summary>
@@ -535,7 +535,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
             vals[i] = valVal;
         }
 
-        return new Interpretable_EvalMap(expr.Id, keys, vals, adapter);
+        return new EvalMap(expr.Id, keys, vals, adapter);
     }
 
     /// <summary>
@@ -561,7 +561,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
             vals[i] = val;
         }
 
-        return new Interpretable_EvalObj(expr.Id, typeName, fields, vals, provider);
+        return new EvalObj(expr.Id, typeName, fields, vals, provider);
     }
 
     /// <summary>
@@ -585,7 +585,7 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
         var result = Plan(fold.Result);
         if (result == null) return null;
 
-        return new Interpretable_EvalFold(expr.Id, fold.AccuVar, accu, fold.IterVar, iterRange, cond, step, result);
+        return new EvalFold(expr.Id, fold.AccuVar, accu, fold.IterVar, iterRange, cond, step, result);
     }
 
     /// <summary>
@@ -719,22 +719,22 @@ public sealed class InterpretablePlanner_Planner : InterpretablePlanner
         return new ResolvedFunction(target, fnName, "");
     }
 
-    internal Interpretable_InterpretableAttribute RelativeAttr(long id, Interpretable eval)
+    internal InterpretableAttribute RelativeAttr(long id, Interpretable eval)
     {
-        Interpretable_InterpretableAttribute eAttr;
-        if (eval is Interpretable_InterpretableAttribute)
-            eAttr = (Interpretable_InterpretableAttribute)eval;
+        InterpretableAttribute eAttr;
+        if (eval is InterpretableAttribute)
+            eAttr = (InterpretableAttribute)eval;
         else
-            eAttr = new Interpretable_EvalAttr(adapter, attrFactory.RelativeAttribute(id, eval));
+            eAttr = new EvalAttr(adapter, attrFactory.RelativeAttribute(id, eval));
 
         var decAttr = Decorate(eAttr);
         if (decAttr == null) return null;
 
-        if (!(decAttr is Interpretable_InterpretableAttribute))
+        if (!(decAttr is InterpretableAttribute))
             throw new InvalidOperationException(string.Format("invalid attribute decoration: {0}({1})",
                 decAttr, decAttr.GetType().FullName));
 
-        eAttr = (Interpretable_InterpretableAttribute)decAttr;
+        eAttr = (InterpretableAttribute)decAttr;
         return eAttr;
     }
 

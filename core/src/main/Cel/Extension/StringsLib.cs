@@ -204,7 +204,7 @@ public class StringsLib : Library
         get
         {
             IList<EnvOption> list = new List<EnvOption>();
-            var option = EnvOptions.Declarations(
+            var option = IEnvOption.Declarations(
                 Decls.NewFunction(CHAR_AT,
                     Decls.NewInstanceOverload("string_char_at_int",
                         new List<Type> { Decls.String, Decls.Int }, Decls.String)),
@@ -264,7 +264,7 @@ public class StringsLib : Library
         get
         {
             IList<ProgramOption> list = new List<ProgramOption>();
-            var functions = global::Cel.ProgramOptions.Functions(
+            var functions = global::Cel.IProgramOption.Functions(
                 Overload.Binary(CHAR_AT, Guards.CallInStrIntOutStr(CharAt)),
                 Overload.overload(INDEX_OF, Trait.None, null, Guards.CallInStrStrOutInt(IndexOf),
                     Guards.CallInStrStrIntOutInt(IndexOfOffset)),

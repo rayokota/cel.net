@@ -55,25 +55,25 @@ public interface Interpretable
     /// <summary>
     ///     NewConstValue creates a new constant valued Interpretable.
     /// </summary>
-    static Interpretable_InterpretableConst NewConstValue(long id, Val val)
+    static InterpretableConst NewConstValue(long id, Val val)
     {
-        return new Interpretable_EvalConst(id, val);
+        return new EvalConst(id, val);
     }
 
-    static Coster_Cost CalShortCircuitBinaryOpsCost(Interpretable lhs, Interpretable rhs)
+    static Cost CalShortCircuitBinaryOpsCost(Interpretable lhs, Interpretable rhs)
     {
-        var l = Coster_Cost.EstimateCost(lhs);
-        var r = Coster_Cost.EstimateCost(rhs);
+        var l = Cost.EstimateCost(lhs);
+        var r = Cost.EstimateCost(rhs);
         return Coster.CostOf(l.min, l.max + r.max + 1);
     }
 
-    static Coster_Cost SumOfCost(Interpretable[] interps)
+    static Cost SumOfCost(Interpretable[] interps)
     {
         var min = 0L;
         var max = 0L;
         foreach (var interp in interps)
         {
-            var t = Coster_Cost.EstimateCost(interp);
+            var t = Cost.EstimateCost(interp);
             min += t.min;
             max += t.max;
         }
@@ -115,11 +115,11 @@ public interface Interpretable
     /// <summary>
     ///     evalExhaustiveAnd is just like evalAnd, but does not short-circuit argument evaluation.
     /// </summary>
-    static Coster_Cost CalExhaustiveBinaryOpsCost(Interpretable lhs, Interpretable rhs)
+    static Cost CalExhaustiveBinaryOpsCost(Interpretable lhs, Interpretable rhs)
     {
-        var l = Coster_Cost.EstimateCost(lhs);
-        var r = Coster_Cost.EstimateCost(rhs);
-        return Coster_Cost.OneOne.Add(l).Add(r);
+        var l = Cost.EstimateCost(lhs);
+        var r = Cost.EstimateCost(rhs);
+        return Cost.OneOne.Add(l).Add(r);
     }
 
     /// <summary>
@@ -134,7 +134,7 @@ public interface Interpretable
     /// evalAttr evaluates an Attribute value. </summary>
 }
 
-public interface Interpretable_InterpretableConst : Interpretable
+public interface InterpretableConst : Interpretable
 {
     /// <summary>
     ///     Value returns the constant value of the instruction.
@@ -142,13 +142,13 @@ public interface Interpretable_InterpretableConst : Interpretable
     Val Value();
 }
 
-public interface Interpretable_InterpretableAttribute : Interpretable, AttributeFactory_Qualifier,
-    AttributeFactory_Attribute
+public interface InterpretableAttribute : Interpretable, Qualifier,
+    Attribute
 {
     /// <summary>
     ///     Attr returns the Attribute value.
     /// </summary>
-    AttributeFactory_Attribute Attr();
+    Attribute Attr();
 
     /// <summary>
     ///     Adapter returns the type adapter to be used for adapting resolved Attribute values.
@@ -164,7 +164,7 @@ public interface Interpretable_InterpretableAttribute : Interpretable, Attribute
     ///         AttributeFactory or specifically to the underlying Attribute implementation.
     ///     </para>
     /// </summary>
-    AttributeFactory_Attribute AddQualifier(AttributeFactory_Qualifier qualifier);
+    Attribute AddQualifier(Qualifier qualifier);
 
     /// <summary>
     ///     Qualify replicates the Attribute.Qualify method to permit extension and interception of
@@ -178,7 +178,7 @@ public interface Interpretable_InterpretableAttribute : Interpretable, Attribute
     object Resolve(Activation act);
 }
 
-public interface Interpretable_InterpretableCall : Interpretable
+public interface InterpretableCall : Interpretable
 {
     /// <summary>
     ///     Function returns the function name as it appears in text or mangled operator name as it
@@ -200,14 +200,14 @@ public interface Interpretable_InterpretableCall : Interpretable
     Interpretable[] Args();
 }
 
-public sealed class Interpretable_EvalTestOnly : Interpretable, Coster
+public sealed class EvalTestOnly : Interpretable, Coster
 {
     internal readonly StringT field;
     internal readonly FieldType fieldType;
     internal readonly long id;
     internal readonly Interpretable op;
 
-    internal Interpretable_EvalTestOnly(long id, Interpretable op, StringT field, FieldType fieldType)
+    internal EvalTestOnly(long id, Interpretable op, StringT field, FieldType fieldType)
     {
         this.id = id;
         this.op = op;
@@ -219,10 +219,10 @@ public sealed class Interpretable_EvalTestOnly : Interpretable, Coster
     ///     Cost provides the heuristic cost of a `has(field)` macro. The cost has at least 1 for
     ///     determining if the field exists, apart from the cost of accessing the field.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
-        var c = Coster_Cost.EstimateCost(op);
-        return c.Add(Coster_Cost.OneOne);
+        var c = global::Cel.Interpreter.Cost.EstimateCost(op);
+        return c.Add(global::Cel.Interpreter.Cost.OneOne);
     }
 
     /// <summary>
@@ -240,9 +240,9 @@ public sealed class Interpretable_EvalTestOnly : Interpretable, Coster
     {
         // Handle field selection on a proto in the most efficient way possible.
         if (fieldType != null)
-            if (op is Interpretable_InterpretableAttribute)
+            if (op is InterpretableAttribute)
             {
-                var opAttr = (Interpretable_InterpretableAttribute)op;
+                var opAttr = (InterpretableAttribute)op;
                 var opVal = opAttr.Resolve(ctx);
                 if (opVal is Val)
                 {
@@ -269,11 +269,11 @@ public sealed class Interpretable_EvalTestOnly : Interpretable, Coster
     }
 }
 
-public abstract class Interpretable_AbstractEval : Interpretable
+public abstract class AbstractEval : Interpretable
 {
     protected internal readonly long id;
 
-    internal Interpretable_AbstractEval(long id)
+    internal AbstractEval(long id)
     {
         this.id = id;
     }
@@ -294,18 +294,18 @@ public abstract class Interpretable_AbstractEval : Interpretable
     }
 }
 
-public abstract class Interpretable_AbstractEvalLhsRhs : Interpretable_AbstractEval, Coster
+public abstract class AbstractEvalLhsRhs : AbstractEval, Coster
 {
     protected internal readonly Interpretable lhs;
     protected internal readonly Interpretable rhs;
 
-    internal Interpretable_AbstractEvalLhsRhs(long id, Interpretable lhs, Interpretable rhs) : base(id)
+    internal AbstractEvalLhsRhs(long id, Interpretable lhs, Interpretable rhs) : base(id)
     {
         this.lhs = lhs;
         this.rhs = rhs;
     }
 
-    public abstract Coster_Cost Cost();
+    public abstract Cost Cost();
     public abstract override Val Eval(Activation activation);
 
     public override string ToString()
@@ -314,11 +314,11 @@ public abstract class Interpretable_AbstractEvalLhsRhs : Interpretable_AbstractE
     }
 }
 
-public sealed class Interpretable_EvalConst : Interpretable_AbstractEval, Interpretable_InterpretableConst, Coster
+public sealed class EvalConst : AbstractEval, InterpretableConst, Coster
 {
     internal readonly Val val;
 
-    internal Interpretable_EvalConst(long id, Val val) : base(id)
+    internal EvalConst(long id, Val val) : base(id)
     {
         this.val = val;
     }
@@ -326,9 +326,9 @@ public sealed class Interpretable_EvalConst : Interpretable_AbstractEval, Interp
     /// <summary>
     ///     Cost returns zero for a constant valued Interpretable.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
-        return Coster_Cost.None;
+        return global::Cel.Interpreter.Cost.None;
     }
 
     /// <summary>
@@ -353,10 +353,10 @@ public sealed class Interpretable_EvalConst : Interpretable_AbstractEval, Interp
     }
 }
 
-public sealed class Interpretable_EvalOr : Interpretable_AbstractEvalLhsRhs
+public sealed class EvalOr : AbstractEvalLhsRhs
 {
     // TODO combine with EvalExhaustiveOr
-    internal Interpretable_EvalOr(long id, Interpretable lhs, Interpretable rhs) : base(id, lhs, rhs)
+    internal EvalOr(long id, Interpretable lhs, Interpretable rhs) : base(id, lhs, rhs)
     {
     }
 
@@ -392,7 +392,7 @@ public sealed class Interpretable_EvalOr : Interpretable_AbstractEvalLhsRhs
     ///     Cost implements the Coster interface method. The minimum possible cost incurs when the
     ///     left-hand side expr is sufficient in determining the evaluation result.
     /// </summary>
-    public override Coster_Cost Cost()
+    public override Cost Cost()
     {
         return Interpretable.CalShortCircuitBinaryOpsCost(lhs, rhs);
     }
@@ -403,10 +403,10 @@ public sealed class Interpretable_EvalOr : Interpretable_AbstractEvalLhsRhs
     }
 }
 
-public sealed class Interpretable_EvalAnd : Interpretable_AbstractEvalLhsRhs
+public sealed class EvalAnd : AbstractEvalLhsRhs
 {
     // TODO combine with EvalExhaustiveAnd
-    internal Interpretable_EvalAnd(long id, Interpretable lhs, Interpretable rhs) : base(id, lhs, rhs)
+    internal EvalAnd(long id, Interpretable lhs, Interpretable rhs) : base(id, lhs, rhs)
     {
     }
 
@@ -442,7 +442,7 @@ public sealed class Interpretable_EvalAnd : Interpretable_AbstractEvalLhsRhs
     ///     Cost implements the Coster interface method. The minimum possible cost incurs when the
     ///     left-hand side expr is sufficient in determining the evaluation result.
     /// </summary>
-    public override Coster_Cost Cost()
+    public override Cost Cost()
     {
         return Interpretable.CalShortCircuitBinaryOpsCost(lhs, rhs);
     }
@@ -453,9 +453,9 @@ public sealed class Interpretable_EvalAnd : Interpretable_AbstractEvalLhsRhs
     }
 }
 
-public sealed class Interpretable_EvalEq : Interpretable_AbstractEvalLhsRhs, Interpretable_InterpretableCall
+public sealed class EvalEq : AbstractEvalLhsRhs, InterpretableCall
 {
-    internal Interpretable_EvalEq(long id, Interpretable lhs, Interpretable rhs) : base(id, lhs, rhs)
+    internal EvalEq(long id, Interpretable lhs, Interpretable rhs) : base(id, lhs, rhs)
     {
     }
 
@@ -496,7 +496,7 @@ public sealed class Interpretable_EvalEq : Interpretable_AbstractEvalLhsRhs, Int
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public override Coster_Cost Cost()
+    public override Cost Cost()
     {
         return Interpretable.CalExhaustiveBinaryOpsCost(lhs, rhs);
     }
@@ -507,9 +507,9 @@ public sealed class Interpretable_EvalEq : Interpretable_AbstractEvalLhsRhs, Int
     }
 }
 
-public sealed class Interpretable_EvalNe : Interpretable_AbstractEvalLhsRhs, Interpretable_InterpretableCall
+public sealed class EvalNe : AbstractEvalLhsRhs, InterpretableCall
 {
-    internal Interpretable_EvalNe(long id, Interpretable lhs, Interpretable rhs) : base(id, lhs, rhs)
+    internal EvalNe(long id, Interpretable lhs, Interpretable rhs) : base(id, lhs, rhs)
     {
     }
 
@@ -559,7 +559,7 @@ public sealed class Interpretable_EvalNe : Interpretable_AbstractEvalLhsRhs, Int
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public override Coster_Cost Cost()
+    public override Cost Cost()
     {
         return Interpretable.CalExhaustiveBinaryOpsCost(lhs, rhs);
     }
@@ -570,14 +570,14 @@ public sealed class Interpretable_EvalNe : Interpretable_AbstractEvalLhsRhs, Int
     }
 }
 
-public sealed class Interpretable_EvalZeroArity : Interpretable_AbstractEval, Interpretable_InterpretableCall,
+public sealed class EvalZeroArity : AbstractEval, InterpretableCall,
     Coster
 {
     internal readonly string function;
     internal readonly FunctionOp impl;
     internal readonly string overload;
 
-    internal Interpretable_EvalZeroArity(long id, string function, string overload, FunctionOp impl) : base(id)
+    internal EvalZeroArity(long id, string function, string overload, FunctionOp impl) : base(id)
     {
         this.function = function;
         this.overload = overload;
@@ -587,9 +587,9 @@ public sealed class Interpretable_EvalZeroArity : Interpretable_AbstractEval, In
     /// <summary>
     ///     Cost returns 1 representing the heuristic cost of the function.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
-        return Coster_Cost.OneOne;
+        return global::Cel.Interpreter.Cost.OneOne;
     }
 
     /// <summary>
@@ -631,7 +631,7 @@ public sealed class Interpretable_EvalZeroArity : Interpretable_AbstractEval, In
     }
 }
 
-public sealed class Interpretable_EvalUnary : Interpretable_AbstractEval, Interpretable_InterpretableCall, Coster
+public sealed class EvalUnary : AbstractEval, InterpretableCall, Coster
 {
     internal readonly Interpretable arg;
     internal readonly string function;
@@ -639,7 +639,7 @@ public sealed class Interpretable_EvalUnary : Interpretable_AbstractEval, Interp
     internal readonly string overload;
     internal readonly Trait trait;
 
-    internal Interpretable_EvalUnary(long id, string function, string overload, Interpretable arg, Trait trait,
+    internal EvalUnary(long id, string function, string overload, Interpretable arg, Trait trait,
         UnaryOp impl) : base(id)
     {
         this.function = function;
@@ -652,10 +652,10 @@ public sealed class Interpretable_EvalUnary : Interpretable_AbstractEval, Interp
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
-        var c = Coster_Cost.EstimateCost(arg);
-        return Coster_Cost.OneOne.Add(c); // add cost for function
+        var c = global::Cel.Interpreter.Cost.EstimateCost(arg);
+        return global::Cel.Interpreter.Cost.OneOne.Add(c); // add cost for function
     }
 
     /// <summary>
@@ -709,14 +709,14 @@ public sealed class Interpretable_EvalUnary : Interpretable_AbstractEval, Interp
     }
 }
 
-public sealed class Interpretable_EvalBinary : Interpretable_AbstractEvalLhsRhs, Interpretable_InterpretableCall
+public sealed class EvalBinary : AbstractEvalLhsRhs, InterpretableCall
 {
     internal readonly string function;
     internal readonly BinaryOp impl;
     internal readonly string overload;
     internal readonly Trait trait;
 
-    internal Interpretable_EvalBinary(long id, string function, string overload, Interpretable lhs,
+    internal EvalBinary(long id, string function, string overload, Interpretable lhs,
         Interpretable rhs, Trait trait, BinaryOp impl) : base(id, lhs, rhs)
     {
         this.function = function;
@@ -775,7 +775,7 @@ public sealed class Interpretable_EvalBinary : Interpretable_AbstractEvalLhsRhs,
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public override Coster_Cost Cost()
+    public override Cost Cost()
     {
         return Interpretable.CalExhaustiveBinaryOpsCost(lhs, rhs);
     }
@@ -787,7 +787,7 @@ public sealed class Interpretable_EvalBinary : Interpretable_AbstractEvalLhsRhs,
     }
 }
 
-public sealed class Interpretable_EvalVarArgs : Interpretable_AbstractEval, Coster, Interpretable_InterpretableCall
+public sealed class EvalVarArgs : AbstractEval, Coster, InterpretableCall
 {
     internal readonly Interpretable[] args;
     internal readonly string function;
@@ -795,7 +795,7 @@ public sealed class Interpretable_EvalVarArgs : Interpretable_AbstractEval, Cost
     internal readonly string overload;
     internal readonly Trait trait;
 
-    public Interpretable_EvalVarArgs(long id, string function, string overload, Interpretable[] args, Trait trait,
+    public EvalVarArgs(long id, string function, string overload, Interpretable[] args, Trait trait,
         FunctionOp impl) : base(id)
     {
         this.function = function;
@@ -808,10 +808,10 @@ public sealed class Interpretable_EvalVarArgs : Interpretable_AbstractEval, Cost
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
         var c = Interpretable.SumOfCost(args);
-        return c.Add(Coster_Cost.OneOne); // add cost for function
+        return c.Add(global::Cel.Interpreter.Cost.OneOne); // add cost for function
     }
 
     /// <summary>
@@ -878,12 +878,12 @@ public sealed class Interpretable_EvalVarArgs : Interpretable_AbstractEval, Cost
     }
 }
 
-public sealed class Interpretable_EvalList : Interpretable_AbstractEval, Coster
+public sealed class EvalList : AbstractEval, Coster
 {
     internal readonly TypeAdapter adapter;
     internal readonly Interpretable[] elems;
 
-    internal Interpretable_EvalList(long id, Interpretable[] elems, TypeAdapter adapter) : base(id)
+    internal EvalList(long id, Interpretable[] elems, TypeAdapter adapter) : base(id)
     {
         this.elems = elems;
         this.adapter = adapter;
@@ -892,7 +892,7 @@ public sealed class Interpretable_EvalList : Interpretable_AbstractEval, Coster
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
         return Interpretable.SumOfCost(elems);
     }
@@ -923,13 +923,13 @@ public sealed class Interpretable_EvalList : Interpretable_AbstractEval, Coster
     }
 }
 
-public sealed class Interpretable_EvalMap : Interpretable_AbstractEval, Coster
+public sealed class EvalMap : AbstractEval, Coster
 {
     internal readonly TypeAdapter adapter;
     internal readonly Interpretable[] keys;
     internal readonly Interpretable[] vals;
 
-    internal Interpretable_EvalMap(long id, Interpretable[] keys, Interpretable[] vals, TypeAdapter adapter) :
+    internal EvalMap(long id, Interpretable[] keys, Interpretable[] vals, TypeAdapter adapter) :
         base(id)
     {
         this.keys = keys;
@@ -940,7 +940,7 @@ public sealed class Interpretable_EvalMap : Interpretable_AbstractEval, Coster
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
         var k = Interpretable.SumOfCost(keys);
         var v = Interpretable.SumOfCost(vals);
@@ -977,14 +977,14 @@ public sealed class Interpretable_EvalMap : Interpretable_AbstractEval, Coster
     }
 }
 
-public sealed class Interpretable_EvalObj : Interpretable_AbstractEval, Coster
+public sealed class EvalObj : AbstractEval, Coster
 {
     internal readonly string[] fields;
     internal readonly TypeProvider provider;
     internal readonly string typeName;
     internal readonly Interpretable[] vals;
 
-    internal Interpretable_EvalObj(long id, string typeName, string[] fields, Interpretable[] vals,
+    internal EvalObj(long id, string typeName, string[] fields, Interpretable[] vals,
         TypeProvider provider) : base(id)
     {
         this.typeName = typeName;
@@ -996,7 +996,7 @@ public sealed class Interpretable_EvalObj : Interpretable_AbstractEval, Coster
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
         return Interpretable.SumOfCost(vals);
     }
@@ -1028,7 +1028,7 @@ public sealed class Interpretable_EvalObj : Interpretable_AbstractEval, Coster
     }
 }
 
-public sealed class Interpretable_EvalFold : Interpretable_AbstractEval, Coster
+public sealed class EvalFold : AbstractEval, Coster
 {
     internal readonly Interpretable accu;
 
@@ -1040,7 +1040,7 @@ public sealed class Interpretable_EvalFold : Interpretable_AbstractEval, Coster
     internal readonly Interpretable result;
     internal readonly Interpretable step;
 
-    internal Interpretable_EvalFold(long id, string accuVar, Interpretable accu, string iterVar,
+    internal EvalFold(long id, string accuVar, Interpretable accu, string iterVar,
         Interpretable iterRange, Interpretable cond, Interpretable step, Interpretable result) : base(id)
     {
         this.accuVar = accuVar;
@@ -1055,16 +1055,16 @@ public sealed class Interpretable_EvalFold : Interpretable_AbstractEval, Coster
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
         // Compute the cost for evaluating iterRange.
-        var i = Coster_Cost.EstimateCost(iterRange);
+        var i = global::Cel.Interpreter.Cost.EstimateCost(iterRange);
 
         // Compute the size of iterRange. If the size depends on the input, return the maximum
         // possible
         // cost range.
         var foldRange = iterRange.Eval(Activation.EmptyActivation());
-        if (!foldRange.Type().HasTrait(Trait.IterableType)) return Coster_Cost.Unknown;
+        if (!foldRange.Type().HasTrait(Trait.IterableType)) return global::Cel.Interpreter.Cost.Unknown;
 
         var rangeCnt = 0L;
         var it = ((IterableT)foldRange).Iterator();
@@ -1074,10 +1074,10 @@ public sealed class Interpretable_EvalFold : Interpretable_AbstractEval, Coster
             rangeCnt++;
         }
 
-        var a = Coster_Cost.EstimateCost(accu);
-        var c = Coster_Cost.EstimateCost(cond);
-        var s = Coster_Cost.EstimateCost(step);
-        var r = Coster_Cost.EstimateCost(result);
+        var a = global::Cel.Interpreter.Cost.EstimateCost(accu);
+        var c = global::Cel.Interpreter.Cost.EstimateCost(cond);
+        var s = global::Cel.Interpreter.Cost.EstimateCost(step);
+        var r = global::Cel.Interpreter.Cost.EstimateCost(result);
 
         // The cond and step costs are multiplied by size(iterRange). The minimum possible cost incurs
         // when the evaluation result can be determined by the first iteration.
@@ -1095,11 +1095,11 @@ public sealed class Interpretable_EvalFold : Interpretable_AbstractEval, Coster
             return Err.ValOrErr(foldRange, "got '{0}', expected iterable type", foldRange.GetType().FullName);
 
         // Configure the fold activation with the accumulator initial value.
-        var accuCtx = new Activation_VarActivation();
+        var accuCtx = new VarActivation();
         accuCtx.parent = ctx;
         accuCtx.name = accuVar;
         accuCtx.val = accu.Eval(ctx);
-        var iterCtx = new Activation_VarActivation();
+        var iterCtx = new VarActivation();
         iterCtx.parent = accuCtx;
         iterCtx.name = iterVar;
         var it = ((IterableT)foldRange).Iterator();
@@ -1128,14 +1128,14 @@ public sealed class Interpretable_EvalFold : Interpretable_AbstractEval, Coster
     }
 }
 
-public sealed class Interpretable_EvalSetMembership : Interpretable_AbstractEval, Coster
+public sealed class EvalSetMembership : AbstractEval, Coster
 {
     internal readonly Interpretable arg;
     internal readonly string argTypeName;
     internal readonly Interpretable inst;
     internal readonly ISet<Val> valueSet;
 
-    internal Interpretable_EvalSetMembership(Interpretable inst, Interpretable arg, string argTypeName,
+    internal EvalSetMembership(Interpretable inst, Interpretable arg, string argTypeName,
         ISet<Val> valueSet) : base(inst.Id())
     {
         this.inst = inst;
@@ -1147,9 +1147,9 @@ public sealed class Interpretable_EvalSetMembership : Interpretable_AbstractEval
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
-        return Coster_Cost.EstimateCost(arg);
+        return global::Cel.Interpreter.Cost.EstimateCost(arg);
     }
 
     /// <summary>
@@ -1170,12 +1170,12 @@ public sealed class Interpretable_EvalSetMembership : Interpretable_AbstractEval
     }
 }
 
-public sealed class Interpretable_EvalWatch : Interpretable, Coster
+public sealed class EvalWatch : Interpretable, Coster
 {
     internal readonly Interpretable i;
-    internal readonly InterpretableDecorator_EvalObserver observer;
+    internal readonly EvalObserver observer;
 
-    public Interpretable_EvalWatch(Interpretable i, InterpretableDecorator_EvalObserver observer)
+    public EvalWatch(Interpretable i, EvalObserver observer)
     {
         this.i = i;
         this.observer = observer;
@@ -1184,9 +1184,9 @@ public sealed class Interpretable_EvalWatch : Interpretable, Coster
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
-        return Coster_Cost.EstimateCost(i);
+        return global::Cel.Interpreter.Cost.EstimateCost(i);
     }
 
     public long Id()
@@ -1210,14 +1210,14 @@ public sealed class Interpretable_EvalWatch : Interpretable, Coster
     }
 }
 
-public sealed class Interpretable_EvalWatchAttr : Coster, Interpretable_InterpretableAttribute,
-    AttributeFactory_Attribute
+public sealed class EvalWatchAttr : Coster, InterpretableAttribute,
+    Attribute
 {
-    internal readonly Interpretable_InterpretableAttribute attr;
-    internal readonly InterpretableDecorator_EvalObserver observer;
+    internal readonly InterpretableAttribute attr;
+    internal readonly EvalObserver observer;
 
-    public Interpretable_EvalWatchAttr(Interpretable_InterpretableAttribute attr,
-        InterpretableDecorator_EvalObserver observer)
+    public EvalWatchAttr(InterpretableAttribute attr,
+        EvalObserver observer)
     {
         this.attr = attr;
         this.observer = observer;
@@ -1226,9 +1226,9 @@ public sealed class Interpretable_EvalWatchAttr : Coster, Interpretable_Interpre
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
-        return Coster_Cost.EstimateCost(attr);
+        return global::Cel.Interpreter.Cost.EstimateCost(attr);
     }
 
     public long Id()
@@ -1240,28 +1240,28 @@ public sealed class Interpretable_EvalWatchAttr : Coster, Interpretable_Interpre
     ///     AddQualifier creates a wrapper over the incoming qualifier which observes the qualification
     ///     result.
     /// </summary>
-    public AttributeFactory_Attribute AddQualifier(AttributeFactory_Qualifier q)
+    public Attribute AddQualifier(Qualifier q)
     {
-        if (q is AttributeFactory_ConstantQualifierEquator)
+        if (q is ConstantQualifierEquator)
         {
-            var cq = (AttributeFactory_ConstantQualifierEquator)q;
-            q = new Interpretable_EvalWatchConstQualEquat(cq, observer, attr.Adapter());
+            var cq = (ConstantQualifierEquator)q;
+            q = new EvalWatchConstQualEquat(cq, observer, attr.Adapter());
         }
-        else if (q is AttributeFactory_ConstantQualifier)
+        else if (q is ConstantQualifier)
         {
-            var cq = (AttributeFactory_ConstantQualifier)q;
-            q = new Interpretable_EvalWatchConstQual(cq, observer, attr.Adapter());
+            var cq = (ConstantQualifier)q;
+            q = new EvalWatchConstQual(cq, observer, attr.Adapter());
         }
         else
         {
-            q = new Interpretable_EvalWatchQual(q, observer, attr.Adapter());
+            q = new EvalWatchQual(q, observer, attr.Adapter());
         }
 
         attr.AddQualifier(q);
         return this;
     }
 
-    public AttributeFactory_Attribute Attr()
+    public Attribute Attr()
     {
         return attr.Attr();
     }
@@ -1297,14 +1297,14 @@ public sealed class Interpretable_EvalWatchAttr : Coster, Interpretable_Interpre
     }
 }
 
-public abstract class Interpretable_AbstractEvalWatch<T> : Interpretable_AbstractEval, Coster,
-    AttributeFactory_Qualifier where T : AttributeFactory_Qualifier
+public abstract class AbstractEvalWatch<T> : AbstractEval, Coster,
+    Qualifier where T : Qualifier
 {
     protected internal readonly TypeAdapter adapter;
     protected internal readonly T @delegate;
-    protected internal readonly InterpretableDecorator_EvalObserver observer;
+    protected internal readonly EvalObserver observer;
 
-    internal Interpretable_AbstractEvalWatch(T @delegate, InterpretableDecorator_EvalObserver observer,
+    internal AbstractEvalWatch(T @delegate, EvalObserver observer,
         TypeAdapter adapter) : base(@delegate.Id())
     {
         this.@delegate = @delegate;
@@ -1331,20 +1331,20 @@ public abstract class Interpretable_AbstractEvalWatch<T> : Interpretable_Abstrac
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public virtual Coster_Cost Cost()
+    public virtual Cost Cost()
     {
-        return Coster_Cost.EstimateCost(@delegate);
+        return global::Cel.Interpreter.Cost.EstimateCost(@delegate);
     }
 
     public abstract override Val Eval(Activation activation);
 }
 
-public sealed class Interpretable_EvalWatchConstQualEquat :
-    Interpretable_AbstractEvalWatch<AttributeFactory_ConstantQualifierEquator>,
-    AttributeFactory_ConstantQualifierEquator
+public sealed class EvalWatchConstQualEquat :
+    AbstractEvalWatch<ConstantQualifierEquator>,
+    ConstantQualifierEquator
 {
-    internal Interpretable_EvalWatchConstQualEquat(AttributeFactory_ConstantQualifierEquator @delegate,
-        InterpretableDecorator_EvalObserver observer, TypeAdapter adapter) : base(@delegate, observer, adapter)
+    internal EvalWatchConstQualEquat(ConstantQualifierEquator @delegate,
+        EvalObserver observer, TypeAdapter adapter) : base(@delegate, observer, adapter)
     {
     }
 
@@ -1372,11 +1372,11 @@ public sealed class Interpretable_EvalWatchConstQualEquat :
     }
 }
 
-public sealed class Interpretable_EvalWatchConstQual :
-    Interpretable_AbstractEvalWatch<AttributeFactory_ConstantQualifier>, AttributeFactory_ConstantQualifier, Coster
+public sealed class EvalWatchConstQual :
+    AbstractEvalWatch<ConstantQualifier>, ConstantQualifier, Coster
 {
-    internal Interpretable_EvalWatchConstQual(AttributeFactory_ConstantQualifier @delegate,
-        InterpretableDecorator_EvalObserver observer, TypeAdapter adapter) : base(@delegate, observer, adapter)
+    internal EvalWatchConstQual(ConstantQualifier @delegate,
+        EvalObserver observer, TypeAdapter adapter) : base(@delegate, observer, adapter)
     {
     }
 
@@ -1396,10 +1396,10 @@ public sealed class Interpretable_EvalWatchConstQual :
     }
 }
 
-public sealed class Interpretable_EvalWatchQual : Interpretable_AbstractEvalWatch<AttributeFactory_Qualifier>
+public sealed class EvalWatchQual : AbstractEvalWatch<Qualifier>
 {
-    public Interpretable_EvalWatchQual(AttributeFactory_Qualifier @delegate,
-        InterpretableDecorator_EvalObserver observer, TypeAdapter adapter) : base(@delegate, observer, adapter)
+    public EvalWatchQual(Qualifier @delegate,
+        EvalObserver observer, TypeAdapter adapter) : base(@delegate, observer, adapter)
     {
     }
 
@@ -1414,13 +1414,13 @@ public sealed class Interpretable_EvalWatchQual : Interpretable_AbstractEvalWatc
     }
 }
 
-public sealed class Interpretable_EvalWatchConst : Interpretable_InterpretableConst, Coster
+public sealed class EvalWatchConst : InterpretableConst, Coster
 {
-    internal readonly Interpretable_InterpretableConst c;
-    internal readonly InterpretableDecorator_EvalObserver observer;
+    internal readonly InterpretableConst c;
+    internal readonly EvalObserver observer;
 
-    internal Interpretable_EvalWatchConst(Interpretable_InterpretableConst c,
-        InterpretableDecorator_EvalObserver observer)
+    internal EvalWatchConst(InterpretableConst c,
+        EvalObserver observer)
     {
         this.c = c;
         this.observer = observer;
@@ -1429,9 +1429,9 @@ public sealed class Interpretable_EvalWatchConst : Interpretable_InterpretableCo
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
-        return Coster_Cost.EstimateCost(c);
+        return global::Cel.Interpreter.Cost.EstimateCost(c);
     }
 
     public long Id()
@@ -1457,10 +1457,10 @@ public sealed class Interpretable_EvalWatchConst : Interpretable_InterpretableCo
     }
 }
 
-public sealed class Interpretable_EvalExhaustiveOr : Interpretable_AbstractEvalLhsRhs
+public sealed class EvalExhaustiveOr : AbstractEvalLhsRhs
 {
     // TODO combine with EvalOr
-    internal Interpretable_EvalExhaustiveOr(long id, Interpretable lhs, Interpretable rhs) : base(id, lhs, rhs)
+    internal EvalExhaustiveOr(long id, Interpretable lhs, Interpretable rhs) : base(id, lhs, rhs)
     {
     }
 
@@ -1489,7 +1489,7 @@ public sealed class Interpretable_EvalExhaustiveOr : Interpretable_AbstractEvalL
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public override Coster_Cost Cost()
+    public override Cost Cost()
     {
         return Interpretable.CalExhaustiveBinaryOpsCost(lhs, rhs);
     }
@@ -1500,10 +1500,10 @@ public sealed class Interpretable_EvalExhaustiveOr : Interpretable_AbstractEvalL
     }
 }
 
-public sealed class Interpretable_EvalExhaustiveAnd : Interpretable_AbstractEvalLhsRhs
+public sealed class EvalExhaustiveAnd : AbstractEvalLhsRhs
 {
     // TODO combine with EvalAnd
-    internal Interpretable_EvalExhaustiveAnd(long id, Interpretable lhs, Interpretable rhs) : base(id, lhs, rhs)
+    internal EvalExhaustiveAnd(long id, Interpretable lhs, Interpretable rhs) : base(id, lhs, rhs)
     {
     }
 
@@ -1530,7 +1530,7 @@ public sealed class Interpretable_EvalExhaustiveAnd : Interpretable_AbstractEval
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public override Coster_Cost Cost()
+    public override Cost Cost()
     {
         return Interpretable.CalExhaustiveBinaryOpsCost(lhs, rhs);
     }
@@ -1541,14 +1541,14 @@ public sealed class Interpretable_EvalExhaustiveAnd : Interpretable_AbstractEval
     }
 }
 
-public sealed class Interpretable_EvalExhaustiveConditional : Interpretable_AbstractEval, Coster
+public sealed class EvalExhaustiveConditional : AbstractEval, Coster
 {
     // TODO combine with EvalConditional
     internal readonly TypeAdapter adapter;
-    internal readonly AttributeFactory_ConditionalAttribute attr;
+    internal readonly ConditionalAttribute attr;
 
-    internal Interpretable_EvalExhaustiveConditional(long id, TypeAdapter adapter,
-        AttributeFactory_ConditionalAttribute attr) : base(id)
+    internal EvalExhaustiveConditional(long id, TypeAdapter adapter,
+        ConditionalAttribute attr) : base(id)
     {
         this.adapter = adapter;
         this.attr = attr;
@@ -1557,7 +1557,7 @@ public sealed class Interpretable_EvalExhaustiveConditional : Interpretable_Abst
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
         return attr.Cost();
     }
@@ -1583,7 +1583,7 @@ public sealed class Interpretable_EvalExhaustiveConditional : Interpretable_Abst
     }
 }
 
-public sealed class Interpretable_EvalExhaustiveFold : Interpretable_AbstractEval, Coster
+public sealed class EvalExhaustiveFold : AbstractEval, Coster
 {
     internal readonly Interpretable accu;
 
@@ -1595,7 +1595,7 @@ public sealed class Interpretable_EvalExhaustiveFold : Interpretable_AbstractEva
     internal readonly Interpretable result;
     internal readonly Interpretable step;
 
-    internal Interpretable_EvalExhaustiveFold(long id, Interpretable accu, string accuVar, Interpretable iterRange,
+    internal EvalExhaustiveFold(long id, Interpretable accu, string accuVar, Interpretable iterRange,
         string iterVar, Interpretable cond, Interpretable step, Interpretable result) : base(id)
     {
         this.accuVar = accuVar;
@@ -1610,16 +1610,16 @@ public sealed class Interpretable_EvalExhaustiveFold : Interpretable_AbstractEva
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
         // Compute the cost for evaluating iterRange.
-        var i = Coster_Cost.EstimateCost(iterRange);
+        var i = global::Cel.Interpreter.Cost.EstimateCost(iterRange);
 
         // Compute the size of iterRange. If the size depends on the input, return the maximum
         // possible
         // cost range.
         var foldRange = iterRange.Eval(Activation.EmptyActivation());
-        if (!foldRange.Type().HasTrait(Trait.IterableType)) return Coster_Cost.Unknown;
+        if (!foldRange.Type().HasTrait(Trait.IterableType)) return global::Cel.Interpreter.Cost.Unknown;
 
         var rangeCnt = 0L;
         var it = ((IterableT)foldRange).Iterator();
@@ -1629,10 +1629,10 @@ public sealed class Interpretable_EvalExhaustiveFold : Interpretable_AbstractEva
             rangeCnt++;
         }
 
-        var a = Coster_Cost.EstimateCost(accu);
-        var c = Coster_Cost.EstimateCost(cond);
-        var s = Coster_Cost.EstimateCost(step);
-        var r = Coster_Cost.EstimateCost(result);
+        var a = global::Cel.Interpreter.Cost.EstimateCost(accu);
+        var c = global::Cel.Interpreter.Cost.EstimateCost(cond);
+        var s = global::Cel.Interpreter.Cost.EstimateCost(step);
+        var r = global::Cel.Interpreter.Cost.EstimateCost(result);
 
         // The cond and step costs are multiplied by size(iterRange).
         return i.Add(a).Add(c.Multiply(rangeCnt)).Add(s.Multiply(rangeCnt)).Add(r);
@@ -1648,11 +1648,11 @@ public sealed class Interpretable_EvalExhaustiveFold : Interpretable_AbstractEva
             return Err.ValOrErr(foldRange, "got '{0}', expected iterable type", foldRange.GetType().FullName);
 
         // Configure the fold activation with the accumulator initial value.
-        var accuCtx = new Activation_VarActivation();
+        var accuCtx = new VarActivation();
         accuCtx.parent = ctx;
         accuCtx.name = accuVar;
         accuCtx.val = accu.Eval(ctx);
-        var iterCtx = new Activation_VarActivation();
+        var iterCtx = new VarActivation();
         iterCtx.parent = accuCtx;
         iterCtx.name = iterVar;
         var it = ((IterableT)foldRange).Iterator();
@@ -1680,13 +1680,13 @@ public sealed class Interpretable_EvalExhaustiveFold : Interpretable_AbstractEva
     }
 }
 
-public sealed class Interpretable_EvalAttr : Interpretable_AbstractEval, Interpretable_InterpretableAttribute,
-    Coster, AttributeFactory_Qualifier, AttributeFactory_Attribute
+public sealed class EvalAttr : AbstractEval, InterpretableAttribute,
+    Coster, Qualifier, Attribute
 {
     internal readonly TypeAdapter adapter;
-    internal AttributeFactory_Attribute attr;
+    internal Attribute attr;
 
-    internal Interpretable_EvalAttr(TypeAdapter adapter, AttributeFactory_Attribute attr) : base(attr.Id())
+    internal EvalAttr(TypeAdapter adapter, Attribute attr) : base(attr.Id())
     {
         this.adapter = adapter;
         this.attr = attr;
@@ -1695,15 +1695,15 @@ public sealed class Interpretable_EvalAttr : Interpretable_AbstractEval, Interpr
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
-        return Coster_Cost.EstimateCost(attr);
+        return global::Cel.Interpreter.Cost.EstimateCost(attr);
     }
 
     /// <summary>
     ///     AddQualifier implements the instAttr interface method.
     /// </summary>
-    public AttributeFactory_Attribute AddQualifier(AttributeFactory_Qualifier qualifier)
+    public Attribute AddQualifier(Qualifier qualifier)
     {
         attr = attr.AddQualifier(qualifier);
         return attr;
@@ -1712,7 +1712,7 @@ public sealed class Interpretable_EvalAttr : Interpretable_AbstractEval, Interpr
     /// <summary>
     ///     Attr implements the instAttr interface method.
     /// </summary>
-    public AttributeFactory_Attribute Attr()
+    public Attribute Attr()
     {
         return attr;
     }

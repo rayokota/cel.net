@@ -81,7 +81,7 @@ public interface Interpreter
     static Interpreter NewInterpreter(Dispatcher dispatcher, Container container, TypeProvider provider,
         TypeAdapter adapter, AttributeFactory attrFactory)
     {
-        return new Interpreter_ExprInterpreter(dispatcher, container, provider, adapter, attrFactory);
+        return new ExprInterpreter(dispatcher, container, provider, adapter, attrFactory);
     }
 
     /// <summary>
@@ -97,7 +97,7 @@ public interface Interpreter
     }
 }
 
-public sealed class Interpreter_ExprInterpreter : Interpreter
+public sealed class ExprInterpreter : Interpreter
 {
     internal readonly TypeAdapter adapter;
     internal readonly AttributeFactory attrFactory;
@@ -105,7 +105,7 @@ public sealed class Interpreter_ExprInterpreter : Interpreter
     internal readonly Dispatcher dispatcher;
     internal readonly TypeProvider provider;
 
-    internal Interpreter_ExprInterpreter(Dispatcher dispatcher, Container container, TypeProvider provider,
+    internal ExprInterpreter(Dispatcher dispatcher, Container container, TypeProvider provider,
         TypeAdapter adapter, AttributeFactory attrFactory)
     {
         this.dispatcher = dispatcher;

@@ -40,14 +40,14 @@ public interface AttributeFactory
     ///         order as they were provided by the NamespacedAttribute CandidateVariableNames method.
     ///     </para>
     /// </summary>
-    AttributeFactory_NamespacedAttribute AbsoluteAttribute(long id, params string[] names);
+    NamespacedAttribute AbsoluteAttribute(long id, params string[] names);
 
     /// <summary>
     ///     ConditionalAttribute creates an attribute with two Attribute branches, where the Attribute that
     ///     is resolved depends on the boolean evaluation of the input 'expr'.
     /// </summary>
-    AttributeFactory_Attribute ConditionalAttribute(long id, Interpretable expr, AttributeFactory_Attribute t,
-        AttributeFactory_Attribute f);
+    Attribute ConditionalAttribute(long id, Interpretable expr, Attribute t,
+        Attribute f);
 
     /// <summary>
     ///     MaybeAttribute creates an attribute that refers to either a field selection or a namespaced
@@ -56,13 +56,13 @@ public interface AttributeFactory
     ///         Only expressions which have not been type-checked may generate oneof attributes.
     ///     </para>
     /// </summary>
-    AttributeFactory_Attribute MaybeAttribute(long id, string name);
+    Attribute MaybeAttribute(long id, string name);
 
     /// <summary>
     ///     RelativeAttribute creates an attribute whose value is a qualification of a dynamic computation
     ///     rather than a static variable reference.
     /// </summary>
-    AttributeFactory_Attribute RelativeAttribute(long id, Interpretable operand);
+    Attribute RelativeAttribute(long id, Interpretable operand);
 
     /// <summary>
     ///     NewQualifier creates a qualifier on the target object with a given value.
@@ -75,7 +75,7 @@ public interface AttributeFactory
     ///         may be sub-optimal.
     ///     </para>
     /// </summary>
-    AttributeFactory_Qualifier NewQualifier(Type objType, long qualID, object val);
+    Qualifier NewQualifier(Type objType, long qualID, object val);
 
     /// <summary>
     ///     Qualifier marker interface for designating different qualifier values and where they appear
@@ -103,13 +103,13 @@ public interface AttributeFactory
     /// </summary>
     static AttributeFactory NewAttributeFactory(Container cont, TypeAdapter a, TypeProvider p)
     {
-        return new AttributeFactory_AttrFactory(cont, a, p);
+        return new AttrFactory(cont, a, p);
     }
 
-    static AttributeFactory_Qualifier NewQualifierStatic(TypeAdapter adapter, long id, object v)
+    static Qualifier NewQualifierStatic(TypeAdapter adapter, long id, object v)
     {
-        if (v is AttributeFactory_Attribute)
-            return new AttributeFactory_AttrQualifier(id, (AttributeFactory_Attribute)v);
+        if (v is Attribute)
+            return new AttrQualifier(id, (Attribute)v);
 
         var c = v.GetType();
 
@@ -119,53 +119,53 @@ public interface AttributeFactory
             switch (val.Type().TypeEnum().InnerEnumValue)
             {
                 case TypeEnum.InnerEnum.String:
-                    return new AttributeFactory_StringQualifier(id, (string)val.Value(), val, adapter);
+                    return new StringQualifier(id, (string)val.Value(), val, adapter);
                 case TypeEnum.InnerEnum.Int:
-                    return new AttributeFactory_IntQualifier(id, val.IntValue(), val, adapter);
+                    return new IntQualifier(id, val.IntValue(), val, adapter);
                 case TypeEnum.InnerEnum.Uint:
-                    return new AttributeFactory_UintQualifier(id, (ulong)val.IntValue(), val, adapter);
+                    return new UintQualifier(id, (ulong)val.IntValue(), val, adapter);
                 case TypeEnum.InnerEnum.Bool:
-                    return new AttributeFactory_BoolQualifier(id, val.BooleanValue(), val, adapter);
+                    return new BoolQualifier(id, val.BooleanValue(), val, adapter);
             }
         }
 
         if (c == typeof(string))
-            return new AttributeFactory_StringQualifier(id, (string)v, StringT.StringOf((string)v), adapter);
+            return new StringQualifier(id, (string)v, StringT.StringOf((string)v), adapter);
 
         if (c == typeof(ulong))
         {
             var l = (ulong)v;
-            return new AttributeFactory_UintQualifier(id, l, UintT.UintOf(l), adapter);
+            return new UintQualifier(id, l, UintT.UintOf(l), adapter);
         }
 
         if (c == typeof(byte))
         {
             var i = (byte)v;
-            return new AttributeFactory_IntQualifier(id, i, IntT.IntOf(i), adapter);
+            return new IntQualifier(id, i, IntT.IntOf(i), adapter);
         }
 
         if (c == typeof(short))
         {
             var i = (short)v;
-            return new AttributeFactory_IntQualifier(id, i, IntT.IntOf(i), adapter);
+            return new IntQualifier(id, i, IntT.IntOf(i), adapter);
         }
 
         if (c == typeof(int))
         {
             var i = (int)v;
-            return new AttributeFactory_IntQualifier(id, i, IntT.IntOf(i), adapter);
+            return new IntQualifier(id, i, IntT.IntOf(i), adapter);
         }
 
         if (c == typeof(long))
         {
             var i = (long)v;
-            return new AttributeFactory_IntQualifier(id, i, IntT.IntOf(i), adapter);
+            return new IntQualifier(id, i, IntT.IntOf(i), adapter);
         }
 
         if (c == typeof(bool))
         {
             var b = (bool)v;
-            return new AttributeFactory_BoolQualifier(id, b, Types.BoolOf(b), adapter);
+            return new BoolQualifier(id, b, Types.BoolOf(b), adapter);
         }
 
         throw new InvalidOperationException(string.Format("invalid qualifier type: {0}",
@@ -209,7 +209,7 @@ public interface AttributeFactory
     }
 }
 
-public interface AttributeFactory_Qualifier
+public interface Qualifier
 {
     /// <summary>
     ///     ID where the qualifier appears within an expression.
@@ -223,23 +223,23 @@ public interface AttributeFactory_Qualifier
     object Qualify(Activation vars, object obj);
 }
 
-public interface AttributeFactory_ConstantQualifier : AttributeFactory_Qualifier
+public interface ConstantQualifier : Qualifier
 {
     Val Value();
 }
 
-public interface AttributeFactory_ConstantQualifierEquator : AttributePattern.QualifierValueEquator,
-    AttributeFactory_ConstantQualifier
+public interface ConstantQualifierEquator : AttributePattern.QualifierValueEquator,
+    ConstantQualifier
 {
 }
 
-public interface AttributeFactory_Attribute : AttributeFactory_Qualifier
+public interface Attribute : Qualifier
 {
     /// <summary>
     ///     AddQualifier adds a qualifier on the Attribute or error if the qualification is not a valid
     ///     qualifier type.
     /// </summary>
-    AttributeFactory_Attribute AddQualifier(AttributeFactory_Qualifier q);
+    Attribute AddQualifier(Qualifier q);
 
     /// <summary>
     ///     Resolve returns the value of the Attribute given the current Activation.
@@ -247,7 +247,7 @@ public interface AttributeFactory_Attribute : AttributeFactory_Qualifier
     object Resolve(Activation a);
 }
 
-public interface AttributeFactory_NamespacedAttribute : AttributeFactory_Attribute
+public interface NamespacedAttribute : Attribute
 {
     /// <summary>
     ///     CandidateVariableNames returns the possible namespaced variable names for this Attribute in
@@ -258,7 +258,7 @@ public interface AttributeFactory_NamespacedAttribute : AttributeFactory_Attribu
     /// <summary>
     ///     Qualifiers returns the list of qualifiers associated with the Attribute.s
     /// </summary>
-    IList<AttributeFactory_Qualifier> Qualifiers();
+    IList<Qualifier> Qualifiers();
 
     /// <summary>
     ///     TryResolve attempts to return the value of the attribute given the current Activation. If an
@@ -269,13 +269,13 @@ public interface AttributeFactory_NamespacedAttribute : AttributeFactory_Attribu
     object TryResolve(Activation a);
 }
 
-public sealed class AttributeFactory_AttrFactory : AttributeFactory
+public sealed class AttrFactory : AttributeFactory
 {
     internal readonly TypeAdapter adapter;
     internal readonly Container container;
     internal readonly TypeProvider provider;
 
-    internal AttributeFactory_AttrFactory(Container container, TypeAdapter adapter, TypeProvider provider)
+    internal AttrFactory(Container container, TypeAdapter adapter, TypeProvider provider)
     {
         this.container = container;
         this.adapter = adapter;
@@ -289,9 +289,9 @@ public sealed class AttributeFactory_AttrFactory : AttributeFactory
     ///         resolution rules.
     ///     </para>
     /// </summary>
-    public AttributeFactory_NamespacedAttribute AbsoluteAttribute(long id, params string[] names)
+    public NamespacedAttribute AbsoluteAttribute(long id, params string[] names)
     {
-        return new AttributeFactory_AbsoluteAttribute(id, names, new List<AttributeFactory_Qualifier>(), adapter,
+        return new AbsoluteAttribute(id, names, new List<Qualifier>(), adapter,
             provider, this);
     }
 
@@ -299,36 +299,36 @@ public sealed class AttributeFactory_AttrFactory : AttributeFactory
     ///     ConditionalAttribute supports the case where an attribute selection may occur on a
     ///     conditional expression, e.g. (cond ? a : b).c
     /// </summary>
-    public AttributeFactory_Attribute ConditionalAttribute(long id, Interpretable expr,
-        AttributeFactory_Attribute t, AttributeFactory_Attribute f)
+    public Attribute ConditionalAttribute(long id, Interpretable expr,
+        Attribute t, Attribute f)
     {
-        return new AttributeFactory_ConditionalAttribute(id, expr, t, f, adapter, this);
+        return new ConditionalAttribute(id, expr, t, f, adapter, this);
     }
 
     /// <summary>
     ///     MaybeAttribute collects variants of unchecked AbsoluteAttribute values which could either be
     ///     direct variable accesses or some combination of variable access with qualification.
     /// </summary>
-    public AttributeFactory_Attribute MaybeAttribute(long id, string name)
+    public Attribute MaybeAttribute(long id, string name)
     {
-        IList<AttributeFactory_NamespacedAttribute> attrs = new List<AttributeFactory_NamespacedAttribute>();
+        IList<NamespacedAttribute> attrs = new List<NamespacedAttribute>();
         attrs.Add(AbsoluteAttribute(id, container.ResolveCandidateNames(name)));
-        return new AttributeFactory_MaybeAttribute(id, attrs, adapter, provider, this);
+        return new MaybeAttribute(id, attrs, adapter, provider, this);
     }
 
     /// <summary>
     ///     RelativeAttribute refers to an expression and an optional qualifier path.
     /// </summary>
-    public AttributeFactory_Attribute RelativeAttribute(long id, Interpretable operand)
+    public Attribute RelativeAttribute(long id, Interpretable operand)
     {
-        return new AttributeFactory_RelativeAttribute(id, operand, new List<AttributeFactory_Qualifier>(), adapter,
+        return new RelativeAttribute(id, operand, new List<Qualifier>(), adapter,
             this);
     }
 
     /// <summary>
     ///     NewQualifier is an implementation of the AttributeFactory interface.
     /// </summary>
-    public AttributeFactory_Qualifier NewQualifier(Type objType, long qualID, object val)
+    public Qualifier NewQualifier(Type objType, long qualID, object val)
     {
         // Before creating a new qualifier check to see if this is a protobuf message field access.
         // If so, use the precomputed GetFrom qualification method rather than the standard
@@ -340,7 +340,7 @@ public sealed class AttributeFactory_AttrFactory : AttributeFactory
             {
                 var ft = provider.FindFieldType(objType.MessageType, str);
                 if (ft != null && ft.isSet != null && ft.getFrom != null)
-                    return new AttributeFactory_FieldQualifier(qualID, str, ft, adapter);
+                    return new FieldQualifier(qualID, str, ft, adapter);
             }
         }
 
@@ -353,8 +353,8 @@ public sealed class AttributeFactory_AttrFactory : AttributeFactory
     }
 }
 
-public sealed class AttributeFactory_AbsoluteAttribute : AttributeFactory_Qualifier,
-    AttributeFactory_NamespacedAttribute, Coster
+public sealed class AbsoluteAttribute : Qualifier,
+    NamespacedAttribute, Coster
 {
     internal readonly TypeAdapter adapter;
     internal readonly AttributeFactory fac;
@@ -368,10 +368,10 @@ public sealed class AttributeFactory_AbsoluteAttribute : AttributeFactory_Qualif
 
     internal readonly TypeProvider provider;
 
-    internal readonly IList<AttributeFactory_Qualifier> qualifiers;
+    internal readonly IList<Qualifier> qualifiers;
 
-    internal AttributeFactory_AbsoluteAttribute(long id, string[] namespaceNames,
-        IList<AttributeFactory_Qualifier> qualifiers, TypeAdapter adapter, TypeProvider provider,
+    internal AbsoluteAttribute(long id, string[] namespaceNames,
+        IList<Qualifier> qualifiers, TypeAdapter adapter, TypeProvider provider,
         AttributeFactory fac)
     {
         this.id = id;
@@ -385,7 +385,7 @@ public sealed class AttributeFactory_AbsoluteAttribute : AttributeFactory_Qualif
     /// <summary>
     ///     AddQualifier implements the Attribute interface method.
     /// </summary>
-    public AttributeFactory_Attribute AddQualifier(AttributeFactory_Qualifier q)
+    public Attribute AddQualifier(Qualifier q)
     {
         qualifiers.Add(q);
         return this;
@@ -402,7 +402,7 @@ public sealed class AttributeFactory_AbsoluteAttribute : AttributeFactory_Qualif
     /// <summary>
     ///     Qualifiers returns the list of Qualifier instances associated with the namespaced attribute.
     /// </summary>
-    public IList<AttributeFactory_Qualifier> Qualifiers()
+    public IList<Qualifier> Qualifiers()
     {
         return qualifiers;
     }
@@ -485,13 +485,13 @@ public sealed class AttributeFactory_AbsoluteAttribute : AttributeFactory_Qualif
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
         var min = 0L;
         var max = 0L;
         foreach (var q in qualifiers)
         {
-            var qc = Coster_Cost.EstimateCost(q);
+            var qc = global::Cel.Interpreter.Cost.EstimateCost(q);
             min += qc.min;
             max += qc.max;
         }
@@ -510,18 +510,18 @@ public sealed class AttributeFactory_AbsoluteAttribute : AttributeFactory_Qualif
     }
 }
 
-public sealed class AttributeFactory_ConditionalAttribute : AttributeFactory_Qualifier, AttributeFactory_Attribute,
+public sealed class ConditionalAttribute : Qualifier, Attribute,
     Coster
 {
     internal readonly TypeAdapter adapter;
     internal readonly Interpretable expr;
     internal readonly AttributeFactory fac;
-    internal readonly AttributeFactory_Attribute falsy;
+    internal readonly Attribute falsy;
     internal readonly long id;
-    internal readonly AttributeFactory_Attribute truthy;
+    internal readonly Attribute truthy;
 
-    internal AttributeFactory_ConditionalAttribute(long id, Interpretable expr, AttributeFactory_Attribute truthy,
-        AttributeFactory_Attribute falsy, TypeAdapter adapter, AttributeFactory fac)
+    internal ConditionalAttribute(long id, Interpretable expr, Attribute truthy,
+        Attribute falsy, TypeAdapter adapter, AttributeFactory fac)
     {
         this.id = id;
         this.expr = expr;
@@ -535,7 +535,7 @@ public sealed class AttributeFactory_ConditionalAttribute : AttributeFactory_Qua
     ///     AddQualifier appends the same qualifier to both sides of the conditional, in effect managing
     ///     the qualification of alternate attributes.
     /// </summary>
-    public AttributeFactory_Attribute AddQualifier(AttributeFactory_Qualifier qual)
+    public Attribute AddQualifier(Qualifier qual)
     {
         truthy.AddQualifier(qual); // just do
         falsy.AddQualifier(qual); // just do
@@ -586,11 +586,11 @@ public sealed class AttributeFactory_ConditionalAttribute : AttributeFactory_Qua
     ///     &lt;f&gt;}. The cost is computed as {@code cost(expr)} plus the min/max costs of evaluating
     ///     either `t` or `f`.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
-        var t = Coster_Cost.EstimateCost(truthy);
-        var f = Coster_Cost.EstimateCost(falsy);
-        var e = Coster_Cost.EstimateCost(expr);
+        var t = global::Cel.Interpreter.Cost.EstimateCost(truthy);
+        var f = global::Cel.Interpreter.Cost.EstimateCost(falsy);
+        var e = global::Cel.Interpreter.Cost.EstimateCost(expr);
         return Coster.CostOf(e.min + Math.Min(t.min, f.min), e.max + Math.Max(t.max, f.max));
     }
 
@@ -603,15 +603,15 @@ public sealed class AttributeFactory_ConditionalAttribute : AttributeFactory_Qua
     }
 }
 
-public sealed class AttributeFactory_MaybeAttribute : Coster, AttributeFactory_Attribute, AttributeFactory_Qualifier
+public sealed class MaybeAttribute : Coster, Attribute, Qualifier
 {
     internal readonly TypeAdapter adapter;
-    internal readonly IList<AttributeFactory_NamespacedAttribute> attrs;
+    internal readonly IList<NamespacedAttribute> attrs;
     internal readonly AttributeFactory fac;
     internal readonly long id;
     internal readonly TypeProvider provider;
 
-    internal AttributeFactory_MaybeAttribute(long id, IList<AttributeFactory_NamespacedAttribute> attrs,
+    internal MaybeAttribute(long id, IList<NamespacedAttribute> attrs,
         TypeAdapter adapter, TypeProvider provider, AttributeFactory fac)
     {
         this.id = id;
@@ -667,13 +667,13 @@ public sealed class AttributeFactory_MaybeAttribute : Coster, AttributeFactory_A
     ///         If none of the attributes within the maybe resolves a value, the result is an error.
     ///     </para>
     /// </summary>
-    public AttributeFactory_Attribute AddQualifier(AttributeFactory_Qualifier qual)
+    public Attribute AddQualifier(Qualifier qual)
     {
         var str = "";
         var isStr = false;
-        if (qual is AttributeFactory_ConstantQualifier)
+        if (qual is ConstantQualifier)
         {
-            var cq = (AttributeFactory_ConstantQualifier)qual;
+            var cq = (ConstantQualifier)qual;
             var cqv = cq.Value().Value();
             if (cqv is string)
             {
@@ -742,13 +742,13 @@ public sealed class AttributeFactory_MaybeAttribute : Coster, AttributeFactory_A
     ///     Cost implements the Coster interface method. The min cost is computed as the minimal cost
     ///     among all the possible attributes, the max cost ditto.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
         var min = long.MaxValue;
         var max = 0L;
         foreach (var a in attrs)
         {
-            var ac = Coster_Cost.EstimateCost(a);
+            var ac = global::Cel.Interpreter.Cost.EstimateCost(a);
             min = Math.Min(min, ac.min);
             max = Math.Max(max, ac.max);
         }
@@ -765,17 +765,17 @@ public sealed class AttributeFactory_MaybeAttribute : Coster, AttributeFactory_A
     }
 }
 
-public sealed class AttributeFactory_RelativeAttribute : Coster, AttributeFactory_Qualifier,
-    AttributeFactory_Attribute
+public sealed class RelativeAttribute : Coster, Qualifier,
+    Attribute
 {
     internal readonly TypeAdapter adapter;
     internal readonly AttributeFactory fac;
     internal readonly long id;
     internal readonly Interpretable operand;
-    internal readonly IList<AttributeFactory_Qualifier> qualifiers;
+    internal readonly IList<Qualifier> qualifiers;
 
-    internal AttributeFactory_RelativeAttribute(long id, Interpretable operand,
-        IList<AttributeFactory_Qualifier> qualifiers, TypeAdapter adapter, AttributeFactory fac)
+    internal RelativeAttribute(long id, Interpretable operand,
+        IList<Qualifier> qualifiers, TypeAdapter adapter, AttributeFactory fac)
     {
         this.id = id;
         this.operand = operand;
@@ -787,7 +787,7 @@ public sealed class AttributeFactory_RelativeAttribute : Coster, AttributeFactor
     /// <summary>
     ///     AddQualifier implements the Attribute interface method.
     /// </summary>
-    public AttributeFactory_Attribute AddQualifier(AttributeFactory_Qualifier qual)
+    public Attribute AddQualifier(Qualifier qual)
     {
         qualifiers.Add(qual);
         return this;
@@ -842,14 +842,14 @@ public sealed class AttributeFactory_RelativeAttribute : Coster, AttributeFactor
     /// <summary>
     ///     Cost implements the Coster interface method.
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
-        var c = Coster_Cost.EstimateCost(operand);
+        var c = global::Cel.Interpreter.Cost.EstimateCost(operand);
         var min = c.min;
         var max = c.max;
         foreach (var qual in qualifiers)
         {
-            var q = Coster_Cost.EstimateCost(qual);
+            var q = global::Cel.Interpreter.Cost.EstimateCost(qual);
             min += q.min;
             max += q.max;
         }
@@ -866,12 +866,12 @@ public sealed class AttributeFactory_RelativeAttribute : Coster, AttributeFactor
     }
 }
 
-public sealed class AttributeFactory_AttrQualifier : Coster, AttributeFactory_Attribute
+public sealed class AttrQualifier : Coster, Attribute
 {
-    internal readonly AttributeFactory_Attribute attribute;
+    internal readonly Attribute attribute;
     internal readonly long id;
 
-    internal AttributeFactory_AttrQualifier(long id, AttributeFactory_Attribute attribute)
+    internal AttrQualifier(long id, Attribute attribute)
     {
         this.id = id;
         this.attribute = attribute;
@@ -882,7 +882,7 @@ public sealed class AttributeFactory_AttrQualifier : Coster, AttributeFactory_At
         return id;
     }
 
-    public AttributeFactory_Attribute AddQualifier(AttributeFactory_Qualifier q)
+    public Attribute AddQualifier(Qualifier q)
     {
         return attribute.AddQualifier(q);
     }
@@ -900,9 +900,9 @@ public sealed class AttributeFactory_AttrQualifier : Coster, AttributeFactory_At
     /// <summary>
     ///     Cost returns zero for constant field qualifiers
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
-        return Coster_Cost.EstimateCost(attribute);
+        return global::Cel.Interpreter.Cost.EstimateCost(attribute);
     }
 
     public override string ToString()
@@ -911,7 +911,7 @@ public sealed class AttributeFactory_AttrQualifier : Coster, AttributeFactory_At
     }
 }
 
-public sealed class AttributeFactory_StringQualifier : Coster, AttributeFactory_ConstantQualifierEquator,
+public sealed class StringQualifier : Coster, ConstantQualifierEquator,
     AttributePattern.QualifierValueEquator
 {
     internal readonly TypeAdapter adapter;
@@ -919,7 +919,7 @@ public sealed class AttributeFactory_StringQualifier : Coster, AttributeFactory_
     internal readonly long id;
     internal readonly string value;
 
-    internal AttributeFactory_StringQualifier(long id, string value, Val celValue, TypeAdapter adapter)
+    internal StringQualifier(long id, string value, Val celValue, TypeAdapter adapter)
     {
         this.id = id;
         this.value = value;
@@ -984,9 +984,9 @@ public sealed class AttributeFactory_StringQualifier : Coster, AttributeFactory_
     /// <summary>
     ///     Cost returns zero for constant field qualifiers
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
-        return Coster_Cost.None;
+        return global::Cel.Interpreter.Cost.None;
     }
 
     public override string ToString()
@@ -996,14 +996,14 @@ public sealed class AttributeFactory_StringQualifier : Coster, AttributeFactory_
     }
 }
 
-public sealed class AttributeFactory_IntQualifier : Coster, AttributeFactory_ConstantQualifierEquator
+public sealed class IntQualifier : Coster, ConstantQualifierEquator
 {
     internal readonly TypeAdapter adapter;
     internal readonly Val celValue;
     internal readonly long id;
     internal readonly long value;
 
-    internal AttributeFactory_IntQualifier(long id, long value, Val celValue, TypeAdapter adapter)
+    internal IntQualifier(long id, long value, Val celValue, TypeAdapter adapter)
     {
         this.id = id;
         this.value = value;
@@ -1093,9 +1093,9 @@ public sealed class AttributeFactory_IntQualifier : Coster, AttributeFactory_Con
     /// <summary>
     ///     Cost returns zero for constant field qualifiers
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
-        return Coster_Cost.None;
+        return global::Cel.Interpreter.Cost.None;
     }
 
     public override string ToString()
@@ -1105,14 +1105,14 @@ public sealed class AttributeFactory_IntQualifier : Coster, AttributeFactory_Con
     }
 }
 
-public sealed class AttributeFactory_UintQualifier : Coster, AttributeFactory_ConstantQualifierEquator
+public sealed class UintQualifier : Coster, ConstantQualifierEquator
 {
     internal readonly TypeAdapter adapter;
     internal readonly Val celValue;
     internal readonly long id;
     internal readonly ulong value;
 
-    internal AttributeFactory_UintQualifier(long id, ulong value, Val celValue, TypeAdapter adapter)
+    internal UintQualifier(long id, ulong value, Val celValue, TypeAdapter adapter)
     {
         this.id = id;
         this.value = value;
@@ -1179,9 +1179,9 @@ public sealed class AttributeFactory_UintQualifier : Coster, AttributeFactory_Co
     /// <summary>
     ///     Cost returns zero for constant field qualifiers
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
-        return Coster_Cost.None;
+        return global::Cel.Interpreter.Cost.None;
     }
 
     public override string ToString()
@@ -1191,14 +1191,14 @@ public sealed class AttributeFactory_UintQualifier : Coster, AttributeFactory_Co
     }
 }
 
-public sealed class AttributeFactory_BoolQualifier : Coster, AttributeFactory_ConstantQualifierEquator
+public sealed class BoolQualifier : Coster, ConstantQualifierEquator
 {
     internal readonly TypeAdapter adapter;
     internal readonly Val celValue;
     internal readonly long id;
     internal readonly bool value;
 
-    internal AttributeFactory_BoolQualifier(long id, bool value, Val celValue, TypeAdapter adapter)
+    internal BoolQualifier(long id, bool value, Val celValue, TypeAdapter adapter)
     {
         this.id = id;
         this.value = value;
@@ -1259,9 +1259,9 @@ public sealed class AttributeFactory_BoolQualifier : Coster, AttributeFactory_Co
     /// <summary>
     ///     Cost returns zero for constant field qualifiers
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
-        return Coster_Cost.None;
+        return global::Cel.Interpreter.Cost.None;
     }
 
     public override string ToString()
@@ -1271,14 +1271,14 @@ public sealed class AttributeFactory_BoolQualifier : Coster, AttributeFactory_Co
     }
 }
 
-public sealed class AttributeFactory_FieldQualifier : Coster, AttributeFactory_ConstantQualifierEquator
+public sealed class FieldQualifier : Coster, ConstantQualifierEquator
 {
     internal readonly TypeAdapter adapter;
     internal readonly FieldType fieldType;
     internal readonly long id;
     internal readonly string name;
 
-    internal AttributeFactory_FieldQualifier(long id, string name, FieldType fieldType, TypeAdapter adapter)
+    internal FieldQualifier(long id, string name, FieldType fieldType, TypeAdapter adapter)
     {
         this.id = id;
         this.name = name;
@@ -1322,9 +1322,9 @@ public sealed class AttributeFactory_FieldQualifier : Coster, AttributeFactory_C
     /// <summary>
     ///     Cost returns zero for constant field qualifiers
     /// </summary>
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
-        return Coster_Cost.None;
+        return global::Cel.Interpreter.Cost.None;
     }
 
     public override string ToString()

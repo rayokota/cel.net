@@ -33,7 +33,7 @@ using DeclKindCase = Decl.DeclKindOneofCase;
 public sealed class Env
 {
     internal readonly IList<Decl> declarations;
-    private readonly ISet<EnvOption_EnvFeature> features;
+    private readonly ISet<EnvFeature> features;
     internal readonly IList<Macro> macros;
     private readonly object once = new();
 
@@ -54,7 +54,7 @@ public sealed class Env
     internal TypeProvider provider;
 
     private Env(Container container, IList<Decl> declarations, IList<Macro> macros, TypeAdapter adapter,
-        TypeProvider provider, ISet<EnvOption_EnvFeature> features, IList<ProgramOption> progOpts)
+        TypeProvider provider, ISet<EnvFeature> features, IList<ProgramOption> progOpts)
     {
         this.container = container;
         this.declarations = declarations;
@@ -68,7 +68,7 @@ public sealed class Env
     /// <summary>
     ///     SetFeature sets the given feature flag, as enumerated in options.go.
     /// </summary>
-    public EnvOption_EnvFeature Feature
+    public EnvFeature Feature
     {
         set => features.Add(value);
     }
@@ -93,7 +93,7 @@ public sealed class Env
     ///         PartialAttributes option is provided as a ProgramOption.
     ///     </para>
     /// </summary>
-    public Activation_PartialActivation UnknownVars
+    public PartialActivation UnknownVars
     {
         get
         {
@@ -141,7 +141,7 @@ public sealed class Env
     public static Env NewCustomEnv(TypeRegistry registry, IList<EnvOption> opts)
     {
         return new Env(Container.DefaultContainer, new List<Decl>(), new List<Macro>(), registry.ToTypeAdapter(),
-            registry, new HashSet<EnvOption_EnvFeature>(), new List<ProgramOption>()).Configure(opts);
+            registry, new HashSet<EnvFeature>(), new List<ProgramOption>()).Configure(opts);
     }
 
     public static Env NewCustomEnv(params EnvOption[] opts)
@@ -177,7 +177,7 @@ public sealed class Env
             {
                 var ce = CheckerEnv.NewCheckerEnv(container, provider);
                 ce.EnableDynamicAggregateLiterals(true);
-                if (HasFeature(EnvOption_EnvFeature.FeatureDisableDynamicAggregateLiterals))
+                if (HasFeature(EnvFeature.FeatureDisableDynamicAggregateLiterals))
                     ce.EnableDynamicAggregateLiterals(false);
 
                 try
@@ -298,7 +298,7 @@ public sealed class Env
         */
         if (this.provider is TypeRegistry) provider = ((TypeRegistry)this.provider).Copy();
 
-        ISet<EnvOption_EnvFeature> featuresCopy = new HashSet<EnvOption_EnvFeature>(features);
+        ISet<EnvFeature> featuresCopy = new HashSet<EnvFeature>(features);
 
         var ext = new Env(container, decsCopy, macsCopy, adapter, provider, featuresCopy, progOptsCopy);
         return ext.Configure(opts);
@@ -313,7 +313,7 @@ public sealed class Env
     ///     HasFeature checks whether the environment enables the given feature flag, as enumerated in
     ///     options.go.
     /// </summary>
-    public bool HasFeature(EnvOption_EnvFeature flag)
+    public bool HasFeature(EnvFeature flag)
     {
         return features.Contains(flag);
     }

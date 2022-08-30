@@ -36,7 +36,7 @@ public class CELTest
     public virtual void AstToProto()
     {
         var stdEnv =
-            Env.NewEnv(EnvOptions.Declarations(Decls.NewVar("a", Decls.Dyn), Decls.NewVar("b", Decls.Dyn)));
+            Env.NewEnv(IEnvOption.Declarations(Decls.NewVar("a", Decls.Dyn), Decls.NewVar("b", Decls.Dyn)));
         var astIss = stdEnv.Parse("a + b");
         Assert.That(astIss.HasIssues(), Is.False);
         var parsed = Cel.AstToParsedExpr(astIss.Ast);
@@ -82,7 +82,7 @@ public class CELTest
     {
         // Variables used within this expression environment.
         var decls =
-            EnvOptions.Declarations(Decls.NewVar("i", Decls.String), Decls.NewVar("you", Decls.String));
+            IEnvOption.Declarations(Decls.NewVar("i", Decls.String), Decls.NewVar("you", Decls.String));
         var env = Env.NewEnv(decls);
 
         // Compile the expression.
@@ -103,8 +103,8 @@ public class CELTest
     public virtual void AbbrevsCompiled()
     {
         // Test whether abbreviations successfully resolve at type-check time (compile time).
-        var env = Env.NewEnv(EnvOptions.Abbrevs("qualified.identifier.name"),
-            EnvOptions.Declarations(Decls.NewVar("qualified.identifier.name.first", Decls.String)));
+        var env = Env.NewEnv(IEnvOption.Abbrevs("qualified.identifier.name"),
+            IEnvOption.Declarations(Decls.NewVar("qualified.identifier.name.first", Decls.String)));
         var astIss = env.Compile("\"hello \"+ name.first"); // abbreviation resolved here.
         Assert.That(astIss.HasIssues(), Is.False);
         var prg = env.Program(astIss.Ast);
@@ -116,7 +116,7 @@ public class CELTest
     public virtual void AbbrevsParsed()
     {
         // Test whether abbreviations are resolved properly at evaluation time.
-        var env = Env.NewEnv(EnvOptions.Abbrevs("qualified.identifier.name"));
+        var env = Env.NewEnv(IEnvOption.Abbrevs("qualified.identifier.name"));
         var astIss = env.Parse("\"hello \" + name.first");
         Assert.That(astIss.HasIssues(), Is.False);
         var prg = env.Program(astIss.Ast); // abbreviation resolved here.
@@ -129,9 +129,9 @@ public class CELTest
     [Test]
     public virtual void AbbrevsDisambiguation()
     {
-        var env = Env.NewEnv(EnvOptions.Abbrevs("external.Expr"), EnvOptions.Container("google.api.expr.v1alpha1"),
-            EnvOptions.Types(new Expr()),
-            EnvOptions.Declarations(Decls.NewVar("test", Decls.Bool), Decls.NewVar("external.Expr", Decls.String)));
+        var env = Env.NewEnv(IEnvOption.Abbrevs("external.Expr"), IEnvOption.Container("google.api.expr.v1alpha1"),
+            IEnvOption.Types(new Expr()),
+            IEnvOption.Declarations(Decls.NewVar("test", Decls.Bool), Decls.NewVar("external.Expr", Decls.String)));
         // This expression will return either a string or a protobuf Expr value depending on the value
         // of the 'test' argument. The fully qualified type name is used indicate that the protobuf
         // typed 'Expr' should be used rather than the abbreviatation for 'external.Expr'.
@@ -158,7 +158,7 @@ public class CELTest
     [Test]
     public virtual void CustomEnv()
     {
-        var e = Env.NewCustomEnv(EnvOptions.Declarations(Decls.NewVar("a.b.c", Decls.Bool)));
+        var e = Env.NewCustomEnv(IEnvOption.Declarations(Decls.NewVar("a.b.c", Decls.Bool)));
 
         // t.Run("err", func(t *testing.T) {
         var xIss = e.Compile("a.b.c == true");
@@ -176,13 +176,13 @@ public class CELTest
     public virtual void HomogeneousAggregateLiterals()
     {
         var e = Env.NewCustomEnv(
-            EnvOptions.Declarations(Decls.NewVar("name", Decls.String),
+            IEnvOption.Declarations(Decls.NewVar("name", Decls.String),
                 Decls.NewFunction(Operator.In.id,
                     Decls.NewOverload(Overloads.InList,
                         new List<Type> { Decls.String, Decls.NewListType(Decls.String) }, Decls.Bool),
                     Decls.NewOverload(Overloads.InMap,
                         new List<Type> { Decls.String, Decls.NewMapType(Decls.String, Decls.Bool) }, Decls.Bool))),
-            EnvOptions.HomogeneousAggregateLiterals());
+            IEnvOption.HomogeneousAggregateLiterals());
 
         // t.Run("err_list", func(t *testing.T) {
         var xIss = e.Compile("name in ['hello', 0]");
@@ -200,7 +200,7 @@ public class CELTest
         Assert.That(xIss.HasIssues(), Is.True);
         // })
 
-        var funcs = ProgramOptions.Functions(Overload.Binary(Operator.In.id, (lhs, rhs) =>
+        var funcs = IProgramOption.Functions(Overload.Binary(Operator.In.id, (lhs, rhs) =>
         {
             if (rhs.Type().HasTrait(Trait.ContainerType)) return ((Container)rhs).Contains(lhs);
 
@@ -227,10 +227,10 @@ public class CELTest
     {
         var exprType = Decls.NewObjectType("google.api.expr.v1alpha1.Expr");
         TypeRegistry reg = ProtoTypeRegistry.NewEmptyRegistry();
-        var e = Env.NewEnv(EnvOptions.CustomTypeAdapter(reg.ToTypeAdapter()), EnvOptions.CustomTypeProvider(reg),
-            EnvOptions.Container("google.api.expr.v1alpha1"),
-            EnvOptions.Types(new Expr(), BoolT.BoolType, IntT.IntType, StringT.StringType),
-            EnvOptions.Declarations(Decls.NewVar("expr", exprType)));
+        var e = Env.NewEnv(IEnvOption.CustomTypeAdapter(reg.ToTypeAdapter()), IEnvOption.CustomTypeProvider(reg),
+            IEnvOption.Container("google.api.expr.v1alpha1"),
+            IEnvOption.Types(new Expr(), BoolT.BoolType, IntT.IntType, StringT.StringType),
+            IEnvOption.Declarations(Decls.NewVar("expr", exprType)));
 
         var astIss = e.Compile("expr == Expr{id: 2,\n" + "\t\t\tcall_expr: Expr.Call{\n" +
                                "\t\t\t\tfunction: \"_==_\",\n" + "\t\t\t\targs: [\n" +
@@ -383,7 +383,7 @@ public class CELTest
     public virtual void GlobalVars()
     {
         var mapStrDyn = Decls.NewMapType(Decls.String, Decls.Dyn);
-        var e = Env.NewEnv(EnvOptions.Declarations(Decls.NewVar("attrs", mapStrDyn),
+        var e = Env.NewEnv(IEnvOption.Declarations(Decls.NewVar("attrs", mapStrDyn),
             Decls.NewVar("default", Decls.Dyn),
             Decls.NewFunction("get",
                 Decls.NewInstanceOverload("get_map", new List<Type> { mapStrDyn, Decls.String, Decls.Dyn },
@@ -391,7 +391,7 @@ public class CELTest
         var astIss = e.Compile("attrs.get(\"first\", attrs.get(\"second\", default))");
 
         // Create the program.
-        var funcs = ProgramOptions.Functions(Overload.Function("get", args =>
+        var funcs = IProgramOption.Functions(Overload.Function("get", args =>
         {
             if (args.Length != 3) return Err.NewErr("invalid arguments to 'get'");
 
@@ -411,7 +411,7 @@ public class CELTest
 
         // Global variables can be configured as a ProgramOption and optionally overridden on Eval.
         var prg = e.Program(astIss.Ast, funcs,
-            ProgramOptions.Globals(TestUtil.MapOf<string, object>("default", "third")));
+            IProgramOption.Globals(TestUtil.MapOf<string, object>("default", "third")));
 
         // t.Run("global_default", func(t *testing.T) {
         object vars = TestUtil.MapOf<string, object>("attrs", TestUtil.MapOf<string, object>());
@@ -449,10 +449,10 @@ public class CELTest
                 iterIdent);
             return eh.Fold("__iter__", target, "__result__", init, condition, step, accuIdent);
         });
-        var e = Env.NewEnv(EnvOptions.Macros(joinMacro));
+        var e = Env.NewEnv(IEnvOption.Macros(joinMacro));
         var astIss = e.Compile("['hello', 'cel', 'friend'].join(',')");
         Assert.That(astIss.HasIssues(), Is.False);
-        var prg = e.Program(astIss.Ast, ProgramOptions.EvalOptions(EvalOption.OptExhaustiveEval));
+        var prg = e.Program(astIss.Ast, IProgramOption.EvalOptions(EvalOption.OptExhaustiveEval));
         var @out = prg.Eval(Cel.NoVars());
         Assert.That(@out.Val.Equal(StringT.StringOf("hello,cel,friend")), Is.SameAs(BoolT.True));
     }
@@ -473,10 +473,10 @@ public class CELTest
     [Test]
     public virtual void EvalOptions()
     {
-        var e = Env.NewEnv(EnvOptions.Declarations(Decls.NewVar("k", Decls.String), Decls.NewVar("v", Decls.Bool)));
+        var e = Env.NewEnv(IEnvOption.Declarations(Decls.NewVar("k", Decls.String), Decls.NewVar("v", Decls.Bool)));
         var astIss = e.Compile("{k: true}[k] || v != false");
 
-        var prg = e.Program(astIss.Ast, ProgramOptions.EvalOptions(EvalOption.OptExhaustiveEval));
+        var prg = e.Program(astIss.Ast, IProgramOption.EvalOptions(EvalOption.OptExhaustiveEval));
         var outDetails = prg.Eval(TestUtil.MapOf<string, object>("k", "key", "v", true));
         Assert.That(outDetails.Val, Is.SameAs(BoolT.True));
 
@@ -492,28 +492,28 @@ public class CELTest
     [Test]
     public virtual void EvalRecover()
     {
-        var e = Env.NewEnv(EnvOptions.Declarations(Decls.NewFunction("panic",
+        var e = Env.NewEnv(IEnvOption.Declarations(Decls.NewFunction("panic",
             Decls.NewOverload("panic", new List<Type> { new() }, Decls.Bool))));
         var funcs =
-            ProgramOptions.Functions(Overload.Function("panic",
+            IProgramOption.Functions(Overload.Function("panic",
                 args => { throw new Exception("watch me recover"); }));
         // Test standard evaluation.
         var pAst = e.Parse("panic()");
         var prgm1 = e.Program(pAst.Ast, funcs);
         Assert.That(() => prgm1.Eval(new Dictionary<object, object>()), Throws.Exception.TypeOf(typeof(Exception)));
         // Test the factory-based evaluation.
-        var prgm2 = e.Program(pAst.Ast, funcs, ProgramOptions.EvalOptions(EvalOption.OptTrackState));
+        var prgm2 = e.Program(pAst.Ast, funcs, IProgramOption.EvalOptions(EvalOption.OptTrackState));
         Assert.That(() => prgm2.Eval(new Dictionary<object, object>()), Throws.Exception.TypeOf(typeof(Exception)));
     }
 
     [Test]
     public virtual void ResidualAst()
     {
-        var e = Env.NewEnv(EnvOptions.Declarations(Decls.NewVar("x", Decls.Int), Decls.NewVar("y", Decls.Int)));
+        var e = Env.NewEnv(IEnvOption.Declarations(Decls.NewVar("x", Decls.Int), Decls.NewVar("y", Decls.Int)));
         var unkVars = e.UnknownVars;
         var astIss = e.Parse("x < 10 && (y == 0 || 'hello' != 'goodbye')");
         var prg = e.Program(astIss.Ast,
-            ProgramOptions.EvalOptions(EvalOption.OptTrackState, EvalOption.OptPartialEval));
+            IProgramOption.EvalOptions(EvalOption.OptTrackState, EvalOption.OptPartialEval));
         var outDet = prg.Eval(unkVars);
         Assert.That(outDet.Val, Is.Not.Null.And.Matches<object>(o => UnknownT.IsUnknown(o)));
         var residual = e.ResidualAst(astIss.Ast, outDet.EvalDetails);
@@ -524,7 +524,7 @@ public class CELTest
     [Test]
     public virtual void ResidualAstComplex()
     {
-        var e = Env.NewEnv(EnvOptions.Declarations(Decls.NewVar("resource.name", Decls.String),
+        var e = Env.NewEnv(IEnvOption.Declarations(Decls.NewVar("resource.name", Decls.String),
             Decls.NewVar("request.time", Decls.Timestamp),
             Decls.NewVar("request.auth.claims", Decls.NewMapType(Decls.String, Decls.String))));
         var unkVars = Cel.PartialVars(
@@ -536,7 +536,7 @@ public class CELTest
                                "\t\t request.auth.claims.email == \"wiley@acme.co\"");
         Assert.That(astIss.HasIssues(), Is.False);
         var prg = e.Program(astIss.Ast,
-            ProgramOptions.EvalOptions(EvalOption.OptTrackState, EvalOption.OptPartialEval));
+            IProgramOption.EvalOptions(EvalOption.OptTrackState, EvalOption.OptPartialEval));
         var outDet = prg.Eval(unkVars);
         Assert.That(outDet.Val, Is.Not.Null.And.Matches<object>(o => UnknownT.IsUnknown(o)));
         var residual = e.ResidualAst(astIss.Ast, outDet.EvalDetails);
@@ -592,9 +592,9 @@ public virtual void EnvExtensionIsolation()
         {
             lastInstruction.Set(i);
             // Only optimize the instruction if it is a call.
-            if (!(i is Interpretable_InterpretableCall)) return i;
+            if (!(i is InterpretableCall)) return i;
 
-            var call = (Interpretable_InterpretableCall)i;
+            var call = (InterpretableCall)i;
             // Only optimize the math functions when they have constant arguments.
             switch (call.Function())
             {
@@ -606,8 +606,8 @@ public virtual void EnvExtensionIsolation()
                     var args = call.Args();
                     // When the values are constant then the call can be evaluated with
                     // an empty activation and the value returns as a constant.
-                    if (!(args[0] is Interpretable_InterpretableConst) ||
-                        !(args[1] is Interpretable_InterpretableConst))
+                    if (!(args[0] is InterpretableConst) ||
+                        !(args[1] is InterpretableConst))
                         return i;
 
                     var val = call.Eval(Activation.EmptyActivation());
@@ -619,22 +619,22 @@ public virtual void EnvExtensionIsolation()
             }
         };
 
-        var env = Env.NewEnv(EnvOptions.Declarations(Decls.NewVar("foo", Decls.Int)));
+        var env = Env.NewEnv(IEnvOption.Declarations(Decls.NewVar("foo", Decls.Int)));
         var astIss = env.Compile("foo == -1 + 2 * 3 / 3");
-        env.Program(astIss.Ast, ProgramOptions.EvalOptions(EvalOption.OptPartialEval),
-            ProgramOptions.CustomDecorator(optimizeArith));
-        Assert.That(lastInstruction.Get(), Is.InstanceOf(typeof(Interpretable_InterpretableCall)));
-        var call = (Interpretable_InterpretableCall)lastInstruction.Get();
+        env.Program(astIss.Ast, IProgramOption.EvalOptions(EvalOption.OptPartialEval),
+            IProgramOption.CustomDecorator(optimizeArith));
+        Assert.That(lastInstruction.Get(), Is.InstanceOf(typeof(InterpretableCall)));
+        var call = (InterpretableCall)lastInstruction.Get();
         var args = call.Args();
         var lhs = args[0];
-        Assert.That(lhs, Is.InstanceOf(typeof(Interpretable_InterpretableAttribute)));
-        var lastAttr = (Interpretable_InterpretableAttribute)lhs;
-        var absAttr = (AttributeFactory_NamespacedAttribute)lastAttr.Attr();
+        Assert.That(lhs, Is.InstanceOf(typeof(InterpretableAttribute)));
+        var lastAttr = (InterpretableAttribute)lhs;
+        var absAttr = (NamespacedAttribute)lastAttr.Attr();
         var varNames = absAttr.CandidateVariableNames();
         Assert.That(varNames, Has.Exactly(1).EqualTo("foo"));
         var rhs = args[1];
-        Assert.That(rhs, Is.InstanceOf(typeof(Interpretable_InterpretableConst)));
-        var lastConst = (Interpretable_InterpretableConst)rhs;
+        Assert.That(rhs, Is.InstanceOf(typeof(InterpretableConst)));
+        var lastConst = (InterpretableConst)rhs;
         // This is the last number produced by the optimization.
         Assert.That(lastConst.Value(), Is.SameAs(IntT.IntOne));
     }
@@ -646,29 +646,29 @@ public virtual void EnvExtensionIsolation()
         var astIss = e.Compile("\"Hello, World!\"");
         Assert.That(astIss.HasIssues(), Is.False);
 
-        var wantedCost = Coster_Cost.None;
+        var wantedCost = Interpreter.Cost.None;
 
         // Test standard evaluation cost.
         var prg = e.Program(astIss.Ast);
-        var c = Coster_Cost.EstimateCost(prg);
+        var c = Interpreter.Cost.EstimateCost(prg);
         Assert.That(c, Is.EqualTo(wantedCost));
 
         // Test the factory-based evaluation cost.
-        prg = e.Program(astIss.Ast, ProgramOptions.EvalOptions(EvalOption.OptExhaustiveEval));
-        c = Coster_Cost.EstimateCost(prg);
+        prg = e.Program(astIss.Ast, IProgramOption.EvalOptions(EvalOption.OptExhaustiveEval));
+        c = Interpreter.Cost.EstimateCost(prg);
         Assert.That(c, Is.EqualTo(wantedCost));
     }
 
     [Test]
     public virtual void ResidualAstAttributeQualifiers()
     {
-        var e = Env.NewEnv(EnvOptions.Declarations(Decls.NewVar("x", Decls.NewMapType(Decls.String, Decls.Dyn)),
+        var e = Env.NewEnv(IEnvOption.Declarations(Decls.NewVar("x", Decls.NewMapType(Decls.String, Decls.Dyn)),
             Decls.NewVar("y", Decls.NewListType(Decls.Int)), Decls.NewVar("u", Decls.Int)));
         var astIss =
             e.Parse(
                 "x.abc == u && x[\"abc\"] == u && x[x.string] == u && y[0] == u && y[x.zero] == u && (true ? x : y).abc == u && (false ? y : x).abc == u");
         var prg = e.Program(astIss.Ast,
-            ProgramOptions.EvalOptions(EvalOption.OptTrackState, EvalOption.OptPartialEval));
+            IProgramOption.EvalOptions(EvalOption.OptTrackState, EvalOption.OptPartialEval));
         var vars = Cel.PartialVars(
             TestUtil.MapOf<string, object>("x", TestUtil.MapOf<string, object>("zero", 0, "abc", 123, "string", "abc"),
                 "y",
@@ -684,11 +684,11 @@ public virtual void EnvExtensionIsolation()
     [Test]
     public virtual void ResidualAstModified()
     {
-        var e = Env.NewEnv(EnvOptions.Declarations(Decls.NewVar("x", Decls.NewMapType(Decls.String, Decls.Int)),
+        var e = Env.NewEnv(IEnvOption.Declarations(Decls.NewVar("x", Decls.NewMapType(Decls.String, Decls.Int)),
             Decls.NewVar("y", Decls.Int)));
         var astIss = e.Parse("x == y");
         var prg = e.Program(astIss.Ast,
-            ProgramOptions.EvalOptions(EvalOption.OptTrackState, EvalOption.OptPartialEval));
+            IProgramOption.EvalOptions(EvalOption.OptTrackState, EvalOption.OptPartialEval));
         for (var x = 123; x < 456; x++)
         {
             var vars =

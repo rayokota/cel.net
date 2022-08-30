@@ -21,23 +21,23 @@ namespace Cel.Interpreter;
 /// </summary>
 public interface Coster
 {
-    Coster_Cost Cost();
+    Cost Cost();
 
-    static Coster_Cost CostOf(long min, long max)
+    static Cost CostOf(long min, long max)
     {
-        return new Coster_Cost(min, max);
+        return new Cost(min, max);
     }
 }
 
-public sealed class Coster_Cost
+public sealed class Cost
 {
-    public static readonly Coster_Cost Unknown = Coster.CostOf(0, long.MaxValue);
-    public static readonly Coster_Cost None = Coster.CostOf(0, 0);
-    public static readonly Coster_Cost OneOne = Coster.CostOf(1, 1);
+    public static readonly Cost Unknown = Coster.CostOf(0, long.MaxValue);
+    public static readonly Cost None = Coster.CostOf(0, 0);
+    public static readonly Cost OneOne = Coster.CostOf(1, 1);
     public readonly long max;
     public readonly long min;
 
-    internal Coster_Cost(long min, long max)
+    internal Cost(long min, long max)
     {
         this.min = min;
         this.max = max;
@@ -46,7 +46,7 @@ public sealed class Coster_Cost
     /// <summary>
     ///     estimateCost returns the heuristic cost interval for the program.
     /// </summary>
-    public static Coster_Cost EstimateCost(object i)
+    public static Cost EstimateCost(object i)
     {
         if (i is Coster) return ((Coster)i).Cost();
 
@@ -59,7 +59,7 @@ public sealed class Coster_Cost
 
         if (o == null || GetType() != o.GetType()) return false;
 
-        var cost = (Coster_Cost)o;
+        var cost = (Cost)o;
         return min == cost.min && max == cost.max;
     }
 
@@ -73,13 +73,13 @@ public sealed class Coster_Cost
         return "Cost{" + "min=" + min + ", max=" + max + '}';
     }
 
-    public Coster_Cost Add(Coster_Cost c)
+    public Cost Add(Cost c)
     {
-        return new Coster_Cost(min + c.min, max + c.max);
+        return new Cost(min + c.min, max + c.max);
     }
 
-    public Coster_Cost Multiply(long multiplier)
+    public Cost Multiply(long multiplier)
     {
-        return new Coster_Cost(min * multiplier, max * multiplier);
+        return new Cost(min * multiplier, max * multiplier);
     }
 }

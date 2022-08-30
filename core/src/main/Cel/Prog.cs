@@ -55,7 +55,7 @@ public sealed class Prog : Program, Coster
     }
 
     // Cost implements the Coster interface method.
-    public Coster_Cost Cost()
+    public Cost Cost()
     {
         return Cel.EstimateCost(interpretable);
     }
@@ -63,7 +63,7 @@ public sealed class Prog : Program, Coster
     /// <summary>
     ///     Eval implements the Program interface method.
     /// </summary>
-    public Program_EvalResult Eval(object input)
+    public EvalResult Eval(object input)
     {
         Val v;
 

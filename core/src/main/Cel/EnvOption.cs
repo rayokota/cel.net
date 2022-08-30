@@ -24,7 +24,7 @@ namespace Cel;
 /// </summary>
 public delegate Env EnvOption(Env e);
 
-public class EnvOptions
+public interface IEnvOption
 {
     // These constants beginning with "Feature" enable optional behavior in
     // the library.  See the documentation for each constant to see its
@@ -105,7 +105,7 @@ public class EnvOptions
     /// <summary>
     ///     Features sets the given feature flags. See list of Feature constants above.
     /// </summary>
-    public static EnvOption Features(params EnvOption_EnvFeature[] flags)
+    public static EnvOption Features(params EnvFeature[] flags)
     {
         return e =>
         {
@@ -126,7 +126,7 @@ public class EnvOptions
     /// </summary>
     public static EnvOption HomogeneousAggregateLiterals()
     {
-        return Features(EnvOption_EnvFeature.FeatureDisableDynamicAggregateLiterals);
+        return Features(EnvFeature.FeatureDisableDynamicAggregateLiterals);
     }
 
     public static EnvOption Macros(params Macro[] macros)
@@ -347,7 +347,7 @@ public class EnvOptions
     // }
 }
 
-public enum EnvOption_EnvFeature
+public enum EnvFeature
 {
     /// <summary>
     ///     Disallow heterogeneous aggregate (list, map) literals. Note, it is still possible to have
