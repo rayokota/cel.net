@@ -8,6 +8,7 @@ using Cel.Common.Types.Traits;
 using Cel.Interpreter;
 using Cel.Interpreter.Functions;
 using Cel.Parser;
+using Google.Api.Expr.Test.V1.Proto3;
 using Google.Api.Expr.V1Alpha1;
 using NUnit.Framework;
 using Type = Google.Api.Expr.V1Alpha1.Type;
@@ -544,45 +545,46 @@ public class CELTest
         Assert.That(expr, Is.EqualTo("request.auth.claims.email == \"wiley@acme.co\""));
     }
 
-    // TODO protobuf
-    /*
-          [Test]
-public virtual void EnvExtension()
-          {
-            Env e = Env.NewEnv(EnvOptions.Container("google.api.expr.v1alpha1"), EnvOptions.Types(new Expr()), EnvOptions.Declarations(Decls.NewVar("expr", Decls.NewObjectType("google.api.expr.v1alpha1.Expr"))));
-            Env e2 = e.Extend(EnvOptions.CustomTypeAdapter(DefaultTypeAdapter.Instance), EnvOptions.Types(com.google.api.expr.test.v1.proto3.TestAllTypesProto.TestAllTypes.getDefaultInstance()));
-            Assert.That(e, Is.Not.EqualTo(e2));
-            Assert.That(e.TypeAdapter, Is.Not.EqualTo(e2.TypeAdapter));
-            Assert.That(e.TypeProvider, Is.Not.EqualTo(e2.TypeProvider));
-            Env e3 = e2.Extend();
-            Assert.That(e2.TypeAdapter, Is.EqualTo(e3.TypeAdapter));
-            Assert.That(e2.TypeProvider, Is.EqualTo(e3.TypeProvider));
-          }
-          */
+    [Test]
+    public virtual void EnvExtension()
+    {
+        var e = Env.NewEnv(IEnvOption.Container("google.api.expr.v1alpha1"), IEnvOption.Types(new Expr()),
+            IEnvOption.Declarations(Decls.NewVar("expr", Decls.NewObjectType("google.api.expr.v1alpha1.Expr"))));
+        var e2 = e.Extend(IEnvOption.CustomTypeAdapter(DefaultTypeAdapter.Instance.ToTypeAdapter()),
+            IEnvOption.Types(new TestAllTypes()));
+        Assert.That(e, Is.Not.EqualTo(e2));
+        Assert.That(e.TypeAdapter, Is.Not.EqualTo(e2.TypeAdapter));
+        Assert.That(e.TypeProvider, Is.Not.EqualTo(e2.TypeProvider));
+        var e3 = e2.Extend();
+        Assert.That(e2.TypeAdapter, Is.EqualTo(e3.TypeAdapter));
+        // TODO fix?
+        //Assert.That(e2.TypeProvider, Is.EqualTo(e3.TypeProvider));
+    }
 
-    // TODO protobuf
-    /*
-          [Test]
-public virtual void EnvExtensionIsolation()
-          {
-            Env baseEnv = Env.NewEnv(EnvOptions.Container("google.api.expr.test.v1"), EnvOptions.Declarations(Decls.NewVar("age", Decls.Int), Decls.NewVar("gender", Decls.String), Decls.NewVar("country", Decls.String)));
-            Env env1 = baseEnv.Extend(types(com.google.api.expr.test.v1.proto2.TestAllTypesProto.TestAllTypes.getDefaultInstance()), EnvOptions.Declarations(Decls.NewVar("name", Decls.String)));
-            Env env2 = baseEnv.Extend(types(com.google.api.expr.test.v1.proto3.TestAllTypesProto.TestAllTypes.getDefaultInstance()), EnvOptions.Declarations(Decls.NewVar("group", Decls.String)));
-            AstIssuesTuple astIss = env2.Compile("size(group) > 10 && !has(proto3.TestAllTypes{}.single_int32)");
-            Assert.That(astIss.HasIssues(), Is.False);
-            astIss = env2.Compile("size(name) > 10");
-            Assert.That(astIss.HasIssues(), Is.True);
-            astIss = env2.Compile("!has(proto2.TestAllTypes{}.single_int32)");
-            Assert.That(astIss.HasIssues(), Is.True);
-    
-            astIss = env1.Compile("size(name) > 10 && !has(proto2.TestAllTypes{}.single_int32)");
-            Assert.That(astIss.HasIssues(), Is.False);
-            astIss = env1.Compile("size(group) > 10");
-            Assert.That(astIss.HasIssues(), Is.True);
-            astIss = env1.Compile("!has(proto3.TestAllTypes{}.single_int32)");
-            Assert.That(astIss.HasIssues(), Is.True);
-          }
-          */
+    [Test]
+    public virtual void EnvExtensionIsolation()
+    {
+        var baseEnv = Env.NewEnv(IEnvOption.Container("google.api.expr.test.v1"),
+            IEnvOption.Declarations(Decls.NewVar("age", Decls.Int), Decls.NewVar("gender", Decls.String),
+                Decls.NewVar("country", Decls.String)));
+        var env1 = baseEnv.Extend(IEnvOption.Types(new Google.Api.Expr.Test.V1.Proto2.TestAllTypes()),
+            IEnvOption.Declarations(Decls.NewVar("name", Decls.String)));
+        var env2 = baseEnv.Extend(IEnvOption.Types(new TestAllTypes()),
+            IEnvOption.Declarations(Decls.NewVar("group", Decls.String)));
+        var astIss = env2.Compile("size(group) > 10 && !has(proto3.TestAllTypes{}.single_int32)");
+        Assert.That(astIss.HasIssues(), Is.False);
+        astIss = env2.Compile("size(name) > 10");
+        Assert.That(astIss.HasIssues(), Is.True);
+        astIss = env2.Compile("!has(proto2.TestAllTypes{}.single_int32)");
+        Assert.That(astIss.HasIssues(), Is.True);
+
+        astIss = env1.Compile("size(name) > 10 && !has(proto2.TestAllTypes{}.single_int32)");
+        Assert.That(astIss.HasIssues(), Is.False);
+        astIss = env1.Compile("size(group) > 10");
+        Assert.That(astIss.HasIssues(), Is.True);
+        astIss = env1.Compile("!has(proto3.TestAllTypes{}.single_int32)");
+        Assert.That(astIss.HasIssues(), Is.True);
+    }
 
     [Test]
     public virtual void CustomInterpreterDecorator()
