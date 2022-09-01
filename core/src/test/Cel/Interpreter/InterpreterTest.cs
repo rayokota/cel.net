@@ -13,6 +13,7 @@ using Cel.Interpreter;
 using Cel.Interpreter.Functions;
 using Cel.Parser;
 using Google.Api.Expr.Test.V1.Proto2;
+using Google.Api.Expr.Test.V1.Proto3;
 using Google.Api.Expr.V1Alpha1;
 using Google.Protobuf;
 using Google.Protobuf.Collections;
@@ -154,7 +155,8 @@ namespace Cel.Interpreter
                 return Err.NoSuchOverload(val, "base64Encode", "", new Val[] { });
             }
 
-            string b64 = Base64.getEncoder().encodeToString(val.Value().ToString().GetBytes(Encoding.UTF8));
+
+            string b64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(val.Value().ToString()));
             return StringT.StringOf(b64);
         }
 
@@ -264,11 +266,13 @@ namespace Cel.Interpreter
             {
                 if (kvPairs.Length == 0)
                 {
-                    this.@in = TestUtil.MapOf();
+                    this.@in = TestUtil.MapOf<object, object>();
                 }
                 else
                 {
-                    this.@in = TestUtil.MapOf(kvPairs[0], kvPairs[1], Arrays.CopyOfRange(kvPairs, 2, kvPairs.Length));
+                    object[] subarray = new object[kvPairs.Length - 2];
+                    Array.Copy(kvPairs, 2, subarray, 0, subarray.Length);
+                    this.@in = TestUtil.MapOf(kvPairs[0], kvPairs[1], subarray);
                 }
 
                 return this;
@@ -303,9 +307,10 @@ namespace Cel.Interpreter
             TestAllTypesPb3 t2 = new TestAllTypesPb3();
             t2.StandaloneEnum = TestAllTypesPb3.Types.NestedEnum.Baz;
 
+            IDictionary<long, NestedTestAllTypesPb3> dict1 = new Dictionary<long, NestedTestAllTypesPb3>();
+            dict1.Add(1, new NestedTestAllTypesPb3());
             MapField<long, NestedTestAllTypesPb3> mf1 = new MapField<long, NestedTestAllTypesPb3>();
-            mf1.Keys.Add(1);
-            mf1.Values.Add(new NestedTestAllTypesPb3());
+            mf1.Add(dict1);
             TestAllTypesPb3 t3 = new TestAllTypesPb3();
             t3.RepeatedBool.Add(false);
             t3.MapInt64NestedType.Add(mf1);
@@ -315,10 +320,71 @@ namespace Cel.Interpreter
             Expr expr1 = new Expr();
             expr1.Id = 1;
             expr1.ConstExpr = c1;
-            
-                Duration d1 = new Duration();
-                    d1.Seconds = 123;
-                    d1.Nanos = 123456789;
+
+            Duration d1 = new Duration();
+            d1.Seconds = 123;
+            d1.Nanos = 123456789;
+
+            TestAllTypesPb3 t4 = new TestAllTypesPb3();
+            t4.RepeatedNestedEnum.Add(TestAllTypesPb3.Types.NestedEnum.Foo);
+            t4.RepeatedNestedEnum.Add(TestAllTypesPb3.Types.NestedEnum.Baz);
+            t4.RepeatedNestedEnum.Add(TestAllTypesPb3.Types.NestedEnum.Bar);
+            t4.RepeatedInt32.Add(0);
+            t4.RepeatedInt32.Add(2);
+
+            Timestamp ts1 = new Timestamp();
+            ts1.Seconds = 514862620;
+
+
+            IDictionary<long, NestedTestAllTypesPb2> dict2 = new Dictionary<long, NestedTestAllTypesPb2>();
+            dict2.Add(1, new NestedTestAllTypesPb2());
+            MapField<long, NestedTestAllTypesPb2> mf2 = new MapField<long, NestedTestAllTypesPb2>();
+            mf2.Add(dict2);
+            TestAllTypesPb2 t5 = new TestAllTypesPb2();
+            t5.RepeatedBool.Add(false);
+            t5.MapInt64NestedType.Add(mf2);
+
+            TestAllTypesPb3.Types.NestedMessage n1 = new TestAllTypesPb3.Types.NestedMessage();
+            n1.Bb = 1234;
+            TestAllTypesPb3 t6 = new TestAllTypesPb3();
+            t6.SingleNestedMessage = n1;
+
+
+            TestAllTypesPb3 t7 = new TestAllTypesPb3();
+            t7.SingleInt32 = 1;
+            NestedTestAllTypesPb3 nt1 = new NestedTestAllTypesPb3();
+            nt1.Payload = t7;
+            IDictionary<long, NestedTestAllTypesPb3> dict3 = new Dictionary<long, NestedTestAllTypesPb3>();
+            dict3.Add(1, nt1);
+            MapField<long, NestedTestAllTypesPb3> mf3 = new MapField<long, NestedTestAllTypesPb3>();
+            mf3.Add(dict3);
+            TestAllTypesPb3 t8 = new TestAllTypesPb3();
+            t8.MapInt64NestedType.Add(mf3);
+
+            Value v2 = new Value();
+            v2.StringValue = "world";
+            ListValue l1 = new ListValue();
+            l1.Values.Add(v2);
+            Value v3 = new Value();
+            v3.ListValue = l1;
+            IDictionary<string, Value> dict4 = new Dictionary<string, Value>();
+            dict4.Add("list", v3);
+            MapField<string, Value> mf4 = new MapField<string, Value>();
+            mf4.Add(dict4);
+            Struct s1 = new Struct();
+            s1.Fields.Add(mf4);
+            Value v4 = new Value();
+            v4.StructValue = s1;
+
+            TestAllTypesPb3 t9 = new TestAllTypesPb3();
+            t9.RepeatedNestedEnum.Add(TestAllTypesPb3.Types.NestedEnum.Bar);
+
+            TestAllTypesPb3 t10 = new TestAllTypesPb3();
+            t10.SingleInt64Wrapper = 0;
+            t10.SingleStringWrapper = "hello";
+
+            TestAllTypesPb3 t11 = new TestAllTypesPb3();
+            t11.SingleUint64 = 10;
 
             return new TestCase[]
             {
@@ -441,7 +507,7 @@ namespace Cel.Interpreter
                         Decls.NewOverload("base64_encode_string", new List<Type> { Decls.String },
                             Decls.String)
                     })).Funcs(Overload.Unary("base64.encode", InterpreterTest.Base64Encode),
-                    Overload.Unary("base64_encode_string", InterpreterTest.Base64Encode)).@out("aGVsbG8="),
+                    Overload.Unary("base64_encode_string", InterpreterTest.Base64Encode)).Out("aGVsbG8="),
 
                 (new TestCase(InterpreterTestCase.call_ns_func_unchecked)).Expr("base64.encode('hello')")
                 .Cost(Coster.CostOf(1, 1)).Unchecked()
@@ -450,12 +516,12 @@ namespace Cel.Interpreter
                 (new TestCase(InterpreterTestCase.call_ns_func_in_pkg)).Container("base64").Expr("encode('hello')")
                 .Cost(Coster.CostOf(1, 1))
                 .Env(Decls.NewFunction("base64.encode",
-                    new List<Overload>
+                    new List<Decl.Types.FunctionDecl.Types.Overload>
                     {
                         Decls.NewOverload("base64_encode_string", new List<Type> { Decls.String },
                             Decls.String)
                     })).Funcs(Overload.Unary("base64.encode", InterpreterTest.Base64Encode),
-                    Overload.Unary("base64_encode_string", InterpreterTest.Base64Encode)).@out("aGVsbG8="),
+                    Overload.Unary("base64_encode_string", InterpreterTest.Base64Encode)).Out("aGVsbG8="),
 
                 (new TestCase(InterpreterTestCase.call_ns_func_unchecked_in_pkg)).Expr("encode('hello')")
                 .Cost(Coster.CostOf(1, 1)).Container("base64").Unchecked()
@@ -493,7 +559,7 @@ namespace Cel.Interpreter
                 .ExhaustiveCost(Coster.CostOf(9, 9)).OptimizedCost(Coster.CostOf(2, 8))
                 .Env(Decls.NewVar("m", Decls.NewMapType(Decls.String, Decls.Dyn)))
                 .In("m",
-                    TestUtil.MapOf("key", new object[] { (ulong)21, (ulong)42 }, "null", null, "0",
+                    TestUtil.MapOf<string, object>("key", new object[] { (ulong)21, (ulong)42 }, "null", null, "0",
                         10)),
                 (new TestCase(InterpreterTestCase.index_relative))
                 .Expr("([[[1]], [[2]], [[3]]][0][0] + [2, 3, {'four': {'five': 'six'}}])[3].four.five == 'six'")
@@ -508,7 +574,7 @@ namespace Cel.Interpreter
                 (new TestCase(InterpreterTestCase.literal_list)).Expr("[1, 2, 3]").Cost(Coster.CostOf(0, 0))
                 .Out(new long[] { 1, 2, 3 }),
                 (new TestCase(InterpreterTestCase.literal_map)).Expr("{'hi': 21, 'world': 42u}")
-                .Cost(Coster.CostOf(0, 0)).Out(TestUtil.MapOf("hi", 21, "world", (ulong)42)),
+                .Cost(Coster.CostOf(0, 0)).Out(TestUtil.MapOf<string, object>("hi", 21, "world", (ulong)42)),
                 (new TestCase(InterpreterTestCase.literal_equiv_string_bytes))
                 .Expr("string(bytes(\"\\303\\277\")) == '''\\303\\277'''").Cost(Coster.CostOf(3, 3))
                 .OptimizedCost(Coster.CostOf(1, 1)),
@@ -534,12 +600,7 @@ namespace Cel.Interpreter
                 .Expr("TestAllTypes{\n" + "repeated_nested_enum: [\n" + "	0,\n" + "	TestAllTypes.NestedEnum.BAZ,\n" +
                       "	TestAllTypes.NestedEnum.BAR],\n" + "repeated_int32: [\n" + "	TestAllTypes.NestedEnum.FOO,\n" +
                       "	TestAllTypes.NestedEnum.BAZ]}").Cost(Coster.CostOf(0, 0))
-                .Out(com.google.api.expr.test.v1.proto3.TestAllTypesProto.TestAllTypes.newBuilder()
-                    .addRepeatedNestedEnum(com.google.api.expr.test.v1.proto3.TestAllTypesProto.TestAllTypes.NestedEnum
-                        .FOO).addRepeatedNestedEnum(com.google.api.expr.test.v1.proto3.TestAllTypesProto.TestAllTypes
-                        .NestedEnum.BAZ)
-                    .addRepeatedNestedEnum(com.google.api.expr.test.v1.proto3.TestAllTypesProto.TestAllTypes.NestedEnum
-                        .BAR).addRepeatedInt32(0).addRepeatedInt32(2).build()),
+                .Out(t4),
                 (new TestCase(InterpreterTestCase.timestamp_eq_timestamp)).Expr("timestamp(0) == timestamp(0)")
                 .Cost(Coster.CostOf(3, 3)).OptimizedCost(Coster.CostOf(1, 1)),
                 (new TestCase(InterpreterTestCase.timestamp_ne_timestamp)).Expr("timestamp(1) != timestamp(2)")
@@ -554,7 +615,7 @@ namespace Cel.Interpreter
                 .Cost(Coster.CostOf(3, 3)).OptimizedCost(Coster.CostOf(1, 1)),
                 (new TestCase(InterpreterTestCase.string_to_timestamp)).Expr("timestamp('1986-04-26T01:23:40Z')")
                 .Cost(Coster.CostOf(1, 1)).OptimizedCost(Coster.CostOf(0, 0))
-                .Out(Timestamp.newBuilder().setSeconds(514862620).build()),
+                .Out(ts1),
                 (new TestCase(InterpreterTestCase.macro_all_non_strict))
                 .Expr("![0, 2, 4].all(x, 4/x != 2 && 4/(4-x) != 2)").Cost(Coster.CostOf(5, 38))
                 .ExhaustiveCost(Coster.CostOf(38, 38)),
@@ -578,19 +639,16 @@ namespace Cel.Interpreter
                 (new TestCase(InterpreterTestCase.macro_has_pb2_field)).Container("google.api.expr.test.v1.proto2")
                 .Types(new TestAllTypesPb2())
                 .Env(Decls.NewVar("pb2", Decls.NewObjectType("google.api.expr.test.v1.proto2.TestAllTypes")))
-                .In("pb2",
-                    TestAllTypesPb2.newBuilder().addRepeatedBool(false).putMapInt64NestedType(1,
-                            new Google.Api.Expr.Test.V1.Proto2.NestedTestAllTypes())
-                        .build())
-                .expr("has(TestAllTypes{standalone_enum: TestAllTypes.NestedEnum.BAR}.standalone_enum) \n" +
+                .In("pb2", t5)
+                .Expr("has(TestAllTypes{standalone_enum: TestAllTypes.NestedEnum.BAR}.standalone_enum) \n" +
                       "&& has(TestAllTypes{standalone_enum: TestAllTypes.NestedEnum.FOO}.standalone_enum) \n" +
                       "&& !has(TestAllTypes{single_nested_enum: TestAllTypes.NestedEnum.FOO}.single_nested_message) \n" +
                       "&& !has(TestAllTypes{}.standalone_enum) \n" +
                       "&& has(TestAllTypes{single_nested_enum: TestAllTypes.NestedEnum.FOO}.single_nested_enum) \n" +
                       "&& !has(pb2.single_int64) \n" + "&& has(pb2.repeated_bool) \n" +
                       "&& !has(pb2.repeated_int32) \n" + "&& has(pb2.map_int64_nested_type) \n" +
-                      "&& !has(pb2.map_string_string)").cost(Coster.CostOf(1, 29))
-                .exhaustiveCost(Coster.CostOf(29, 29)),
+                      "&& !has(pb2.map_string_string)").Cost(Coster.CostOf(1, 29))
+                .ExhaustiveCost(Coster.CostOf(29, 29)),
                 (new TestCase(InterpreterTestCase.macro_has_pb3_field))
                 .Types(new Google.Api.Expr.Test.V1.Proto3.TestAllTypes())
                 .Env(Decls.NewVar("pb3", Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes")))
@@ -617,21 +675,12 @@ namespace Cel.Interpreter
                 .Cost(Coster.CostOf(1, 1))
                 .Types(new Google.Api.Expr.Test.V1.Proto3.TestAllTypes())
                 .Env(Decls.NewVar("pb3", Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes")))
-                .In("pb3",
-                    com.google.api.expr.test.v1.proto3.TestAllTypesProto.TestAllTypes.newBuilder()
-                        .setSingleNestedMessage(com.google.api.expr.test.v1.proto3.TestAllTypesProto.TestAllTypes
-                            .NestedMessage.newBuilder().setBb(1234).build()).build()).Out(IntT.IntOf(1234)),
+                .In("pb3", t6).Out(IntT.IntOf(1234)),
                 (new TestCase(InterpreterTestCase.nested_proto_field_with_index))
                 .Expr("pb3.map_int64_nested_type[0].child.payload.single_int32 == 1").Cost(Coster.CostOf(2, 2))
                 .Types(new Google.Api.Expr.Test.V1.Proto3.TestAllTypes())
                 .Env(Decls.NewVar("pb3", Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes"))).In(
-                    "pb3",
-                    com.google.api.expr.test.v1.proto3.TestAllTypesProto.TestAllTypes.newBuilder()
-                        .putMapInt64NestedType(0,
-                            com.google.api.expr.test.v1.proto3.TestAllTypesProto.NestedTestAllTypes.newBuilder()
-                                .setChild(com.google.api.expr.test.v1.proto3.TestAllTypesProto.NestedTestAllTypes
-                                    .newBuilder().setPayload(com.google.api.expr.test.v1.proto3.TestAllTypesProto
-                                        .TestAllTypes.newBuilder().setSingleInt32(1))).build()).build()),
+                    "pb3", t8),
                 (new TestCase(InterpreterTestCase.or_true_1st)).Expr("ai == 20 || ar[\"foo\"] == \"bar\"")
                 .Cost(Coster.CostOf(2, 5)).ExhaustiveCost(Coster.CostOf(5, 5))
                 .Env(Decls.NewVar("ai", Decls.Int),
@@ -674,7 +723,7 @@ namespace Cel.Interpreter
                 .ExhaustiveCost(Coster.CostOf(32, 32))
                 .Env(Decls.NewVar("m", Decls.NewMapType(Decls.String, Decls.Dyn)))
                 .In("m",
-                    TestUtil.MapOf("strMap", TestUtil.MapOf("val", "string"), "floatMap",
+                    TestUtil.MapOf<string, object>("strMap", TestUtil.MapOf("val", "string"), "floatMap",
                         TestUtil.MapOf("val", 1.5f),
                         "doubleMap", TestUtil.MapOf("val", -2.0d), "intMap", TestUtil.MapOf("val", -3), "int32Map",
                         TestUtil.MapOf("val", 4), "int64Map", TestUtil.MapOf("val", -5L), "uintMap",
@@ -691,7 +740,7 @@ namespace Cel.Interpreter
                       "&& m.boolIface[false] == true").Cost(Coster.CostOf(2, 31))
                 .ExhaustiveCost(Coster.CostOf(31, 31))
                 .Env(Decls.NewVar("m", Decls.NewMapType(Decls.String, Decls.Dyn))).In("m",
-                    TestUtil.MapOf("boolStr", TestUtil.MapOf(true, "string"), "boolFloat32",
+                    TestUtil.MapOf<string, object>("boolStr", TestUtil.MapOf(true, "string"), "boolFloat32",
                         TestUtil.MapOf(true, 1.5f),
                         "boolFloat64", TestUtil.MapOf(false, -2.1d), "boolInt", TestUtil.MapOf(false, -3),
                         "boolInt32",
@@ -708,7 +757,7 @@ namespace Cel.Interpreter
                 .ExhaustiveCost(Coster.CostOf(11, 11))
                 .Env(Decls.NewVar("m", Decls.NewMapType(Decls.String, Decls.Dyn)))
                 .In("m",
-                    TestUtil.MapOf("uintIface", TestUtil.MapOf((ulong)1, "string"), "uint32Iface",
+                    TestUtil.MapOf<string, object>("uintIface", TestUtil.MapOf((ulong)1, "string"), "uint32Iface",
                         TestUtil.MapOf((ulong)2, 1.5), "uint64Iface",
                         TestUtil.MapOf((ulong)3, -2.1),
                         "uint64String", TestUtil.MapOf((ulong)4, "three"))),
@@ -719,13 +768,13 @@ namespace Cel.Interpreter
                       "&& m.boolList[0] == true\n" + "&& m.boolList[1] != true\n" + "&& m.ifaceList[0] == {}")
                 .Cost(Coster.CostOf(2, 35)).ExhaustiveCost(Coster.CostOf(35, 35))
                 .Env(Decls.NewVar("m", Decls.NewMapType(Decls.String, Decls.Dyn))).In("m",
-                    TestUtil.MapOf("strList", new string[] { "string" }, "floatList", new float?[] { 1.5f },
+                    TestUtil.MapOf<string, object>("strList", new string[] { "string" }, "floatList", new float?[] { 1.5f },
                         "doubleList", new double?[] { -2.0d }, "intList", new int[] { -3 }, "int32List",
                         new int[] { 4 }, "int64List", new long[] { -5L }, "uintList",
                         new object[] { (ulong)6 },
                         "uint32List", new object[] { (ulong)7 }, "uint64List",
                         new object[] { (ulong)8L }, "boolList", new bool[] { true, false }, "ifaceList",
-                        new object[] { new Dictionary<>() })),
+                        new object[] { new Dictionary<string, object>() })),
                 (new TestCase(InterpreterTestCase.select_field))
                 .Expr("a.b.c\n" + "&& pb3.repeated_nested_enum[0] == TestAllTypes.NestedEnum.BAR\n" +
                       "&& json.list[0] == 'world'").Cost(Coster.CostOf(1, 7)).ExhaustiveCost(Coster.CostOf(7, 7))
@@ -734,22 +783,14 @@ namespace Cel.Interpreter
                 .Env(Decls.NewVar("a.b", Decls.NewMapType(Decls.String, Decls.Bool)),
                     Decls.NewVar("pb3", Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes")),
                     Decls.NewVar("json", Decls.NewMapType(Decls.String, Decls.Dyn)))
-                .In("a.b", TestUtil.MapOf("c", true), "pb3",
-                    com.google.api.expr.test.v1.proto3.TestAllTypesProto.TestAllTypes.newBuilder()
-                        .addRepeatedNestedEnum(com.google.api.expr.test.v1.proto3.TestAllTypesProto.TestAllTypes
-                            .NestedEnum.BAR).build(), "json",
-                    Value.newBuilder().setStructValue(Struct.newBuilder().putFields("list",
-                        Value.newBuilder()
-                            .setListValue(ListValue.newBuilder()
-                                .addValues(Value.newBuilder().setStringValue("world")))
-                            .build())).build()),
+                .In("a.b", TestUtil.MapOf("c", true), "pb3", t9, "json", v4),
                 (new TestCase(InterpreterTestCase.select_pb2_primitive_fields))
                 .Expr("!has(a.single_int32)\n" + "&& a.single_int32 == -32\n" + "&& a.single_int64 == -64\n" +
                       "&& a.single_uint32 == 32u\n" + "&& a.single_uint64 == 64u\n" + "&& a.single_float == 3.0\n" +
                       "&& a.single_double == 6.4\n" + "&& a.single_bool\n" + "&& \"empty\" == a.single_string")
                 .Cost(Coster.CostOf(3, 26)).ExhaustiveCost(Coster.CostOf(26, 26))
-                .Types(new TestAllTypesPb2()).In("a", TestAllTypesPb2.newBuilder().build())
-                .env(Decls.NewVar("a", Decls.NewObjectType("google.api.expr.test.v1.proto2.TestAllTypes"))),
+                .Types(new TestAllTypesPb2()).In("a", new TestAllTypesPb2())
+                .Env(Decls.NewVar("a", Decls.NewObjectType("google.api.expr.test.v1.proto2.TestAllTypes"))),
                 (new TestCase(InterpreterTestCase.select_pb3_wrapper_fields))
                 .Expr("!has(a.single_int32_wrapper) && a.single_int32_wrapper == null\n" +
                       "&& has(a.single_int64_wrapper) && a.single_int64_wrapper == 0\n" +
@@ -759,25 +800,19 @@ namespace Cel.Interpreter
                 .Types(new Google.Api.Expr.Test.V1.Proto3.TestAllTypes())
                 .Abbrevs("google.protobuf.Int32Value")
                 .Env(Decls.NewVar("a", Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes")))
-                .In("a",
-                    com.google.api.expr.test.v1.proto3.TestAllTypesProto.TestAllTypes.newBuilder()
-                        .setSingleInt64Wrapper(Int64Value.newBuilder().build())
-                        .setSingleStringWrapper(StringValue.of("hello")).build()),
+                .In("a", t10),
                 (new TestCase(InterpreterTestCase.select_pb3_compare)).Expr("a.single_uint64 > 3u")
                 .Cost(Coster.CostOf(2, 2)).Container("google.api.expr.test.v1.proto3")
                 .Types(new Google.Api.Expr.Test.V1.Proto3.TestAllTypes())
                 .Env(Decls.NewVar("a", Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes"))).In("a",
-                    com.google.api.expr.test.v1.proto3.TestAllTypesProto.TestAllTypes.newBuilder()
-                        .setSingleUint64(10)
-                        .build()).Out(BoolT.True),
+                    t11).Out(BoolT.True),
                 (new TestCase(InterpreterTestCase.select_pb3_compare_signed)).Expr("a.single_int64 > 3")
                 .Cost(Coster.CostOf(2, 2)).Container("google.api.expr.test.v1.proto3")
                 .Types(new Google.Api.Expr.Test.V1.Proto3.TestAllTypes())
                 .Env(Decls.NewVar("a", Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes")))
-                .In("a",
-                    com.google.api.expr.test.v1.proto3.TestAllTypesProto.TestAllTypes.newBuilder()
-                        .setSingleInt64(10)
-                        .build()).Out(BoolT.True),
+                .In("a", t11).Out(BoolT.True),
+                // TODO custAttrFactory
+                /*
                 (new TestCase(InterpreterTestCase.select_custom_pb3_compare)).Expr("a.bb > 100")
                 .Cost(Coster.CostOf(2, 2)).Container("google.api.expr.test.v1.proto3")
                 .Types(new Google.Api.Expr.Test.V1.Proto3.TestAllTypes.Types.NestedMessage())
@@ -788,10 +823,12 @@ namespace Cel.Interpreter
                     ProtoTypeRegistry.NewEmptyRegistry()))).In("a",
                     com.google.api.expr.test.v1.proto3.TestAllTypesProto.TestAllTypes.NestedMessage.newBuilder()
                         .setBb(101).build()).Out(BoolT.True),
+                        */
                 (new TestCase(InterpreterTestCase.select_relative)).Expr("json('{\"hi\":\"world\"}').hi == 'world'")
                 .Cost(Coster.CostOf(2, 2))
                 .Env(Decls.NewFunction("json",
-                    new List<Decl.Types.FunctionDecl.Types.Overload>{Decls.NewOverload("string_to_json", new List<Type>{Decls.String}, Decls.Dyn)}))
+                    new List<Decl.Types.FunctionDecl.Types.Overload>
+                        { Decls.NewOverload("string_to_json", new List<Type> { Decls.String }, Decls.Dyn) }))
                 .Funcs(
                     Overload.Unary("json", val =>
                     {
@@ -831,7 +868,8 @@ namespace Cel.Interpreter
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @ParameterizedTest @MethodSource("testCases") void interpreter(TestCase tc)
-        internal virtual void Interpreter(TestCase tc)
+        [TestCaseSource(nameof(TestCases))]
+        public virtual void Interpreter(TestCase tc)
         {
             Program prg = program(tc);
             Val want = BoolT.True;
@@ -929,26 +967,32 @@ namespace Cel.Interpreter
 //ORIGINAL LINE: @Test void protoAttributeOpt()
         internal virtual void ProtoAttributeOpt()
         {
+            TestAllTypesPb3 t0 = new TestAllTypesPb3();
+            t0.SingleInt32 = 1;
+            NestedTestAllTypesPb3 n = new NestedTestAllTypesPb3();
+            n.Payload = t0;
+            NestedTestAllTypesPb3 n1 = new NestedTestAllTypesPb3();
+            n1.Child = n;
+            IDictionary<long, NestedTestAllTypesPb3> dict1 = new Dictionary<long, NestedTestAllTypesPb3>();
+            dict1.Add(0, n1);
+            MapField<long, NestedTestAllTypesPb3> mf1 = new MapField<long, NestedTestAllTypesPb3>();
+            mf1.Add(dict1);
+            TestAllTypesPb3 t = new TestAllTypesPb3();
+            t.MapInt64NestedType.Add(mf1);
             Program inst =
                 program(
                     (new TestCase(InterpreterTestCase.nested_proto_field_with_index))
                     .Expr("pb3.map_int64_nested_type[0].child.payload.single_int32")
                     .Types(new Google.Api.Expr.Test.V1.Proto3.TestAllTypes())
                     .Env(Decls.NewVar("pb3", Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes"))).In(
-                        "pb3",
-                        com.google.api.expr.test.v1.proto3.TestAllTypesProto.TestAllTypes.newBuilder()
-                            .putMapInt64NestedType(0,
-                                com.google.api.expr.test.v1.proto3.TestAllTypesProto.NestedTestAllTypes.newBuilder()
-                                    .setChild(com.google.api.expr.test.v1.proto3.TestAllTypesProto.NestedTestAllTypes
-                                        .newBuilder().setPayload(com.google.api.expr.test.v1.proto3.TestAllTypesProto
-                                            .TestAllTypes.newBuilder().setSingleInt32(1))).build()).build()),
-                    Interpreter.Optimize());
+                        "pb3", t),
+                    global::Cel.Interpreter.Interpreter.Optimize());
             Assert.That(inst.interpretable, Is.InstanceOf(typeof(InterpretableAttribute)));
             InterpretableAttribute attr = (InterpretableAttribute)inst.interpretable;
             Assert.That(attr.Attr(), Is.InstanceOf(typeof(NamespacedAttribute)));
             NamespacedAttribute absAttr = (NamespacedAttribute)attr.Attr();
             IList<Qualifier> quals = absAttr.Qualifiers();
-            Assert.That(quals).hasSize(5);
+            Assert.That(quals.Count, Is.EqualTo(5));
             Assert.That(IsFieldQual(quals[0], "map_int64_nested_type"), Is.True);
             Assert.That(IsConstQual(quals[1], IntT.IntZero), Is.True);
             Assert.That(IsFieldQual(quals[2], "child"), Is.True);
@@ -963,14 +1007,15 @@ namespace Cel.Interpreter
             Source src = Source.NewTextSource("a && TestProto{c: true}.c");
 
             Parser.Parser.ParseResult parsed = Parser.Parser.ParseAllMacros(src);
-            Assert.That(parsed.HasErrors()).withFailMessage(parsed.Errors.toDisplayString).isBoolT.False();
+            Assert.That(parsed.HasErrors(), Is.False);
 
             TypeRegistry reg = ProtoTypeRegistry.NewRegistry();
             Container cont = Container.DefaultContainer;
-            AttributeFactory attrs = AttributeFactory.NewAttributeFactory(cont, reg, reg);
-            Interpreter intr = global::Cel.Interpreter.Interpreter.NewStandardInterpreter(cont, reg, reg, attrs);
-            Assert.ThatThrownBy(() => intr.NewUncheckedInterpretable(parsed.Expr))
-                .isInstanceOf(typeof(System.InvalidOperationException)).hasMessage("unknown type: TestProto");
+            AttributeFactory attrs = AttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
+            Interpreter intr =
+                global::Cel.Interpreter.Interpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
+            Assert.That(() => intr.NewUncheckedInterpretable(parsed.Expr),
+                Throws.Exception.InstanceOf(typeof(System.InvalidOperationException)));
         }
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
@@ -979,23 +1024,24 @@ namespace Cel.Interpreter
         {
             Source src = Source.NewTextSource("a ? b < 1.0 : c == ['hello']");
             Parser.Parser.ParseResult parsed = Parser.Parser.ParseAllMacros(src);
-            Assert.That(parsed.HasErrors()).withFailMessage(parsed.Errors.toDisplayString).isBoolT.False();
+            Assert.That(parsed.HasErrors(), Is.False);
 
             EvalState state = EvalState.NewEvalState();
             Container cont = Container.DefaultContainer;
             TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new ParsedExpr());
-            AttributeFactory attrs = AttributeFactory.NewAttributeFactory(cont, reg, reg);
-            Interpreter intr = global::Cel.Interpreter.Interpreter.NewStandardInterpreter(cont, reg, reg, attrs);
+            AttributeFactory attrs = AttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
+            Interpreter intr =
+                global::Cel.Interpreter.Interpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
             Interpretable interpretable =
-                intr.NewUncheckedInterpretable(parsed.Expr, Interpreter.ExhaustiveEval(state));
-            Activation vars = Activation.NewActivation(TestUtil.MapOf("a", BoolT.True, "b", DoubleT.DoubleOf(0.999),
+                intr.NewUncheckedInterpretable(parsed.Expr, global::Cel.Interpreter.Interpreter.ExhaustiveEval(state));
+            Activation vars = Activation.NewActivation(TestUtil.MapOf<string, object>("a", BoolT.True, "b", DoubleT.DoubleOf(0.999),
                 "c", ListT.NewStringArrayList(new string[] { "hello" })));
             Val result = interpretable.Eval(vars);
             // Operator "_==_" is at Expr 7, should be evaluated in exhaustive mode
             // even though "a" is true
             Val ev = state.Value(7);
             // "==" should be evaluated in exhaustive mode though unnecessary
-            Assert.That(ev).withFailMessage("Else expression expected to be true", Is.SameAs(BoolT.True));
+            Assert.That(ev, Is.SameAs(BoolT.True));
             Assert.That(result, Is.SameAs(BoolT.True));
         }
 
@@ -1007,19 +1053,21 @@ namespace Cel.Interpreter
             // Operator "==" is at Expr 4, should be evaluated though "a" is true
             Source src = Source.NewTextSource("a || b == \"b\"");
             Parser.Parser.ParseResult parsed = Parser.Parser.ParseAllMacros(src);
-            Assert.That(parsed.HasErrors()).withFailMessage(parsed.Errors.toDisplayString).isBoolT.False();
+            Assert.That(parsed.HasErrors(), Is.False);
 
             EvalState state = EvalState.NewEvalState();
             TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new Expr());
             Container cont = TestContainer("test");
-            AttributeFactory attrs = AttributeFactory.NewAttributeFactory(cont, reg, reg);
-            Interpreter interp = global::Cel.Interpreter.Interpreter.NewStandardInterpreter(cont, reg, reg, attrs);
-            Interpretable i = interp.NewUncheckedInterpretable(parsed.Expr, Interpreter.ExhaustiveEval(state));
-            Activation vars = Activation.NewActivation(TestUtil.MapOf("a", true, "b", "b"));
+            AttributeFactory attrs = AttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
+            Interpreter interp =
+                global::Cel.Interpreter.Interpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
+            Interpretable i = interp.NewUncheckedInterpretable(parsed.Expr,
+                global::Cel.Interpreter.Interpreter.ExhaustiveEval(state));
+            Activation vars = Activation.NewActivation(TestUtil.MapOf<string, object>("a", true, "b", "b"));
             Val result = i.Eval(vars);
             Val rhv = state.Value(3);
             // "==" should be evaluated in exhaustive mode though unnecessary
-            Assert.That(rhv).withFailMessage("Right hand side expression expected to be true", Is.SameAs(BoolT.True));
+            Assert.That(rhv, Is.SameAs(BoolT.True));
             Assert.That(result, Is.SameAs(BoolT.True));
         }
 
@@ -1034,7 +1082,7 @@ namespace Cel.Interpreter
                                               "  single_double: -2.2,\n" + "  single_string: \"hello world\",\n" +
                                               "  single_bool: true\n" + "}");
             Parser.Parser.ParseResult parsed = Parser.Parser.ParseAllMacros(src);
-            Assert.That(parsed.HasErrors()).withFailMessage(parsed.Errors.toDisplayString).isBoolT.False();
+            Assert.That(parsed.HasErrors(), Is.False);
 
             Container cont = TestContainer("google.api.expr.test.v1.proto2");
             TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new TestAllTypesPb2());
@@ -1050,8 +1098,9 @@ namespace Cel.Interpreter
                 throw new System.ArgumentException(parsed.Errors.ToDisplayString());
             }
 
-            AttributeFactory attrs = AttributeFactory.NewAttributeFactory(cont, reg, reg);
-            Interpreter i = global::Cel.Interpreter.Interpreter.NewStandardInterpreter(cont, reg, reg, attrs);
+            AttributeFactory attrs = AttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
+            Interpreter i =
+                global::Cel.Interpreter.Interpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
             Interpretable eval = i.NewInterpretable(checkResult.CheckedExpr);
             int one = 1;
             long two = 2L;
@@ -1061,9 +1110,15 @@ namespace Cel.Interpreter
             double six = -2.2d;
             string str = "hello world";
             bool truth = true;
-            TestAllTypesPb2 input = TestAllTypesPb2.newBuilder().setSingleInt32(one).setSingleInt64(two)
-                .setSingleUint32(three).setSingleUint64(four).setSingleFloat(five).setSingleDouble(six)
-                .setSingleString(str).setSingleBool(truth).build();
+            TestAllTypesPb2 input = new TestAllTypesPb2();
+            input.SingleInt32 = one;
+            input.SingleInt64 = two;
+            input.SingleUint32 = (uint)three;
+            input.SingleUint64 = (ulong)four;
+            input.SingleFloat = five;
+            input.SingleDouble = six;
+            input.SingleString = str;
+            input.SingleBool = truth;
             Activation vars = Activation.NewActivation(TestUtil.MapOf("input", reg.ToTypeAdapter()(input)));
             Val result = eval.Eval(vars);
             Assert.That(result.Value(), Is.InstanceOf(typeof(Boolean)));
@@ -1192,7 +1247,8 @@ namespace Cel.Interpreter
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @ParameterizedTest @MethodSource("typeConversionOptTests") void typeConversionOpt(ConvTestCase tc)
-        internal virtual void TypeConversionOpt(ConvTestCase tc)
+        [TestCaseSource(nameof(TypeConversionOptTests))]
+        public virtual void TypeConversionOpt(ConvTestCase tc)
         {
             Source src = Source.NewTextSource(tc.@in);
             Parser.Parser.ParseResult parsed = Parser.Parser.ParseAllMacros(src);
@@ -1327,7 +1383,8 @@ namespace Cel.Interpreter
                 disp.Add(tst.funcs);
             }
 
-            Interpreter interp = global::Cel.Interpreter.Interpreter.NewInterpreter(disp, cont, reg, reg, attrs);
+            Interpreter interp =
+                global::Cel.Interpreter.Interpreter.NewInterpreter(disp, cont, reg, reg.ToTypeAdapter(), attrs);
 
             // Parse the expression.
             Source s = Source.NewTextSource(tst.expr);
