@@ -266,7 +266,7 @@ namespace Cel.Interpreter
             {
                 if (kvPairs.Length == 0)
                 {
-                    this.@in = TestUtil.MapOf<object, object>();
+                    this.@in = TestUtil.MapOf();
                 }
                 else
                 {
@@ -559,7 +559,7 @@ namespace Cel.Interpreter
                 .ExhaustiveCost(Coster.CostOf(9, 9)).OptimizedCost(Coster.CostOf(2, 8))
                 .Env(Decls.NewVar("m", Decls.NewMapType(Decls.String, Decls.Dyn)))
                 .In("m",
-                    TestUtil.MapOf<string, object>("key", new object[] { (ulong)21, (ulong)42 }, "null", null, "0",
+                    TestUtil.MapOf("key", new object[] { (ulong)21, (ulong)42 }, "null", null, "0",
                         10)),
                 (new TestCase(InterpreterTestCase.index_relative))
                 .Expr("([[[1]], [[2]], [[3]]][0][0] + [2, 3, {'four': {'five': 'six'}}])[3].four.five == 'six'")
@@ -574,7 +574,7 @@ namespace Cel.Interpreter
                 (new TestCase(InterpreterTestCase.literal_list)).Expr("[1, 2, 3]").Cost(Coster.CostOf(0, 0))
                 .Out(new long[] { 1, 2, 3 }),
                 (new TestCase(InterpreterTestCase.literal_map)).Expr("{'hi': 21, 'world': 42u}")
-                .Cost(Coster.CostOf(0, 0)).Out(TestUtil.MapOf<string, object>("hi", 21, "world", (ulong)42)),
+                .Cost(Coster.CostOf(0, 0)).Out(TestUtil.MapOf("hi", 21, "world", (ulong)42)),
                 (new TestCase(InterpreterTestCase.literal_equiv_string_bytes))
                 .Expr("string(bytes(\"\\303\\277\")) == '''\\303\\277'''").Cost(Coster.CostOf(3, 3))
                 .OptimizedCost(Coster.CostOf(1, 1)),
@@ -723,7 +723,7 @@ namespace Cel.Interpreter
                 .ExhaustiveCost(Coster.CostOf(32, 32))
                 .Env(Decls.NewVar("m", Decls.NewMapType(Decls.String, Decls.Dyn)))
                 .In("m",
-                    TestUtil.MapOf<string, object>("strMap", TestUtil.MapOf("val", "string"), "floatMap",
+                    TestUtil.MapOf("strMap", TestUtil.MapOf("val", "string"), "floatMap",
                         TestUtil.MapOf("val", 1.5f),
                         "doubleMap", TestUtil.MapOf("val", -2.0d), "intMap", TestUtil.MapOf("val", -3), "int32Map",
                         TestUtil.MapOf("val", 4), "int64Map", TestUtil.MapOf("val", -5L), "uintMap",
@@ -740,7 +740,7 @@ namespace Cel.Interpreter
                       "&& m.boolIface[false] == true").Cost(Coster.CostOf(2, 31))
                 .ExhaustiveCost(Coster.CostOf(31, 31))
                 .Env(Decls.NewVar("m", Decls.NewMapType(Decls.String, Decls.Dyn))).In("m",
-                    TestUtil.MapOf<string, object>("boolStr", TestUtil.MapOf(true, "string"), "boolFloat32",
+                    TestUtil.MapOf("boolStr", TestUtil.MapOf(true, "string"), "boolFloat32",
                         TestUtil.MapOf(true, 1.5f),
                         "boolFloat64", TestUtil.MapOf(false, -2.1d), "boolInt", TestUtil.MapOf(false, -3),
                         "boolInt32",
@@ -757,7 +757,7 @@ namespace Cel.Interpreter
                 .ExhaustiveCost(Coster.CostOf(11, 11))
                 .Env(Decls.NewVar("m", Decls.NewMapType(Decls.String, Decls.Dyn)))
                 .In("m",
-                    TestUtil.MapOf<string, object>("uintIface", TestUtil.MapOf((ulong)1, "string"), "uint32Iface",
+                    TestUtil.MapOf("uintIface", TestUtil.MapOf((ulong)1, "string"), "uint32Iface",
                         TestUtil.MapOf((ulong)2, 1.5), "uint64Iface",
                         TestUtil.MapOf((ulong)3, -2.1),
                         "uint64String", TestUtil.MapOf((ulong)4, "three"))),
@@ -768,13 +768,13 @@ namespace Cel.Interpreter
                       "&& m.boolList[0] == true\n" + "&& m.boolList[1] != true\n" + "&& m.ifaceList[0] == {}")
                 .Cost(Coster.CostOf(2, 35)).ExhaustiveCost(Coster.CostOf(35, 35))
                 .Env(Decls.NewVar("m", Decls.NewMapType(Decls.String, Decls.Dyn))).In("m",
-                    TestUtil.MapOf<string, object>("strList", new string[] { "string" }, "floatList", new float?[] { 1.5f },
+                    TestUtil.MapOf("strList", new string[] { "string" }, "floatList", new float?[] { 1.5f },
                         "doubleList", new double?[] { -2.0d }, "intList", new int[] { -3 }, "int32List",
                         new int[] { 4 }, "int64List", new long[] { -5L }, "uintList",
                         new object[] { (ulong)6 },
                         "uint32List", new object[] { (ulong)7 }, "uint64List",
                         new object[] { (ulong)8L }, "boolList", new bool[] { true, false }, "ifaceList",
-                        new object[] { new Dictionary<string, object>() })),
+                        new object[] { new Dictionary<object, object>() })),
                 (new TestCase(InterpreterTestCase.select_field))
                 .Expr("a.b.c\n" + "&& pb3.repeated_nested_enum[0] == TestAllTypes.NestedEnum.BAR\n" +
                       "&& json.list[0] == 'world'").Cost(Coster.CostOf(1, 7)).ExhaustiveCost(Coster.CostOf(7, 7))
@@ -838,7 +838,7 @@ namespace Cel.Interpreter
                         }
 
                         StringT str = (StringT)val;
-                        IDictionary<string, object> m = new Dictionary<string, object>();
+                        IDictionary<object, object> m = new Dictionary<object, object>();
                         throw new System.NotSupportedException("IMPLEMENT ME");
                     })).Disabled("would need some JSON library to implement this test..."),
                 (new TestCase(InterpreterTestCase.select_subsumed_field)).Expr("a.b.c").Cost(Coster.CostOf(1, 1))
@@ -1034,7 +1034,7 @@ namespace Cel.Interpreter
                 global::Cel.Interpreter.Interpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
             Interpretable interpretable =
                 intr.NewUncheckedInterpretable(parsed.Expr, global::Cel.Interpreter.Interpreter.ExhaustiveEval(state));
-            Activation vars = Activation.NewActivation(TestUtil.MapOf<string, object>("a", BoolT.True, "b", DoubleT.DoubleOf(0.999),
+            Activation vars = Activation.NewActivation(TestUtil.MapOf("a", BoolT.True, "b", DoubleT.DoubleOf(0.999),
                 "c", ListT.NewStringArrayList(new string[] { "hello" })));
             Val result = interpretable.Eval(vars);
             // Operator "_==_" is at Expr 7, should be evaluated in exhaustive mode
@@ -1063,7 +1063,7 @@ namespace Cel.Interpreter
                 global::Cel.Interpreter.Interpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
             Interpretable i = interp.NewUncheckedInterpretable(parsed.Expr,
                 global::Cel.Interpreter.Interpreter.ExhaustiveEval(state));
-            Activation vars = Activation.NewActivation(TestUtil.MapOf<string, object>("a", true, "b", "b"));
+            Activation vars = Activation.NewActivation(TestUtil.MapOf("a", true, "b", "b"));
             Val result = i.Eval(vars);
             Val rhv = state.Value(3);
             // "==" should be evaluated in exhaustive mode though unnecessary

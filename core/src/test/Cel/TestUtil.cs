@@ -22,18 +22,18 @@ namespace Cel;
 
 public class TestUtil
 {
-    public static IDictionary<K, V> MapOf<K, V>(K k, V v, params object[] kvPairs)
+    public static IDictionary<object, object> MapOf(object k, object v, params object[] kvPairs)
     {
-        IDictionary<K, V> map = new Dictionary<K, V>();
+        IDictionary<object, object> map = new Dictionary<object, object>();
         Assert.That(kvPairs.Length % 2, Is.EqualTo(0));
         map[k] = v;
-        for (var i = 0; i < kvPairs.Length; i += 2) map[(K)kvPairs[i]] = (V)kvPairs[i + 1];
+        for (var i = 0; i < kvPairs.Length; i += 2) map[kvPairs[i]] = kvPairs[i + 1];
         return map;
     }
 
-    public static IDictionary<K, V> MapOf<K, V>()
+    public static IDictionary<object, object> MapOf()
     {
-        return new Dictionary<K, V>();
+        return new Dictionary<object, object>();
     }
 
     public static void DeepEquals(string context, object a, object b)

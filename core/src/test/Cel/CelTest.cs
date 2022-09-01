@@ -95,7 +95,7 @@ public class CELTest
 
         // If the Eval() call were provided with cel.evalOptions(OptTrackState) the details response
         // (2nd return) would be non-nil.
-        var @out = prg.Eval(TestUtil.MapOf<string, object>("i", "CEL", "you", "world"));
+        var @out = prg.Eval(TestUtil.MapOf("i", "CEL", "you", "world"));
 
         Assert.That(@out.Val.Equal(StringT.StringOf("Hello world! I'm CEL.")), Is.SameAs(BoolT.True));
     }
@@ -109,7 +109,7 @@ public class CELTest
         var astIss = env.Compile("\"hello \"+ name.first"); // abbreviation resolved here.
         Assert.That(astIss.HasIssues(), Is.False);
         var prg = env.Program(astIss.Ast);
-        var @out = prg.Eval(TestUtil.MapOf<string, object>("qualified.identifier.name.first", "Jim"));
+        var @out = prg.Eval(TestUtil.MapOf("qualified.identifier.name.first", "Jim"));
         Assert.That(@out.Val.Value(), Is.EqualTo("hello Jim"));
     }
 
@@ -122,8 +122,8 @@ public class CELTest
         Assert.That(astIss.HasIssues(), Is.False);
         var prg = env.Program(astIss.Ast); // abbreviation resolved here.
         var @out =
-            prg.Eval(TestUtil.MapOf<string, object>("qualified.identifier.name",
-                TestUtil.MapOf<string, object>("first", "Jim")));
+            prg.Eval(TestUtil.MapOf("qualified.identifier.name",
+                TestUtil.MapOf("first", "Jim")));
         Assert.That(@out.Val.Value(), Is.EqualTo("hello Jim"));
     }
 
@@ -139,9 +139,9 @@ public class CELTest
         var astIss = env.Compile("test ? dyn(Expr) : google.api.expr.v1alpha1.Expr{id: 1}");
         Assert.That(astIss.HasIssues(), Is.False);
         var prg = env.Program(astIss.Ast);
-        var @out = prg.Eval(TestUtil.MapOf<string, object>("test", true, "external.Expr", "string expr"));
+        var @out = prg.Eval(TestUtil.MapOf("test", true, "external.Expr", "string expr"));
         Assert.That(@out.Val.Value(), Is.EqualTo("string expr"));
-        @out = prg.Eval(TestUtil.MapOf<string, object>("test", false, "external.Expr", "wrong expr"));
+        @out = prg.Eval(TestUtil.MapOf("test", false, "external.Expr", "wrong expr"));
         var want = new Expr();
         want.Id = 1;
         var got = (Expr)@out.Val.ConvertToNative(typeof(Expr));
@@ -169,7 +169,7 @@ public class CELTest
         var astIss = e.Compile("a.b.c");
         Assert.That(astIss.HasIssues(), Is.False);
         var prg = e.Program(astIss.Ast);
-        var @out = prg.Eval(TestUtil.MapOf<string, object>("a.b.c", true));
+        var @out = prg.Eval(TestUtil.MapOf("a.b.c", true));
         Assert.That(@out.Val, Is.SameAs(BoolT.True));
     }
 
@@ -211,14 +211,14 @@ public class CELTest
         var astIss = e.Compile("name in ['hello', 'world']");
         Assert.That(astIss.HasIssues(), Is.False);
         var prg = e.Program(astIss.Ast, funcs);
-        var @out = prg.Eval(TestUtil.MapOf<string, object>("name", "world"));
+        var @out = prg.Eval(TestUtil.MapOf("name", "world"));
         Assert.That(@out.Val, Is.SameAs(BoolT.True));
         // })
         // t.Run("ok_map", func(t *testing.T) {
         astIss = e.Compile("name in {'hello': false, 'world': true}");
         Assert.That(astIss.HasIssues(), Is.False);
         prg = e.Program(astIss.Ast, funcs);
-        @out = prg.Eval(TestUtil.MapOf<string, object>("name", "world"));
+        @out = prg.Eval(TestUtil.MapOf("name", "world"));
         Assert.That(@out.Val, Is.SameAs(BoolT.True));
         // })
     }
@@ -257,7 +257,7 @@ public class CELTest
         var expr2 = new Expr();
         expr2.Id = 2;
         expr2.CallExpr = call;
-        object vars = TestUtil.MapOf<string, object>("expr", expr2);
+        object vars = TestUtil.MapOf("expr", expr2);
         var @out = prg.Eval(vars);
         Assert.That(@out.Val, Is.SameAs(BoolT.True));
     }
@@ -412,22 +412,22 @@ public class CELTest
 
         // Global variables can be configured as a ProgramOption and optionally overridden on Eval.
         var prg = e.Program(astIss.Ast, funcs,
-            IProgramOption.Globals(TestUtil.MapOf<string, object>("default", "third")));
+            IProgramOption.Globals(TestUtil.MapOf("default", "third")));
 
         // t.Run("global_default", func(t *testing.T) {
-        object vars = TestUtil.MapOf<string, object>("attrs", TestUtil.MapOf<string, object>());
+        object vars = TestUtil.MapOf("attrs", TestUtil.MapOf());
         var @out = prg.Eval(vars);
         Assert.That(@out.Val.Equal(StringT.StringOf("third")), Is.SameAs(BoolT.True));
         // })
 
         // t.Run("attrs_alt", func(t *testing.T) {
-        vars = TestUtil.MapOf<string, object>("attrs", TestUtil.MapOf<string, object>("second", "yep"));
+        vars = TestUtil.MapOf("attrs", TestUtil.MapOf("second", "yep"));
         @out = prg.Eval(vars);
         Assert.That(@out.Val.Equal(StringT.StringOf("yep")), Is.SameAs(BoolT.True));
         // })
 
         // t.Run("local_default", func(t *testing.T) {
-        vars = TestUtil.MapOf<string, object>("attrs", TestUtil.MapOf<string, object>(), "default", "fourth");
+        vars = TestUtil.MapOf("attrs", TestUtil.MapOf(), "default", "fourth");
         @out = prg.Eval(vars);
         Assert.That(@out.Val.Equal(StringT.StringOf("fourth")), Is.SameAs(BoolT.True));
         // })
@@ -478,7 +478,7 @@ public class CELTest
         var astIss = e.Compile("{k: true}[k] || v != false");
 
         var prg = e.Program(astIss.Ast, IProgramOption.EvalOptions(EvalOption.OptExhaustiveEval));
-        var outDetails = prg.Eval(TestUtil.MapOf<string, object>("k", "key", "v", true));
+        var outDetails = prg.Eval(TestUtil.MapOf("k", "key", "v", true));
         Assert.That(outDetails.Val, Is.SameAs(BoolT.True));
 
         // Test to see whether 'v != false' was resolved to a value.
@@ -529,8 +529,8 @@ public class CELTest
             Decls.NewVar("request.time", Decls.Timestamp),
             Decls.NewVar("request.auth.claims", Decls.NewMapType(Decls.String, Decls.String))));
         var unkVars = Cel.PartialVars(
-            TestUtil.MapOf<string, object>("resource.name", "bucket/my-bucket/objects/private", "request.auth.claims",
-                TestUtil.MapOf<string, object>("email_verified", "true")),
+            TestUtil.MapOf("resource.name", "bucket/my-bucket/objects/private", "request.auth.claims",
+                TestUtil.MapOf("email_verified", "true")),
             Cel.NewAttributePattern("request.auth.claims").QualString("email"));
         var astIss = e.Compile("resource.name.startsWith(\"bucket/my-bucket\") &&\n" +
                                "\t\t bool(request.auth.claims.email_verified) == true &&\n" +
@@ -672,7 +672,7 @@ public class CELTest
         var prg = e.Program(astIss.Ast,
             IProgramOption.EvalOptions(EvalOption.OptTrackState, EvalOption.OptPartialEval));
         var vars = Cel.PartialVars(
-            TestUtil.MapOf<string, object>("x", TestUtil.MapOf<string, object>("zero", 0, "abc", 123, "string", "abc"),
+            TestUtil.MapOf("x", TestUtil.MapOf("zero", 0, "abc", 123, "string", "abc"),
                 "y",
                 new List<int> { 123 }), Cel.NewAttributePattern("u"));
         var outDet = prg.Eval(vars);
@@ -694,7 +694,7 @@ public class CELTest
         for (var x = 123; x < 456; x++)
         {
             var vars =
-                Cel.PartialVars(TestUtil.MapOf<string, object>("x", x), Cel.NewAttributePattern("y"));
+                Cel.PartialVars(TestUtil.MapOf("x", x), Cel.NewAttributePattern("y"));
             var outDet = prg.Eval(vars);
             Assert.That(outDet.Val, Is.Not.Null.And.Matches<object>(o => UnknownT.IsUnknown(o)));
             var residual = e.ResidualAst(astIss.Ast, outDet.EvalDetails);
@@ -741,7 +741,7 @@ public class CELTest
     //    // Evaluate the program against some inputs. Note: the details return is not used.
     //    EvalResult out =
     //        prg.eval(
-    //            TestUtil.MapOf<string, object>(
+    //            TestUtil.MapOf(
     //                // Native values are converted to CEL values under the covers.
     //                "i",
     //                "CEL",
@@ -799,7 +799,7 @@ public class CELTest
     //    Program prg = e.program(astIss.getAst(), funcs);
     //
     //    // Evaluate the program against some inputs. Note: the details return is not used.
-    //    EvalResult out = prg.eval(TestUtil.MapOf<string, object>("i", "CEL", "you", (Supplier) () -> StringT.StringOf("world")));
+    //    EvalResult out = prg.eval(TestUtil.MapOf("i", "CEL", "you", (Supplier) () -> StringT.StringOf("world")));
     //
     //    System.out.println(out);
     //    // Output:CEL and world are shaking hands.
