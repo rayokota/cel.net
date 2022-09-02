@@ -173,7 +173,7 @@ public sealed class Guards
         {
             try
             {
-                var objects = (object[])val.Value();
+                var objects = (Array)val.Value();
                 var strings = new string[objects.Length];
                 Array.Copy(objects, 0, strings, 0, objects.Length);
                 return StringT.StringOf(func(strings));
@@ -191,7 +191,7 @@ public sealed class Guards
         {
             try
             {
-                var objects = (object[])lhs.Value();
+                var objects = (Array)lhs.Value();
                 var strings = new string[objects.Length];
                 Array.Copy(objects, 0, strings, 0, objects.Length);
                 return StringT.StringOf(func(strings, (string)rhs.Value()));

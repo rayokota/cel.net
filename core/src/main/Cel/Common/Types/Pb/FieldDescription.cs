@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using Google.Api.Expr.V1Alpha1;
+using Google.Protobuf.Collections;
 using Google.Protobuf.Reflection;
 
 /*
@@ -561,13 +563,23 @@ public sealed class FieldDescription : Description
 
     public static bool HasValueForField(FieldDescriptor desc, Message message)
     {
-        /*
+        if (desc.IsMap)
+        {
+            return ((IDictionary)desc.Accessor.GetValue(message)).Count > 0;
+            
+        }
         if (desc.IsRepeated)
         {
-          return message.getRepeatedFieldCount(desc) > 0;
+            return ((IList)desc.Accessor.GetValue(message)).Count > 0;
         }
-        */
 
-        return desc.Accessor.HasValue(message);
+        if (desc.HasPresence)
+        {
+            return desc.Accessor.HasValue(message);
+        }
+        else
+        {
+            return true;
+        }
     }
 }

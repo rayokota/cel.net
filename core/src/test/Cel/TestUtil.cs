@@ -61,8 +61,8 @@ public class TestUtil
 
         if (a.GetType().IsArray)
         {
-            var aa = (object[])a;
-            var ba = (object[])b;
+            var aa = (Array)a;
+            var ba = (Array)b;
             var al = aa.Length;
             var bl = ba.Length;
             if (al != bl)
@@ -70,8 +70,8 @@ public class TestUtil
                     al, b.GetType().FullName, bl);
             for (var i = 0; i < al; i++)
             {
-                var av = aa[i];
-                var bv = ba[i];
+                var av = aa.GetValue(i);
+                var bv = ba.GetValue(i);
                 DeepEquals(context + '[' + i + ']', av, bv);
             }
         }

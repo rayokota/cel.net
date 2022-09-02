@@ -222,15 +222,16 @@ public sealed class ProtoTypeRegistry : TypeRegistry
             if (pbDesc.FieldType == Google.Protobuf.Reflection.FieldType.Enum)
                 value = IntToProtoEnumValues(field, value);
 
-            if (pbDesc.IsRepeated)
+            if (pbDesc.IsMap)
+            {
+                value = (IDictionary)ToProtoMapStructure(pbDesc, value);
+                var map = (IDictionary)pbDesc.Accessor.GetValue(builder);
+                foreach (DictionaryEntry entry in (IDictionary)value) map[entry.Key] = entry.Value;
+            }
+            else if (pbDesc.IsRepeated)
             {
                 var list = (IList)pbDesc.Accessor.GetValue(builder);
                 foreach (var o in (IList)value) list.Add(o);
-            }
-            else if (pbDesc.IsMap)
-            {
-                var map = (IDictionary)pbDesc.Accessor.GetValue(builder);
-                foreach (DictionaryEntry entry in (IDictionary)value) map[entry.Key] = entry.Value;
             }
             else
             {
@@ -245,18 +246,15 @@ public sealed class ProtoTypeRegistry : TypeRegistry
     /// Converts {@code value}, of the map-field {@code fieldDesc} from its Java <seealso cref="System.Collections.IDictionary"/>
     /// representation to the protobuf-y {@code <seealso cref="System.Collections.IList"/><<seealso cref="MapEntry"/>>} representation.
     /// </summary>
-    /*
     private object ToProtoMapStructure(FieldDescriptor fieldDesc, object value)
     {
       Descriptor mesgType = fieldDesc.MessageType;
       FieldDescriptor keyType = mesgType.FindFieldByNumber(1);
       FieldDescriptor valueType = mesgType.FindFieldByNumber(2);
-      WireFormat.FieldType keyFieldType = WireFormat.FieldType.valueOf(keyType.getType().name());
-      WireFormat.FieldType valueFieldType = WireFormat.FieldType.valueOf(valueType.getType().name());
       if (value is System.Collections.IDictionary)
       {
-        System.Collections.IList newList = new ArrayList();
-        foreach (DictionaryEntry e in ((IDictionary<object, object>) value).SetOfKeyValuePairs())
+          IDictionary newDict = new Hashtable();
+        foreach (DictionaryEntry e in ((IDictionary) value))
         {
           object v = e.Value;
           object k = e.Key;
@@ -265,20 +263,18 @@ public sealed class ProtoTypeRegistry : TypeRegistry
           // if (!(k instanceof String)) {
           //   return Err.newTypeConversionError(k.getClass().getName(), String.class.getName());
           // }
-          if (valueFieldType == WireFormat.FieldType.MESSAGE && !(v is Message))
+          if (valueType.FieldType == Google.Protobuf.Reflection.FieldType.Message && !(v is Message))
           {
             v = NativeToValue(v).ConvertToNative(typeof(Value));
           }
 
-          MapEntry newEntry = MapEntry.newDefaultInstance(mesgType, keyFieldType, k, valueFieldType, v);
-          newList.Add(newEntry);
+          newDict[k] = v;
         }
-        value = newList;
+        value = newDict;
       }
 
       return value;
     }
-    */
 
     /// <summary>
     ///     Converts a value of type <seealso cref="Number" /> to <seealso cref="EnumValueDescriptor" />, also works for arrays

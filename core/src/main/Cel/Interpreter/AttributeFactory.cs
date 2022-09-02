@@ -1047,11 +1047,11 @@ public sealed class IntQualifier : Coster, ConstantQualifierEquator
 
         if (obj.GetType().IsArray)
         {
-            var array = (object[])obj;
+            var array = (Array)obj;
             var l = array.Length;
             if (i < 0 || i >= l) throw Err.IndexOutOfBoundsException(i);
 
-            obj = array[(int)i];
+            obj = array.GetValue(i);
             return obj;
         }
 
@@ -1148,11 +1148,11 @@ public sealed class UintQualifier : Coster, ConstantQualifierEquator
 
         if (obj.GetType().IsArray)
         {
-            var array = (object[])obj;
+            var array = (Array)obj;
             var l = array.Length;
             if (i < 0 || i >= (ulong)l) throw Err.IndexOutOfBoundsException(i);
 
-            obj = array[(int)i];
+            obj = array.GetValue((int)i);
             return obj;
         }
 

@@ -52,7 +52,7 @@ public abstract class ListT : BaseVal, Lister
         return NewGenericArrayList(v => StringT.StringOf((string)v), value);
     }
 
-    public static Val NewGenericArrayList(TypeAdapter adapter, object[] value)
+    public static Val NewGenericArrayList(TypeAdapter adapter, Array value)
     {
         return new GenericListT(adapter, value);
     }
@@ -144,7 +144,7 @@ public abstract class ListT : BaseVal, Lister
 
         internal virtual IList ToArrayList()
         {
-            return new ArrayList { ConvertToNative(typeof(object[])) };
+            return new ArrayList { ConvertToNative(typeof(Array)) };
         }
 
         internal virtual object ToArray<T>(System.Type typeDesc)
@@ -289,9 +289,9 @@ public abstract class ListT : BaseVal, Lister
 
     internal sealed class GenericListT : BaseListT
     {
-        internal readonly object[] array;
+        internal readonly Array array;
 
-        internal GenericListT(TypeAdapter adapter, object[] array) : base(adapter, array.Length)
+        internal GenericListT(TypeAdapter adapter, Array array) : base(adapter, array.Length)
         {
             this.array = array;
         }
@@ -306,7 +306,7 @@ public abstract class ListT : BaseVal, Lister
             if (!(other is Lister)) return Err.NoSuchOverload(this, "add", other);
 
             var otherList = (Lister)other;
-            var otherArray = (object[])otherList.Value();
+            var otherArray = (Array)otherList.Value();
             var newArray = new object[array.Length + otherArray.Length];
             Array.Copy(array, 0, newArray, 0, array.Length);
             Array.Copy(otherArray, 0, newArray, array.Length, otherArray.Length);
@@ -323,7 +323,7 @@ public abstract class ListT : BaseVal, Lister
                 // Note: the conformance tests assert on 'invalid_argument'
                 return Err.NewErr("invalid_argument: index '%d' out of range in list of size '%d'", i, sz);
 
-            return adapter(array[i]);
+            return adapter(array.GetValue(i));
         }
 
         public override string ToString()

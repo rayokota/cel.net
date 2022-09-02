@@ -84,7 +84,7 @@ public sealed class TypeAdapterSupport
         NativeToValueExact.TryGetValue(value.GetType(), out var conv);
         if (conv != null) return conv(a, value);
 
-        if (value is object[]) return ListT.NewGenericArrayList(a, (object[])value);
+        if (value is Array) return ListT.NewGenericArrayList(a, (Array)value);
 
         if (value is IList)
         {
