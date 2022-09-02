@@ -122,7 +122,7 @@ public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
     {
         if (typeDesc == typeof(string) || typeDesc == typeof(object)) return s;
 
-        if (typeDesc == typeof(sbyte[])) return Encoding.UTF8.GetBytes(s);
+        if (typeDesc == typeof(byte[])) return Encoding.UTF8.GetBytes(s);
 
         if (typeDesc == typeof(Any))
         {

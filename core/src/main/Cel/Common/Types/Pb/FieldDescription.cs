@@ -139,18 +139,22 @@ public sealed class FieldDescription : Description
                             reflectType = typeof(float);
                             break;
                         case FieldType.Int32:
-                            if (t == FieldType.UInt32 || t == FieldType.Fixed32)
-                                reflectType = typeof(uint);
-                            else
-                                reflectType = typeof(int);
-
+                        case FieldType.SInt32:
+                        case FieldType.SFixed32:
+                            reflectType = typeof(int);
                             break;
                         case FieldType.Int64:
-                            if (t == FieldType.UInt64 || t == FieldType.Fixed64)
-                                reflectType = typeof(ulong);
-                            else
-                                reflectType = typeof(long);
-
+                        case FieldType.SInt64:
+                        case FieldType.SFixed64:
+                            reflectType = typeof(long);
+                            break;
+                        case FieldType.UInt32:
+                        case FieldType.Fixed32:
+                            reflectType = typeof(uint);
+                            break;
+                        case FieldType.UInt64:
+                        case FieldType.Fixed64:
+                            reflectType = typeof(ulong);
                             break;
                         case FieldType.String:
                             reflectType = typeof(string);
@@ -195,13 +199,14 @@ public sealed class FieldDescription : Description
             case FieldType.Int32:
             case FieldType.SFixed32:
             case FieldType.SInt32:
-            case FieldType.Fixed32:
                 return typeof(int);
             case FieldType.Int64:
             case FieldType.SFixed64:
             case FieldType.SInt64:
                 return typeof(long);
             case FieldType.UInt32:
+            case FieldType.Fixed32:
+                return typeof(uint);
             case FieldType.UInt64:
             case FieldType.Fixed64:
                 return typeof(ulong);
@@ -390,9 +395,19 @@ public sealed class FieldDescription : Description
             case FieldType.Float:
                 return r ? typeof(float[]) : typeof(float);
             case FieldType.Int32:
+            case FieldType.SInt32:
+            case FieldType.SFixed32:
                 return r ? typeof(int[]) : typeof(int);
             case FieldType.Int64:
+            case FieldType.SInt64:
+            case FieldType.SFixed64:
                 return r ? typeof(long[]) : typeof(long);
+            case FieldType.UInt32:
+            case FieldType.Fixed32:
+                return r ? typeof(uint[]) : typeof(uint);
+            case FieldType.UInt64:
+            case FieldType.Fixed64:
+                return r ? typeof(ulong[]) : typeof(ulong);
             case FieldType.String:
                 return r ? typeof(string[]) : typeof(string);
         }
@@ -436,11 +451,15 @@ public sealed class FieldDescription : Description
             case FieldType.Float:
                 return Checked.checkedDouble;
             case FieldType.Int32:
+            case FieldType.SInt32:
+            case FieldType.SFixed32:
                 return Checked.checkedInt;
             case FieldType.UInt32:
             case FieldType.Fixed32:
                 return Checked.checkedUint;
             case FieldType.Int64:
+            case FieldType.SInt64:
+            case FieldType.SFixed64:
                 return Checked.checkedInt;
             case FieldType.UInt64:
             case FieldType.Fixed64:

@@ -151,7 +151,7 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
 
     public static DurationT DurationOf(string s)
     {
-        var dur = PeriodPattern.Roundtrip.Parse(s).Value;
+        var dur = PeriodPattern.Roundtrip.Parse("PT" + s.ToUpper()).Value;
         return DurationOf(dur);
     }
 
