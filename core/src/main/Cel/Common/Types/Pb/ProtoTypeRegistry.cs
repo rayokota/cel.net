@@ -3,6 +3,7 @@ using Cel.Common.Types.Ref;
 using Google.Protobuf;
 using Google.Protobuf.Reflection;
 using Google.Protobuf.WellKnownTypes;
+using Enum = System.Enum;
 using FieldType = Cel.Common.Types.Ref.FieldType;
 using Type = Cel.Common.Types.Ref.Type;
 using TypeRegistry = Cel.Common.Types.Ref.TypeRegistry;
@@ -214,7 +215,7 @@ public sealed class ProtoTypeRegistry : TypeRegistry
             //  then to a protobuf struct. The intermediate step (the Java map) could be omitted.
 
             var value = nv.Value.ConvertToNative(field.ReflectType());
-            if (value.GetType().IsArray) value = new ArrayList((object[])value);
+            if (value.GetType().IsArray) value = new ArrayList((ICollection)value);
 
             var pbDesc = field.Descriptor();
 
@@ -289,7 +290,7 @@ public sealed class ProtoTypeRegistry : TypeRegistry
         if (value is int)
         {
             var enumValue = (int)value;
-            value = enumType.FindValueByNumber(enumValue);
+            value = findEnum(enumType, enumValue);
         }
         else if (value is IList)
         {
@@ -297,8 +298,8 @@ public sealed class ProtoTypeRegistry : TypeRegistry
             IList newList = new ArrayList(list.Count);
             foreach (var o in list)
             {
-                var enumValue = (int)o;
-                newList.Add(enumType.FindValueByNumber(enumValue));
+                var enumValue = Convert.ToInt32(o);
+                newList.Add(findEnum(enumType, enumValue));
             }
 
             value = newList;
@@ -307,17 +308,24 @@ public sealed class ProtoTypeRegistry : TypeRegistry
         {
             var array = (int[])value;
             var l = array.Length;
-            var newArr = new EnumValueDescriptor[l];
+            var newArr = new object[l];
             for (var i = 0; i < l; i++)
             {
                 var enumValue = array[i];
-                newArr[i] = enumType.FindValueByNumber(enumValue);
+                newArr[i] = findEnum(enumType, enumValue);
             }
 
             value = newArr;
         }
 
         return value;
+    }
+
+    private object findEnum(EnumDescriptor enumType, int value)
+    {
+        EnumValueDescriptor enumValue = enumType.FindValueByNumber(value);
+        return Enum.ToObject(enumType.ClrType, value);
+
     }
 
     /// <summary>

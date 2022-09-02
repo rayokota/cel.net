@@ -336,7 +336,7 @@ public sealed class Checker
                 // The function name is namespaced and so preserving the target operand would
                 // be an inaccurate representation of the desired evaluation behavior.
                 // Overwrite with fully-qualified resolved function name sans receiver target.
-                call.Target = new Expr();
+                call.Target = null;
                 call.Function = fn.Name;
                 ResolveOverloadOrError(LocationByExpr(e), e, fn, null, args);
                 return;

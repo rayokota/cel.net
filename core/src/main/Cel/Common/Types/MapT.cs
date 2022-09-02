@@ -213,7 +213,7 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
             if (o == null || GetType() != o.GetType()) return false;
 
             var valMapT = (ValMapT)o;
-            return Equals(map, valMapT.map);
+            return map.Count == valMapT.map.Count && !map.Except(valMapT.map).Any();
         }
 
         public override int GetHashCode()

@@ -485,7 +485,7 @@ namespace Cel.Interpreter
 
                 (new TestCase(InterpreterTestCase.call_two_arg)).Expr("b'abc'.concat(b'def')").Cost(Coster.CostOf(1, 1))
                 .Unchecked().Funcs(Overload.Binary("concat", Trait.AdderType, (lhs, rhs) => ((Adder)lhs).Add(rhs)))
-                .Out(new sbyte[] { (sbyte)'a', (sbyte)'b', (sbyte)'c', (sbyte)'d', (sbyte)'e', (sbyte)'f' }),
+                .Out(new byte[] { (byte)'a', (byte)'b', (byte)'c', (byte)'d', (byte)'e', (byte)'f' }),
 
                 (new TestCase(InterpreterTestCase.call_varargs)).Expr("addall(a, b, c, d) == 10")
                 .Cost(Coster.CostOf(6, 6)).Unchecked().Funcs(Overload.Function("addall", Trait.AdderType, args =>

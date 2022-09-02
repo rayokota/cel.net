@@ -271,9 +271,9 @@ public sealed class PbTypeDescription : Description, TypeDescription
         return msg;
     }
 
-    private static Duration AsDuration(Google.Protobuf.WellKnownTypes.Duration d)
+    private static Period AsDuration(Google.Protobuf.WellKnownTypes.Duration d)
     {
-        return Duration.FromNanoseconds(d.Seconds * 1000000000 + d.Nanos);
+        return Period.FromNanoseconds(d.Seconds * 1000000000 + d.Nanos);
     }
 
     private static ZonedDateTime AsTimestamp(Timestamp t)

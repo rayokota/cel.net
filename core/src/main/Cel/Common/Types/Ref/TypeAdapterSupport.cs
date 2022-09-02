@@ -43,7 +43,7 @@ public sealed class TypeAdapterSupport
         NativeToValueExact[typeof(ulong)] = (a, value) => UintT.UintOf((ulong)value);
         NativeToValueExact[typeof(long)] = (a, value) => IntT.IntOf((long)value);
         NativeToValueExact[typeof(string)] = (a, value) => StringT.StringOf((string)value);
-        NativeToValueExact[typeof(Duration)] = (a, value) => DurationT.DurationOf((Period)value);
+        NativeToValueExact[typeof(Period)] = (a, value) => DurationT.DurationOf((Period)value);
         NativeToValueExact[typeof(Google.Protobuf.WellKnownTypes.Duration)] = (a, value) =>
             DurationT.DurationOf((Google.Protobuf.WellKnownTypes.Duration)value);
         NativeToValueExact[typeof(Timestamp)] = (a, value) => TimestampT.TimestampOf((Timestamp)value);
