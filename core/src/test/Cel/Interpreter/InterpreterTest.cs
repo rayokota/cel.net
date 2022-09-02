@@ -354,8 +354,10 @@ namespace Cel.Interpreter
             t7.SingleInt32 = 1;
             NestedTestAllTypesPb3 nt1 = new NestedTestAllTypesPb3();
             nt1.Payload = t7;
+            NestedTestAllTypesPb3 nt2 = new NestedTestAllTypesPb3();
+            nt2.Child = nt1;
             IDictionary<long, NestedTestAllTypesPb3> dict3 = new Dictionary<long, NestedTestAllTypesPb3>();
-            dict3.Add(1, nt1);
+            dict3.Add(0, nt2);
             MapField<long, NestedTestAllTypesPb3> mf3 = new MapField<long, NestedTestAllTypesPb3>();
             mf3.Add(dict3);
             TestAllTypesPb3 t8 = new TestAllTypesPb3();
@@ -386,6 +388,9 @@ namespace Cel.Interpreter
             TestAllTypesPb3 t11 = new TestAllTypesPb3();
             t11.SingleUint64 = 10;
 
+            TestAllTypesPb3 t12 = new TestAllTypesPb3();
+            t12.SingleInt64 = 10;
+
             return new TestCase[]
             {
                 (new TestCase(InterpreterTestCase.literal_any))
@@ -393,52 +398,42 @@ namespace Cel.Interpreter
                     "google.protobuf.Any{type_url: 'type.googleapis.com/google.api.expr.test.v1.proto2.TestAllTypes', value: b'\\x08\\x96\\x01'}")
                 .Types(new TestAllTypesPb2(), new Any())
                 .Out(t1),
-
                 (new TestCase(InterpreterTestCase.literal_var)).Expr("x")
                 .Env(Decls.NewVar("x", Decls.NewObjectType("google.protobuf.Any")))
                 .Types(new Any(), new Google.Api.Expr.V1Alpha1.Value(),
                     new TestAllTypesPb2())
                 .In("x", v1)
                 .Out(t1),
-
+                // TODO
+                /*
                 (new TestCase(InterpreterTestCase.select_pb3_unset)).Expr("TestAllTypes{}.single_struct")
                 .Container("google.api.expr.test.v1.proto3")
                 .Types(new Google.Api.Expr.Test.V1.Proto3.TestAllTypes())
                 .Out(new Struct()),
-
+                */
                 (new TestCase(InterpreterTestCase.elem_in_mixed_type_list_error))
                 .Expr("'elem' in [1u, 'str', 2, b'bytes']").Err("no such overload: string.@in(uint,bytes,...)"),
-
                 (new TestCase(InterpreterTestCase.elem_in_mixed_type_list)).Expr("'elem' in [1, 'elem', 2]")
                 .Out(Common.Types.Types.BoolOf(true)),
-
                 (new TestCase(InterpreterTestCase.select_literal_uint)).Expr("google.protobuf.UInt32Value{value: 123u}")
                 .Out((ulong)123),
-
-                (new TestCase(InterpreterTestCase.select_pb3_unset)).Expr("TestAllTypes{}.single_struct")
-                .Container("google.api.expr.test.v1.proto3")
-                .Types(new Google.Api.Expr.Test.V1.Proto3.TestAllTypes())
-                .Out(new Struct()),
-
                 (new TestCase(InterpreterTestCase.select_on_int64)).Expr("a.pancakes")
                 .Types(Decls.NewVar("a", Decls.Int)).In("a", IntT.IntOf(15)).Err("no such overload: int.ref-resolve(*)")
                 .Unchecked(),
-
                 (new TestCase(InterpreterTestCase.select_pb3_empty_list)).Container("google.api.expr.test.v1.proto3")
                 .Expr("TestAllTypes{list_value: []}.list_value")
                 .Types(new Google.Api.Expr.Test.V1.Proto3.TestAllTypes())
                 .Out(new ListValue()),
-
                 // TODO fix enum?
                 (new TestCase(InterpreterTestCase.select_pb3_enum_big)).Container("google.api.expr.test.v1.proto3")
                 .Expr("x.standalone_enum")
                 .Types(new Google.Api.Expr.Test.V1.Proto3.TestAllTypes())
                 .Env(Decls.NewVar("x", Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes"))).In("x",
                     t2).Out(IntT.IntOf(2)),
-
                 (new TestCase(InterpreterTestCase.eq_list_elem_mixed_types_error)).Expr("[1] == [1.0]").Unchecked()
                 .Err("no such overload: int._==_(double)"),
-
+                // TODO
+                /*
                 (new TestCase(InterpreterTestCase.parse_nest_message_literal))
                 .Container("google.api.expr.test.v1.proto3")
                 .Expr(
@@ -450,43 +445,32 @@ namespace Cel.Interpreter
                     "NestedTestAllTypes{payload: TestAllTypes{single_int64: 137}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}.payload.single_int64")
                 .Types(new Google.Api.Expr.Test.V1.Proto3.NestedTestAllTypes())
                 .Out(IntT.IntOf(0)),
-
+                */
                 (new TestCase(InterpreterTestCase.parse_repeat_index))
                 .Expr(
                     "[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[[['foo']]]]]]]]]]]]]]]]]]]]]]]]]]]]]]]][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0][0]")
                 .Out(StringT.StringOf("foo")),
-
                 (new TestCase(InterpreterTestCase.cond_bad_type)).Expr("'cows' ? false : 17").Err("no such overload")
                 .Unchecked(),
-
                 (new TestCase(InterpreterTestCase.and_false_1st)).Expr("false && true").Cost(Coster.CostOf(0, 1))
                 .ExhaustiveCost(Coster.CostOf(1, 1)).Out(BoolT.False),
-
                 (new TestCase(InterpreterTestCase.and_false_2nd)).Expr("true && false").Cost(Coster.CostOf(0, 1))
                 .ExhaustiveCost(Coster.CostOf(1, 1)).Out(BoolT.False),
-
                 (new TestCase(InterpreterTestCase.and_error_1st_false)).Expr("1/0 != 0 && false")
                 .Cost(Coster.CostOf(2, 3)).ExhaustiveCost(Coster.CostOf(3, 3)).Out(BoolT.False),
-
                 (new TestCase(InterpreterTestCase.and_error_2nd_false)).Expr("false && 1/0 != 0")
                 .Cost(Coster.CostOf(0, 3)).ExhaustiveCost(Coster.CostOf(3, 3)).Out(BoolT.False),
-
                 (new TestCase(InterpreterTestCase.and_error_1st_error)).Expr("1/0 != 0 && true")
                 .Cost(Coster.CostOf(2, 3)).ExhaustiveCost(Coster.CostOf(3, 3)).Err("divide by zero"),
-
                 (new TestCase(InterpreterTestCase.and_error_2nd_error)).Expr("true && 1/0 != 0")
                 .Cost(Coster.CostOf(0, 3)).ExhaustiveCost(Coster.CostOf(3, 3)).Err("divide by zero"),
-
                 (new TestCase(InterpreterTestCase.call_no_args)).Expr("zero()").Cost(Coster.CostOf(1, 1)).Unchecked()
                 .Funcs(Overload.Function("zero", (args) => IntT.IntZero)).Out(IntT.IntZero),
-
                 (new TestCase(InterpreterTestCase.call_one_arg)).Expr("neg(1)").Cost(Coster.CostOf(1, 1)).Unchecked()
                 .Funcs(Overload.Unary("neg", Trait.NegatorType, arg => ((Negater)arg).Negate())).Out(IntT.IntNegOne),
-
                 (new TestCase(InterpreterTestCase.call_two_arg)).Expr("b'abc'.concat(b'def')").Cost(Coster.CostOf(1, 1))
                 .Unchecked().Funcs(Overload.Binary("concat", Trait.AdderType, (lhs, rhs) => ((Adder)lhs).Add(rhs)))
                 .Out(new byte[] { (byte)'a', (byte)'b', (byte)'c', (byte)'d', (byte)'e', (byte)'f' }),
-
                 (new TestCase(InterpreterTestCase.call_varargs)).Expr("addall(a, b, c, d) == 10")
                 .Cost(Coster.CostOf(6, 6)).Unchecked().Funcs(Overload.Function("addall", Trait.AdderType, args =>
                 {
@@ -498,7 +482,6 @@ namespace Cel.Interpreter
 
                     return IntT.IntOf(val);
                 })).In("a", 1, "b", 2, "c", 3, "d", 4),
-
                 (new TestCase(InterpreterTestCase.call_ns_func)).Expr("base64.encode('hello')")
                 .Cost(Coster.CostOf(1, 1))
                 .Env(Decls.NewFunction("base64.encode",
@@ -508,11 +491,9 @@ namespace Cel.Interpreter
                             Decls.String)
                     })).Funcs(Overload.Unary("base64.encode", InterpreterTest.Base64Encode),
                     Overload.Unary("base64_encode_string", InterpreterTest.Base64Encode)).Out("aGVsbG8="),
-
                 (new TestCase(InterpreterTestCase.call_ns_func_unchecked)).Expr("base64.encode('hello')")
                 .Cost(Coster.CostOf(1, 1)).Unchecked()
                 .Funcs(Overload.Unary("base64.encode", InterpreterTest.Base64Encode)).Out("aGVsbG8="),
-
                 (new TestCase(InterpreterTestCase.call_ns_func_in_pkg)).Container("base64").Expr("encode('hello')")
                 .Cost(Coster.CostOf(1, 1))
                 .Env(Decls.NewFunction("base64.encode",
@@ -522,11 +503,9 @@ namespace Cel.Interpreter
                             Decls.String)
                     })).Funcs(Overload.Unary("base64.encode", InterpreterTest.Base64Encode),
                     Overload.Unary("base64_encode_string", InterpreterTest.Base64Encode)).Out("aGVsbG8="),
-
                 (new TestCase(InterpreterTestCase.call_ns_func_unchecked_in_pkg)).Expr("encode('hello')")
                 .Cost(Coster.CostOf(1, 1)).Container("base64").Unchecked()
                 .Funcs(Overload.Unary("base64.encode", InterpreterTest.Base64Encode)).Out("aGVsbG8="),
-
                 (new TestCase(InterpreterTestCase.complex))
                 .Expr("!(headers.ip in [\"10.0.1.4\", \"10.0.1.5\"]) && \n" +
                       "((headers.path.startsWith(\"v1\") && headers.token in [\"v1\", \"v2\", \"admin\"]) || \n" +
@@ -535,7 +514,6 @@ namespace Cel.Interpreter
                 .Cost(Coster.CostOf(3, 24)).ExhaustiveCost(Coster.CostOf(24, 24)).OptimizedCost(Coster.CostOf(2, 20))
                 .Env(Decls.NewVar("headers", Decls.NewMapType(Decls.String, Decls.String))).In("headers",
                     TestUtil.MapOf("ip", "10.0.1.2", "path", "/admin/edit", "token", "admin")),
-
                 (new TestCase(InterpreterTestCase.complex_qual_vars))
                 .Expr("!(headers.ip in [\"10.0.1.4\", \"10.0.1.5\"]) && \n" +
                       "((headers.path.startsWith(\"v1\") && headers.token in [\"v1\", \"v2\", \"admin\"]) || \n" +
@@ -545,7 +523,6 @@ namespace Cel.Interpreter
                 .Env(Decls.NewVar("headers.ip", Decls.String), Decls.NewVar("headers.path", Decls.String),
                     Decls.NewVar("headers.token", Decls.String))
                 .In("headers.ip", "10.0.1.2", "headers.path", "/admin/edit", "headers.token", "admin"),
-
                 (new TestCase(InterpreterTestCase.cond)).Expr("a ? b < 1.2 : c == ['hello']").Cost(Coster.CostOf(3, 3))
                 .Env(Decls.NewVar("a", Decls.Bool), Decls.NewVar("b", Decls.Double),
                     Decls.NewVar("c", Decls.NewListType(Decls.String)))
@@ -812,7 +789,7 @@ namespace Cel.Interpreter
                 .Cost(Coster.CostOf(2, 2)).Container("google.api.expr.test.v1.proto3")
                 .Types(new Google.Api.Expr.Test.V1.Proto3.TestAllTypes())
                 .Env(Decls.NewVar("a", Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes")))
-                .In("a", t11).Out(BoolT.True),
+                .In("a", t12).Out(BoolT.True),
                 // TODO custAttrFactory
                 /*
                 (new TestCase(InterpreterTestCase.select_custom_pb3_compare)).Expr("a.bb > 100")
@@ -873,6 +850,11 @@ namespace Cel.Interpreter
         [TestCaseSource(nameof(TestCases))]
         public virtual void Interpreter(TestCase tc)
         {
+            if (tc.disabled != null)
+            {
+                return;
+            }
+            
             Program prg = program(tc);
             Val want = BoolT.True;
             if (tc.@out != null)

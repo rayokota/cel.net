@@ -46,7 +46,7 @@ public sealed class UnknownT : BaseVal
     /// </summary>
     public override object? ConvertToNative(System.Type typeDesc)
     {
-        if (typeDesc.IsAssignableFrom(typeof(long)) || typeDesc.IsAssignableFrom(typeof(long)) ||
+        if (typeDesc.IsAssignableFrom(typeof(long)) ||
             typeDesc == typeof(object))
             return value;
 

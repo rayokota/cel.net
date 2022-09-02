@@ -167,6 +167,9 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
             return Convert.ToInt32((int)i);
         }
 
+        if (typeDesc == typeof(uint))
+            return Convert.ToUInt32(i);
+
         if (typeDesc == typeof(ulong)) return i;
 
         if (typeDesc == typeof(Any))

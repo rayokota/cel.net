@@ -132,6 +132,12 @@ public interface AttributeFactory
         if (c == typeof(string))
             return new StringQualifier(id, (string)v, StringT.StringOf((string)v), adapter);
 
+        if (c == typeof(uint))
+        {
+            var l = (uint)v;
+            return new UintQualifier(id, l, UintT.UintOf(l), adapter);
+        }
+
         if (c == typeof(ulong))
         {
             var l = (ulong)v;
@@ -804,7 +810,7 @@ public sealed class RelativeAttribute : Coster, Qualifier,
 
         if (UnknownT.IsUnknown(v)) return v;
 
-        // Next, qualify it. Qualification handles unkonwns as well, so there's no need to recheck.
+        // Next, qualify it. Qualification handles unknowns as well, so there's no need to recheck.
         object obj = v;
         foreach (var qual in qualifiers)
         {

@@ -225,16 +225,22 @@ public sealed class IntT : BaseVal, Adder, Comparer, Divider, Modder, Multiplier
     /// </summary>
     public override object? ConvertToNative(System.Type typeDesc)
     {
-        if (typeDesc == typeof(long) || typeDesc == typeof(long) || typeDesc == typeof(object))
+        if (typeDesc == typeof(long) || typeDesc == typeof(object))
             return Convert.ToInt64(i);
 
-        if (typeDesc == typeof(int) || typeDesc == typeof(int) || typeDesc == typeof(Enum))
+        if (typeDesc == typeof(int) || typeDesc == typeof(Enum))
         {
             if (i < int.MinValue || i > int.MaxValue)
                 Err.ThrowErrorAsIllegalStateException(Err.RangeError(i, "int"));
 
             return Convert.ToInt32((int)i);
         }
+
+        if (typeDesc == typeof(uint))
+            return Convert.ToUInt32(i);
+
+        if (typeDesc == typeof(ulong))
+            return Convert.ToUInt64(i);
 
         if (typeDesc == typeof(Any))
         {

@@ -187,7 +187,7 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
 
         if (typeof(Any) == typeDesc) return Any.Pack(PbVal());
 
-        if (typeof(long) == typeDesc) return Convert.ToInt64(ToLong());
+        if (typeof(long) == typeDesc) return ToLong();
 
         if (typeof(string) == typeDesc)
             // CEL follows the proto3 to JSON conversion.
