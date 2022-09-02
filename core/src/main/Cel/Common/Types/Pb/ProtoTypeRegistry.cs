@@ -243,37 +243,38 @@ public sealed class ProtoTypeRegistry : TypeRegistry
     }
 
     /// <summary>
-    /// Converts {@code value}, of the map-field {@code fieldDesc} from its Java <seealso cref="System.Collections.IDictionary"/>
-    /// representation to the protobuf-y {@code <seealso cref="System.Collections.IList"/><<seealso cref="MapEntry"/>>} representation.
+    ///     Converts {@code value}, of the map-field {@code fieldDesc} from its Java
+    ///     <seealso cref="System.Collections.IDictionary" />
+    ///     representation to the protobuf-y {@code <seealso cref="System.Collections.IList" /><<seealso cref="MapEntry" />>}
+    ///     representation.
     /// </summary>
     private object ToProtoMapStructure(FieldDescriptor fieldDesc, object value)
     {
-      Descriptor mesgType = fieldDesc.MessageType;
-      FieldDescriptor keyType = mesgType.FindFieldByNumber(1);
-      FieldDescriptor valueType = mesgType.FindFieldByNumber(2);
-      if (value is System.Collections.IDictionary)
-      {
-          IDictionary newDict = new Hashtable();
-        foreach (DictionaryEntry e in ((IDictionary) value))
+        var mesgType = fieldDesc.MessageType;
+        var keyType = mesgType.FindFieldByNumber(1);
+        var valueType = mesgType.FindFieldByNumber(2);
+        if (value is IDictionary)
         {
-          object v = e.Value;
-          object k = e.Key;
+            IDictionary newDict = new Hashtable();
+            foreach (DictionaryEntry e in (IDictionary)value)
+            {
+                var v = e.Value;
+                var k = e.Key;
 
-          // TODO improve the type-A-to-B-conversion
-          // if (!(k instanceof String)) {
-          //   return Err.newTypeConversionError(k.getClass().getName(), String.class.getName());
-          // }
-          if (valueType.FieldType == Google.Protobuf.Reflection.FieldType.Message && !(v is Message))
-          {
-            v = NativeToValue(v).ConvertToNative(typeof(Value));
-          }
+                // TODO improve the type-A-to-B-conversion
+                // if (!(k instanceof String)) {
+                //   return Err.newTypeConversionError(k.getClass().getName(), String.class.getName());
+                // }
+                if (valueType.FieldType == Google.Protobuf.Reflection.FieldType.Message && !(v is Message))
+                    v = NativeToValue(v).ConvertToNative(typeof(Value));
 
-          newDict[k] = v;
+                newDict[k] = v;
+            }
+
+            value = newDict;
         }
-        value = newDict;
-      }
 
-      return value;
+        return value;
     }
 
     /// <summary>
@@ -319,9 +320,8 @@ public sealed class ProtoTypeRegistry : TypeRegistry
 
     private object findEnum(EnumDescriptor enumType, int value)
     {
-        EnumValueDescriptor enumValue = enumType.FindValueByNumber(value);
+        var enumValue = enumType.FindValueByNumber(value);
         return Enum.ToObject(enumType.ClrType, value);
-
     }
 
     /// <summary>

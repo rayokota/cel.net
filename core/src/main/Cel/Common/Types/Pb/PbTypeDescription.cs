@@ -3,7 +3,7 @@ using Google.Protobuf;
 using Google.Protobuf.Reflection;
 using Google.Protobuf.WellKnownTypes;
 using NodaTime;
-using Duration = NodaTime.Duration;
+using Duration = Google.Protobuf.WellKnownTypes.Duration;
 using Type = System.Type;
 
 /*
@@ -51,12 +51,12 @@ public sealed class PbTypeDescription : Description, TypeDescription
         MessageToObjectExact[typeof(StringValue)] = msg => ((StringValue)msg).Value;
         MessageToObjectExact[typeof(UInt32Value)] = msg => ((UInt32Value)msg).Value;
         MessageToObjectExact[typeof(UInt64Value)] = msg => ((UInt64Value)msg).Value;
-        MessageToObjectExact[typeof(Google.Protobuf.WellKnownTypes.Duration)] =
-            msg => AsDuration((Google.Protobuf.WellKnownTypes.Duration)msg);
+        MessageToObjectExact[typeof(Duration)] =
+            msg => AsDuration((Duration)msg);
         MessageToObjectExact[typeof(Timestamp)] = msg => AsTimestamp((Timestamp)msg);
         zeroValueMap["google.protobuf.Any"] = (Message)Activator.CreateInstance(typeof(Any));
         zeroValueMap["google.protobuf.Duration"] =
-            (Message)Activator.CreateInstance(typeof(Google.Protobuf.WellKnownTypes.Duration));
+            (Message)Activator.CreateInstance(typeof(Duration));
         zeroValueMap["google.protobuf.ListValue"] = (Message)Activator.CreateInstance(typeof(ListValue));
         zeroValueMap["google.protobuf.Struct"] = (Message)Activator.CreateInstance(typeof(Struct));
         zeroValueMap["google.protobuf.Value"] = (Message)Activator.CreateInstance(typeof(Value));
@@ -271,7 +271,7 @@ public sealed class PbTypeDescription : Description, TypeDescription
         return msg;
     }
 
-    private static Period AsDuration(Google.Protobuf.WellKnownTypes.Duration d)
+    private static Period AsDuration(Duration d)
     {
         return Period.FromNanoseconds(d.Seconds * 1000000000 + d.Nanos);
     }
@@ -355,7 +355,7 @@ public sealed class PbTypeDescription : Description, TypeDescription
                 valueField = msg.Descriptor.FindFieldByName("value");
                 return (ulong)valueField.Accessor.GetValue(msg);
             case "google.protobuf.Duration":
-                var duration = new Google.Protobuf.WellKnownTypes.Duration();
+                var duration = new Duration();
                 duration.MergeFrom(msg.ToByteArray());
                 return AsDuration(duration);
             case "google.protobuf.ListValue":

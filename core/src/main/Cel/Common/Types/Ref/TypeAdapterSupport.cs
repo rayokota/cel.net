@@ -4,7 +4,7 @@ using Google.Protobuf;
 using Google.Protobuf.Reflection;
 using Google.Protobuf.WellKnownTypes;
 using NodaTime;
-using Duration = NodaTime.Duration;
+using Duration = Google.Protobuf.WellKnownTypes.Duration;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -45,8 +45,8 @@ public sealed class TypeAdapterSupport
         NativeToValueExact[typeof(ulong)] = (a, value) => UintT.UintOf((ulong)value);
         NativeToValueExact[typeof(string)] = (a, value) => StringT.StringOf((string)value);
         NativeToValueExact[typeof(Period)] = (a, value) => DurationT.DurationOf((Period)value);
-        NativeToValueExact[typeof(Google.Protobuf.WellKnownTypes.Duration)] = (a, value) =>
-            DurationT.DurationOf((Google.Protobuf.WellKnownTypes.Duration)value);
+        NativeToValueExact[typeof(Duration)] = (a, value) =>
+            DurationT.DurationOf((Duration)value);
         NativeToValueExact[typeof(Timestamp)] = (a, value) => TimestampT.TimestampOf((Timestamp)value);
         NativeToValueExact[typeof(ZonedDateTime)] = (a, value) => TimestampT.TimestampOf((ZonedDateTime)value);
         NativeToValueExact[typeof(Instant)] = (a, value) => TimestampT.TimestampOf((Instant)value);

@@ -379,7 +379,7 @@ public sealed class FieldDescription : Description
     public System.Type ReflectType()
     {
         var r = desc.IsRepeated;
-        if (r && desc.IsMap) return typeof(System.Collections.IDictionary);
+        if (r && desc.IsMap) return typeof(IDictionary);
 
         switch (desc.FieldType)
         {
@@ -582,23 +582,11 @@ public sealed class FieldDescription : Description
 
     public static bool HasValueForField(FieldDescriptor desc, Message message)
     {
-        if (desc.IsMap)
-        {
-            return ((IDictionary)desc.Accessor.GetValue(message)).Count > 0;
-            
-        }
-        if (desc.IsRepeated)
-        {
-            return ((IList)desc.Accessor.GetValue(message)).Count > 0;
-        }
+        if (desc.IsMap) return ((IDictionary)desc.Accessor.GetValue(message)).Count > 0;
+        if (desc.IsRepeated) return ((IList)desc.Accessor.GetValue(message)).Count > 0;
 
         if (desc.HasPresence)
-        {
             return desc.Accessor.HasValue(message);
-        }
-        else
-        {
-            return true;
-        }
+        return true;
     }
 }
