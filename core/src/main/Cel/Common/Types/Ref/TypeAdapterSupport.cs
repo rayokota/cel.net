@@ -40,8 +40,9 @@ public sealed class TypeAdapterSupport
         NativeToValueExact[typeof(byte)] = (a, value) => IntT.IntOf((byte)value);
         NativeToValueExact[typeof(short)] = (a, value) => IntT.IntOf((short)value);
         NativeToValueExact[typeof(int)] = (a, value) => IntT.IntOf((int)value);
-        NativeToValueExact[typeof(ulong)] = (a, value) => UintT.UintOf((ulong)value);
+        NativeToValueExact[typeof(uint)] = (a, value) => UintT.UintOf(Convert.ToUInt64(value));
         NativeToValueExact[typeof(long)] = (a, value) => IntT.IntOf((long)value);
+        NativeToValueExact[typeof(ulong)] = (a, value) => UintT.UintOf((ulong)value);
         NativeToValueExact[typeof(string)] = (a, value) => StringT.StringOf((string)value);
         NativeToValueExact[typeof(Period)] = (a, value) => DurationT.DurationOf((Period)value);
         NativeToValueExact[typeof(Google.Protobuf.WellKnownTypes.Duration)] = (a, value) =>

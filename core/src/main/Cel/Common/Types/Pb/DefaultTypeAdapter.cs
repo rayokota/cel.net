@@ -82,6 +82,11 @@ public sealed class DefaultTypeAdapter : TypeAdapterProvider
             return a(value);
         }
 
+        if (value is Enum)
+        {
+            return IntT.IntOf((int)value);
+        }
+
         return Err.NewErr("unsupported conversion from '{0}' to value", value.GetType());
     }
 

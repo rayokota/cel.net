@@ -1310,7 +1310,7 @@ namespace Cel.Interpreter
             {
                 Assert.That(i, Is.InstanceOf(typeof(InterpretableConst)));
                 InterpretableConst ic = (InterpretableConst)i;
-                Assert.That(ic.Value(), Is.SameAs(tc.@out));
+                Assert.That(ic.Value(), Is.EqualTo(tc.@out));
             }
         }
 

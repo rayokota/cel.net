@@ -436,15 +436,15 @@ public sealed class FieldDescription : Description
             case FieldType.Float:
                 return Checked.checkedDouble;
             case FieldType.Int32:
-                if (desc.FieldType == FieldType.UInt32 || desc.FieldType == FieldType.Fixed32)
-                    return Checked.checkedUint;
-
                 return Checked.checkedInt;
+            case FieldType.UInt32:
+            case FieldType.Fixed32:
+                return Checked.checkedUint;
             case FieldType.Int64:
-                if (desc.FieldType == FieldType.UInt64 || desc.FieldType == FieldType.Fixed64)
-                    return Checked.checkedUint;
-
                 return Checked.checkedInt;
+            case FieldType.UInt64:
+            case FieldType.Fixed64:
+                return Checked.checkedUint;
             case FieldType.String:
                 return Checked.checkedString;
         }
