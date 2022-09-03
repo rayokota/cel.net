@@ -1,13 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using Cel.Common.Containers;
 using Cel.Common.Types;
 using Cel.Common.Types.Pb;
-using Cel.Common.Types.Ref;
 using NUnit.Framework;
-using Container = Cel.Common.Containers.Container;
 using Type = Google.Api.Expr.V1Alpha1.Type;
 
 /*
- * Copyright (C) 2021 The Authors of CEL-Java
+ * Copyright (C) 2022 Robert Yokota
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,39 +19,37 @@ using Type = Google.Api.Expr.V1Alpha1.Type;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.Checker
+namespace Cel.Checker;
+
+public class CheckerEnvTest
 {
-	public class CheckerEnvTest
-	{
+    [Test]
+    public virtual void OverlappingIdentifier()
+    {
+        var env = CheckerEnv.NewStandardCheckerEnv(Container.DefaultContainer, ProtoTypeRegistry.NewRegistry());
+        Assert.That(() => env.Add(Decls.NewVar("int", Decls.NewTypeType(null))),
+            Throws.Exception.TypeOf<ArgumentException>());
+    }
 
-		[Test]
-	  public virtual void OverlappingIdentifier()
-	  {
-		CheckerEnv env = CheckerEnv.NewStandardCheckerEnv((Container)Container.DefaultContainer, (TypeProvider)ProtoTypeRegistry.NewRegistry());
-		Assert.That(() => env.Add(Decls.NewVar("int", Decls.NewTypeType(null))), Throws.Exception.TypeOf<ArgumentException>());
-	  }
+    [Test]
+    public virtual void OverlappingMacro()
+    {
+        var env = CheckerEnv.NewStandardCheckerEnv(Container.DefaultContainer, ProtoTypeRegistry.NewRegistry());
+        Assert.That(
+            () => env.Add(Decls.NewFunction("has",
+                Decls.NewOverload("has", new List<Type> { Decls.String }, Decls.Bool))),
+            Throws.Exception.TypeOf<ArgumentException>());
+    }
 
-		[Test]
-	  public virtual void OverlappingMacro()
-	  {
-		CheckerEnv env = CheckerEnv.NewStandardCheckerEnv(Container.DefaultContainer, ProtoTypeRegistry.NewRegistry());
-		Assert.That(
-			() => env.Add(Decls.NewFunction("has",
-				Decls.NewOverload("has", new List<Type> { Decls.String }, Decls.Bool))),
-			Throws.Exception.TypeOf<ArgumentException>());
-	  }
-
-		[Test]
-	  public virtual void OverlappingOverload()
-	  {
-		CheckerEnv env = CheckerEnv.NewStandardCheckerEnv(Container.DefaultContainer, ProtoTypeRegistry.NewRegistry());
-		Type paramA = Decls.NewTypeParamType("A");
-		IList<string> typeParamAList = new List<string>{"A"};
-		Assert.That(
-			() => env.Add(Decls.NewFunction(Overloads.TypeConvertDyn,
-				Decls.NewParameterizedOverload(Overloads.ToDyn, new List<Type> { paramA }, Decls.Dyn, typeParamAList))),
-			Throws.Exception.TypeOf<ArgumentException>());
-	  }
-	}
-
+    [Test]
+    public virtual void OverlappingOverload()
+    {
+        var env = CheckerEnv.NewStandardCheckerEnv(Container.DefaultContainer, ProtoTypeRegistry.NewRegistry());
+        var paramA = Decls.NewTypeParamType("A");
+        IList<string> typeParamAList = new List<string> { "A" };
+        Assert.That(
+            () => env.Add(Decls.NewFunction(Overloads.TypeConvertDyn,
+                Decls.NewParameterizedOverload(Overloads.ToDyn, new List<Type> { paramA }, Decls.Dyn, typeParamAList))),
+            Throws.Exception.TypeOf<ArgumentException>());
+    }
 }
