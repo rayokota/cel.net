@@ -43,6 +43,7 @@
 
     <ItemGroup>
         <Folder Include="core/src/test/Cel/Common/Types/Pb" />
+        <Folder Include="core\src\test\Cel\Proto" />
     </ItemGroup>
 
     <Target Name="Clean">
