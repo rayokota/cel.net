@@ -75,7 +75,7 @@ public interface AttributeFactory
     ///         may be sub-optimal.
     ///     </para>
     /// </summary>
-    Qualifier NewQualifier(Type objType, long qualID, object val);
+    Qualifier NewQualifier(Type? objType, long qualID, object val);
 
     /// <summary>
     ///     Qualifier marker interface for designating different qualifier values and where they appear
@@ -334,7 +334,7 @@ public sealed class AttrFactory : AttributeFactory
     /// <summary>
     ///     NewQualifier is an implementation of the AttributeFactory interface.
     /// </summary>
-    public Qualifier NewQualifier(Type objType, long qualID, object val)
+    public Qualifier NewQualifier(Type? objType, long qualID, object val)
     {
         // Before creating a new qualifier check to see if this is a protobuf message field access.
         // If so, use the precomputed GetFrom qualification method rather than the standard
@@ -1043,7 +1043,7 @@ public sealed class IntQualifier : Coster, ConstantQualifierEquator
             {
                 if (m.Contains((int)i))
                 {
-                    obj = m[i];
+                    obj = m[(int)i];
                     if (obj == null) throw Err.NoSuchKeyException(i);
                 }
             }

@@ -144,7 +144,7 @@ public abstract class ListT : BaseVal, Lister
 
         internal virtual IList ToArrayList()
         {
-            return new ArrayList { ConvertToNative(typeof(Array)) };
+            return new List<Object> { ConvertToNative(typeof(Array)) };
         }
 
         internal virtual object ToArray<T>(System.Type typeDesc)

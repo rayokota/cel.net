@@ -251,7 +251,7 @@ public sealed class AttributePattern
             return fac.RelativeAttribute(id, operand);
         }
 
-        public Qualifier NewQualifier(Type objType, long qualID, object val)
+        public Qualifier NewQualifier(Type? objType, long qualID, object val)
         {
             return fac.NewQualifier(objType, qualID, val);
         }

@@ -215,7 +215,7 @@ public sealed class ProtoTypeRegistry : TypeRegistry
             //  then to a protobuf struct. The intermediate step (the Java map) could be omitted.
 
             var value = nv.Value.ConvertToNative(field.ReflectType());
-            if (value.GetType().IsArray) value = new ArrayList((ICollection)value);
+            if (value.GetType().IsArray) value = new ArrayList((Array)value);
 
             var pbDesc = field.Descriptor();
 
@@ -255,7 +255,7 @@ public sealed class ProtoTypeRegistry : TypeRegistry
         var valueType = mesgType.FindFieldByNumber(2);
         if (value is IDictionary)
         {
-            IDictionary newDict = new Hashtable();
+            IDictionary newDict = new Dictionary<object, object>();
             foreach (DictionaryEntry e in (IDictionary)value)
             {
                 var v = e.Value;
@@ -292,7 +292,7 @@ public sealed class ProtoTypeRegistry : TypeRegistry
         else if (value is IList)
         {
             var list = (IList)value;
-            IList newList = new ArrayList(list.Count);
+            IList newList = new List<object>(list.Count);
             foreach (var o in list)
             {
                 var enumValue = Convert.ToInt32(o);

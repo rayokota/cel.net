@@ -126,7 +126,7 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
 
         internal IDictionary ToHashtable()
         {
-            IDictionary r = new Hashtable();
+            IDictionary r = new Dictionary<object, object>();
             foreach (var entry in map) r.Add(entry.Key.Value(), entry.Value.Value());
             return r;
         }
