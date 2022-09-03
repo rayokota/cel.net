@@ -54,7 +54,15 @@ namespace Cel.Common.Types.Pb
     {
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @ParameterizedTest @ValueSource(strings = { ".google.protobuf.Any", ".google.protobuf.BoolValue", ".google.protobuf.BytesValue", ".google.protobuf.DoubleValue", ".google.protobuf.FloatValue", ".google.protobuf.Int32Value", ".google.protobuf.Int64Value", ".google.protobuf.ListValue", ".google.protobuf.Struct", ".google.protobuf.Value" }) void typeDescriptor(String typeName)
-        internal virtual void TypeDescriptor(string typeName)
+        public static string[] GetAllTypeNames()
+        {
+            return new string[] {
+                ".google.protobuf.Any", ".google.protobuf.BoolValue", ".google.protobuf.BytesValue", ".google.protobuf.DoubleValue", ".google.protobuf.FloatValue", ".google.protobuf.Int32Value", ".google.protobuf.Int64Value", ".google.protobuf.ListValue", ".google.protobuf.Struct", ".google.protobuf.Value"
+            };
+        }
+
+        [TestCaseSource(nameof(GetAllTypeNames))]
+        public virtual void TypeDescriptor(string typeName)
         {
             Db pbdb = Db.NewDb();
             Assert.That(pbdb.DescribeType(typeName), Is.Not.Null);
@@ -62,7 +70,8 @@ namespace Cel.Common.Types.Pb
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @Test void fieldMap()
-        internal virtual void FieldMap()
+[Test]
+        public virtual void FieldMap()
         {
             Db pbdb = Db.NewDb();
             NestedTestAllTypes msg = new NestedTestAllTypes();
@@ -73,7 +82,7 @@ namespace Cel.Common.Types.Pb
             Assert.That(td.FieldMap().Count, Is.EqualTo(2));
         }
 
-        internal class MaybeUnwrapTestCase
+        public class MaybeUnwrapTestCase
         {
             internal readonly string name;
             internal Message @in;
@@ -106,13 +115,19 @@ namespace Cel.Common.Types.Pb
 //ORIGINAL LINE: @SuppressWarnings("unused") static MaybeUnwrapTestCase[] maybeUnwrapTestCases()
         internal static MaybeUnwrapTestCase[] MaybeUnwrapTestCases()
         {
+
+            Value listValue = new Value();
+            listValue.ListValue = JsonList(UnwrapTestCase.trueValue, UnwrapTestCase.numValue);
+            Value structValue = new Value();
+            structValue.StructValue = JsonStruct(TestUtil.MapOf("hello", UnwrapTestCase.strValue2));
+            
             return new MaybeUnwrapTestCase[]
             {
                 (new MaybeUnwrapTestCase("msgDesc.zero()")).In(UnwrapContext.Get().msgDesc.Zero())
-                .Out(NullValue.NULL_VALUE),
-                (new MaybeUnwrapTestCase("any(true)")).In(AnyMsg(BoolValue.of(true))).Out(true),
+                .Out(NullValue.NullValue),
+                (new MaybeUnwrapTestCase("any(true)")).In(AnyMsg(UnwrapTestCase.trueBool)).Out(true),
                 (new MaybeUnwrapTestCase("any(value(number(4.5)))"))
-                .In(AnyMsg(Value.newBuilder().setNumberValue(4.5).build())).Out(4.5),
+                .In(AnyMsg(UnwrapTestCase.numValue)).Out(1.5),
                 /*
                 (new MaybeUnwrapTestCase("dyn(any(value(number(4.5)))"))
                 .In(DynMsg(AnyMsg(Value.newBuilder().setNumberValue(4.5).build()))).Out(4.5),
@@ -123,119 +138,119 @@ namespace Cel.Common.Types.Pb
                 .Out(JsonList()),
                 */
                 (new MaybeUnwrapTestCase("value(null)"))
-                .In(Value.newBuilder().setNullValue(NullValue.NULL_VALUE).build()).Out(NullValue.NULL_VALUE),
-                (new MaybeUnwrapTestCase("value()")).In(Value.getDefaultInstance()).Out(NullValue.NULL_VALUE),
-                (new MaybeUnwrapTestCase("value(number(1.5))")).In(Value.newBuilder().setNumberValue(1.5).build())
+                .In(UnwrapTestCase.nullValue).Out(NullValue.NullValue),
+                (new MaybeUnwrapTestCase("value()")).In(new Value()).Out(NullValue.NullValue),
+                (new MaybeUnwrapTestCase("value(number(1.5))")).In(UnwrapTestCase.numValue)
                 .Out(1.5d),
                 (new MaybeUnwrapTestCase("value(list(true, number(1.0)))"))
-                .In(Value.newBuilder().setListValue(JsonList(Value.newBuilder().setBoolValue(true).build(),
-                    Value.newBuilder().setNumberValue(1.0).build())).build())
-                .Out(JsonList(Value.newBuilder().setBoolValue(true).build(),
-                    Value.newBuilder().setNumberValue(1.0).build())),
+                .In(listValue)
+                .Out(JsonList(UnwrapTestCase.trueValue, UnwrapTestCase.numValue)),
                 (new MaybeUnwrapTestCase("value(struct(hello->world))"))
-                .In(Value.newBuilder()
-                    .setStructValue(JsonStruct(TestUtil.MapOf("hello", Value.newBuilder().setStringValue("world").build())))
-                    .build()).Out(JsonStruct(TestUtil.MapOf("hello", Value.newBuilder().setStringValue("world").build()))),
-                (new MaybeUnwrapTestCase("b'hello'")).In(BytesValue.of(ByteString.copyFromUtf8("hello")))
-                .Out(ByteString.copyFromUtf8("hello")),
-                (new MaybeUnwrapTestCase("true")).In(BoolValue.of(true)).Out(true),
-                (new MaybeUnwrapTestCase("false")).In(BoolValue.of(false)).Out(false),
-                (new MaybeUnwrapTestCase("doubleValue(-4.2)")).In(DoubleValue.of(-4.2)).Out(-4.2),
-                (new MaybeUnwrapTestCase("floatValue(4.5)")).In(FloatValue.of(4.5f)).Out(4.5f),
-                (new MaybeUnwrapTestCase("int32(123)")).In(Int32Value.of(123)).Out(123),
-                (new MaybeUnwrapTestCase("int64(456)")).In(Int64Value.of(456)).Out(456L),
-                (new MaybeUnwrapTestCase("string(goodbye)")).In(StringValue.of("goodbye")).Out("goodbye"),
-                (new MaybeUnwrapTestCase("uint32(1234)")).In(UInt32Value.of(1234)).Out(ULong.ValueOf(1234)),
-                (new MaybeUnwrapTestCase("uint64(5678)")).In(UInt64Value.of(5678)).Out(ULong.ValueOf(5678)),
+                .In(structValue)
+                .Out(JsonStruct(TestUtil.MapOf("hello", UnwrapTestCase.strValue2))),
+                (new MaybeUnwrapTestCase("b'hello'")).In(UnwrapTestCase.bytesValue)
+                .Out(ByteString.CopyFromUtf8("hello")),
+                (new MaybeUnwrapTestCase("true")).In(UnwrapTestCase.trueBool).Out(true),
+                (new MaybeUnwrapTestCase("false")).In(UnwrapTestCase.falseBool).Out(false),
+                (new MaybeUnwrapTestCase("doubleValue(-4.2)")).In(UnwrapTestCase.doubleValue).Out(-4.2),
+                (new MaybeUnwrapTestCase("floatValue(4.5)")).In(UnwrapTestCase.floatValue).Out(4.5f),
+                (new MaybeUnwrapTestCase("int32(123)")).In(UnwrapTestCase.int32Value).Out(123),
+                (new MaybeUnwrapTestCase("int64(456)")).In(UnwrapTestCase.int64Value).Out(456L),
+                (new MaybeUnwrapTestCase("string(goodbye)")).In(UnwrapTestCase.strValue2).Out("goodbye"),
+                (new MaybeUnwrapTestCase("uint32(1234)")).In(UnwrapTestCase.uint32Value).Out((ulong)1234),
+                (new MaybeUnwrapTestCase("uint64(5678)")).In(UnwrapTestCase.uint64Value).Out((ulong)5678),
                 (new MaybeUnwrapTestCase("timestamp(12345,0)"))
-                .In(Timestamp.newBuilder().setSeconds(12345).setNanos(0).build())
-                .Out(Instant.ofEpochSecond(12345).atZone(TimestampT.ZoneIdZ)),
-                (new MaybeUnwrapTestCase("duration(345)")).In(Duration.newBuilder().setSeconds(345).build())
-                .Out(java.time.Duration.ofSeconds(345))
+                .In(UnwrapTestCase.timestampValue)
+                .Out(Instant.FromUnixTimeSeconds(12345).InZone(TimestampT.ZoneIdZ)),
+                (new MaybeUnwrapTestCase("duration(345)")).In(UnwrapTestCase.durationValue)
+                .Out(Period.FromSeconds(345))
             };
         }
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @ParameterizedTest @MethodSource("maybeUnwrapTestCases") void maybeUnwrap(MaybeUnwrapTestCase tc)
-        internal virtual void MaybeUnwrap(MaybeUnwrapTestCase tc)
+[TestCaseSource(nameof(MaybeUnwrapTestCases))]
+        public virtual void MaybeUnwrap(MaybeUnwrapTestCase tc)
         {
             UnwrapContext c = UnwrapContext.Get();
 
-            string typeName = tc.@in.getDescriptorForType().getFullName();
+            string typeName = tc.@in.Descriptor.FullName;
             PbTypeDescription td = c.pbdb.DescribeType(typeName);
-            Assert.That(td).isNotNull();
+            Assert.That(td, Is.Not.Null);
             object val = td.MaybeUnwrap(c.pbdb, tc.@in);
-            Assert.That(val).isNotNull();
+            Assert.That(val, Is.Not.Null);
 
-            Assert.That(val).isEqualTo(tc.@out);
+            Assert.That(val, Is.EqualTo(tc.@out));
         }
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @SuppressWarnings("unused") static UnwrapTestCase[] benchmarkTypeDescriptionMaybeUnwrapCases()
-        internal static UnwrapTestCase[] BenchmarkTypeDescriptionMaybeUnwrapCases()
+        public static UnwrapTestCase[] GetAllUnwrapTestCases()
         {
-            return UnwrapTestCase.values();
+            return UnwrapTestCase.Values();
         }
-
+        
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @ParameterizedTest @EnumSource void benchmarkTypeDescriptionMaybeUnwrap(UnwrapTestCase tc)
-        internal virtual void BenchmarkTypeDescriptionMaybeUnwrap(UnwrapTestCase tc)
+[TestCaseSource(nameof(GetAllUnwrapTestCases))]
+        public virtual void BenchmarkTypeDescriptionMaybeUnwrap(UnwrapTestCase tc)
         {
             UnwrapContext c = UnwrapContext.Get();
 
-            Message msg = tc.message();
+            Message msg = tc.Message();
 
-            string typeName = msg.getDescriptorForType().getFullName();
+            string typeName = msg.Descriptor.FullName;
             PbTypeDescription td = c.pbdb.DescribeType(typeName);
-            Assert.That(td).isNotNull();
+            Assert.That(td, Is.Not.Null);
 
             td.MaybeUnwrap(c.pbdb, msg);
         }
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @Test void checkedType()
-        internal virtual void CheckedType()
+[Test]
+        public virtual void CheckedType()
         {
             Db pbdb = Db.NewDb();
-            TestAllTypes msg = TestAllTypes.getDefaultInstance();
-            string msgName = msg.getDescriptorForType().getFullName();
+            TestAllTypes msg = new TestAllTypes();
+            string msgName = TestAllTypes.Descriptor.FullName;
             pbdb.RegisterMessage(msg);
             PbTypeDescription td = pbdb.DescribeType(msgName);
-            Assert.That(td).isNotNull();
+            Assert.That(td, Is.Not.Null);
 
             FieldDescription field = td.FieldByName("map_string_string");
-            Assert.That(field).isNotNull();
+            Assert.That(field, Is.Not.Null);
 
             Type mapType = Decls.NewMapType(Decls.String, Decls.String);
-            Assert.That(field.CheckedType()).isEqualTo(mapType);
+            Assert.That(field.CheckedType(), Is.EqualTo(mapType));
 
             field = td.FieldByName("repeated_nested_message");
-            Assert.That(field).isNotNull();
+            Assert.That(field, Is.Not.Null);
             Type listType =
                 Decls.NewListType(Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes.NestedMessage"));
-            Assert.That(field.CheckedType()).isEqualTo(listType);
-        }
-
-        internal static Message DynMsg(Message msg)
-        {
-            return DynamicMessage.newBuilder(msg.getDescriptorForType()).mergeFrom(msg).build();
+            Assert.That(field.CheckedType(), Is.EqualTo(listType));
         }
 
         internal static Any AnyMsg(Message msg)
         {
-            return Any.pack(msg);
+            return Any.Pack(msg);
         }
 
         internal static ListValue JsonList(params Value[] elems)
         {
-            return ListValue.newBuilder().addAllValues(Arrays.asList(elems)).build();
+            ListValue list = new ListValue();
+            list.Values.Add(elems);
+            return list;
         }
 
         internal static Struct JsonStruct(IDictionary<object, object> entries)
         {
-            Struct.Builder b = Struct.newBuilder();
-            entries.forEach((k, v) => b.putFields(k.ToString(), (Value)v));
-            return b.build();
+            Struct s = new Struct();
+            foreach (var entry in entries)
+            {
+                s.Fields[entry.Key.ToString()] = (Value)entry.Value;
+            }
+            return s;
         }
     }
 }

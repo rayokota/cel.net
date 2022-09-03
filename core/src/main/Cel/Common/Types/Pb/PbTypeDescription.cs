@@ -273,7 +273,10 @@ public sealed class PbTypeDescription : Description, TypeDescription
 
     private static Period AsDuration(Duration d)
     {
-        return Period.FromNanoseconds(d.Seconds * 1000000000 + d.Nanos);
+        PeriodBuilder period = new PeriodBuilder();
+        period.Seconds = d.Seconds;
+        period.Nanoseconds = d.Nanos;
+        return period.Build();
     }
 
     private static ZonedDateTime AsTimestamp(Timestamp t)

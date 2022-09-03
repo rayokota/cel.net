@@ -47,21 +47,23 @@ namespace Cel.Common.Types.Pb
     {
         private static readonly List<UnwrapTestCase> valueList = new List<UnwrapTestCase>();
 
-        private static readonly BoolValue t;
-        private static readonly BoolValue f;
-        private static readonly Value nullValue;
-        private static readonly Value numValue;
-        private static readonly Value strValue1;
-        private static readonly Value strValue2;
-        private static readonly BytesValue bytesValue;
-        private static readonly DoubleValue doubleValue;
-        private static readonly FloatValue floatValue;
-        private static readonly Int32Value int32Value;
-        private static readonly Int64Value int64Value;
-        private static readonly UInt32Value uint32Value;
-        private static readonly UInt64Value uint64Value;
-        private static readonly Timestamp ts;
-        private static readonly Duration d;
+        internal static readonly BoolValue trueBool;
+        internal static readonly BoolValue falseBool;
+        internal static readonly Value trueValue;
+        internal static readonly Value falseValue;
+        internal static readonly Value nullValue;
+        internal static readonly Value numValue;
+        internal static readonly Value strValue1;
+        internal static readonly Value strValue2;
+        internal static readonly BytesValue bytesValue;
+        internal static readonly DoubleValue doubleValue;
+        internal static readonly FloatValue floatValue;
+        internal static readonly Int32Value int32Value;
+        internal static readonly Int64Value int64Value;
+        internal static readonly UInt32Value uint32Value;
+        internal static readonly UInt64Value uint64Value;
+        internal static readonly Timestamp timestampValue;
+        internal static readonly Duration durationValue;
 
         static UnwrapTestCase()
         {
@@ -86,10 +88,14 @@ namespace Cel.Common.Types.Pb
             valueList.Add(Duration);
             valueList.Add(Proto3pb_TestAllTypes);
 
-            t = new BoolValue();
-            t.Value = true;
-            f = new BoolValue();
-            f.Value = false;
+            trueBool = new BoolValue();
+            trueBool.Value = true;
+            falseBool = new BoolValue();
+            falseBool.Value = false;
+            trueValue = new Value();
+            trueValue.BoolValue = true;
+            falseValue = new Value();
+            falseValue.BoolValue = false;
             nullValue = new Value();
             nullValue.NullValue = NullValue.NullValue;
             numValue = new Value();
@@ -112,11 +118,11 @@ namespace Cel.Common.Types.Pb
             uint32Value.Value = 1234;
             uint64Value = new UInt64Value();
             uint64Value.Value = 5678;
-            ts = new Timestamp();
-            ts.Seconds = 12345;
-            ts.Nanos = 0;
-            d = new Duration();
-            d.Seconds = 345;
+            timestampValue = new Timestamp();
+            timestampValue.Seconds = 12345;
+            timestampValue.Nanos = 0;
+            durationValue = new Duration();
+            durationValue.Seconds = 345;
         }
 
         public enum InnerEnum
@@ -147,10 +153,10 @@ namespace Cel.Common.Types.Pb
             new("MsgDesc_zero", InnerEnum.MsgDesc_zero, () => UnwrapContext.Get().msgDesc.Zero());
 
         public static readonly UnwrapTestCase Structpb_NewBoolValue_true = new("Structpb_NewBoolValue_true",
-            InnerEnum.Structpb_Value, () => t);
+            InnerEnum.Structpb_Value, () => trueBool);
 
         public static readonly UnwrapTestCase Structpb_NewBoolValue_false = new("structpb_NewBoolValuefalse",
-            InnerEnum.Structpb_NewBoolValue_false, () => f);
+            InnerEnum.Structpb_NewBoolValue_false, () => falseBool);
 
         public static readonly UnwrapTestCase Structpb_NewNullValue = new("structPb_NewNullValue",
             InnerEnum.Structpb_NewNullValue,
@@ -167,10 +173,10 @@ namespace Cel.Common.Types.Pb
             InnerEnum.Structpb_NewStringValue, () => strValue1);
 
         public static readonly UnwrapTestCase Wrapperspb_Bool_false = new("Wrapperspb_Bool_False",
-            InnerEnum.Wrapperspb_Bool_false, () => f);
+            InnerEnum.Wrapperspb_Bool_false, () => falseBool);
 
         public static readonly UnwrapTestCase Wrapperspb_Bool_true = new("Wrapperspb_Bool_true",
-            InnerEnum.Wrapperspb_Bool_true, () => t);
+            InnerEnum.Wrapperspb_Bool_true, () => trueBool);
 
         public static readonly UnwrapTestCase Wrapperspb_Bytes = new("Wrapperspb_Bytes", InnerEnum.Wrapperspb_Bytes,
             () => bytesValue);
@@ -197,10 +203,10 @@ namespace Cel.Common.Types.Pb
             () => uint64Value);
 
         public static readonly UnwrapTestCase Timestamp = new("Timestamp", InnerEnum.Timestamp,
-            () => ts);
+            () => timestampValue);
 
         public static readonly UnwrapTestCase Duration = new("Duration", InnerEnum.Duration,
-            () => d);
+            () => durationValue);
 
         public static readonly UnwrapTestCase Proto3pb_TestAllTypes = new("Proto3pb_TestAllTypes",
             InnerEnum.Proto3pb_TestAllTypes, () => new TestAllTypes());
