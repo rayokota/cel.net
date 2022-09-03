@@ -92,7 +92,7 @@ public sealed class TypeErrors : Errors
 
     internal void FieldTypeMismatch(Location l, string name, Type field, Type value)
     {
-        ReportError(l, "expected type of field '{0}' is '{`}' but provided type is '{2}'", name,
+        ReportError(l, "expected type of field '{0}' is '{1}' but provided type is '{2}'", name,
             Types.FormatCheckedType(field), Types.FormatCheckedType(value));
     }
 
