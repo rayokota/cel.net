@@ -587,6 +587,57 @@ public sealed class FieldDescription : Description
 
         if (desc.HasPresence)
             return desc.Accessor.HasValue(message);
-        return true;
+        object value = desc.Accessor.GetValue(message);
+        return !IsDefaultValue(desc, value);
     }
+    
+    private static bool IsDefaultValue(FieldDescriptor descriptor, object value)
+    {
+        if (descriptor.IsMap)
+        {
+            IDictionary dictionary = (IDictionary) value;
+            return dictionary.Count == 0;
+        }
+        if (descriptor.IsRepeated)
+        {
+            IList list = (IList) value;
+            return list.Count == 0;
+        }
+        switch (descriptor.FieldType)
+        {
+            case FieldType.Bool:
+                return (bool) value == false;
+            case FieldType.Bytes:
+                return (ByteString) value == ByteString.Empty;
+            case FieldType.String:
+                return (string) value == "";
+            case FieldType.Double:
+                return (double) value == 0.0;
+            case FieldType.SInt32:
+            case FieldType.Int32:
+            case FieldType.SFixed32:
+            case FieldType.Enum:
+                return (int) value == 0;
+            case FieldType.Fixed32:
+            case FieldType.UInt32:
+                return (uint) value == 0;
+            case FieldType.Fixed64:
+            case FieldType.UInt64:
+                return (ulong) value == 0;
+            case FieldType.SFixed64:
+            case FieldType.Int64:
+            case FieldType.SInt64:
+                return (long) value == 0;
+            case FieldType.Float:
+                return (float) value == 0f;
+            case FieldType.Message:
+            case FieldType.Group: // Never expect to get this, but...
+                return value == null;
+            default:
+                throw new ArgumentException("Invalid field type");
+        }
+    }
+
+
+
 }
