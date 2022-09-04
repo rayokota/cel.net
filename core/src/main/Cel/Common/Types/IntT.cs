@@ -60,12 +60,12 @@ public sealed class IntT : BaseVal, Adder, Comparer, Divider, Modder, Multiplier
     /// <summary>
     ///     maxIntJSON is defined as the Number.MAX_SAFE_INTEGER value per EcmaScript 6.
     /// </summary>
-    public static readonly long maxIntJSON = (1L << 53) - 1;
+    public static readonly long MaxIntJSON = (1L << 53) - 1;
 
     /// <summary>
     ///     minIntJSON is defined as the Number.MIN_SAFE_INTEGER value per EcmaScript 6.
     /// </summary>
-    public static readonly long minIntJSON = -maxIntJSON;
+    public static readonly long MinIntJSON = -MaxIntJSON;
 
     private readonly long i;
 
@@ -77,7 +77,7 @@ public sealed class IntT : BaseVal, Adder, Comparer, Divider, Modder, Multiplier
     /// <summary>
     ///     isJSONSafe indicates whether the int is safely representable as a floating point value in JSON.
     /// </summary>
-    public bool JSONSafe => i >= minIntJSON && i <= maxIntJSON;
+    public bool JSONSafe => i >= MinIntJSON && i <= MaxIntJSON;
 
     /// <summary>
     ///     Add implements traits.Adder.Add.
@@ -281,7 +281,7 @@ public sealed class IntT : BaseVal, Adder, Comparer, Divider, Modder, Multiplier
             // the string values must be explicitly converted to int() within a CEL expression;
             // however, it is best to simply stay within the JSON number range when building JSON
             // objects in CEL.
-            if (i >= minIntJSON && i <= maxIntJSON)
+            if (i >= MinIntJSON && i <= MaxIntJSON)
             {
                 var value = new Value();
                 value.NumberValue = i;
