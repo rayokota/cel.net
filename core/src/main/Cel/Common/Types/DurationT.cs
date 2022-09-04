@@ -181,7 +181,7 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
     /// </summary>
     public override object? ConvertToNative(System.Type typeDesc)
     {
-        if (typeDesc.IsAssignableFrom(typeof(Duration))) return d;
+        if (typeDesc.IsAssignableFrom(typeof(Period))) return d;
 
         if (typeof(Duration) == typeDesc || typeDesc == typeof(object)) return PbVal();
 
