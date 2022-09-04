@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Google.Api.Expr.Test.V1.Proto3;
+using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -15,250 +17,230 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.Common.Types.Pb
+namespace Cel.Common.Types.Pb;
+
+using Message = IMessage;
+
+public delegate Message messageSupplier();
+
+/// <summary>
+///     Test cases for {@link
+///     PbTypeDescriptionTest#benchmarkTypeDescriptionMaybeUnwrap(org.projectnessie.cel.common.types.pb.UnwrapTestCase)}
+///     and {@code TypeDescriptorBnch} JMH benchmark, latter requires this class to be a top-level public
+///     enum.
+/// </summary>
+public sealed class UnwrapTestCase
 {
-    using TestAllTypes = Google.Api.Expr.Test.V1.Proto3.TestAllTypes;
-    using BoolValue = Google.Protobuf.WellKnownTypes.BoolValue;
-    using ByteString = Google.Protobuf.ByteString;
-    using BytesValue = Google.Protobuf.WellKnownTypes.BytesValue;
-    using DoubleValue = Google.Protobuf.WellKnownTypes.DoubleValue;
-    using Duration = Google.Protobuf.WellKnownTypes.Duration;
-    using FloatValue = Google.Protobuf.WellKnownTypes.FloatValue;
-    using Int32Value = Google.Protobuf.WellKnownTypes.Int32Value;
-    using Int64Value = Google.Protobuf.WellKnownTypes.Int64Value;
-    using ListValue = Google.Protobuf.WellKnownTypes.ListValue;
-    using Message = Google.Protobuf.IMessage;
-    using NullValue = Google.Protobuf.WellKnownTypes.NullValue;
-    using StringValue = Google.Protobuf.WellKnownTypes.StringValue;
-    using Timestamp = Google.Protobuf.WellKnownTypes.Timestamp;
-    using UInt32Value = Google.Protobuf.WellKnownTypes.UInt32Value;
-    using UInt64Value = Google.Protobuf.WellKnownTypes.UInt64Value;
-    using Value = Google.Protobuf.WellKnownTypes.Value;
-
-    public delegate Message messageSupplier();
-
-    /// <summary>
-    /// Test cases for {@link
-    /// PbTypeDescriptionTest#benchmarkTypeDescriptionMaybeUnwrap(org.projectnessie.cel.common.types.pb.UnwrapTestCase)}
-    /// and {@code TypeDescriptorBnch} JMH benchmark, latter requires this class to be a top-level public
-    /// enum.
-    /// </summary>
-    public sealed class UnwrapTestCase
+    public enum InnerEnum
     {
-        private static readonly List<UnwrapTestCase> valueList = new List<UnwrapTestCase>();
+        MsgDesc_zero,
+        Structpb_NewBoolValue_true,
+        Structpb_NewBoolValue_false,
+        Structpb_NewNullValue,
+        Structpb_Value,
+        Structpb_NewNumberValue,
+        Structpb_NewStringValue,
+        Wrapperspb_Bool_false,
+        Wrapperspb_Bool_true,
+        Wrapperspb_Bytes,
+        Wrapperspb_Double,
+        Wrapperspb_Float,
+        Wrapperspb_Int32,
+        Wrapperspb_Int64,
+        Wrapperspb_String,
+        Wrapperspb_UInt32,
+        Wrapperspb_UInt64,
+        Timestamp,
+        Duration,
+        Proto3pb_TestAllTypes
+    }
 
-        internal static readonly BoolValue trueBool;
-        internal static readonly BoolValue falseBool;
-        internal static readonly Value trueValue;
-        internal static readonly Value falseValue;
-        internal static readonly Value nullValue;
-        internal static readonly Value numValue;
-        internal static readonly Value strValue1;
-        internal static readonly Value strValue2;
-        internal static readonly BytesValue bytesValue;
-        internal static readonly DoubleValue doubleValue;
-        internal static readonly FloatValue floatValue;
-        internal static readonly Int32Value int32Value;
-        internal static readonly Int64Value int64Value;
-        internal static readonly UInt32Value uint32Value;
-        internal static readonly UInt64Value uint64Value;
-        internal static readonly Timestamp timestampValue;
-        internal static readonly Duration durationValue;
+    private static readonly List<UnwrapTestCase> valueList = new();
 
-        static UnwrapTestCase()
-        {
-            valueList.Add(MsgDesc_zero);
-            valueList.Add(Structpb_NewBoolValue_true);
-            valueList.Add(Structpb_NewBoolValue_false);
-            valueList.Add(Structpb_NewNullValue);
-            valueList.Add(Structpb_Value);
-            valueList.Add(Structpb_NewNumberValue);
-            valueList.Add(Structpb_NewStringValue);
-            valueList.Add(Wrapperspb_Bool_false);
-            valueList.Add(Wrapperspb_Bool_true);
-            valueList.Add(Wrapperspb_Bytes);
-            valueList.Add(Wrapperspb_Double);
-            valueList.Add(Wrapperspb_Float);
-            valueList.Add(Wrapperspb_Int32);
-            valueList.Add(Wrapperspb_Int64);
-            valueList.Add(Wrapperspb_String);
-            valueList.Add(Wrapperspb_UInt32);
-            valueList.Add(Wrapperspb_UInt64);
-            valueList.Add(Timestamp);
-            valueList.Add(Duration);
-            valueList.Add(Proto3pb_TestAllTypes);
+    internal static readonly BoolValue trueBool;
+    internal static readonly BoolValue falseBool;
+    internal static readonly Value trueValue;
+    internal static readonly Value falseValue;
+    internal static readonly Value nullValue;
+    internal static readonly Value numValue;
+    internal static readonly Value strValue1;
+    internal static readonly Value strValue2;
+    internal static readonly BytesValue bytesValue;
+    internal static readonly DoubleValue doubleValue;
+    internal static readonly FloatValue floatValue;
+    internal static readonly Int32Value int32Value;
+    internal static readonly Int64Value int64Value;
+    internal static readonly UInt32Value uint32Value;
+    internal static readonly UInt64Value uint64Value;
+    internal static readonly Timestamp timestampValue;
+    internal static readonly Duration durationValue;
 
-            trueBool = new BoolValue();
-            trueBool.Value = true;
-            falseBool = new BoolValue();
-            falseBool.Value = false;
-            trueValue = new Value();
-            trueValue.BoolValue = true;
-            falseValue = new Value();
-            falseValue.BoolValue = false;
-            nullValue = new Value();
-            nullValue.NullValue = NullValue.NullValue;
-            numValue = new Value();
-            numValue.NumberValue = 1.5;
-            strValue1 = new Value();
-            strValue1.StringValue = "hello world";
-            strValue2 = new Value();
-            strValue2.StringValue = "goodbye";
-            bytesValue = new BytesValue();
-            bytesValue.Value = ByteString.CopyFromUtf8("hello");
-            doubleValue = new DoubleValue();
-            doubleValue.Value = -4.2;
-            floatValue = new FloatValue();
-            floatValue.Value = 4.5f;
-            int32Value = new Int32Value();
-            int32Value.Value = 123;
-            int64Value = new Int64Value();
-            int64Value.Value = 456;
-            uint32Value = new UInt32Value();
-            uint32Value.Value = 1234;
-            uint64Value = new UInt64Value();
-            uint64Value.Value = 5678;
-            timestampValue = new Timestamp();
-            timestampValue.Seconds = 12345;
-            timestampValue.Nanos = 0;
-            durationValue = new Duration();
-            durationValue.Seconds = 345;
-        }
+    public static readonly UnwrapTestCase MsgDesc_zero =
+        new("MsgDesc_zero", InnerEnum.MsgDesc_zero, () => UnwrapContext.Get().msgDesc.Zero());
 
-        public enum InnerEnum
-        {
-            MsgDesc_zero,
-            Structpb_NewBoolValue_true,
-            Structpb_NewBoolValue_false,
-            Structpb_NewNullValue,
-            Structpb_Value,
-            Structpb_NewNumberValue,
-            Structpb_NewStringValue,
-            Wrapperspb_Bool_false,
-            Wrapperspb_Bool_true,
-            Wrapperspb_Bytes,
-            Wrapperspb_Double,
-            Wrapperspb_Float,
-            Wrapperspb_Int32,
-            Wrapperspb_Int64,
-            Wrapperspb_String,
-            Wrapperspb_UInt32,
-            Wrapperspb_UInt64,
-            Timestamp,
-            Duration,
-            Proto3pb_TestAllTypes
-        }
+    public static readonly UnwrapTestCase Structpb_NewBoolValue_true = new("Structpb_NewBoolValue_true",
+        InnerEnum.Structpb_Value, () => trueBool);
 
-        public static readonly UnwrapTestCase MsgDesc_zero =
-            new("MsgDesc_zero", InnerEnum.MsgDesc_zero, () => UnwrapContext.Get().msgDesc.Zero());
+    public static readonly UnwrapTestCase Structpb_NewBoolValue_false = new("structpb_NewBoolValuefalse",
+        InnerEnum.Structpb_NewBoolValue_false, () => falseBool);
 
-        public static readonly UnwrapTestCase Structpb_NewBoolValue_true = new("Structpb_NewBoolValue_true",
-            InnerEnum.Structpb_Value, () => trueBool);
+    public static readonly UnwrapTestCase Structpb_NewNullValue = new("structPb_NewNullValue",
+        InnerEnum.Structpb_NewNullValue,
+        () => nullValue);
 
-        public static readonly UnwrapTestCase Structpb_NewBoolValue_false = new("structpb_NewBoolValuefalse",
-            InnerEnum.Structpb_NewBoolValue_false, () => falseBool);
+    public static readonly UnwrapTestCase Structpb_Value =
+        new("Structpb_Value", InnerEnum.Structpb_Value, () => new Value());
 
-        public static readonly UnwrapTestCase Structpb_NewNullValue = new("structPb_NewNullValue",
-            InnerEnum.Structpb_NewNullValue,
-            () => nullValue);
+    public static readonly UnwrapTestCase Structpb_NewNumberValue = new("Structpb_NewNumberValue",
+        InnerEnum.Structpb_NewNumberValue,
+        () => numValue);
 
-        public static readonly UnwrapTestCase Structpb_Value =
-            new("Structpb_Value", InnerEnum.Structpb_Value, () => new Value());
+    public static readonly UnwrapTestCase Structpb_NewStringValue = new("Structpb_NewStringValue",
+        InnerEnum.Structpb_NewStringValue, () => strValue1);
 
-        public static readonly UnwrapTestCase Structpb_NewNumberValue = new("Structpb_NewNumberValue",
-            InnerEnum.Structpb_NewNumberValue,
-            () => numValue);
+    public static readonly UnwrapTestCase Wrapperspb_Bool_false = new("Wrapperspb_Bool_False",
+        InnerEnum.Wrapperspb_Bool_false, () => falseBool);
 
-        public static readonly UnwrapTestCase Structpb_NewStringValue = new("Structpb_NewStringValue",
-            InnerEnum.Structpb_NewStringValue, () => strValue1);
+    public static readonly UnwrapTestCase Wrapperspb_Bool_true = new("Wrapperspb_Bool_true",
+        InnerEnum.Wrapperspb_Bool_true, () => trueBool);
 
-        public static readonly UnwrapTestCase Wrapperspb_Bool_false = new("Wrapperspb_Bool_False",
-            InnerEnum.Wrapperspb_Bool_false, () => falseBool);
+    public static readonly UnwrapTestCase Wrapperspb_Bytes = new("Wrapperspb_Bytes", InnerEnum.Wrapperspb_Bytes,
+        () => bytesValue);
 
-        public static readonly UnwrapTestCase Wrapperspb_Bool_true = new("Wrapperspb_Bool_true",
-            InnerEnum.Wrapperspb_Bool_true, () => trueBool);
+    public static readonly UnwrapTestCase Wrapperspb_Double = new("Wrapperspb_Double", InnerEnum.Wrapperspb_Double,
+        () => doubleValue);
 
-        public static readonly UnwrapTestCase Wrapperspb_Bytes = new("Wrapperspb_Bytes", InnerEnum.Wrapperspb_Bytes,
-            () => bytesValue);
+    public static readonly UnwrapTestCase Wrapperspb_Float = new("Wrapperspb_Float", InnerEnum.Wrapperspb_Float,
+        () => floatValue);
 
-        public static readonly UnwrapTestCase Wrapperspb_Double = new("Wrapperspb_Double", InnerEnum.Wrapperspb_Double,
-            () => doubleValue);
+    public static readonly UnwrapTestCase Wrapperspb_Int32 = new("Wrapperspb_Int32", InnerEnum.Wrapperspb_Int32,
+        () => int32Value);
 
-        public static readonly UnwrapTestCase Wrapperspb_Float = new("Wrapperspb_Float", InnerEnum.Wrapperspb_Float,
-            () => floatValue);
+    public static readonly UnwrapTestCase Wrapperspb_Int64 = new("Wrapperspb_Int64", InnerEnum.Wrapperspb_Int64,
+        () => int64Value);
 
-        public static readonly UnwrapTestCase Wrapperspb_Int32 = new("Wrapperspb_Int32", InnerEnum.Wrapperspb_Int32,
-            () => int32Value);
+    public static readonly UnwrapTestCase Wrapperspb_String = new("Wrapperspb_String", InnerEnum.Wrapperspb_String,
+        () => strValue2);
 
-        public static readonly UnwrapTestCase Wrapperspb_Int64 = new("Wrapperspb_Int64", InnerEnum.Wrapperspb_Int64,
-            () => int64Value);
+    public static readonly UnwrapTestCase Wrapperspb_UInt32 = new("Wrapperspb_UInt32", InnerEnum.Wrapperspb_UInt32,
+        () => uint32Value);
 
-        public static readonly UnwrapTestCase Wrapperspb_String = new("Wrapperspb_String", InnerEnum.Wrapperspb_String,
-            () => strValue2);
+    public static readonly UnwrapTestCase Wrapperspb_UInt64 = new("Wrapperspb_UInt64", InnerEnum.Wrapperspb_UInt64,
+        () => uint64Value);
 
-        public static readonly UnwrapTestCase Wrapperspb_UInt32 = new("Wrapperspb_UInt32", InnerEnum.Wrapperspb_UInt32,
-            () => uint32Value);
+    public static readonly UnwrapTestCase Timestamp = new("Timestamp", InnerEnum.Timestamp,
+        () => timestampValue);
 
-        public static readonly UnwrapTestCase Wrapperspb_UInt64 = new("Wrapperspb_UInt64", InnerEnum.Wrapperspb_UInt64,
-            () => uint64Value);
+    public static readonly UnwrapTestCase Duration = new("Duration", InnerEnum.Duration,
+        () => durationValue);
 
-        public static readonly UnwrapTestCase Timestamp = new("Timestamp", InnerEnum.Timestamp,
-            () => timestampValue);
+    public static readonly UnwrapTestCase Proto3pb_TestAllTypes = new("Proto3pb_TestAllTypes",
+        InnerEnum.Proto3pb_TestAllTypes, () => new TestAllTypes());
 
-        public static readonly UnwrapTestCase Duration = new("Duration", InnerEnum.Duration,
-            () => durationValue);
-
-        public static readonly UnwrapTestCase Proto3pb_TestAllTypes = new("Proto3pb_TestAllTypes",
-            InnerEnum.Proto3pb_TestAllTypes, () => new TestAllTypes());
+    private static int nextOrdinal;
 
 
-        public readonly InnerEnum innerEnumValue;
-        private readonly string nameValue;
-        private readonly int ordinalValue;
-        private static int nextOrdinal = 0;
+    public readonly InnerEnum innerEnumValue;
 
-        internal UnwrapTestCase(string name, InnerEnum innerEnum, System.Func<Message> message)
-        {
-            this.message = message;
+    private readonly Func<Message> message;
+    private readonly string nameValue;
+    private readonly int ordinalValue;
 
-            nameValue = name;
-            ordinalValue = nextOrdinal++;
-            innerEnumValue = innerEnum;
-        }
+    static UnwrapTestCase()
+    {
+        valueList.Add(MsgDesc_zero);
+        valueList.Add(Structpb_NewBoolValue_true);
+        valueList.Add(Structpb_NewBoolValue_false);
+        valueList.Add(Structpb_NewNullValue);
+        valueList.Add(Structpb_Value);
+        valueList.Add(Structpb_NewNumberValue);
+        valueList.Add(Structpb_NewStringValue);
+        valueList.Add(Wrapperspb_Bool_false);
+        valueList.Add(Wrapperspb_Bool_true);
+        valueList.Add(Wrapperspb_Bytes);
+        valueList.Add(Wrapperspb_Double);
+        valueList.Add(Wrapperspb_Float);
+        valueList.Add(Wrapperspb_Int32);
+        valueList.Add(Wrapperspb_Int64);
+        valueList.Add(Wrapperspb_String);
+        valueList.Add(Wrapperspb_UInt32);
+        valueList.Add(Wrapperspb_UInt64);
+        valueList.Add(Timestamp);
+        valueList.Add(Duration);
+        valueList.Add(Proto3pb_TestAllTypes);
 
-        private readonly System.Func<Message> message;
+        trueBool = new BoolValue();
+        trueBool.Value = true;
+        falseBool = new BoolValue();
+        falseBool.Value = false;
+        trueValue = new Value();
+        trueValue.BoolValue = true;
+        falseValue = new Value();
+        falseValue.BoolValue = false;
+        nullValue = new Value();
+        nullValue.NullValue = NullValue.NullValue;
+        numValue = new Value();
+        numValue.NumberValue = 1.5;
+        strValue1 = new Value();
+        strValue1.StringValue = "hello world";
+        strValue2 = new Value();
+        strValue2.StringValue = "goodbye";
+        bytesValue = new BytesValue();
+        bytesValue.Value = ByteString.CopyFromUtf8("hello");
+        doubleValue = new DoubleValue();
+        doubleValue.Value = -4.2;
+        floatValue = new FloatValue();
+        floatValue.Value = 4.5f;
+        int32Value = new Int32Value();
+        int32Value.Value = 123;
+        int64Value = new Int64Value();
+        int64Value.Value = 456;
+        uint32Value = new UInt32Value();
+        uint32Value.Value = 1234;
+        uint64Value = new UInt64Value();
+        uint64Value.Value = 5678;
+        timestampValue = new Timestamp();
+        timestampValue.Seconds = 12345;
+        timestampValue.Nanos = 0;
+        durationValue = new Duration();
+        durationValue.Seconds = 345;
+    }
 
-        public Message Message()
-        {
-            return message();
-        }
+    internal UnwrapTestCase(string name, InnerEnum innerEnum, Func<Message> message)
+    {
+        this.message = message;
 
-        public static UnwrapTestCase[] Values()
-        {
-            return valueList.ToArray();
-        }
+        nameValue = name;
+        ordinalValue = nextOrdinal++;
+        innerEnumValue = innerEnum;
+    }
 
-        public int Ordinal()
-        {
-            return ordinalValue;
-        }
+    public Message Message()
+    {
+        return message();
+    }
 
-        public override string ToString()
-        {
-            return nameValue;
-        }
+    public static UnwrapTestCase[] Values()
+    {
+        return valueList.ToArray();
+    }
 
-        public static UnwrapTestCase valueOf(string name)
-        {
-            foreach (UnwrapTestCase enumInstance in UnwrapTestCase.valueList)
-            {
-                if (enumInstance.nameValue == name)
-                {
-                    return enumInstance;
-                }
-            }
+    public int Ordinal()
+    {
+        return ordinalValue;
+    }
 
-            throw new System.ArgumentException(name);
-        }
+    public override string ToString()
+    {
+        return nameValue;
+    }
+
+    public static UnwrapTestCase valueOf(string name)
+    {
+        foreach (var enumInstance in valueList)
+            if (enumInstance.nameValue == name)
+                return enumInstance;
+
+        throw new ArgumentException(name);
     }
 }

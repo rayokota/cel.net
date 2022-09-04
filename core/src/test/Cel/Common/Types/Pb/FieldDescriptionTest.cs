@@ -157,7 +157,7 @@ public class FieldDescriptionTest
 
         var f = td.FieldByName(tc.field);
         Assert.That(f, Is.Not.Null);
-        
+
         Assert.That(f.IsSet(tc.msg), Is.EqualTo(tc.isSet));
     }
 

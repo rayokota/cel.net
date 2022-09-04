@@ -14,43 +14,36 @@
  * limitations under the License.
  */
 
-using Cel.Common.Types.Pb;
+using Google.Api.Expr.Test.V1.Proto3;
 using NUnit.Framework;
 
-namespace Cel.Common.Types.Pb
+namespace Cel.Common.Types.Pb;
+
+/// <summary>
+///     Required by <seealso cref="UnwrapTestCase" /> et al.
+/// </summary>
+internal class UnwrapContext
 {
-	using TestAllTypes = Google.Api.Expr.Test.V1.Proto3.TestAllTypes;
+    private static UnwrapContext instance;
+    internal readonly PbTypeDescription msgDesc;
 
-	/// <summary>
-	/// Required by <seealso cref="UnwrapTestCase"/> et al. </summary>
-	internal class UnwrapContext
-	{
+    internal readonly Db pbdb;
 
-	  internal readonly Db pbdb;
-	  internal readonly PbTypeDescription msgDesc;
+    internal UnwrapContext()
+    {
+        pbdb = Db.NewDb();
+        pbdb.RegisterMessage(new TestAllTypes());
+        var msgType = "google.protobuf.Value";
+        msgDesc = pbdb.DescribeType(msgType);
+        Assert.That(msgDesc, Is.Not.Null);
+    }
 
-	  internal UnwrapContext()
-	  {
-		pbdb = Db.NewDb();
-		pbdb.RegisterMessage(new TestAllTypes());
-		string msgType = "google.protobuf.Value";
-		msgDesc = pbdb.DescribeType(msgType);
-		Assert.That(msgDesc, Is.Not.Null);
-	  }
-
-	  private static UnwrapContext instance;
-
-	  internal static UnwrapContext Get()
-	  {
-		  lock (typeof(UnwrapContext))
-		  {
-			if (instance == null)
-			{
-			  instance = new UnwrapContext();
-			}
-			return instance;
-		  }
-	  }
-	}
-
+    internal static UnwrapContext Get()
+    {
+        lock (typeof(UnwrapContext))
+        {
+            if (instance == null) instance = new UnwrapContext();
+            return instance;
+        }
+    }
 }
