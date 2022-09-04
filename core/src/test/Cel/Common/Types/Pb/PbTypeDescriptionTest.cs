@@ -76,7 +76,7 @@ namespace Cel.Common.Types.Pb
             Db pbdb = Db.NewDb();
             NestedTestAllTypes msg = new NestedTestAllTypes();
             pbdb.RegisterMessage(msg);
-            PbTypeDescription td = pbdb.DescribeType(Google.Api.Expr.Test.V1.Proto2.NestedTestAllTypes.Descriptor.FullName);
+            PbTypeDescription td = pbdb.DescribeType(NestedTestAllTypes.Descriptor.FullName);
             Assert.That(td, Is.Not.Null);
 
             Assert.That(td.FieldMap().Count, Is.EqualTo(2));
