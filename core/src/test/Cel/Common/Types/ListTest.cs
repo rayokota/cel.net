@@ -261,7 +261,7 @@ public class StringArrayListTest : ListTest<string>
 public class GenericArrayListTest : ListTest<object>
 {
     [TestCaseSource(nameof(TestDataSets))]
-    public void ListConstruction(TestData tc)
+    public override void ListConstruction(TestData tc)
     {
         base.ListConstruction(tc);
     }
