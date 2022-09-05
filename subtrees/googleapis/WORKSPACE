@@ -138,7 +138,7 @@ http_archive(
     ],
 )
 
-_gapic_generator_go_version = "0.31.2"
+_gapic_generator_go_version = "0.32.1"
 
 http_archive(
     name = "com_googleapis_gapic_generator_go",
@@ -374,9 +374,9 @@ http_archive(
     urls = ["https://github.com/googleapis/gax-dotnet/archive/refs/tags/%s.tar.gz" % _gax_dotnet_version],
 )
 
-_gapic_generator_csharp_version = "1.4.7"
+_gapic_generator_csharp_version = "1.4.8"
 
-_gapic_generator_csharp_sha256 = "cb75b2e12a56485c63c25f9de29d80a82710168a19b44f267a5739427eb7fc24"
+_gapic_generator_csharp_sha256 = "1c155829aabb32a1e94fb9c4fe70054d683b1142fe7853c01f3adc3d5b184a6e"
 
 http_archive(
     name = "gapic_generator_csharp",
@@ -415,9 +415,9 @@ gapic_generator_csharp_repositories_gax_v3(gapic_generator_suffix = "_gax_v3")
 # Ruby
 ##############################################################################
 
-_gapic_generator_ruby_version = "v0.15.2"
+_gapic_generator_ruby_version = "v0.15.3"
 
-_gapic_generator_ruby_sha256 = "0f858224e8f6a45533db33ef9aabd277f85f94b7edf61cb326267adf681b94ae"
+_gapic_generator_ruby_sha256 = "b0cf5b8ee5c67e5a9aa23b4e58cbd2f73fc2dab9f9c06114eafbaa53f68f73e3"
 
 http_archive(
     name = "gapic_generator_ruby",

@@ -9,11 +9,12 @@ package(default_visibility = ["//visibility:public"])
 load("@rules_proto//proto:defs.bzl", "proto_library")
 
 proto_library(
-    name = "common_proto",
+    name = "logging_proto",
     srcs = [
-        "common.proto",
+        "logs.proto",
     ],
     deps = [
+        "@com_google_protobuf//:timestamp_proto",
     ],
 )
 
@@ -27,14 +28,14 @@ load(
 )
 
 java_proto_library(
-    name = "common_java_proto",
-    deps = [":common_proto"],
+    name = "logging_java_proto",
+    deps = [":logging_proto"],
 )
 
 java_grpc_library(
-    name = "common_java_grpc",
-    srcs = [":common_proto"],
-    deps = [":common_java_proto"],
+    name = "logging_java_grpc",
+    srcs = [":logging_proto"],
+    deps = [":logging_java_proto"],
 )
 
 ##############################################################################
@@ -46,10 +47,10 @@ load(
 )
 
 go_proto_library(
-    name = "common_go_proto",
+    name = "logging_go_proto",
     compilers = ["@io_bazel_rules_go//proto:go_grpc"],
-    importpath = "google.golang.org/genproto/googleapis/cloud/bigquery/dataexchange/common",
-    protos = [":common_proto"],
+    importpath = "google.golang.org/genproto/googleapis/cloud/certificatemanager/logging/v1",
+    protos = [":logging_proto"],
     deps = [
     ],
 )
@@ -59,17 +60,28 @@ go_proto_library(
 ##############################################################################
 load(
     "@com_google_googleapis_imports//:imports.bzl",
-    "py_gapic_library",
+    "moved_proto_library",
+    "py_grpc_library",
+    "py_proto_library",
 )
 
-py_gapic_library(
-    name = "common_py_gapic",
-    srcs = [":common_proto"],
-    opt_args = [
-        "warehouse-package-name=google-cloud-bigquery-data-exchange-common",
-        "python-gapic-namespace=google.cloud.bigquery_data_exchange",
-        "python-gapic-name=common",
+moved_proto_library(
+    name = "logging_moved_proto",
+    srcs = [":logging_proto"],
+    deps = [
+        "@com_google_protobuf//:timestamp_proto",
     ],
+)
+
+py_proto_library(
+    name = "logging_py_proto",
+    deps = [":logging_moved_proto"],
+)
+
+py_grpc_library(
+    name = "logging_py_grpc",
+    srcs = [":logging_moved_proto"],
+    deps = [":logging_py_proto"],
 )
 
 ##############################################################################
@@ -82,14 +94,14 @@ load(
 )
 
 php_proto_library(
-    name = "common_php_proto",
-    deps = [":common_proto"],
+    name = "logging_php_proto",
+    deps = [":logging_proto"],
 )
 
 php_grpc_library(
-    name = "common_php_grpc",
-    srcs = [":common_proto"],
-    deps = [":common_php_proto"],
+    name = "logging_php_grpc",
+    srcs = [":logging_proto"],
+    deps = [":logging_php_proto"],
 )
 
 ##############################################################################
@@ -111,14 +123,14 @@ load(
 )
 
 ruby_proto_library(
-    name = "common_ruby_proto",
-    deps = [":common_proto"],
+    name = "logging_ruby_proto",
+    deps = [":logging_proto"],
 )
 
 ruby_grpc_library(
-    name = "common_ruby_grpc",
-    srcs = [":common_proto"],
-    deps = [":common_ruby_proto"],
+    name = "logging_ruby_grpc",
+    srcs = [":logging_proto"],
+    deps = [":logging_ruby_proto"],
 )
 
 ##############################################################################
@@ -131,14 +143,14 @@ load(
 )
 
 csharp_proto_library(
-    name = "common_csharp_proto",
-    deps = [":common_proto"],
+    name = "logging_csharp_proto",
+    deps = [":logging_proto"],
 )
 
 csharp_grpc_library(
-    name = "common_csharp_grpc",
-    srcs = [":common_proto"],
-    deps = [":common_csharp_proto"],
+    name = "logging_csharp_grpc",
+    srcs = [":logging_proto"],
+    deps = [":logging_csharp_proto"],
 )
 
 ##############################################################################
@@ -151,13 +163,13 @@ load(
 )
 
 cc_proto_library(
-    name = "common_cc_proto",
-    deps = [":common_proto"],
+    name = "logging_cc_proto",
+    deps = [":logging_proto"],
 )
 
 cc_grpc_library(
-    name = "common_cc_grpc",
-    srcs = [":common_proto"],
+    name = "logging_cc_grpc",
+    srcs = [":logging_proto"],
     grpc_only = True,
-    deps = [":common_cc_proto"],
+    deps = [":logging_cc_proto"],
 )
