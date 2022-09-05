@@ -226,14 +226,14 @@ public sealed class IntT : BaseVal, Adder, Comparer, Divider, Modder, Multiplier
     public override object? ConvertToNative(System.Type typeDesc)
     {
         if (typeDesc == typeof(long) || typeDesc == typeof(object))
-            return Convert.ToInt64(i);
+            return i;
 
         if (typeDesc == typeof(int) || typeDesc == typeof(Enum))
         {
             if (i < int.MinValue || i > int.MaxValue)
                 Err.ThrowErrorAsIllegalStateException(Err.RangeError(i, "int"));
 
-            return Convert.ToInt32((int)i);
+            return Convert.ToInt32(i);
         }
 
         if (typeDesc == typeof(uint))
@@ -251,7 +251,7 @@ public sealed class IntT : BaseVal, Adder, Comparer, Divider, Modder, Multiplier
 
         if (typeDesc == typeof(Int64Value))
         {
-            return Convert.ToInt64(i);
+            return i;
             /*
             var value = new Int64Value();
             value.Value = i;
@@ -261,10 +261,13 @@ public sealed class IntT : BaseVal, Adder, Comparer, Divider, Modder, Multiplier
 
         if (typeDesc == typeof(Int32Value))
         {
+            if (i < int.MinValue || i > int.MaxValue)
+                Err.ThrowErrorAsIllegalStateException(Err.RangeError(i, "int"));
+
             return Convert.ToInt32(i);
             /*
             var value = new Int32Value();
-            value.Value = (int)i;
+            value.Value = Convert.ToInt32(i);
             return value;
             */
         }
@@ -317,7 +320,7 @@ public sealed class IntT : BaseVal, Adder, Comparer, Divider, Modder, Multiplier
             case TypeEnum.InnerEnum.Uint:
                 if (i < 0) return Err.RangeError(i, "uint");
 
-                return UintT.UintOf((ulong)i);
+                return UintT.UintOf(Convert.ToUInt64(i));
             case TypeEnum.InnerEnum.Double:
                 return DoubleT.DoubleOf(i);
             case TypeEnum.InnerEnum.String:

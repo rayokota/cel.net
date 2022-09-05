@@ -47,7 +47,7 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
     ///     isJSONSafe indicates whether the uint is safely representable as a floating point value in
     ///     JSON.
     /// </summary>
-    public bool JSONSafe => i >= 0 && (long)i <= IntT.MaxIntJSON;
+    public bool JSONSafe => i >= 0 && IntValue() <= IntT.MaxIntJSON;
 
     /// <summary>
     ///     Add implements traits.Adder.Add.
@@ -58,7 +58,7 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
 
         try
         {
-            return UintOf((ulong)Overflow.AddUint64Checked((long)i, (long)((UintT)other).i));
+            return UintOf(Overflow.AddUint64Checked(i, ((UintT)other).i));
         }
         catch (Overflow.OverflowException)
         {
@@ -111,7 +111,7 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
 
         try
         {
-            return UintOf((uint)Overflow.MultiplyUint64Checked((long)i, (long)((UintT)other).i));
+            return UintOf(Overflow.MultiplyUint64Checked(i, ((UintT)other).i));
         }
         catch (Overflow.OverflowException)
         {
@@ -128,7 +128,7 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
 
         try
         {
-            return UintOf((uint)Overflow.SubtractUint64Checked((long)i, (long)((UintT)other).i));
+            return UintOf(Overflow.SubtractUint64Checked(i, ((UintT)other).i));
         }
         catch (Overflow.OverflowException)
         {
@@ -145,7 +145,7 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
 
     public override long IntValue()
     {
-        return (int)i;
+        return Convert.ToInt64(i);
     }
 
     /// <summary>
@@ -164,11 +164,16 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
         {
             if (i < 0 || i > int.MaxValue) Err.ThrowErrorAsIllegalStateException(Err.RangeError(i, "int"));
 
-            return Convert.ToInt32((int)i);
+            return Convert.ToInt32(i);
         }
 
         if (typeDesc == typeof(uint))
+        {
+            if (i > uint.MaxValue)
+                Err.ThrowErrorAsIllegalStateException(Err.RangeError(i, "uint"));
+
             return Convert.ToUInt32(i);
+        }
 
         if (typeDesc == typeof(ulong)) return i;
 
@@ -181,23 +186,32 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
 
         if (typeDesc == typeof(UInt64Value))
         {
+            return i;
+            /*
             var value = new UInt64Value();
             value.Value = i;
             return value;
+            */
         }
 
         if (typeDesc == typeof(UInt32Value))
         {
+            if (i > uint.MaxValue)
+                Err.ThrowErrorAsIllegalStateException(Err.RangeError(i, "uint"));
+
+            return Convert.ToUInt32(i);
+            /*
             var value = new UInt32Value();
             value.Value = Convert.ToUInt32(i);
             return value;
+            */
         }
 
         if (typeDesc == typeof(Val) || typeDesc == typeof(UintT)) return this;
 
         if (typeDesc == typeof(Value))
         {
-            if ((int)i <= IntT.MaxIntJSON)
+            if (IntValue() <= IntT.MaxIntJSON)
             {
                 // JSON can accurately represent 32-bit uints as floating point values.
                 var value = new Value();
@@ -226,14 +240,12 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
         switch (typeValue.TypeEnum().InnerEnumValue)
         {
             case TypeEnum.InnerEnum.Int:
-                if (i < 0L) return Err.RangeError(i.ToString(), "int");
+                if (i > long.MaxValue) return Err.RangeError(i.ToString(), "long");
 
-                return IntT.IntOf((int)i);
+                return IntT.IntOf(Convert.ToInt64(i));
             case TypeEnum.InnerEnum.Uint:
                 return this;
             case TypeEnum.InnerEnum.Double:
-                if (i < 0L) return DoubleT.DoubleOf(Convert.ToDouble(i));
-
                 return DoubleT.DoubleOf(i);
             case TypeEnum.InnerEnum.String:
                 return StringT.StringOf(i.ToString());

@@ -108,23 +108,11 @@ public sealed class Overflow
     ///     of the addition if no overflow occurred as the first return value and a bool indicating whether
     ///     no overflow occurred as the second return value.
     /// </summary>
-    public static long AddUint64Checked(long x, long y)
+    public static ulong AddUint64Checked(ulong x, ulong y)
     {
-        // hopefully faster than using BigInteger...
-        var xU = (long)((ulong)x >> 32);
-        var xL = x & 0xffffffffL;
-        var yU = (long)((ulong)y >> 32);
-        var yL = y & 0xffffffffL;
+        if (y > 0 && x > ulong.MaxValue - y) throw overflowException;
 
-        var rL = xL + yL;
-        var rU = xU + yU;
-        if (rL > 0xffffffffL)
-            // carry
-            rU++;
-
-        if (rU > 0xffffffffL) throw overflowException;
-
-        return (rU << 32) | (rL & 0xffffffffL);
+        return x + y;
     }
 
     /// <summary>
@@ -132,21 +120,11 @@ public sealed class Overflow
     ///     result of the subtraction if no overflow occurred as the first return value and a bool
     ///     indicating whether no overflow occurred as the second return value.
     /// </summary>
-    public static long SubtractUint64Checked(long x, long y)
+    public static ulong SubtractUint64Checked(ulong x, ulong y)
     {
-        // hopefully faster than using BigInteger...
-        var xU = (long)((ulong)x >> 32);
-        var xL = x & 0xffffffffL;
-        var yU = (long)((ulong)y >> 32);
-        var yL = y & 0xffffffffL;
+        if (y > x) throw overflowException;
 
-        var rU = xU - yU;
-        var rL = xL - yL;
-        if (rL < 0L) rU--;
-
-        if (rU < 0L) throw overflowException;
-
-        return (rU << 32) | (rL & 0xffffffffL);
+        return x - y;
     }
 
     /// <summary>
@@ -154,13 +132,11 @@ public sealed class Overflow
     ///     the result of the multiplication if no overflow occurred as the first return value and a bool
     ///     indicating whether no overflow occurred as the second return value.
     /// </summary>
-    public static long MultiplyUint64Checked(long x, long y)
+    public static ulong MultiplyUint64Checked(ulong x, ulong y)
     {
-        // Sloooow, but works.
-        BigInteger r = x * y;
-        if (r.GetBitLength() > 64) throw overflowException;
+        if (y != 0 && x > ulong.MaxValue / y) throw overflowException;
 
-        return Convert.ToInt64(r);
+        return x * y;
     }
 
     /// <summary>
