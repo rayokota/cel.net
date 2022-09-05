@@ -80,9 +80,9 @@ namespace Cel.Common.Types
             Instant i2 = Instant.FromUnixTimeMilliseconds(TimestampT.maxUnixTime);
             ZonedDateTime max998 = i2.PlusNanoseconds(999999998).InZone(TimestampT.ZoneIdZ);
             Instant i3 = Instant.FromUnixTimeMilliseconds(TimestampT.minUnixTime);
-            ZonedDateTime min0 = i1.PlusNanoseconds(0).InZone(TimestampT.ZoneIdZ);
+            ZonedDateTime min0 = i3.PlusNanoseconds(0).InZone(TimestampT.ZoneIdZ);
             Instant i4 = Instant.FromUnixTimeMilliseconds(TimestampT.minUnixTime);
-            ZonedDateTime min1 = i2.PlusNanoseconds(1).InZone(TimestampT.ZoneIdZ);
+            ZonedDateTime min1 = i4.PlusNanoseconds(1).InZone(TimestampT.ZoneIdZ);
 
             Assert.That(TimestampT.TimestampOf(max999).Add(DurationT.DurationOf(Period.FromNanoseconds(1))),
                 Is.SameAs(Err.ErrDurationOverflow));
@@ -121,7 +121,7 @@ namespace Cel.Common.Types
             // JSON
             object val = ts.ConvertToNative(typeof(Value));
             StringValue want = new StringValue();
-                want.Value = "1970-01-01T02:05:06Z";
+            want.Value = "1970-01-01T02:05:06Z";
             Assert.That(val, Is.EqualTo(want));
         }
 
@@ -164,7 +164,7 @@ namespace Cel.Common.Types
             Assert.That(val.ConvertToType(TypeT.TypeType), Is.SameAs(TimestampT.TimestampType));
 
             Instant i1 = Instant.FromUnixTimeSeconds(3905);
-            i1.PlusNanoseconds(999999000);
+            i1 = i1.PlusNanoseconds(999999000);
             Instant i2 = Instant.FromUnixTimeSeconds(6506);
             TimestampT expected =
                 TimestampT.TimestampOf(i1.InZone(TimestampT.ZoneIdZ));

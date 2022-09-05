@@ -234,7 +234,7 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
         {
             // CEL follows the proto3 to JSON conversion which formats as an RFC 3339 encoded JSON string.
             var value = new StringValue();
-            value.Value = LocalDateTimePattern.GeneralIso.Format(t.LocalDateTime);
+            value.Value = LocalDateTimePattern.GeneralIso.Format(t.LocalDateTime) + "Z";
             return value;
         }
 
