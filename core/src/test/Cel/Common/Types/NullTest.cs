@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (C) 2021 The Authors of CEL-Java
+ * Copyright (C) 2022 Robert Yokota
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,19 +20,6 @@ using NUnit.Framework;
 
 namespace org.projectnessie.cel.common.types
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.assertj.core.api.Assertions.assertThat;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.BoolT.True;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.NullT.NullType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.StringT.StringType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.StringT.stringOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TypeT.TypeType;
-
 	using Any = Google.Protobuf.WellKnownTypes.Any;
 	using NullValue = Google.Protobuf.WellKnownTypes.NullValue;
 	using Value = Google.Protobuf.WellKnownTypes.Value;
@@ -40,8 +27,6 @@ namespace org.projectnessie.cel.common.types
 	public class NullTest
 	{
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void nullConvertToNative_Json()
 [Test]
 	  public virtual void NullConvertToNativeJson()
 	  {
@@ -53,10 +38,7 @@ namespace org.projectnessie.cel.common.types
 		Assert.That(expected, Is.EqualTo(val));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void nullConvertToNative() throws Exception
 [Test]
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
 	  public virtual void NullConvertToNative()
 	  {
 		  Value expected = new Value();
@@ -73,8 +55,6 @@ namespace org.projectnessie.cel.common.types
 		Assert.That(val2, Is.EqualTo(Google.Protobuf.WellKnownTypes.NullValue.NullValue));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void nullConvertToType()
 [Test]
 	  public virtual void NullConvertToType()
 	  {
@@ -84,24 +64,18 @@ namespace org.projectnessie.cel.common.types
 		Assert.That(NullT.NullValue.ConvertToType(TypeT.TypeType).Equal(NullT.NullType), Is.SameAs(BoolT.True));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void nullEqual()
 [Test]
 	  public virtual void NullEqual()
 	  {
 		Assert.That(NullT.NullValue.Equal(NullT.NullValue), Is.SameAs(BoolT.True));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void nullType()
 [Test]
 	  public virtual void NullType()
 	  {
 		  Assert.That(NullT.NullValue.Type(), Is.SameAs(NullT.NullType));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void nullValue()
 [Test]
 	  public virtual void NullValue()
 	  {

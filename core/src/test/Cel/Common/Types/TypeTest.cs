@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (C) 2021 The Authors of CEL-Java
+ * Copyright (C) 2022 Robert Yokota
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,37 +21,8 @@ using Type = Google.Api.Expr.V1Alpha1.Type;
 
 namespace Cel.Common.Types
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.assertj.core.api.Assertions.assertThat;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.BoolT.BoolType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.BytesT.BytesType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.DoubleT.DoubleType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.DurationT.DurationType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.IntT.IntType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.ListT.ListType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.MapT.MapType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.NullT.NullType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.StringT.StringType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TimestampT.TimestampType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TypeT.TypeType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.UintT.UintType;
-
     public class TypeTest
     {
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void typeConvertToType()
 [Test]
         public virtual void TypeConvertToType()
         {
@@ -68,8 +39,6 @@ namespace Cel.Common.Types
             }
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void typeType()
 [Test]
         public virtual void TypeType()
         {

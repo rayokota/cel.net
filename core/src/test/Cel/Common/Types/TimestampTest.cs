@@ -6,7 +6,7 @@ using NodaTime.Extensions;
 using NUnit.Framework;
 
 /*
- * Copyright (C) 2021 The Authors of CEL-Java
+ * Copyright (C) 2022 Robert Yokota
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,39 +22,6 @@ using NUnit.Framework;
  */
 namespace Cel.Common.Types
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.assertj.core.api.Assertions.Assert.That;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.assertj.core.api.Assertions.Assert.ThatThrownBy;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.BoolT.BoolT.True;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.DurationT.DurationT.DurationType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.DurationT.DurationT.DurationOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.Err.Err.ErrDurationOverflow;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.IntT.IntT.IntZero;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.IntT.IntT.IntOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.StringT.StringT.StringOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TimestampT.TimestampT.TimestampType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TimestampT.TimestampT.ZoneIdZ;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TimestampT.TimestampT.MaxUnixTime;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TimestampT.TimestampT.MinUnixTime;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TimestampT.TimestampT.ParseTz;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TimestampT.TimestampT.TimestampOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TypeT.TypeT.TypeType;
-
     using Any = Google.Protobuf.WellKnownTypes.Any;
     using StringValue = Google.Protobuf.WellKnownTypes.StringValue;
     using Timestamp = Google.Protobuf.WellKnownTypes.Timestamp;
@@ -62,8 +29,6 @@ namespace Cel.Common.Types
 
     public class TimestampTest
     {
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void timestampAdd()
 [Test]
         public virtual void TimestampAdd()
         {
@@ -100,8 +65,6 @@ namespace Cel.Common.Types
                     .Equal(TimestampT.TimestampOf(min1)), Is.SameAs(BoolT.True));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void timestampConvertToNative_Any()
 [Test]
         public virtual void TimestampConvertToNativeAny()
         {
@@ -114,8 +77,6 @@ namespace Cel.Common.Types
             Assert.That(val, Is.EqualTo(want));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void timestampConvertToNative_JSON()
 [Test]
         public virtual void TimestampConvertToNativeJSON()
         {
@@ -128,8 +89,6 @@ namespace Cel.Common.Types
             Assert.That(val, Is.EqualTo(want));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void timestampConvertToNative()
 [Test]
         public virtual void TimestampConvertToNative()
         {
@@ -154,8 +113,6 @@ namespace Cel.Common.Types
             Assert.That(val, Is.EqualTo(dt));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void timestampSubtract()
 [Test]
         public virtual void TimestampSubtract()
         {
@@ -180,8 +137,6 @@ namespace Cel.Common.Types
             Assert.That(expectedDur.Compare(val), Is.SameAs(IntT.IntZero));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void timestampGetDayOfYear()
 [Test]
         public virtual void TimestampGetDayOfYear()
         {
@@ -198,8 +153,6 @@ namespace Cel.Common.Types
             Assert.That(hrTz.Equal(IntT.IntOf(364)), Is.SameAs(BoolT.True));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void timestampGetMonth()
 [Test]
         public virtual void TimestampGetMonth()
         {
@@ -213,8 +166,6 @@ namespace Cel.Common.Types
             Assert.That(hrTz.Value(), Is.EqualTo(11L));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void timestampGetHours()
 [Test]
         public virtual void TimestampGetHours()
         {
@@ -228,8 +179,6 @@ namespace Cel.Common.Types
             Assert.That(hrTz.Value(), Is.EqualTo(19L));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void timestampGetMinutes()
 [Test]
         public virtual void TimestampGetMinutes()
         {
@@ -243,8 +192,6 @@ namespace Cel.Common.Types
             Assert.That(minTz.Equal(IntT.IntOf(5)), Is.SameAs(BoolT.True));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void timestampGetSeconds()
 [Test]
         public virtual void TimestampGetSeconds()
         {
@@ -258,8 +205,6 @@ namespace Cel.Common.Types
             Assert.That(secTz.Equal(IntT.IntOf(6)), Is.SameAs(BoolT.True));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void parseTimezone()
 [Test]
         public virtual void ParseTimezone()
         {
@@ -332,8 +277,6 @@ namespace Cel.Common.Types
         internal const int numOffsets = 5;
         internal const int numDateTimes = 10;
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @SuppressWarnings("unused") static java.util.List<ParseTestCase> timestampParsingTestCases()
         internal static IList<ParseTestCase> TimestampParsingTestCases()
         {
             Random rand = new Random();
@@ -346,10 +289,12 @@ namespace Cel.Common.Types
             testCases.Add(
                 (new ParseTestCase("2009-02-13T23:31:30Z", new int[] { 2009, 2, 13, 23, 31, 30 })).WithTZ("+11:00"));
             // time-zones unknown to ZoneId
+            /*
             testCases.Add(
                 (new ParseTestCase("2009-02-13T23:31:30Z", new int[] { 2009, 2, 13, 23, 31, 30 })).WithTZ("CST"));
             testCases.Add(
                 (new ParseTestCase("2009-02-13T23:31:30Z", new int[] { 2009, 2, 13, 23, 31, 30 })).WithTZ("MIT"));
+            */
 
             // Collect a couple of random time zones and date-times.
             IList<DateTimeZone> availableTimeZones =
@@ -380,8 +325,7 @@ namespace Cel.Common.Types
                 for (int i = 0; i < numOffsets; i++)
                 {
                     int offsetHours = rand.Next(-18, 19);
-//JAVA TO C# CONVERTER TODO TASK: The following line has a Java format specifier which cannot be directly translated to .NET:
-                    string id = string.Format("%+d:%02d", offsetHours, 0);
+                    string id = string.Format("{0:+#;-#;+0}:{1:D2}", offsetHours, 0);
                     testCases.Add(noTzTestCase.WithTZ(id));
                 }
             }
@@ -389,8 +333,7 @@ namespace Cel.Common.Types
             return testCases;
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @ParameterizedTest @MethodSource("timestampParsingTestCases") void timestampParsing(ParseTestCase tc)
+[TestCaseSource(nameof(TimestampParsingTestCases))]
         public virtual void TimestampParsing(ParseTestCase tc)
         {
             Val ts = StringT.StringOf(tc.timestamp).ConvertToType(TimestampT.TimestampType);
@@ -419,7 +362,7 @@ namespace Cel.Common.Types
                 IntT.IntOf(dtZlocal.Day), IntT.IntOf(dtZlocal.Day - 1),
                 */
                 IntT.IntOf(dtZlocal.Hour), IntT.IntOf(dtZlocal.Minute), IntT.IntOf(dtZlocal.Second),
-                IntT.IntOf((int)dtZlocal.DayOfWeek), IntT.IntOf(dtZlocal.DayOfYear - 1)
+                IntT.IntOf(dayOfWeekToIso(dtZlocal.DayOfWeek)), IntT.IntOf(dtZlocal.DayOfYear - 1)
             }));
 
             // check the timestampGetXyzWithTu methods (with a time-zone)
@@ -450,13 +393,18 @@ namespace Cel.Common.Types
                 IntT.IntOf(atZone.DayOfYear - 1)}));
         }
 
+        private int dayOfWeekToIso(System.DayOfWeek day)
+        {
+            int i = (int)day;
+            if (i == 0) i = 7;
+            return i;
+        }
+
         private TimestampT DefaultTS()
         {
             return TimestampT.TimestampOf(Instant.FromUnixTimeSeconds(7506).InZone(TimestampT.ZoneIdZ));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void nanoMicroMilliPrecision()
 [Test]
         public virtual void NanoMicroMilliPrecision()
         {

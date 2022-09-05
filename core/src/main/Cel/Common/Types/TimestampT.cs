@@ -3,6 +3,7 @@ using Cel.Common.Types.Traits;
 using Google.Protobuf.WellKnownTypes;
 using NodaTime;
 using NodaTime.Text;
+using NodaTime.TimeZones;
 using Type = Cel.Common.Types.Ref.Type;
 
 /*

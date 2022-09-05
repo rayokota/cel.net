@@ -12,7 +12,7 @@ using NUnit.Framework;
 using Duration = Google.Protobuf.WellKnownTypes.Duration;
 
 /*
- * Copyright (C) 2021 The Authors of CEL-Java
+ * Copyright (C) 2022 Robert Yokota
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,45 +28,6 @@ using Duration = Google.Protobuf.WellKnownTypes.Duration;
  */
 namespace Cel.Common.Types
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static Google.Protobuf.WellKnownTypes.NullValue.NullValue.NullValue;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.assertj.core.api.Assertions.Assert.That;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.Util.TestUtil.MapOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.BoolT.BoolT.False;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.BoolT.BoolT.True;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.BytesT.BytesT.BytesOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.DoubleT.DoubleT.DoubleOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.DurationT.DurationT.DurationOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.IntT.IntT.IntZero;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.IntT.IntT.IntOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.ListT.ListT.NewGenericArrayList;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.MapT.MapT.NewMaybeWrappedMap;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.NullT.NullValue;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.StringT.StringT.StringOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TimestampT.TimestampT.ZoneIdZ;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TimestampT.TimestampT.TimestampOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.UintT.UintT.UintOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.pb.ProtoTypeRegistry.ProtoTypeRegistry.NewEmptyRegistry;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.pb.ProtoTypeRegistry.ProtoTypeRegistry.NewRegistry;
-
     using GlobalEnum = Google.Api.Expr.Test.V1.Proto3.GlobalEnum;
     using TestAllTypes = Google.Api.Expr.Test.V1.Proto3.TestAllTypes;
     using CheckedExpr = Google.Api.Expr.V1Alpha1.CheckedExpr;
@@ -89,8 +50,6 @@ namespace Cel.Common.Types
 
     public class ProviderTest
     {
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void typeRegistryCopy()
 /*
 [Test]
         public virtual void TypeRegistryCopy()
@@ -105,8 +64,6 @@ namespace Cel.Common.Types
         }
         */
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void typeRegistryEnumValue()
 /*
 [Test]
         public virtual void TypeRegistryEnumValue()
@@ -116,7 +73,6 @@ namespace Cel.Common.Types
             reg.RegisterDescriptor(OutOfOrderEnumOuterClass.getDescriptor().getFile());
 
             Val enumVal = reg.EnumValue("google.api.expr.test.v1.proto3.GlobalEnum.GOO");
-//JAVA TO C# CONVERTER TODO TASK: Method reference arbitrary object instance method syntax is not converted by Java to C# Converter:
             Assert.That(enumVal).extracting(Val::intValue).isEqualTo((long)GlobalEnum.GOO.getNumber());
 
             Val enumVal2 = reg.FindIdent("google.api.expr.test.v1.proto3.GlobalEnum.GOO");
@@ -131,7 +87,6 @@ namespace Cel.Common.Types
                 .isNotEqualTo(OutOfOrderEnumOuterClass.OutOfOrderEnum.TWO.getNumber());
             // Check that we correctly get the protobuf-defined number.
             Val enumVal3 = reg.EnumValue("org.projectnessie.cel.test.proto3.OutOfOrderEnum.TWO");
-//JAVA TO C# CONVERTER TODO TASK: Method reference arbitrary object instance method syntax is not converted by Java to C# Converter:
             Assert.That(enumVal3).extracting(Val::intValue)
                 .isEqualTo((long)OutOfOrderEnumOuterClass.OutOfOrderEnum.TWO.getNumber());
 
@@ -141,14 +96,11 @@ namespace Cel.Common.Types
                 .isNotEqualTo(OutOfOrderEnumOuterClass.OutOfOrderEnum.FIVE.getNumber());
             // Check that we correctly get the protobuf-defined number.
             Val enumVal4 = reg.EnumValue("org.projectnessie.cel.test.proto3.OutOfOrderEnum.FIVE");
-//JAVA TO C# CONVERTER TODO TASK: Method reference arbitrary object instance method syntax is not converted by Java to C# Converter:
             Assert.That(enumVal4).extracting(Val::intValue)
                 .isEqualTo((long)OutOfOrderEnumOuterClass.OutOfOrderEnum.FIVE.getNumber());
         }
         */
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void typeRegistryFindType()
 [Test]
         public virtual void TypeRegistryFindType()
         {
@@ -163,8 +115,6 @@ namespace Cel.Common.Types
             Assert.That(reg.FindFieldType(msgTypeName, "double_bool"), Is.Null);
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void typeRegistryNewValue()
 [Test]
         public virtual void TypeRegistryNewValue()
         {
@@ -185,8 +135,6 @@ namespace Cel.Common.Types
             Assert.That(srcInfo.Positions, Is.EquivalentTo(TestUtil.MapOf(1L, 2L, 3L, 4L)));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void typeRegistryNewValue_OneofFields()
 [Test]
         public virtual void TypeRegistryNewValueOneofFields()
         {
@@ -203,8 +151,6 @@ namespace Cel.Common.Types
             Assert.That(ce.Expr.ConstExpr.StringValue, Is.EqualTo("oneof"));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void typeRegistryNewValue_WrapperFields()
 [Test]
         public virtual void TypeRegistryNewValueNotWrapperFields()
         {
@@ -226,8 +172,6 @@ namespace Cel.Common.Types
             Assert.That(ce.SingleInt32Wrapper.Value, Is.EqualTo(123));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void typeRegistryGetters()
 [Test]
         public virtual void TypeRegistryGetters()
         {
@@ -257,8 +201,6 @@ namespace Cel.Common.Types
             Assert.That(offset1, Is.EqualTo(IntT.IntOf(2)));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void convertToNative()
 [Test]
         public virtual void ConvertToNative()
         {
@@ -322,8 +264,6 @@ namespace Cel.Common.Types
             ExpectValueToNative(reg.ToTypeAdapter()(parsedExpr), parsedExpr);
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test @Disabled("IMPLEMENT ME") void nativeToValue_Any()
 [Test]
         public virtual void NativeToValueAny()
         {
@@ -375,8 +315,6 @@ namespace Cel.Common.Types
             //    		expectNativeToValue(anyValue, reg.nativeToValue(&pbMessage))
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test @Disabled("IMPLEMENT ME") void nativeToValue_Json()
 [Test]
         public virtual void NativeToValueJson()
         {
@@ -414,8 +352,6 @@ namespace Cel.Common.Types
             //    		expectNativeToValue(parsedExpr, reg.nativeToValue(parsedExpr));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void nativeToValue_Wrappers()
 [Test]
         public virtual void NativeToValueWrappers()
         {
@@ -459,8 +395,6 @@ namespace Cel.Common.Types
             ExpectNativeToValue(ulv, UintT.UintOf(64));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void nativeToValue_Primitive()
 [Test]
         public virtual void NativeToValuePrimitive()
         {
@@ -498,8 +432,6 @@ namespace Cel.Common.Types
             ExpectNativeToValue(NullValue.NullValue, NullT.NullValue);
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void unsupportedConversion()
 [Test]
         public virtual void UnsupportedConversion()
         {

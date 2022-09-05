@@ -2,7 +2,7 @@
 using NUnit.Framework;
 
 /*
- * Copyright (C) 2021 The Authors of CEL-Java
+ * Copyright (C) 2022 Robert Yokota
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,37 +18,6 @@ using NUnit.Framework;
  */
 namespace Cel.Common.Types
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.assertj.core.api.Assertions.Assert.That;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.assertj.core.api.Assertions.Assert.ThatThrownBy;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.BoolT.BoolT.False;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.BoolT.BoolT.True;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.DoubleT.DoubleT.DoubleType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.DoubleT.DoubleT.DoubleOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.IntT.IntT.IntNegOne;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.IntT.IntT.IntOne;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.IntT.IntType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.IntT.IntT.IntZero;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.IntT.IntT.IntOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.StringT.StringT.StringType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.StringT.StringT.StringOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TypeT.TypeT.TypeType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.UintT.UintT.UintType;
-
 	using Any = Google.Protobuf.WellKnownTypes.Any;
 	using DoubleValue = Google.Protobuf.WellKnownTypes.DoubleValue;
 	using FloatValue = Google.Protobuf.WellKnownTypes.FloatValue;
@@ -57,8 +26,6 @@ namespace Cel.Common.Types
 	public class DoubleTest
 	{
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void doubleAdd()
 [Test]
 	  public virtual void DoubleAdd()
 	  {
@@ -66,8 +33,6 @@ namespace Cel.Common.Types
 		Assert.That(Err.IsError(DoubleT.DoubleOf(-1).Add(StringT.StringOf("-1"))), Is.True);
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void doubleCompare()
 [Test]
 	  public virtual void DoubleCompare()
 	  {
@@ -79,8 +44,6 @@ namespace Cel.Common.Types
 		Assert.That(Err.IsError(gt.Compare(TypeT.TypeType)), Is.True);
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void doubleConvertToNative_Zeros()
 [Test]
 	  public virtual void DoubleConvertToNativeZeros()
 	  {
@@ -90,8 +53,6 @@ namespace Cel.Common.Types
 		Assert.That(n0.Compare(p0), Is.SameAs(IntT.IntZero)); // "-0.0 < 0.0" --> BoolT.False
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void doubleConvertToNative_Any()
 [Test]
 	  public virtual void DoubleConvertToNativeAny()
 	  {
@@ -102,16 +63,12 @@ namespace Cel.Common.Types
 		Assert.That(val, Is.EqualTo(want));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void doubleConvertToNative_Error()
 [Test]
 	  public virtual void DoubleConvertToNativeError()
 	  {
 		  Assert.That(() => DoubleT.DoubleOf(-10000).ConvertToNative(typeof(string)), Throws.Exception.InstanceOf(typeof(Exception)));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void doubleConvertToNative_Float32()
 [Test]
 	  public virtual void DoubleConvertToNativeFloat32()
 	  {
@@ -119,8 +76,6 @@ namespace Cel.Common.Types
 		Assert.That(val, Is.EqualTo(3.1415f));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void doubleConvertToNative_Float64()
 [Test]
 	  public virtual void DoubleConvertToNativeFloat64()
 	  {
@@ -128,8 +83,6 @@ namespace Cel.Common.Types
 		Assert.That(val, Is.EqualTo(30000000.1d));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void doubleConvertToNative_Json()
 [Test]
 	  public virtual void DoubleConvertToNativeJson()
 	  {
@@ -153,8 +106,6 @@ namespace Cel.Common.Types
 		Assert.That(val, Is.EqualTo(pbVal));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void doubleConvertToNative_Ptr_Float32()
 [Test]
 	  public virtual void DoubleConvertToNativePtrFloat32()
 	  {
@@ -162,8 +113,6 @@ namespace Cel.Common.Types
 		Assert.That(val, Is.EqualTo(3.1415f));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void doubleConvertToNative_Ptr_Float64()
 [Test]
 	  public virtual void DoubleConvertToNativePtrFloat64()
 	  {
@@ -171,8 +120,6 @@ namespace Cel.Common.Types
 		Assert.That(val, Is.EqualTo(30000000.1d));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void doubleConvertToNative_Wrapper()
 [Test]
 	  public virtual void DoubleConvertToNativeWrapper()
 	  {
@@ -185,8 +132,6 @@ namespace Cel.Common.Types
 		Assert.That(val2, Is.EqualTo(want2));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void doubleConvertToType()
 [Test]
 	  public virtual void DoubleConvertToType()
 	  {
@@ -208,8 +153,6 @@ namespace Cel.Common.Types
 		Assert.That(DoubleT.DoubleOf(-4.5d).ConvertToType(TypeT.TypeType).Equal(DoubleT.DoubleType), Is.SameAs(BoolT.True));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void doubleDivide()
 [Test]
 	  public virtual void DoubleDivide()
 	  {
@@ -219,16 +162,12 @@ namespace Cel.Common.Types
 		Assert.That(Err.IsError(DoubleT.DoubleOf(1.1).Divide(IntT.IntNegOne)), Is.True);
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void doubleEqual()
 [Test]
 	  public virtual void DoubleEqual()
 	  {
 		  Assert.That(Err.IsError(DoubleT.DoubleOf(0).Equal(BoolT.False)), Is.True);
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void doubleMultiply()
 [Test]
 	  public virtual void DoubleMultiply()
 	  {
@@ -236,16 +175,12 @@ namespace Cel.Common.Types
 		Assert.That(Err.IsError(DoubleT.DoubleOf(1.1).Multiply(IntT.IntNegOne)), Is.True);
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void doubleNegate()
 [Test]
 	  public virtual void DoubleNegate()
 	  {
 		Assert.That(DoubleT.DoubleOf(1.1).Negate().Equal(DoubleT.DoubleOf(-1.1)), Is.SameAs(BoolT.True));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void doubleSubtract()
 [Test]
 	  public virtual void DoubleSubtract()
 	  {

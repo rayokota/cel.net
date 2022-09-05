@@ -5,7 +5,7 @@ using NodaTime;
 using NUnit.Framework;
 
 /*
- * Copyright (C) 2021 The Authors of CEL-Java
+ * Copyright (C) 2022 Robert Yokota
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,57 +21,6 @@ using NUnit.Framework;
  */
 namespace Cel.Common.Types
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.assertj.core.api.Assertions.Assert.That;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.assertj.core.api.Assertions.Assert.ThatThrownBy;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.BoolT.BoolT.BoolType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.BoolT.BoolT.False;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.BoolT.BoolT.True;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.BytesT.BytesT.BytesType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.BytesT.BytesT.BytesOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.DoubleT.DoubleT.DoubleType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.DoubleT.DoubleT.DoubleOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.DurationT.DurationT.DurationType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.DurationT.DurationT.DurationOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.IntT.IntT.IntNegOne;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.IntT.IntT.IntOne;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.IntT.IntT.IntType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.IntT.IntT.IntZero;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.IntT.IntT.IntOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.MapT.MapT.MapType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.StringT.StringT.StringType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.StringT.StringT.StringOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TimestampT.TimestampT.TimestampType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TimestampT.TimestampT.ZoneIdZ;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TimestampT.TimestampT.TimestampOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TypeT.TypeT.TypeType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.UintT.UintT.UintType;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.UintT.UintT.UintOf;
-
 	using Any = Google.Protobuf.WellKnownTypes.Any;
 	using StringValue = Google.Protobuf.WellKnownTypes.StringValue;
 	using Value = Google.Protobuf.WellKnownTypes.Value;
@@ -79,8 +28,6 @@ namespace Cel.Common.Types
 	public class StringTest
 	{
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void stringAdd()
 [Test]
 	  public virtual void StringAdd()
 	  {
@@ -90,8 +37,6 @@ namespace Cel.Common.Types
 		Assert.That(StringT.StringOf("goodbye").Add(IntT.IntOf(1)), Is.InstanceOf(typeof(Err)));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void stringCompare()
 [Test]
 	  public virtual void StringCompare()
 	  {
@@ -106,8 +51,6 @@ namespace Cel.Common.Types
 		Assert.That(a.Compare(BoolT.True), Is.InstanceOf(typeof(Err)));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void stringConvertToNative_Any()
 [Test]
 	  public virtual void StringConvertToNativeAny()
 	  {
@@ -118,16 +61,12 @@ namespace Cel.Common.Types
 		Assert.That(val, Is.EqualTo(want));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void stringConvertToNative_Error()
 [Test]
 	  public virtual void StringConvertToNativeError()
 	  {
 		Assert.That(() => StringT.StringOf("hello").ConvertToNative(typeof(int)), Throws.Exception);
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void stringConvertToNative_Json()
 [Test]
 	  public virtual void StringConvertToNativeJson()
 	  {
@@ -137,8 +76,6 @@ namespace Cel.Common.Types
 		Assert.That(val, Is.EqualTo(pbVal));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void stringConvertToNative_Ptr()
 [Test]
 	  public virtual void StringConvertToNativePtr()
 	  {
@@ -146,16 +83,12 @@ namespace Cel.Common.Types
 		Assert.That(val, Is.EqualTo("hello"));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void stringConvertToNative_String()
 [Test]
 	  public virtual void StringConvertToNativeString()
 	  {
 		Assert.That(StringT.StringOf("hello").ConvertToNative(typeof(string)), Is.EqualTo("hello"));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void stringConvertToNative_Wrapper()
 [Test]
 	  public virtual void StringConvertToNativeWrapper()
 	  {
@@ -164,8 +97,6 @@ namespace Cel.Common.Types
 		Assert.That(val, Is.EqualTo(want));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void stringConvertToType()
 [Test]
 	  public virtual void StringConvertToType()
 	  {
@@ -183,8 +114,6 @@ namespace Cel.Common.Types
 		Assert.That(StringT.StringOf("map{}").ConvertToType(MapT.MapType), Is.InstanceOf(typeof(Err)));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void stringEqual()
 [Test]
 	  public virtual void StringEqual()
 	  {
@@ -193,8 +122,6 @@ namespace Cel.Common.Types
 		Assert.That(StringT.StringOf("c").Equal(IntT.IntOf(99)), Is.InstanceOf(typeof(Err)));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void stringMatch()
 [Test]
 	  public virtual void StringMatch()
 	  {
@@ -207,8 +134,6 @@ namespace Cel.Common.Types
 		Assert.That(str.Match(IntT.IntOf(1)), Is.InstanceOf(typeof(Err)));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void stringContains()
 [Test]
 	  public virtual void StringContains()
 	  {
@@ -219,8 +144,6 @@ namespace Cel.Common.Types
 		Assert.That(n, Is.SameAs(BoolT.False));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void stringEndsWith()
 [Test]
 	  public virtual void StringEndsWith()
 	  {
@@ -231,8 +154,6 @@ namespace Cel.Common.Types
 		Assert.That(n, Is.SameAs(BoolT.False));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void stringStartsWith()
 [Test]
 	  public virtual void StringStartsWith()
 	  {
@@ -243,8 +164,6 @@ namespace Cel.Common.Types
 		Assert.That(n, Is.SameAs(BoolT.False));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void stringSize()
 [Test]
 	  public virtual void StringSize()
 	  {
