@@ -1049,7 +1049,7 @@ internal class InterpreterTest
     {
         if (!(q is FieldQualifier)) return false;
 
-        return ((FieldQualifier)q).name.Equals(fieldName);
+        return ((FieldQualifier)q).Name().Equals(fieldName);
     }
 
     internal class TestCase
