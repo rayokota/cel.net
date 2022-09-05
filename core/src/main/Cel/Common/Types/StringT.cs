@@ -131,16 +131,12 @@ public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
             return Any.Pack(value);
         }
 
-        if (typeDesc == typeof(StringValue))
-        {
-            return s;
-            /*
+        if (typeDesc == typeof(StringValue)) return s;
+        /*
             var value = new StringValue();
             value.Value = s;
             return value;
             */
-        }
-
         if (typeDesc == typeof(Val) || typeDesc == typeof(StringT)) return this;
 
         if (typeDesc == typeof(Value))

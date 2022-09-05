@@ -3,7 +3,6 @@ using Cel.Common.Types.Traits;
 using Google.Protobuf.WellKnownTypes;
 using NodaTime;
 using NodaTime.Text;
-using NodaTime.TimeZones;
 using Type = Cel.Common.Types.Ref.Type;
 
 /*
@@ -468,7 +467,7 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
         if (tz.Length == 0) throw new Exception("time-zone must not be empty");
 
         var first = tz[0];
-        if (first == '-' || first == '+' || first >= '0' && first <= '9')
+        if (first == '-' || first == '+' || (first >= '0' && first <= '9'))
         {
             var negate = false;
 

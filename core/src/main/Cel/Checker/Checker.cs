@@ -398,7 +398,7 @@ public sealed class Checker
         Reference checkedRef = null;
         foreach (var overload in fn.Function.Overloads)
         {
-            if (target == null && overload.IsInstanceFunction || target != null && !overload.IsInstanceFunction)
+            if ((target == null && overload.IsInstanceFunction) || (target != null && !overload.IsInstanceFunction))
                 // not a compatible call style.
                 continue;
 

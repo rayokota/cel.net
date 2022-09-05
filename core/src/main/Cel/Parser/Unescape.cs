@@ -44,7 +44,7 @@ public sealed class Unescape
         }
 
         // Quoted string of some form, must have same first and last char.
-        if (value[0] != value[n - 1] || value[0] != '"' && value[0] != '\'')
+        if (value[0] != value[n - 1] || (value[0] != '"' && value[0] != '\''))
             return WrapBlindly(value); // fmt.Errorf("unable to unescape string")
 
         // Normalize the multi-line CEL string representation to a standard

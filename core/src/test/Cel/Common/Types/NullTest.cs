@@ -15,72 +15,66 @@
  */
 
 using Cel.Common.Types;
-using Microsoft.VisualBasic.CompilerServices;
+using Google.Protobuf.WellKnownTypes;
 using NUnit.Framework;
 
-namespace org.projectnessie.cel.common.types
+namespace org.projectnessie.cel.common.types;
+
+public class NullTest
 {
-	using Any = Google.Protobuf.WellKnownTypes.Any;
-	using NullValue = Google.Protobuf.WellKnownTypes.NullValue;
-	using Value = Google.Protobuf.WellKnownTypes.Value;
+    [Test]
+    public virtual void NullConvertToNativeJson()
+    {
+        var expected = new Value();
+        expected.NullValue = Google.Protobuf.WellKnownTypes.NullValue.NullValue;
 
-	public class NullTest
-	{
+        // Json Value
+        var val = (Value)NullT.NullValue.ConvertToNative(typeof(Value));
+        Assert.That(expected, Is.EqualTo(val));
+    }
 
-[Test]
-	  public virtual void NullConvertToNativeJson()
-	  {
-		  Value expected = new Value();
-		  expected.NullValue = Google.Protobuf.WellKnownTypes.NullValue.NullValue;
+    [Test]
+    public virtual void NullConvertToNative()
+    {
+        var expected = new Value();
+        expected.NullValue = Google.Protobuf.WellKnownTypes.NullValue.NullValue;
 
-		// Json Value
-		Value val = (Value)NullT.NullValue.ConvertToNative(typeof(Value));
-		Assert.That(expected, Is.EqualTo(val));
-	  }
+        // google.protobuf.Any
+        var val = (Any)NullT.NullValue.ConvertToNative(typeof(Any));
 
-[Test]
-	  public virtual void NullConvertToNative()
-	  {
-		  Value expected = new Value();
-		  expected.NullValue = Google.Protobuf.WellKnownTypes.NullValue.NullValue;
+        var data = val.Unpack<Value>();
+        Assert.That(expected, Is.EqualTo(data));
 
-		// google.protobuf.Any
-		Any val = (Any) NullT.NullValue.ConvertToNative(typeof(Any));
+        // NullValue
+        var val2 = (NullValue)NullT.NullValue.ConvertToNative(typeof(NullValue));
+        Assert.That(val2, Is.EqualTo(Google.Protobuf.WellKnownTypes.NullValue.NullValue));
+    }
 
-		Value data = val.Unpack<Value>();
-		Assert.That(expected, Is.EqualTo(data));
+    [Test]
+    public virtual void NullConvertToType()
+    {
+        Assert.That(NullT.NullValue.ConvertToType(NullT.NullType).Equal(NullT.NullValue), Is.SameAs(BoolT.True));
 
-		// NullValue
-		NullValue val2 = (NullValue) NullT.NullValue.ConvertToNative(typeof(NullValue));
-		Assert.That(val2, Is.EqualTo(Google.Protobuf.WellKnownTypes.NullValue.NullValue));
-	  }
+        Assert.That(NullT.NullValue.ConvertToType(StringT.StringType).Equal(StringT.StringOf("null")),
+            Is.SameAs(BoolT.True));
+        Assert.That(NullT.NullValue.ConvertToType(TypeT.TypeType).Equal(NullT.NullType), Is.SameAs(BoolT.True));
+    }
 
-[Test]
-	  public virtual void NullConvertToType()
-	  {
-		  Assert.That(NullT.NullValue.ConvertToType(NullT.NullType).Equal(NullT.NullValue), Is.SameAs(BoolT.True));
+    [Test]
+    public virtual void NullEqual()
+    {
+        Assert.That(NullT.NullValue.Equal(NullT.NullValue), Is.SameAs(BoolT.True));
+    }
 
-		Assert.That(NullT.NullValue.ConvertToType(StringT.StringType).Equal(StringT.StringOf("null")), Is.SameAs(BoolT.True));
-		Assert.That(NullT.NullValue.ConvertToType(TypeT.TypeType).Equal(NullT.NullType), Is.SameAs(BoolT.True));
-	  }
+    [Test]
+    public virtual void NullType()
+    {
+        Assert.That(NullT.NullValue.Type(), Is.SameAs(NullT.NullType));
+    }
 
-[Test]
-	  public virtual void NullEqual()
-	  {
-		Assert.That(NullT.NullValue.Equal(NullT.NullValue), Is.SameAs(BoolT.True));
-	  }
-
-[Test]
-	  public virtual void NullType()
-	  {
-		  Assert.That(NullT.NullValue.Type(), Is.SameAs(NullT.NullType));
-	  }
-
-[Test]
-	  public virtual void NullValue()
-	  {
-		  Assert.That(NullT.NullValue.Value(), Is.EqualTo(Google.Protobuf.WellKnownTypes.NullValue.NullValue));
-	  }
-	}
-
+    [Test]
+    public virtual void NullValue()
+    {
+        Assert.That(NullT.NullValue.Value(), Is.EqualTo(Google.Protobuf.WellKnownTypes.NullValue.NullValue));
+    }
 }

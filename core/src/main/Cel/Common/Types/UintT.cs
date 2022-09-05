@@ -184,16 +184,12 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
             return Any.Pack(value);
         }
 
-        if (typeDesc == typeof(UInt64Value))
-        {
-            return i;
-            /*
+        if (typeDesc == typeof(UInt64Value)) return i;
+        /*
             var value = new UInt64Value();
             value.Value = i;
             return value;
             */
-        }
-
         if (typeDesc == typeof(UInt32Value))
         {
             if (i > uint.MaxValue)

@@ -1,9 +1,9 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using Google.Api.Expr.V1Alpha1;
-using Google.Protobuf.Collections;
+﻿using System.Collections;
+using Google.Protobuf;
 using Google.Protobuf.Reflection;
+using Google.Protobuf.WellKnownTypes;
+using Enum = System.Enum;
+using Type = System.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -22,15 +22,8 @@ using Google.Protobuf.Reflection;
  */
 namespace Cel.Common.Types.Pb;
 
-using Type = Google.Api.Expr.V1Alpha1.Type;
-using ListType = Google.Api.Expr.V1Alpha1.Type.Types.ListType;
-using MapType = Google.Api.Expr.V1Alpha1.Type.Types.MapType;
-using ByteString = Google.Protobuf.ByteString;
 using Descriptor = MessageDescriptor;
-using FieldDescriptor = FieldDescriptor;
-using EnumValue = Google.Protobuf.WellKnownTypes.EnumValue;
-using Message = Google.Protobuf.IMessage;
-using NullValue = Google.Protobuf.WellKnownTypes.NullValue;
+using Message = IMessage;
 
 /// <summary>
 ///     FieldDescription holds metadata related to fields declared within a type.
@@ -44,7 +37,7 @@ public sealed class FieldDescription : Description
     /// </summary>
     internal readonly FieldDescription keyType;
 
-    private readonly System.Type reflectType;
+    private readonly Type reflectType;
 
     /// <summary>
     ///     ValueType holds the value FieldDescription for map fields.
@@ -54,7 +47,7 @@ public sealed class FieldDescription : Description
     private readonly Message zeroMsg;
 
     private FieldDescription(FieldDescription keyType, FieldDescription valueType, FieldDescriptor desc,
-        System.Type reflectType, Message zeroMsg)
+        Type reflectType, Message zeroMsg)
     {
         this.keyType = keyType;
         this.valueType = valueType;
@@ -96,7 +89,7 @@ public sealed class FieldDescription : Description
     /// </summary>
     public static FieldDescription NewFieldDescription(FieldDescriptor fieldDesc)
     {
-        System.Type reflectType = null;
+        Type reflectType = null;
         Message zeroMsg = null;
         switch (fieldDesc.FieldType)
         {
@@ -182,7 +175,7 @@ public sealed class FieldDescription : Description
         return new FieldDescription(keyType, valType, fieldDesc, reflectType, zeroMsg);
     }
 
-    private static System.Type ReflectTypeOfField(FieldDescriptor fieldDesc)
+    private static Type ReflectTypeOfField(FieldDescriptor fieldDesc)
     {
         switch (fieldDesc.FieldType)
         {
@@ -220,14 +213,14 @@ public sealed class FieldDescription : Description
     /// <summary>
     ///     CheckedType returns the type-definition used at type-check time.
     /// </summary>
-    public Type CheckedType()
+    public Google.Api.Expr.V1Alpha1.Type CheckedType()
     {
         if (desc.IsMap)
         {
-            var mapType = new MapType();
+            var mapType = new Google.Api.Expr.V1Alpha1.Type.Types.MapType();
             mapType.KeyType = keyType.TypeDefToType();
             mapType.ValueType = valueType.TypeDefToType();
-            var type = new Type();
+            var type = new Google.Api.Expr.V1Alpha1.Type();
             type.MapType = mapType;
             return type;
         }
@@ -235,9 +228,9 @@ public sealed class FieldDescription : Description
         if (desc.IsRepeated)
         {
             // "isListField()"
-            var listType = new ListType();
+            var listType = new Google.Api.Expr.V1Alpha1.Type.Types.ListType();
             listType.ElemType = TypeDefToType();
-            var type = new Type();
+            var type = new Google.Api.Expr.V1Alpha1.Type();
             type.ListType = listType;
             return type;
         }
@@ -376,7 +369,7 @@ public sealed class FieldDescription : Description
     /// <summary>
     ///     ReflectType returns the Golang reflect.Type for this field.
     /// </summary>
-    public System.Type ReflectType()
+    public Type ReflectType()
     {
         var r = desc.IsRepeated;
         if (r && desc.IsMap) return typeof(IDictionary);
@@ -431,7 +424,7 @@ public sealed class FieldDescription : Description
         return zeroMsg;
     }
 
-    public Type TypeDefToType()
+    public Google.Api.Expr.V1Alpha1.Type TypeDefToType()
     {
         switch (desc.FieldType)
         {
@@ -577,7 +570,7 @@ public sealed class FieldDescription : Description
         Checked.CheckedWellKnowns.TryGetValue(desc.MessageType.FullName, out var wellKnown);
         if (wellKnown == null) return false;
 
-        return wellKnown.TypeKindCase == Type.TypeKindOneofCase.Wrapper;
+        return wellKnown.TypeKindCase == Google.Api.Expr.V1Alpha1.Type.TypeKindOneofCase.Wrapper;
     }
 
     public static bool HasValueForField(FieldDescriptor desc, Message message)

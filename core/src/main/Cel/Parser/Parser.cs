@@ -329,26 +329,26 @@ public sealed class Parser
                     case CELParser.RULE_unary:
                         if (tree is CELParser.LogicalNotContext)
                             return VisitLogicalNot((CELParser.LogicalNotContext)tree);
-                        else if (tree is CELParser.NegateContext)
+                        if (tree is CELParser.NegateContext)
                             return VisitNegate((CELParser.NegateContext)tree);
-                        else if (tree is CELParser.MemberExprContext)
+                        if (tree is CELParser.MemberExprContext)
                             return VisitMemberExpr((CELParser.MemberExprContext)tree);
 
                         return VisitUnary((CELParser.UnaryContext)tree);
                     case CELParser.RULE_member:
                         if (tree is CELParser.CreateMessageContext)
                             return VisitCreateMessage((CELParser.CreateMessageContext)tree);
-                        else if (tree is CELParser.PrimaryExprContext)
+                        if (tree is CELParser.PrimaryExprContext)
                             return VisitPrimaryExpr((CELParser.PrimaryExprContext)tree);
-                        else if (tree is CELParser.SelectOrCallContext)
+                        if (tree is CELParser.SelectOrCallContext)
                             return VisitSelectOrCall((CELParser.SelectOrCallContext)tree);
-                        else if (tree is CELParser.IndexContext) return VisitIndex((CELParser.IndexContext)tree);
+                        if (tree is CELParser.IndexContext) return VisitIndex((CELParser.IndexContext)tree);
 
                         break;
                     case CELParser.RULE_primary:
                         if (tree is CELParser.CreateListContext)
                             return VisitCreateList((CELParser.CreateListContext)tree);
-                        else if (tree is CELParser.CreateStructContext)
+                        if (tree is CELParser.CreateStructContext)
                             return VisitCreateStruct((CELParser.CreateStructContext)tree);
 
                         break;

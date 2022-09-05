@@ -1,7 +1,9 @@
-﻿using System;
-using Cel.Common.Types.Ref;
+﻿using Cel.Common.Types.Ref;
 using Cel.Common.Types.Traits;
+using Google.Protobuf.WellKnownTypes;
 using NodaTime;
+using Enum = System.Enum;
+using Type = Cel.Common.Types.Ref.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -19,24 +21,6 @@ using NodaTime;
  * limitations under the License.
  */
 namespace Cel.Common.Types;
-
-using Any = Google.Protobuf.WellKnownTypes.Any;
-using Int32Value = Google.Protobuf.WellKnownTypes.Int32Value;
-using Int64Value = Google.Protobuf.WellKnownTypes.Int64Value;
-using Value = Google.Protobuf.WellKnownTypes.Value;
-using OverflowException = global::Cel.Common.Types.Overflow.OverflowException;
-using BaseVal = BaseVal;
-using Type = Ref.Type;
-using TypeEnum = TypeEnum;
-using Val = Val;
-using Adder = Adder;
-using Comparer = Comparer;
-using Divider = Divider;
-using Modder = Modder;
-using Multiplier = Multiplier;
-using Negater = Negater;
-using Subtractor = Subtractor;
-using Trait = Trait;
 
 /// <summary>
 ///     Int type that implements ref.Val as well as comparison and math operators.
@@ -90,7 +74,7 @@ public sealed class IntT : BaseVal, Adder, Comparer, Divider, Modder, Multiplier
         {
             return IntOf(Overflow.AddInt64Checked(i, ((IntT)other).i));
         }
-        catch (OverflowException)
+        catch (Overflow.OverflowException)
         {
             return Err.ErrIntOverflow;
         }
@@ -120,7 +104,7 @@ public sealed class IntT : BaseVal, Adder, Comparer, Divider, Modder, Multiplier
         {
             return IntOf(Overflow.DivideInt64Checked(i, ((IntT)other).i));
         }
-        catch (OverflowException)
+        catch (Overflow.OverflowException)
         {
             return Err.ErrIntOverflow;
         }
@@ -140,7 +124,7 @@ public sealed class IntT : BaseVal, Adder, Comparer, Divider, Modder, Multiplier
         {
             return IntOf(Overflow.ModuloInt64Checked(i, ((IntT)other).i));
         }
-        catch (OverflowException)
+        catch (Overflow.OverflowException)
         {
             return Err.ErrIntOverflow;
         }
@@ -157,7 +141,7 @@ public sealed class IntT : BaseVal, Adder, Comparer, Divider, Modder, Multiplier
         {
             return IntOf(Overflow.MultiplyInt64Checked(i, ((IntT)other).i));
         }
-        catch (OverflowException)
+        catch (Overflow.OverflowException)
         {
             return Err.ErrIntOverflow;
         }
@@ -172,7 +156,7 @@ public sealed class IntT : BaseVal, Adder, Comparer, Divider, Modder, Multiplier
         {
             return IntOf(Overflow.NegateInt64Checked(i));
         }
-        catch (OverflowException)
+        catch (Overflow.OverflowException)
         {
             return Err.ErrIntOverflow;
         }
@@ -189,7 +173,7 @@ public sealed class IntT : BaseVal, Adder, Comparer, Divider, Modder, Multiplier
         {
             return IntOf(Overflow.SubtractInt64Checked(i, ((IntT)other).i));
         }
-        catch (OverflowException)
+        catch (Overflow.OverflowException)
         {
             return Err.ErrIntOverflow;
         }
@@ -249,16 +233,12 @@ public sealed class IntT : BaseVal, Adder, Comparer, Divider, Modder, Multiplier
             return Any.Pack(value);
         }
 
-        if (typeDesc == typeof(Int64Value))
-        {
-            return i;
-            /*
+        if (typeDesc == typeof(Int64Value)) return i;
+        /*
             var value = new Int64Value();
             value.Value = i;
             return value;
             */
-        }
-
         if (typeDesc == typeof(Int32Value))
         {
             if (i < int.MinValue || i > int.MaxValue)

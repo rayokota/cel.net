@@ -3,7 +3,6 @@ using Cel.Common.Types.Pb;
 using Cel.Common.Types.Ref;
 using Cel.Common.Types.Traits;
 using NUnit.Framework;
-using Type = System.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -24,6 +23,103 @@ namespace Cel.Common.Types;
 
 public abstract class ListTest<CONSTRUCT>
 {
+    internal abstract Val ConstructList(TypeAdapter typeAdapter, CONSTRUCT[] input);
+
+    // Traits: Val, Adder, Container, Indexer, IterableT, Sizer
+
+    public virtual void ListConstruction(TestData tc)
+    {
+        var val = ConstructList(tc.typeAdapter, tc.input);
+
+        var list = CheckList(tc, val);
+
+        // add list to itself
+        var doubleTc = tc.CopyAndAdd(tc.input, tc.validate);
+        var doubleListVal = list.Add(list);
+        Assert.That(doubleListVal, Is.InstanceOf(typeof(Lister)));
+
+        CheckList(doubleTc, doubleListVal);
+    }
+
+    internal virtual Lister CheckList(TestData tc, Val listVal)
+    {
+        Assert.That(listVal, Is.InstanceOf(typeof(Lister)));
+        Assert.That(listVal, Is.InstanceOf(typeof(Sizer)));
+        Assert.That(listVal, Is.InstanceOf(typeof(Indexer)));
+        Assert.That(listVal, Is.InstanceOf(typeof(Container)));
+        Assert.That(listVal, Is.InstanceOf(typeof(IterableT)));
+        Assert.That(listVal, Is.InstanceOf(typeof(Adder)));
+        Assert.That(listVal, Is.InstanceOf(typeof(Val)));
+
+        var list = (Lister)listVal;
+
+        Assert.That(list.ConvertToType(ListT.ListType), Is.SameAs(list));
+        Assert.That(list.ConvertToType(TypeT.TypeType), Is.SameAs(ListT.ListType));
+        Assert.That(Err.IsError(list.ConvertToType(IntT.IntType)), Is.True);
+
+        // Sizer.size()
+        var size = tc.SourceSize();
+        var size2 = list.Size();
+        Assert.That(list.Size(), Is.EqualTo(IntT.IntOf(tc.SourceSize())));
+
+        for (var i = 0; i < size; i++)
+        {
+            var src = tc.SourceGet(i);
+            var srcVal = tc.typeAdapter(src);
+
+            // Indexer.get()
+            var elem = list.Get(IntT.IntOf(i));
+            var nat = elem.ConvertToNative(src is Val ? typeof(Val) : src.GetType());
+
+            Assert.That(src, Is.InstanceOf(nat.GetType()));
+            Assert.That(srcVal.Type(), Is.SameAs(elem.Type()));
+            Assert.That(src, Is.EqualTo(nat));
+            Assert.That(nat, Is.EqualTo(src));
+            Assert.That(srcVal, Is.EqualTo(elem));
+            Assert.That(elem, Is.EqualTo(srcVal));
+            Assert.That(srcVal.Equal(elem), Is.SameAs(BoolT.True));
+            Assert.That(elem.Equal(srcVal), Is.SameAs(BoolT.True));
+
+            // Container.contains()
+            Assert.That(list.Contains(elem), Is.SameAs(BoolT.True));
+            Assert.That(list.Contains(srcVal), Is.SameAs(BoolT.True));
+        }
+
+        // non-existence checks
+        // NOTE: a .contains() that does *not* return BoolT.True on a list having different types does
+        // return an error. So the assertion here must be `!= BoolT.True`.
+        Assert.That(list.Contains(IntT.IntOf(987654321)), Is.Not.SameAs(BoolT.True));
+        Assert.That(list.Contains(StringT.StringOf("this-is-not-in-the-list")), Is.Not.SameAs(BoolT.True));
+
+        // IterableT.iterate()
+        var iter = list.Iterator();
+        Assert.That(iter, Is.Not.Null);
+        IList<Val> collected = new List<Val>();
+        for (var index = 0; iter.HasNext() == BoolT.True; index++)
+        {
+            var next = iter.Next();
+            collected.Add(next);
+
+            // compare n-th element from iterator with element at index 'n' in list
+            Assert.That(next.Equal(list.Get(IntT.IntOf(index))), Is.SameAs(BoolT.True));
+        }
+
+        Assert.That(collected.Count, Is.EqualTo(size));
+        for (var i = 0; i < size; i++) Assert.That(list.Get(IntT.IntOf(i)).Equal(collected[i]), Is.SameAs(BoolT.True));
+
+        for (var i = 0; i < 3; i++)
+        {
+            Assert.That(iter.HasNext(), Is.SameAs(BoolT.False));
+            Assert.That(Err.IsError(iter.Next()), Is.True);
+        }
+
+        // Adder.add()
+        Assert.That(Err.IsError(list.Add(NullT.NullValue)), Is.True);
+        Assert.That(Err.IsError(list.Add(StringT.StringOf("foo"))), Is.True);
+
+        return list;
+    }
+
     public class TestData
     {
         internal readonly string name;
@@ -124,103 +220,6 @@ public abstract class ListTest<CONSTRUCT>
 
             return ((CONSTRUCT[])listOrArray)[index];
         }
-    }
-
-    internal abstract Val ConstructList(TypeAdapter typeAdapter, CONSTRUCT[] input);
-
-    // Traits: Val, Adder, Container, Indexer, IterableT, Sizer
-
-    public virtual void ListConstruction(TestData tc)
-    {
-        var val = ConstructList(tc.typeAdapter, tc.input);
-
-        var list = CheckList(tc, val);
-
-        // add list to itself
-        var doubleTc = tc.CopyAndAdd(tc.input, tc.validate);
-        var doubleListVal = list.Add(list);
-        Assert.That(doubleListVal, Is.InstanceOf(typeof(Lister)));
-
-        CheckList(doubleTc, doubleListVal);
-    }
-
-    internal virtual Lister CheckList(TestData tc, Val listVal)
-    {
-        Assert.That(listVal, Is.InstanceOf(typeof(Lister)));
-        Assert.That(listVal, Is.InstanceOf(typeof(Sizer)));
-        Assert.That(listVal, Is.InstanceOf(typeof(Indexer)));
-        Assert.That(listVal, Is.InstanceOf(typeof(Container)));
-        Assert.That(listVal, Is.InstanceOf(typeof(IterableT)));
-        Assert.That(listVal, Is.InstanceOf(typeof(Adder)));
-        Assert.That(listVal, Is.InstanceOf(typeof(Val)));
-
-        var list = (Lister)listVal;
-
-        Assert.That(list.ConvertToType(ListT.ListType), Is.SameAs(list));
-        Assert.That(list.ConvertToType(TypeT.TypeType), Is.SameAs(ListT.ListType));
-        Assert.That(Err.IsError(list.ConvertToType(IntT.IntType)), Is.True);
-
-        // Sizer.size()
-        var size = tc.SourceSize();
-        var size2 = list.Size();
-        Assert.That(list.Size(), Is.EqualTo(IntT.IntOf(tc.SourceSize())));
-
-        for (var i = 0; i < size; i++)
-        {
-            var src = tc.SourceGet(i);
-            var srcVal = tc.typeAdapter(src);
-
-            // Indexer.get()
-            var elem = list.Get(IntT.IntOf(i));
-            var nat = elem.ConvertToNative(src is Val ? (Type)typeof(Val) : src.GetType());
-
-            Assert.That(src, Is.InstanceOf(nat.GetType()));
-            Assert.That(srcVal.Type(), Is.SameAs(elem.Type()));
-            Assert.That(src, Is.EqualTo(nat));
-            Assert.That(nat, Is.EqualTo(src));
-            Assert.That(srcVal, Is.EqualTo(elem));
-            Assert.That(elem, Is.EqualTo(srcVal));
-            Assert.That(srcVal.Equal(elem), Is.SameAs(BoolT.True));
-            Assert.That(elem.Equal(srcVal), Is.SameAs(BoolT.True));
-
-            // Container.contains()
-            Assert.That(list.Contains(elem), Is.SameAs(BoolT.True));
-            Assert.That(list.Contains(srcVal), Is.SameAs(BoolT.True));
-        }
-
-        // non-existence checks
-        // NOTE: a .contains() that does *not* return BoolT.True on a list having different types does
-        // return an error. So the assertion here must be `!= BoolT.True`.
-        Assert.That(list.Contains(IntT.IntOf(987654321)), Is.Not.SameAs(BoolT.True));
-        Assert.That(list.Contains(StringT.StringOf("this-is-not-in-the-list")), Is.Not.SameAs(BoolT.True));
-
-        // IterableT.iterate()
-        var iter = list.Iterator();
-        Assert.That(iter, Is.Not.Null);
-        IList<Val> collected = new List<Val>();
-        for (var index = 0; iter.HasNext() == BoolT.True; index++)
-        {
-            var next = iter.Next();
-            collected.Add(next);
-
-            // compare n-th element from iterator with element at index 'n' in list
-            Assert.That(next.Equal(list.Get(IntT.IntOf(index))), Is.SameAs(BoolT.True));
-        }
-
-        Assert.That(collected.Count, Is.EqualTo(size));
-        for (var i = 0; i < size; i++) Assert.That(list.Get(IntT.IntOf(i)).Equal(collected[i]), Is.SameAs(BoolT.True));
-
-        for (var i = 0; i < 3; i++)
-        {
-            Assert.That(iter.HasNext(), Is.SameAs(BoolT.False));
-            Assert.That(Err.IsError(iter.Next()), Is.True);
-        }
-
-        // Adder.add()
-        Assert.That(Err.IsError(list.Add(NullT.NullValue)), Is.True);
-        Assert.That(Err.IsError(list.Add(StringT.StringOf("foo"))), Is.True);
-
-        return list;
     }
 
     // TODO JSON to list

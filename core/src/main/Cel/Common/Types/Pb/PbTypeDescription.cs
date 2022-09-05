@@ -273,7 +273,7 @@ public sealed class PbTypeDescription : Description, TypeDescription
 
     private static Period AsDuration(Duration d)
     {
-        PeriodBuilder period = new PeriodBuilder();
+        var period = new PeriodBuilder();
         period.Seconds = d.Seconds;
         period.Nanoseconds = d.Nanos;
         return period.Build();

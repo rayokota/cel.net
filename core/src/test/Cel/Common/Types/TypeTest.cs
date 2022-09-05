@@ -14,35 +14,32 @@
  * limitations under the License.
  */
 
-using Cel.Common.Types;
-using Microsoft.VisualBasic.CompilerServices;
 using NUnit.Framework;
-using Type = Google.Api.Expr.V1Alpha1.Type;
+using Type = Cel.Common.Types.Ref.Type;
 
-namespace Cel.Common.Types
+namespace Cel.Common.Types;
+
+public class TypeTest
 {
-    public class TypeTest
+    [Test]
+    public virtual void TypeConvertToType()
     {
-[Test]
-        public virtual void TypeConvertToType()
+        Type[] stdTypes =
         {
-            Ref.Type[] stdTypes = new Ref.Type[]
-            {
-                BoolT.BoolType, BytesT.BytesType, DoubleT.DoubleType, DurationT.DurationType, 
-                IntT.IntType, ListT.ListType, MapT.MapType, NullT.NullType, StringT.StringType,
-                TimestampT.TimestampType, TypeT.TypeType, UintT.UintType
-            };
-            foreach (Ref.Type stdType in stdTypes)
-            {
-                Ref.Val cnv = stdType.ConvertToType(TypeT.TypeType);
-                Assert.That(cnv, Is.EqualTo(TypeT.TypeType));
-            }
+            BoolT.BoolType, BytesT.BytesType, DoubleT.DoubleType, DurationT.DurationType,
+            IntT.IntType, ListT.ListType, MapT.MapType, NullT.NullType, StringT.StringType,
+            TimestampT.TimestampType, TypeT.TypeType, UintT.UintType
+        };
+        foreach (var stdType in stdTypes)
+        {
+            var cnv = stdType.ConvertToType(TypeT.TypeType);
+            Assert.That(cnv, Is.EqualTo(TypeT.TypeType));
         }
+    }
 
-[Test]
-        public virtual void TypeType()
-        {
-            Assert.That(TypeT.TypeType.Type, Is.SameAs(TypeT.TypeType));
-        }
+    [Test]
+    public virtual void TypeType()
+    {
+        Assert.That(TypeT.TypeType.Type, Is.SameAs(TypeT.TypeType));
     }
 }

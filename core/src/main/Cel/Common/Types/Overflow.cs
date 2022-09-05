@@ -1,5 +1,4 @@
-﻿using System.Numerics;
-using NodaTime;
+﻿using NodaTime;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -29,7 +28,7 @@ public sealed class Overflow
     /// </summary>
     public static long AddInt64Checked(long x, long y)
     {
-        if (y > 0 && x > long.MaxValue - y || y < 0 && x < long.MinValue - y) throw overflowException;
+        if ((y > 0 && x > long.MaxValue - y) || (y < 0 && x < long.MinValue - y)) throw overflowException;
 
         return x + y;
     }
@@ -41,7 +40,7 @@ public sealed class Overflow
     /// </summary>
     public static long SubtractInt64Checked(long x, long y)
     {
-        if (y < 0 && x > long.MaxValue + y || y > 0 && x < long.MinValue + y) throw overflowException;
+        if ((y < 0 && x > long.MaxValue + y) || (y > 0 && x < long.MinValue + y)) throw overflowException;
 
         return x - y;
     }
@@ -69,9 +68,9 @@ public sealed class Overflow
         // Detecting multiplication overflow is more complicated than the others. The first two detect
         // attempting to negate MinInt64, which would result in MaxInt64+1. The other four detect normal
         // overflow conditions.
-        if (x == -1 && y == long.MinValue || y == -1 && x == long.MinValue ||
-            x > 0 && y > 0 && x > long.MaxValue / y || x > 0 && y < 0 && y < long.MinValue / x ||
-            x < 0 && y > 0 && x < long.MinValue / y || x < 0 && y < 0 && y < long.MaxValue / x)
+        if ((x == -1 && y == long.MinValue) || (y == -1 && x == long.MinValue) ||
+            (x > 0 && y > 0 && x > long.MaxValue / y) || (x > 0 && y < 0 && y < long.MinValue / x) ||
+            (x < 0 && y > 0 && x < long.MinValue / y) || (x < 0 && y < 0 && y < long.MaxValue / x))
             throw overflowException;
 
         return x * y;

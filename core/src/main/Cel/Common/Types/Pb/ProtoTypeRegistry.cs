@@ -273,7 +273,7 @@ public sealed class ProtoTypeRegistry : TypeRegistry
                     v = NativeToValue(v).ConvertToNative(typeof(Value));
                 else
                     v = NativeToValue(v).ConvertToNative(valueReflectType);
-                
+
                 newDict[k] = v;
             }
 
