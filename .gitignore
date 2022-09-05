@@ -28,8 +28,7 @@ obj/
 *.sln.docstates
 
 # Build results
-bin/[Dd]ebug/
-bin/[Rr]elease/
+bin
 *_i.c
 *_p.c
 *.ilk
