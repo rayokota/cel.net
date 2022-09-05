@@ -165,15 +165,11 @@ namespace Cel.Common.Types
 [Test]
 	  public virtual void UintConvertToNativeWrapper()
 	  {
-		UInt32Value val = (UInt32Value)UintT.UintOf(uint.MaxValue).ConvertToNative(typeof(UInt32Value));
-		UInt32Value want = new UInt32Value();
-		want.Value = uint.MaxValue;
-		Assert.That(val, Is.EqualTo(want));
+		uint val = (uint)UintT.UintOf(uint.MaxValue).ConvertToNative(typeof(UInt32Value));
+		Assert.That(val, Is.EqualTo(uint.MaxValue));
 
-		UInt64Value val2 = (UInt64Value)UintT.UintOf(ulong.MaxValue).ConvertToNative(typeof(UInt64Value));
-		UInt64Value want2 = new UInt64Value();
-		want2.Value = ulong.MaxValue;
-		Assert.That(val2, Is.EqualTo(want2));
+		ulong val2 = (ulong)UintT.UintOf(ulong.MaxValue).ConvertToNative(typeof(UInt64Value));
+		Assert.That(val2, Is.EqualTo(ulong.MaxValue));
 	  }
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
