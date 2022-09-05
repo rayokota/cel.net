@@ -218,7 +218,7 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
     {
         if (typeDesc == typeof(ZonedDateTime)) return t;
 
-        if (typeDesc == typeof(DateTime)) return new DateTime(ToEpochMillis());
+        if (typeDesc == typeof(DateTime)) return DateTimeOffset.FromUnixTimeSeconds(ToEpochSeconds()).DateTime;
 
         if (typeDesc == typeof(OffsetDateTime)) return t.ToOffsetDateTime();
 
@@ -245,6 +245,11 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
     private long ToEpochMillis()
     {
         return t.ToInstant().ToUnixTimeMilliseconds() + t.NanosecondOfSecond / 1000000;
+    }
+
+    private long ToEpochSeconds()
+    {
+        return t.ToInstant().ToUnixTimeSeconds() + t.NanosecondOfSecond / 1000000000;
     }
 
     private Timestamp ToPbTimestamp()

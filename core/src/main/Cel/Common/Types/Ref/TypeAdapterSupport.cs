@@ -103,14 +103,11 @@ public sealed class TypeAdapterSupport
         if (value is Instant) return TimestampT.TimestampOf(((Instant)value).InZone(TimestampT.ZoneIdZ));
 
         if (value is ZonedDateTime) return TimestampT.TimestampOf((ZonedDateTime)value);
-        // TODO
-        /*
+        
         if (value is DateTime)
         {
-            
-          return TimestampT.TimestampOf(((DateTime) value).toInstant().atZone(TimestampT.ZoneIdZ));
+          return TimestampT.TimestampOf(Instant.FromDateTimeUtc((DateTime) value).InZone(TimestampT.ZoneIdZ));
         }
-        */
 
         return null;
     }
