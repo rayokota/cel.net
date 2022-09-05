@@ -132,7 +132,7 @@ namespace Cel.Server
 		
 		  Env env = Env.NewEnv(IEnvOption.Container(request.Container), IEnvOption.Types(new TestAllTypesPb2(), new TestAllTypesPb3()));
 
-		  Program prg;
+		  global::Cel.Program prg;
 		  Ast ast;
 
 		  switch (request.ExprKindCase)
