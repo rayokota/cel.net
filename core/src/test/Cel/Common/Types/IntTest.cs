@@ -184,14 +184,12 @@ namespace Cel.Common.Types
 [Test]
         public virtual void IntConvertToNativeWrapper()
         {
-            Int32Value val = (Int32Value)IntT.IntOf(int.MaxValue).ConvertToNative(typeof(Int32Value));
-            Int32Value want = new Int32Value();
-            want.Value = int.MaxValue;
+            int val = (int)IntT.IntOf(int.MaxValue).ConvertToNative(typeof(Int32Value));
+            int want = int.MaxValue;
             Assert.That(val, Is.EqualTo(want));
 
-            Int64Value val2 = (Int64Value)IntT.IntOf(long.MinValue).ConvertToNative(typeof(Int64Value));
-            Int64Value want2 = new Int64Value();
-            want2.Value = long.MinValue;
+            long val2 = (long)IntT.IntOf(long.MinValue).ConvertToNative(typeof(Int64Value));
+            long want2 = long.MinValue;
             Assert.That(val2, Is.EqualTo(want2));
         }
 

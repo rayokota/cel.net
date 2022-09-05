@@ -132,9 +132,12 @@ public sealed class BytesT : BaseVal, Adder, Comparer, Sizer
 
         if (typeDesc == typeof(BytesValue))
         {
+            return b;
+            /*
             var value = new BytesValue();
             value.Value = ByteString.CopyFrom(b);
             return value;
+            */
         }
 
         if (typeDesc == typeof(MemoryStream)) return new MemoryStream(b);

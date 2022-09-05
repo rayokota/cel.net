@@ -84,9 +84,12 @@ public sealed class BoolT : BaseVal, Comparer, Negater
 
         if (typeDesc == typeof(BoolValue))
         {
+            return b;
+            /*
             var value = new BoolValue();
             value.Value = b;
             return value;
+            */
         }
 
         if (typeDesc == typeof(Val) || typeDesc == typeof(BoolT)) return this;

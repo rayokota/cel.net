@@ -251,16 +251,22 @@ public sealed class IntT : BaseVal, Adder, Comparer, Divider, Modder, Multiplier
 
         if (typeDesc == typeof(Int64Value))
         {
+            return Convert.ToInt64(i);
+            /*
             var value = new Int64Value();
             value.Value = i;
             return value;
+            */
         }
 
         if (typeDesc == typeof(Int32Value))
         {
+            return Convert.ToInt32(i);
+            /*
             var value = new Int32Value();
             value.Value = (int)i;
             return value;
+            */
         }
 
         if (typeDesc == typeof(Val) || typeDesc == typeof(IntT)) return this;

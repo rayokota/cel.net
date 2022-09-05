@@ -176,14 +176,12 @@ namespace Cel.Common.Types
 [Test]
 	  public virtual void DoubleConvertToNativeWrapper()
 	  {
-		FloatValue val = (FloatValue) DoubleT.DoubleOf(3.1415d).ConvertToNative(typeof(FloatValue));
-		FloatValue want = new FloatValue();
-		want.Value = 3.1415f;
+		float val = (float) DoubleT.DoubleOf(3.1415d).ConvertToNative(typeof(FloatValue));
+		float want = 3.1415f;
 		Assert.That(val, Is.EqualTo(want));
 
-		DoubleValue val2 = (DoubleValue) DoubleT.DoubleOf(double.MaxValue).ConvertToNative(typeof(DoubleValue));
-		DoubleValue want2 = new DoubleValue();
-		want2.Value = 1.7976931348623157e+308d;
+		double val2 = (double) DoubleT.DoubleOf(double.MaxValue).ConvertToNative(typeof(DoubleValue));
+		double want2 = 1.7976931348623157e+308d;
 		Assert.That(val2, Is.EqualTo(want2));
 	  }
 

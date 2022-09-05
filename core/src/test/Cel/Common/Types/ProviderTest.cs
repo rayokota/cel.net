@@ -206,6 +206,16 @@ namespace Cel.Common.Types
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
 //ORIGINAL LINE: @Test void typeRegistryNewValue_WrapperFields()
 [Test]
+        public virtual void TypeRegistryNewValueNotWrapperFields()
+        {
+            TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new TestAllTypes());
+            Val exp = reg.NewValue("google.api.expr.test.v1.proto3.TestAllTypes",
+                TestUtil.MappingOf("single_int32", IntT.IntOf(123)));
+            Assert.That(Err.IsError(exp), Is.False);
+            TestAllTypes ce = (TestAllTypes) exp.ConvertToNative(typeof(TestAllTypes));
+            Assert.That(ce.SingleInt32, Is.EqualTo(123));
+        }
+[Test]
         public virtual void TypeRegistryNewValueWrapperFields()
         {
             TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new TestAllTypes());

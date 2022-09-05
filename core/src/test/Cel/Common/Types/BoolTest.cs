@@ -82,10 +82,8 @@ public class BoolTest
     [Test]
     public virtual void BoolConvertToNativeWrapper()
     {
-        var val = (BoolValue)BoolT.True.ConvertToNative(typeof(BoolValue));
-        var pbVal = new BoolValue();
-        pbVal.Value = true;
-        Assert.That(val, Is.EqualTo(pbVal));
+        var val = (bool)BoolT.True.ConvertToNative(typeof(BoolValue));
+        Assert.That(val, Is.EqualTo(true));
     }
 
     [Test]
