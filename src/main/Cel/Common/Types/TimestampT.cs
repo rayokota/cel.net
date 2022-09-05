@@ -321,109 +321,109 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
         return HashCode.Combine(base.GetHashCode(), t);
     }
 
-    internal static Val TimestampGetFullYear(ZonedDateTime t)
+    public static Val TimestampGetFullYear(ZonedDateTime t)
     {
         return IntT.IntOf(t.Year);
     }
 
-    internal static Val TimestampGetMonth(ZonedDateTime t)
+    public static Val TimestampGetMonth(ZonedDateTime t)
     {
         // CEL spec indicates that the month should be 0-based, but the Time value
         // for Month() is 1-based. */
         return IntT.IntOf(t.Month - 1);
     }
 
-    internal static Val TimestampGetDayOfYear(ZonedDateTime t)
+    public static Val TimestampGetDayOfYear(ZonedDateTime t)
     {
         return IntT.IntOf(t.DayOfYear - 1);
     }
 
     // TODO
     /*
-    internal static Val TimestampGetDayOfMonthZeroBased(ZonedDateTime t)
+    public static Val TimestampGetDayOfMonthZeroBased(ZonedDateTime t)
     {
       return IntT.IntOf(t.DayOfMonth() - 1);
     }
 
-    internal static Val TimestampGetDayOfMonthOneBased(ZonedDateTime t)
+    public static Val TimestampGetDayOfMonthOneBased(ZonedDateTime t)
     {
       return intOf(t.getDayOfMonth());
     }
     */
 
-    internal static Val TimestampGetDayOfWeek(ZonedDateTime t)
+    public static Val TimestampGetDayOfWeek(ZonedDateTime t)
     {
         return IntT.IntOf((int)t.DayOfWeek);
     }
 
-    internal static Val TimestampGetHours(ZonedDateTime t)
+    public static Val TimestampGetHours(ZonedDateTime t)
     {
         return IntT.IntOf(t.Hour);
     }
 
-    internal static Val TimestampGetMinutes(ZonedDateTime t)
+    public static Val TimestampGetMinutes(ZonedDateTime t)
     {
         return IntT.IntOf(t.Minute);
     }
 
-    internal static Val TimestampGetSeconds(ZonedDateTime t)
+    public static Val TimestampGetSeconds(ZonedDateTime t)
     {
         return IntT.IntOf(t.Second);
     }
 
-    internal static Val TimestampGetMilliseconds(ZonedDateTime t)
+    public static Val TimestampGetMilliseconds(ZonedDateTime t)
     {
         return IntT.IntOf(t.ToInstant().ToUnixTimeMilliseconds() + t.NanosecondOfSecond * 1000000);
     }
 
-    internal static Val TimestampGetFullYearWithTz(ZonedDateTime t, Val tz)
+    public static Val TimestampGetFullYearWithTz(ZonedDateTime t, Val tz)
     {
         return TimeZone(tz, TimestampGetFullYear, t);
     }
 
-    internal static Val TimestampGetMonthWithTz(ZonedDateTime t, Val tz)
+    public static Val TimestampGetMonthWithTz(ZonedDateTime t, Val tz)
     {
         return TimeZone(tz, TimestampGetMonth, t);
     }
 
-    internal static Val TimestampGetDayOfYearWithTz(ZonedDateTime t, Val tz)
+    public static Val TimestampGetDayOfYearWithTz(ZonedDateTime t, Val tz)
     {
         return TimeZone(tz, TimestampGetDayOfYear, t);
     }
 
     /*
-    internal static Val TimestampGetDayOfMonthZeroBasedWithTz(ZonedDateTime t, Val tz)
+    public static Val TimestampGetDayOfMonthZeroBasedWithTz(ZonedDateTime t, Val tz)
     {
       return TimeZone(tz, TimestampT.TimestampGetDayOfMonthZeroBased, t);
     }
 
-    internal static Val TimestampGetDayOfMonthOneBasedWithTz(ZonedDateTime t, Val tz)
+    public static Val TimestampGetDayOfMonthOneBasedWithTz(ZonedDateTime t, Val tz)
     {
       return TimeZone(tz, TimestampT.TimestampGetDayOfMonthOneBased, t);
     }
     */
 
-    internal static Val TimestampGetDayOfWeekWithTz(ZonedDateTime t, Val tz)
+    public static Val TimestampGetDayOfWeekWithTz(ZonedDateTime t, Val tz)
     {
         return TimeZone(tz, TimestampGetDayOfWeek, t);
     }
 
-    internal static Val TimestampGetHoursWithTz(ZonedDateTime t, Val tz)
+    public static Val TimestampGetHoursWithTz(ZonedDateTime t, Val tz)
     {
         return TimeZone(tz, TimestampGetHours, t);
     }
 
-    internal static Val TimestampGetMinutesWithTz(ZonedDateTime t, Val tz)
+    public static Val TimestampGetMinutesWithTz(ZonedDateTime t, Val tz)
     {
         return TimeZone(tz, TimestampGetMinutes, t);
     }
 
-    internal static Val TimestampGetSecondsWithTz(ZonedDateTime t, Val tz)
+    public static Val TimestampGetSecondsWithTz(ZonedDateTime t, Val tz)
     {
         return TimeZone(tz, TimestampGetSeconds, t);
     }
 
-    internal static Val TimestampGetMillisecondsWithTz(ZonedDateTime t, Val tz)
+    public static Val TimestampGetMillisecondsWithTz(ZonedDateTime t, Val tz)
     {
         return TimeZone(tz, TimestampGetMilliseconds, t);
     }
@@ -462,7 +462,7 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
     ///         </ul>
     ///     </para>
     /// </summary>
-    internal static DateTimeZone ParseTz(string tz)
+    public static DateTimeZone ParseTz(string tz)
     {
         if (tz.Length == 0) throw new Exception("time-zone must not be empty");
 

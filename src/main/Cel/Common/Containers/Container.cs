@@ -217,7 +217,7 @@ public sealed class Container
     /// <summary>
     ///     aliasSet returns the alias to fully-qualified name mapping stored in the container.
     /// </summary>
-    internal IDictionary<string, string> AliasSet()
+    public IDictionary<string, string> AliasSet()
     {
         return aliases;
     }

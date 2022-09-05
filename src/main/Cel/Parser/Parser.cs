@@ -57,7 +57,7 @@ public sealed class Parser
 
     private readonly Options options;
 
-    internal Parser(Options options)
+    public Parser(Options options)
     {
         this.options = options;
     }
@@ -77,7 +77,7 @@ public sealed class Parser
         return new Parser(options).Parse(source);
     }
 
-    internal ParseResult Parse(Source source)
+    public ParseResult Parse(Source source)
     {
         ICharStream charStream = new StringCharStream(source.Content(), source.Description());
         var lexer = new CELLexer(charStream);

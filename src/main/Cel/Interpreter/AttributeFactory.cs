@@ -1301,6 +1301,14 @@ public sealed class FieldQualifier : Coster, ConstantQualifierEquator
     }
 
     /// <summary>
+    ///     Name is an implementation of the Qualifier interface method.
+    /// </summary>
+    public string Name()
+    {
+        return name;
+    }
+
+    /// <summary>
     ///     Qualify implements the Qualifier interface method.
     /// </summary>
     public object Qualify(Activation vars, object obj)
