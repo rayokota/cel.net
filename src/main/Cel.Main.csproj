@@ -7,11 +7,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <None Remove="generated-antlr/src/main/CEL.g4" />
+        <None Remove="../../../generated-antlr/src/main/CEL.g4" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <Compile Include="../../../generated-antlr/build/generated-src/main/**/*.cs"/>
+        <Compile Include="../../../generated-pb/build/generated-src/main/**/*.cs"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Antlr4 Include="generated-antlr/src/main/CEL.g4">
+        <Antlr4 Include="../../../generated-antlr/src/main/CEL.g4">
             <AntOutDir>generated-antlr/build/generated-src/main/Cel/Parser/Gen</AntOutDir>
             <Listener>false</Listener>
             <Package>Cel.Parser.Gen</Package>
