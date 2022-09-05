@@ -65,7 +65,7 @@ public interface Library
     /// <summary>
     ///     StdLib returns an EnvOption for the standard library of CEL functions and macros.
     /// </summary>
-    static EnvOption StdLib()
+    public static EnvOption StdLib()
     {
         return Lib(new StdLibrary());
     }

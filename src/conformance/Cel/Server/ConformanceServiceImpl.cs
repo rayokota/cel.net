@@ -1,5 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Cel.Common;
+using Cel.Common.Types;
+using Cel.Common.Types.Ref;
+using Cel.Common.Types.Traits;
+using Google.Protobuf.Collections;
+using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -18,93 +23,31 @@ using System.Collections.Generic;
  */
 namespace Cel.Server
 {
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.CEL.astToCheckedExpr;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.CEL.astToParsedExpr;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.CEL.checkedExprToAst;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.CEL.parsedExprToAst;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.Env.newCustomEnv;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.Env.newEnv;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.EnvOption.clearMacros;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.EnvOption.container;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.EnvOption.declarations;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.EnvOption.types;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.Library.StdLib;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.BoolT.True;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.BytesT.bytesOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.DoubleT.doubleOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.Err.isError;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.Err.newErr;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.IntT.intOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.StringT.stringOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.TypeT.newObjectTypeValue;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.Types.boolOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.UintT.uintOf;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.UnknownT.isUnknown;
-//JAVA TO C# CONVERTER TODO TASK: This Java 'import static' statement cannot be converted to C#:
-//	import static org.projectnessie.cel.common.types.UnknownT.unknownOf;
-
-	using CheckRequest = Google.Api.Expr.V1Alpha1.CheckRequest;
-	using CheckResponse = Google.Api.Expr.V1Alpha1.CheckResponse;
-	using ConformanceServiceImplBase = Google.Api.Expr.V1Alpha1.ConformanceServiceGrpc.ConformanceServiceImplBase;
+	using CheckRequest = Google.Api.Expr.Conformance.V1Alpha1.CheckRequest;
+	using CheckResponse = Google.Api.Expr.Conformance.V1Alpha1.CheckResponse;
+	using ConformanceServiceImplBase = Google.Api.Expr.Conformance.V1Alpha1.ConformanceService.ConformanceServiceBase;
 	using ErrorSet = Google.Api.Expr.V1Alpha1.ErrorSet;
-	using EvalRequest = Google.Api.Expr.V1Alpha1.EvalRequest;
-	using EvalResponse = Google.Api.Expr.V1Alpha1.EvalResponse;
+	using EvalRequest = Google.Api.Expr.Conformance.V1Alpha1.EvalRequest;
+	using EvalResponse = Google.Api.Expr.Conformance.V1Alpha1.EvalResponse;
 	using ExprValue = Google.Api.Expr.V1Alpha1.ExprValue;
-	using IssueDetails = Google.Api.Expr.V1Alpha1.IssueDetails;
+	using IssueDetails = Google.Api.Expr.Conformance.V1Alpha1.IssueDetails;
 	using ListValue = Google.Api.Expr.V1Alpha1.ListValue;
 	using MapValue = Google.Api.Expr.V1Alpha1.MapValue;
-	using Entry = Google.Api.Expr.V1Alpha1.MapValue.Entry;
-	using ParseRequest = Google.Api.Expr.V1Alpha1.ParseRequest;
-	using ParseResponse = Google.Api.Expr.V1Alpha1.ParseResponse;
+	using Entry = Google.Api.Expr.V1Alpha1.MapValue.Types.Entry;
+	using ParseRequest = Google.Api.Expr.Conformance.V1Alpha1.ParseRequest;
+	using ParseResponse = Google.Api.Expr.Conformance.V1Alpha1.ParseResponse;
 	using SourcePosition = Google.Api.Expr.V1Alpha1.SourcePosition;
 	using UnknownSet = Google.Api.Expr.V1Alpha1.UnknownSet;
 	using Value = Google.Api.Expr.V1Alpha1.Value;
-	using Any = com.google.protobuf.Any;
-	using ByteString = com.google.protobuf.ByteString;
-	using Duration = com.google.protobuf.Duration;
-	using Message = com.google.protobuf.Message;
-	using Timestamp = com.google.protobuf.Timestamp;
-	using Code = com.google.rpc.Code;
-	using Status = com.google.rpc.Status;
-	using Ast = org.projectnessie.cel.Ast;
-	using Env = org.projectnessie.cel.Env;
-	using AstIssuesTuple = org.projectnessie.cel.Env.AstIssuesTuple;
-	using EnvOption = org.projectnessie.cel.EnvOption;
-	using Program = org.projectnessie.cel.Program;
-	using Program_EvalResult = org.projectnessie.cel.Program_EvalResult;
-	using CELError = org.projectnessie.cel.common.CELError;
-	using Err = org.projectnessie.cel.common.types.Err;
-	using IteratorT = org.projectnessie.cel.common.types.IteratorT;
-	using NullT = org.projectnessie.cel.common.types.NullT;
-	using TypeT = org.projectnessie.cel.common.types.TypeT;
-	using Types = org.projectnessie.cel.common.types.Types;
-	using Type = org.projectnessie.cel.common.types.@ref.Type;
-	using TypeAdapter = org.projectnessie.cel.common.types.@ref.TypeAdapter;
-	using Val = org.projectnessie.cel.common.types.@ref.Val;
-	using Lister = org.projectnessie.cel.common.types.traits.Lister;
-	using Mapper = org.projectnessie.cel.common.types.traits.Mapper;
+	using Any = Google.Protobuf.WellKnownTypes.Any;
+	using ByteString = Google.Protobuf.ByteString;
+	using Duration = Google.Protobuf.WellKnownTypes.Duration;
+	using Message = Google.Protobuf.IMessage;
+	using Timestamp = Google.Protobuf.WellKnownTypes.Timestamp;
+	using Code = Google.Rpc.Code;
+	using Status = Google.Rpc.Status;
+	  using TestAllTypesPb2 = Google.Api.Expr.Test.V1.Proto2.TestAllTypes;
+	  using TestAllTypesPb3 = Google.Api.Expr.Test.V1.Proto3.TestAllTypes;
 
 	public class ConformanceServiceImpl : ConformanceServiceImplBase
 	{
@@ -119,11 +62,9 @@ namespace Cel.Server
 		  }
 	  }
 
-	  public override void Parse(ParseRequest request, io.grpc.stub.StreamObserver<ParseResponse> responseObserver)
+      public override Task<ParseResponse> Parse(ParseRequest request, ServerCallContext context)
 	  {
-		try
-		{
-		  string sourceText = request.getCelSource();
+		  string sourceText = request.CelSource;
 		  if (sourceText.Trim().Length == 0)
 		  {
 			throw new System.ArgumentException("No source code.");
@@ -131,91 +72,76 @@ namespace Cel.Server
 
 		  // NOTE: syntax_version isn't currently used
 		  IList<EnvOption> parseOptions = new List<EnvOption>();
-		  if (request.getDisableMacros())
+		  if (request.DisableMacros)
 		  {
-			parseOptions.Add(clearMacros());
+			parseOptions.Add(IEnvOption.ClearMacros());
 		  }
 
-		  Env env = newEnv(((List<EnvOption>)parseOptions).ToArray());
+		  Env env = Env.NewEnv(((List<EnvOption>)parseOptions).ToArray());
 		  Env.AstIssuesTuple astIss = env.Parse(sourceText);
 
-		  ParseResponse.Builder response = ParseResponse.newBuilder();
+		  ParseResponse response = new ParseResponse();
 		  if (!astIss.HasIssues())
 		  {
 			// Success
-			response.setParsedExpr(astToParsedExpr(astIss.Ast));
+			response.ParsedExpr = Cel.AstToParsedExpr(astIss.Ast);
 		  }
 		  else
 		  {
 			// Failure
-			AppendErrors(astIss.Issues.Errors, response.addIssuesBuilder);
+			AppendErrors(astIss.Issues.Errors, response.Issues);
 		  }
 
-		  responseObserver.onNext(response.build());
-		  responseObserver.onCompleted();
-		}
-		catch (Exception e)
-		{
-		  responseObserver.onError(io.grpc.Status.fromCode(io.grpc.Status.Code.UNKNOWN).withDescription(Stacktrace(e)).asException());
-		}
+		  return Task.FromResult(response);
 	  }
 
-	  public override void Check(CheckRequest request, io.grpc.stub.StreamObserver<CheckResponse> responseObserver)
+      public override Task<CheckResponse> Check(CheckRequest request, ServerCallContext context)
 	  {
-		try
-		{
 		  // Build the environment.
 		  IList<EnvOption> checkOptions = new List<EnvOption>();
-		  if (!request.getNoStdEnv())
+		  if (!request.NoStdEnv)
 		  {
-			checkOptions.Add(StdLib());
+			checkOptions.Add(global::Cel.Library.StdLib());
 		  }
 
-		  checkOptions.Add(container(request.getContainer()));
-		  checkOptions.Add(declarations(request.getTypeEnvList()));
-		  checkOptions.Add(types(com.google.api.expr.test.v1.proto2.TestAllTypesProto.TestAllTypes.getDefaultInstance(), com.google.api.expr.test.v1.proto3.TestAllTypesProto.TestAllTypes.getDefaultInstance()));
-		  Env env = newCustomEnv(((List<EnvOption>)checkOptions).ToArray());
+		  checkOptions.Add(IEnvOption.Container(request.Container));
+		  checkOptions.Add(IEnvOption.Declarations(request.TypeEnv));
+		  checkOptions.Add(IEnvOption.Types(new TestAllTypesPb2(), new TestAllTypesPb3()));
+		  Env env = Env.NewCustomEnv(((List<EnvOption>)checkOptions).ToArray());
 
 		  // Check the expression.
-		  Env.AstIssuesTuple astIss = env.Check(parsedExprToAst(request.getParsedExpr()));
-		  CheckResponse.Builder resp = CheckResponse.newBuilder();
+		  Env.AstIssuesTuple astIss = env.Check(Cel.ParsedExprToAst(request.ParsedExpr));
+		  CheckResponse resp = new CheckResponse();
 
 		  if (!astIss.HasIssues())
 		  {
 			// Success
-			resp.setCheckedExpr(astToCheckedExpr(astIss.Ast));
+			resp.CheckedExpr = Cel.AstToCheckedExpr(astIss.Ast);
 		  }
 		  else
 		  {
 			// Failure
-			AppendErrors(astIss.Issues.Errors, resp.addIssuesBuilder);
+			AppendErrors(astIss.Issues.Errors, resp.Issues);
 		  }
 
-		  responseObserver.onNext(resp.build());
-		  responseObserver.onCompleted();
-		}
-		catch (Exception e)
-		{
-		  responseObserver.onError(io.grpc.Status.fromCode(io.grpc.Status.Code.UNKNOWN).withDescription(Stacktrace(e)).asException());
-		}
+		  return Task.FromResult(resp);
 	  }
 
-	  public override void Eval(EvalRequest request, io.grpc.stub.StreamObserver<EvalResponse> responseObserver)
+      public override Task<EvalResponse> Eval(EvalRequest request, ServerCallContext context)
 	  {
-		try
-		{
-		  Env env = newEnv(container(request.getContainer()), types(com.google.api.expr.test.v1.proto2.TestAllTypesProto.TestAllTypes.getDefaultInstance(), com.google.api.expr.test.v1.proto3.TestAllTypesProto.TestAllTypes.getDefaultInstance()));
+		
+		  Env env = Env.NewEnv(IEnvOption.Container(request.Container), IEnvOption.Types(new TestAllTypesPb2(), new TestAllTypesPb3()));
 
 		  Program prg;
 		  Ast ast;
 
-		  switch (request.getExprKindCase())
+		  switch (request.ExprKindCase)
 		  {
-			case PARSED_EXPR:
-			  ast = parsedExprToAst(request.getParsedExpr());
+			case EvalRequest.ExprKindOneofCase.ParsedExpr:
+			  ast = Cel.ParsedExprToAst(request.ParsedExpr);
 			  break;
-			case CHECKED_EXPR:
-			  ast = checkedExprToAst(request.getCheckedExpr());
+			case EvalRequest.ExprKindOneofCase.CheckedExpr:
+			  ast = Cel.CheckedExprToAst(request.CheckedExpr);
 			  break;
 			default:
 			  throw new System.ArgumentException("No expression.");
@@ -224,16 +150,18 @@ namespace Cel.Server
 		  prg = env.Program(ast);
 
 		  IDictionary<string, object> args = new Dictionary<string, object>();
-		  request.getBindingsMap().forEach((name, exprValue) =>
+		  foreach (var entry in request.Bindings)
 		  {
+			  var name = entry.Key;
+			  var exprValue = entry.Value;
 		  Val refVal = ExprValueToRefValue(env.TypeAdapter, exprValue);
 		  args[name] = refVal;
-		  });
+		  }
 
 		  // NOTE: the EvalState is currently discarded
-		  Program_EvalResult res = prg.Eval(args);
+		  EvalResult res = prg.Eval(args);
 		  ExprValue resultExprVal;
-		  if (!isError(res.Val))
+		  if (!Err.IsError(res.Val))
 		  {
 			resultExprVal = RefValueToExprValue(res.Val);
 		  }
@@ -243,60 +171,75 @@ namespace Cel.Server
 
 			if (verboseEvalErrors)
 			{
-			  System.err.printf("%n" + "Eval error (not necessarily a bug!!!):%n" + "  error: %s%n" + "%s", err, err.HasCause() ? (Stacktrace(err.ToRuntimeException()) + "\n") : "");
+				Console.Error.Write("\n" + "Eval error (not necessarily a bug!!!):\n" + "  error: {0}\n" + "{1}", err, err.HasCause() ? (Stacktrace(err.ToRuntimeException()) + "\n") : "");
 			}
 
-			resultExprVal = ExprValue.newBuilder().setError(ErrorSet.newBuilder().addErrors(Status.newBuilder().setMessage(err.ToString()))).build();
+			Status status = new Status();
+			status.Message =  err.ToString();
+			ErrorSet errorSet = new ErrorSet();
+			errorSet.Errors.Add(status);
+			resultExprVal = new ExprValue();
+			resultExprVal.Error = errorSet;
 		  }
 
-		  EvalResponse.Builder resp = EvalResponse.newBuilder().setResult(resultExprVal);
+		  EvalResponse resp = new EvalResponse();
+		  resp.Result = resultExprVal;
 
-		  responseObserver.onNext(resp.build());
-		  responseObserver.onCompleted();
-		}
-		catch (Exception e)
-		{
-		  responseObserver.onError(io.grpc.Status.fromCode(io.grpc.Status.Code.UNKNOWN).withDescription(Stacktrace(e)).asException());
-		}
+		  return Task.FromResult(resp);
+
 	  }
 
-	  internal static string Stacktrace(Exception t)
+	  internal static string? Stacktrace(Exception t)
 	  {
-		StringWriter sw = new StringWriter();
-		PrintWriter pw = new PrintWriter(sw);
-		t.printStackTrace(pw);
-		pw.flush();
-		return sw.ToString();
+		  return t.StackTrace;
 	  }
 
 	  /// <summary>
 	  /// appendErrors converts the errors from errs to Status messages and appends them to the list of
 	  /// issues.
 	  /// </summary>
-	  internal static void AppendErrors(IList<CELError> errs, System.Func<Status.Builder> builderSupplier)
+	  internal static void AppendErrors(IList<CelError> errs, RepeatedField<Status> issues)
 	  {
-		errs.ForEach(e => ErrToStatus(e, IssueDetails.Severity.ERROR, builderSupplier()));
+		  foreach (var e in errs)
+		  {
+			  issues.Add(ErrToStatus(e, IssueDetails.Types.Severity.Error));
+		  }
 	  }
 
 	  /// <summary>
 	  /// ErrToStatus converts an Error to a Status message with the given severity. </summary>
-	  internal static void ErrToStatus(CELError e, IssueDetails.Severity severity, Status.Builder status)
+	  internal static Status ErrToStatus(CelError e, IssueDetails.Types.Severity severity)
 	  {
-		IssueDetails.Builder detail = IssueDetails.newBuilder().setSeverity(severity).setPosition(SourcePosition.newBuilder().setLine(e.Location.Line()).setColumn(e.Location.Column()).build());
+		  IssueDetails detail = new IssueDetails();
+		  detail.Severity = severity;
+		  SourcePosition pos = new SourcePosition();
+		  pos.Line = e.Location.Line();
+		  pos.Column = e.Location.Column();
+		  detail.Position = pos;
 
-		status.setCode(Code.INVALID_ARGUMENT_VALUE).setMessage(e.Message).addDetails(Any.pack(detail.build()));
+		  Status status = new Status();
+		  status.Code = (int)Code.InvalidArgument;
+		  status.Message = e.Message;
+		  status.Details.Add(Any.Pack(detail));
+		  return status;
 	  }
 
 	  /// <summary>
 	  /// RefValueToExprValue converts between ref.Val and exprpb.ExprValue. </summary>
 	  internal static ExprValue RefValueToExprValue(Val res)
 	  {
-		if (isUnknown(res))
+		if (UnknownT.IsUnknown(res))
 		{
-		  return ExprValue.newBuilder().setUnknown(UnknownSet.newBuilder().addExprs(res.IntValue())).build();
+			UnknownSet unknownSet = new UnknownSet();
+			unknownSet.Exprs.Add(res.IntValue());
+			ExprValue exprValue = new ExprValue();
+			exprValue.Unknown = unknownSet;
+			return exprValue;
 		}
 		Value v = RefValueToValue(res);
-		return ExprValue.newBuilder().setValue(v).build();
+			ExprValue result = new ExprValue();
+			result.Value = v;
+			return result;
 	  }
 
 	  // TODO(jimlarson): The following conversion code should be moved to
@@ -308,69 +251,86 @@ namespace Cel.Server
 	  /// </summary>
 	  internal static Value RefValueToValue(Val res)
 	  {
-		switch (res.Type().TypeEnum().innerEnumValue)
+		Value val = new Value();
+		switch (res.Type().TypeEnum().InnerEnumValue)
 		{
-		  case org.projectnessie.cel.common.types.@ref.TypeEnum.InnerEnum.Bool:
-			return Value.newBuilder().setBoolValue(res.BooleanValue()).build();
-		  case org.projectnessie.cel.common.types.@ref.TypeEnum.InnerEnum.Bytes:
-			return Value.newBuilder().setBytesValue(res.ConvertToNative(typeof(ByteString))).build();
-		  case org.projectnessie.cel.common.types.@ref.TypeEnum.InnerEnum.double:
-			return Value.newBuilder().setDoubleValue(res.ConvertToNative(typeof(Double))).build();
-		  case org.projectnessie.cel.common.types.@ref.TypeEnum.InnerEnum.Int:
-			return Value.newBuilder().setInt64Value(res.IntValue()).build();
-		  case org.projectnessie.cel.common.types.@ref.TypeEnum.InnerEnum.Null:
-			return Value.newBuilder().setNullValueValue(0).build();
-		  case org.projectnessie.cel.common.types.@ref.TypeEnum.InnerEnum.String:
-			return Value.newBuilder().setStringValue(res.Value().ToString()).build();
-		  case Type:
-			return Value.newBuilder().setTypeValue(((TypeT) res).TypeName()).build();
-		  case org.projectnessie.cel.common.types.@ref.TypeEnum.InnerEnum.Uint:
-			return Value.newBuilder().setUint64Value(res.IntValue()).build();
-		  case Duration:
-			Duration d = res.ConvertToNative(typeof(Duration));
-			return Value.newBuilder().setObjectValue(Any.pack(d)).build();
-		  case Timestamp:
-			Timestamp t = res.ConvertToNative(typeof(Timestamp));
-			return Value.newBuilder().setObjectValue(Any.pack(t)).build();
-		  case System.Collections.IList:
+		  case TypeEnum.InnerEnum.Bool:
+			  val.BoolValue = res.BooleanValue();
+			  return val;
+		  case TypeEnum.InnerEnum.Bytes:
+			  val.BytesValue = (ByteString) res.ConvertToNative(typeof(ByteString));
+			  return val;
+		  case TypeEnum.InnerEnum.Double:
+			  val.DoubleValue = (double)res.ConvertToNative(typeof(double));
+			  return val;
+		  case TypeEnum.InnerEnum.Int:
+			  val.Int64Value = res.IntValue();
+			  return val;
+		  case TypeEnum.InnerEnum.Null:
+			  val.NullValue = NullValue.NullValue;
+			  return val;
+		  case TypeEnum.InnerEnum.String:
+			  val.StringValue = res.Value().ToString();
+			  return val;
+		  case TypeEnum.InnerEnum.Type:
+			  val.TypeValue = ((TypeT)res).TypeName();
+			  return val;
+		  case TypeEnum.InnerEnum.Uint:
+			  val.Uint64Value = (ulong) res.IntValue();
+			  return val;
+		  case TypeEnum.InnerEnum.Duration:
+			Duration d = (Duration) res.ConvertToNative(typeof(Duration));
+			val.ObjectValue = Any.Pack(d);
+			return val;
+		  case TypeEnum.InnerEnum.Timestamp:
+			Timestamp t = (Timestamp) res.ConvertToNative(typeof(Timestamp));
+			val.ObjectValue = Any.Pack(t);
+			return val;
+		  case TypeEnum.InnerEnum.List:
 			Lister l = (Lister) res;
-			ListValue.Builder elts = ListValue.newBuilder();
-			for (IteratorT i = l.Iterator(); i.HasNext() == True;)
+			ListValue elts = new ListValue();
+			for (IteratorT i = l.Iterator(); i.HasNext() == BoolT.True;)
 			{
 			  Val v = i.Next();
-			  elts.addValues(RefValueToValue(v));
+			  elts.Values.Add(RefValueToValue(v));
 			}
-			return Value.newBuilder().setListValue(elts).build();
-		  case System.Collections.IDictionary:
+
+			val.ListValue = elts;
+			return val;
+		  case TypeEnum.InnerEnum.Map:
 			Mapper m = (Mapper) res;
-			MapValue.Builder elems = MapValue.newBuilder();
-			for (IteratorT i = m.Iterator(); i.HasNext() == True;)
+			MapValue elems = new MapValue();
+			for (IteratorT i = m.Iterator(); i.HasNext() == BoolT.True;)
 			{
 			  Val k = i.Next();
 			  Val v = m.Get(k);
 			  Value kv = RefValueToValue(k);
 			  Value vv = RefValueToValue(v);
-			  elems.addEntriesBuilder().setKey(kv).setValue(vv);
+			  Entry entry = new Entry();
+			  entry.Key = kv;
+			  entry.Value = vv;
+			  elems.Entries.Add(entry);
 			}
-			return Value.newBuilder().setMapValue(elems).build();
-		  case org.projectnessie.cel.common.types.@ref.TypeEnum.InnerEnum.Object:
+			val.MapValue = elems;
+			return val;
+		  case TypeEnum.InnerEnum.Object:
 			// Object type
 			Message pb = (Message) res.Value();
-			Value.Builder v = Value.newBuilder();
 			// Somehow the conformance tests
 			if (pb is ListValue)
 			{
-			  v.setListValue((ListValue) pb);
+			  val.ListValue = (ListValue) pb;
 			}
 			else if (pb is MapValue)
 			{
-			  v.setMapValue((MapValue) pb);
+			  val.MapValue = (MapValue) pb;
 			}
 			else
 			{
-			  v.setObjectValue(Any.pack(pb));
+			  val.ObjectValue = Any.Pack(pb);
 			}
-			return v.build();
+
+			return val;
 		  default:
 			throw new System.InvalidOperationException(string.Format("Unknown {0}", res.Type().TypeEnum()));
 		}
@@ -380,11 +340,11 @@ namespace Cel.Server
 	  /// ExprValueToRefValue converts between exprpb.ExprValue and ref.Val. </summary>
 	  internal static Val ExprValueToRefValue(TypeAdapter adapter, ExprValue ev)
 	  {
-		switch (ev.getKindCase())
+		switch (ev.KindCase)
 		{
-		  case VALUE:
-			return ValueToRefValue(adapter, ev.getValue());
-		  case ERROR:
+		  case ExprValue.KindOneofCase.Value:
+			return ValueToRefValue(adapter, ev.Value);
+		  case ExprValue.KindOneofCase.Error:
 			// An error ExprValue is a repeated set of rpcpb.Status
 			// messages, with no convention for the status details.
 			// To convert this to a types.Err, we need to convert
@@ -392,60 +352,60 @@ namespace Cel.Server
 			// able to decompose that string on output so we can
 			// round-trip arbitrary ExprValue messages.
 			// TODO(jimlarson) make a convention for this.
-			return newErr("XXX add details later");
-		  case UNKNOWN:
-			return unknownOf(ev.getUnknown().getExprs(0));
+			return Err.NewErr("XXX add details later");
+		  case ExprValue.KindOneofCase.Unknown:
+			return UnknownT.UnknownOf(ev.Unknown.Exprs[0]);
 		}
-		throw new System.ArgumentException("unknown ExprValue kind " + ev.getKindCase());
+		throw new System.ArgumentException("unknown ExprValue kind " + ev.KindCase);
 	  }
 
 	  /// <summary>
 	  /// ValueToRefValue converts between exprpb.Value and ref.Val. </summary>
 	  internal static Val ValueToRefValue(TypeAdapter adapter, Value v)
 	  {
-		switch (v.getKindCase())
+		switch (v.KindCase)
 		{
-		  case NULL_VALUE:
+		  case Value.KindOneofCase.NullValue:
 			return NullT.NullValue;
-		  case BOOL_VALUE:
-			return boolOf(v.getBoolValue());
-		  case INT64_VALUE:
-			return intOf(v.getInt64Value());
-		  case UINT64_VALUE:
-			return uintOf(v.getUint64Value());
-		  case DOUBLE_VALUE:
-			return doubleOf(v.getDoubleValue());
-		  case STRING_VALUE:
-			return stringOf(v.getStringValue());
-		  case BYTES_VALUE:
-			return bytesOf(v.getBytesValue().toByteArray());
-		  case OBJECT_VALUE:
-			Any any = v.getObjectValue();
-			return adapter.NativeToValue(any);
-		  case MAP_VALUE:
-			MapValue m = v.getMapValue();
+		  case Value.KindOneofCase.BoolValue:
+			return Types.BoolOf(v.BoolValue);
+		  case Value.KindOneofCase.Int64Value:
+			return IntT.IntOf(v.Int64Value);
+		  case Value.KindOneofCase.Uint64Value:
+			return UintT.UintOf(v.Uint64Value);
+		  case Value.KindOneofCase.DoubleValue:
+			return DoubleT.DoubleOf(v.DoubleValue);
+		  case Value.KindOneofCase.StringValue:
+			return StringT.StringOf(v.StringValue);
+		  case Value.KindOneofCase.BytesValue:
+			return BytesT.BytesOf(v.BytesValue.ToByteArray());
+		  case Value.KindOneofCase.ObjectValue:
+			Any any = v.ObjectValue;
+			return adapter(any);
+		  case Value.KindOneofCase.MapValue:
+			MapValue m = v.MapValue;
 			IDictionary<Val, Val> entries = new Dictionary<Val, Val>();
-			foreach (MapValue.Entry entry in m.getEntriesList())
+			foreach (MapValue.Types.Entry entry in m.Entries)
 			{
-			  Val key = ValueToRefValue(adapter, entry.getKey());
-			  Val pb = ValueToRefValue(adapter, entry.getValue());
+			  Val key = ValueToRefValue(adapter, entry.Key);
+			  Val pb = ValueToRefValue(adapter, entry.Value);
 			  entries[key] = pb;
 			}
-			return adapter.NativeToValue(entries);
-		  case LIST_VALUE:
-			ListValue l = v.getListValue();
-			IList<Val> elts = l.getValuesList().Select(el => ValueToRefValue(adapter, el)).ToList();
-			return adapter.NativeToValue(elts);
-		  case TYPE_VALUE:
-			string typeName = v.getTypeValue();
-			Type tv = Types.GetTypeByName(typeName);
+			return adapter(entries);
+		  case Value.KindOneofCase.ListValue:
+			ListValue l = v.ListValue;
+			IList<Val> elts = l.Values.Select(el => ValueToRefValue(adapter, el)).ToList();
+			return adapter(elts);
+		  case Value.KindOneofCase.TypeValue:
+			string typeName = v.TypeValue;
+			Common.Types.Ref.Type tv = Types.GetTypeByName(typeName);
 			if (tv != null)
 			{
 			  return tv;
 			}
-			return newObjectTypeValue(typeName);
+			return TypeT.NewObjectTypeValue(typeName);
 		  default:
-			throw new System.ArgumentException("unknown value " + v.getKindCase());
+			throw new System.ArgumentException("unknown value " + v.KindCase);
 		}
 	  }
 	}

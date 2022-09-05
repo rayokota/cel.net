@@ -8,7 +8,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../main/Cel.Main.csproj" />
+        <ProjectReference Include="../main/Cel.main.csproj" />
+        <ProjectReference Include="../test/Cel.test.csproj" />
     </ItemGroup>
     
     <ItemGroup>
@@ -19,8 +20,9 @@
     <ItemGroup>
         <PackageReference Include="NodaTime" Version="3.1.2" />
         <PackageReference Include="Google.Protobuf" Version="3.18.0" />
-        <PackageReference Include="Grpc.Net.Client" Version="2.39.0" />
-        <PackageReference Include="Grpc.Tools" Version="2.40.0">
+        <PackageReference Include="Grpc" Version="2.44.0" />
+        <PackageReference Include="Grpc.Net.Client" Version="2.44.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.44.0">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
