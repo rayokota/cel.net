@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cel.main", "src\main\Cel.ma
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cel.test", "src\test\Cel.test.csproj", "{96472CC7-7516-410C-A562-8D0B31705F52}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cel.conformance", "src\conformance\Cel.conformance.csproj", "{5EF234B0-8D32-4174-8EAF-D919437D1C0E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -22,5 +24,9 @@ Global
 		{773F4FCA-EC69-4109-B3E2-8F088FC1209D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{773F4FCA-EC69-4109-B3E2-8F088FC1209D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{773F4FCA-EC69-4109-B3E2-8F088FC1209D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5EF234B0-8D32-4174-8EAF-D919437D1C0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5EF234B0-8D32-4174-8EAF-D919437D1C0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5EF234B0-8D32-4174-8EAF-D919437D1C0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5EF234B0-8D32-4174-8EAF-D919437D1C0E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
