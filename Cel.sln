@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cel.Main", "src\main\Cel.Main.csproj", "{E7A8C461-D7E0-432A-9FA8-8735153BCBB9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cel.main", "src\main\Cel.main.csproj", "{E7A8C461-D7E0-432A-9FA8-8735153BCBB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cel.Test", "src\test\Cel.Test.csproj", "{96472CC7-7516-410C-A562-8D0B31705F52}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cel.test", "src\test\Cel.test.csproj", "{96472CC7-7516-410C-A562-8D0B31705F52}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -18,5 +18,9 @@ Global
 		{96472CC7-7516-410C-A562-8D0B31705F52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{96472CC7-7516-410C-A562-8D0B31705F52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{96472CC7-7516-410C-A562-8D0B31705F52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{773F4FCA-EC69-4109-B3E2-8F088FC1209D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{773F4FCA-EC69-4109-B3E2-8F088FC1209D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{773F4FCA-EC69-4109-B3E2-8F088FC1209D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{773F4FCA-EC69-4109-B3E2-8F088FC1209D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
