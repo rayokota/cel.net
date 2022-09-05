@@ -36,6 +36,15 @@ public class TestUtil
         return new Dictionary<object, object>();
     }
 
+    public static IDictionary<string, Val> MappingOf(string k, Val v, params object[] kvPairs)
+    {
+        IDictionary<string, Val> map = new Dictionary<string, Val>();
+        Assert.That(kvPairs.Length % 2, Is.EqualTo(0));
+        map[k] = v;
+        for (var i = 0; i < kvPairs.Length; i += 2) map[kvPairs[i].ToString()] = (Val)kvPairs[i + 1];
+        return map;
+    }
+
     public static void DeepEquals(string context, object a, object b)
     {
         if (a == null && b == null) return;

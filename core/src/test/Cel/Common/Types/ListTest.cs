@@ -126,7 +126,6 @@ public abstract class ListTest<CONSTRUCT>
         }
     }
 
-
     internal abstract Val ConstructList(TypeAdapter typeAdapter, CONSTRUCT[] input);
 
     // Traits: Val, Adder, Container, Indexer, IterableT, Sizer

@@ -253,6 +253,8 @@ public sealed class ProtoTypeRegistry : TypeRegistry
         var mesgType = fieldDesc.MessageType;
         var keyType = mesgType.FindFieldByNumber(1);
         var valueType = mesgType.FindFieldByNumber(2);
+        var keyReflectType = FieldDescription.NewFieldDescription(keyType).ReflectType();
+        var valueReflectType = FieldDescription.NewFieldDescription(valueType).ReflectType();
         if (value is IDictionary)
         {
             IDictionary newDict = new Dictionary<object, object>();
@@ -261,13 +263,17 @@ public sealed class ProtoTypeRegistry : TypeRegistry
                 var v = e.Value;
                 var k = e.Key;
 
+                k = NativeToValue(k).ConvertToNative(keyReflectType);
+
                 // TODO improve the type-A-to-B-conversion
                 // if (!(k instanceof String)) {
                 //   return Err.newTypeConversionError(k.getClass().getName(), String.class.getName());
                 // }
                 if (valueType.FieldType == Google.Protobuf.Reflection.FieldType.Message && !(v is Message))
                     v = NativeToValue(v).ConvertToNative(typeof(Value));
-
+                else
+                    v = NativeToValue(v).ConvertToNative(valueReflectType);
+                
                 newDict[k] = v;
             }
 
