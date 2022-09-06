@@ -13,12 +13,7 @@
     </ItemGroup>
     
     <ItemGroup>
-        <Protobuf Include="generated-pb/**/*.proto" 
-                  Exclude="generated-pb/googleapis/google/api/expr/v1alpha1/**/*.proto"
-                  GrpcServices="None" 
-                  OutputDir="generated-pb/build/generated-src" 
-                  ProtoRoot="generated-pb/googleapis" 
-        AdditionalImportDirs="../main/generated-pb/googleapis"/>
+        <Protobuf Include="generated-pb/**/*.proto" Exclude="generated-pb/googleapis/google/api/expr/v1alpha1/**/*.proto" GrpcServices="None" OutputDir="generated-pb/build/generated-src" ProtoRoot="generated-pb/googleapis" AdditionalImportDirs="../main/generated-pb/googleapis" />
         <Protobuf Update="generated-pb/**/*_service.proto" GrpcServices="Both" />
     </ItemGroup>
 
