@@ -23,22 +23,22 @@ using Grpc.Core;
  */
 namespace Cel.Server
 {
-	class Program
+	class Program2
 	{
 		const int Port = 30051;
 
-		public static void Main(string[] args)
+		public static void Main2(string[] args)
 		{
 			Grpc.Core.Server server = new Grpc.Core.Server
 			{
 				Services = { ConformanceService.BindService(new ConformanceServiceImpl()) },
-				Ports = { new ServerPort("127.0.0.1", Port, ServerCredentials.Insecure) }
+				Ports = { new ServerPort("localhost", Port, ServerCredentials.Insecure) }
 			};
 			server.Start();
 
-			Console.WriteLine("Listening on {0}:{1}", "127.0.0.1", Port);
-			Thread.Sleep(int.MaxValue);
+			Console.WriteLine("Listening on {0}:{1}", "localhost", Port);
 			server.ShutdownAsync().Wait();
+			Thread.Sleep(int.MaxValue);
 		}
 	}
 }

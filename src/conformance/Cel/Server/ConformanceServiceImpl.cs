@@ -52,7 +52,7 @@ namespace Cel.Server
 	public class ConformanceServiceImpl : ConformanceServiceImplBase
 	{
 
-	  private bool verboseEvalErrors;
+		private bool verboseEvalErrors;
 
 	  public virtual bool VerboseEvalErrors
 	  {

@@ -27,7 +27,7 @@ function kill_server() {
 
 trap kill_server SIGINT SIGTERM
 
-dotnet run --project "${wd}"
+dotnet run --project "${wd}" | grep Listening
 pid=$!
 echo "${pid}" > "${pid_file}"
 wait
