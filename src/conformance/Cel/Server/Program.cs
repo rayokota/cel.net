@@ -12,7 +12,7 @@ namespace Cel.Server
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static void Main2(string[] args)
         {
             CreateHostBuilder(args).Build().Run();
         }

@@ -23,19 +23,19 @@ using Grpc.Core;
  */
 namespace Cel.Server
 {
-	using CheckRequest = Google.Api.Expr.Conformance.V1Alpha1.CheckRequest;
-	using CheckResponse = Google.Api.Expr.Conformance.V1Alpha1.CheckResponse;
-	using ConformanceServiceImplBase = Google.Api.Expr.Conformance.V1Alpha1.ConformanceService.ConformanceServiceBase;
+	using CheckRequest = Google.Api.Expr.V1Alpha1.CheckRequest;
+	using CheckResponse = Google.Api.Expr.V1Alpha1.CheckResponse;
+	using ConformanceServiceImplBase = Google.Api.Expr.V1Alpha1.ConformanceService.ConformanceServiceBase;
 	using ErrorSet = Google.Api.Expr.V1Alpha1.ErrorSet;
-	using EvalRequest = Google.Api.Expr.Conformance.V1Alpha1.EvalRequest;
-	using EvalResponse = Google.Api.Expr.Conformance.V1Alpha1.EvalResponse;
+	using EvalRequest = Google.Api.Expr.V1Alpha1.EvalRequest;
+	using EvalResponse = Google.Api.Expr.V1Alpha1.EvalResponse;
 	using ExprValue = Google.Api.Expr.V1Alpha1.ExprValue;
-	using IssueDetails = Google.Api.Expr.Conformance.V1Alpha1.IssueDetails;
+	using IssueDetails = Google.Api.Expr.V1Alpha1.IssueDetails;
 	using ListValue = Google.Api.Expr.V1Alpha1.ListValue;
 	using MapValue = Google.Api.Expr.V1Alpha1.MapValue;
 	using Entry = Google.Api.Expr.V1Alpha1.MapValue.Types.Entry;
-	using ParseRequest = Google.Api.Expr.Conformance.V1Alpha1.ParseRequest;
-	using ParseResponse = Google.Api.Expr.Conformance.V1Alpha1.ParseResponse;
+	using ParseRequest = Google.Api.Expr.V1Alpha1.ParseRequest;
+	using ParseResponse = Google.Api.Expr.V1Alpha1.ParseResponse;
 	using SourcePosition = Google.Api.Expr.V1Alpha1.SourcePosition;
 	using UnknownSet = Google.Api.Expr.V1Alpha1.UnknownSet;
 	using Value = Google.Api.Expr.V1Alpha1.Value;

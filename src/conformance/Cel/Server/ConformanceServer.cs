@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Google.Api.Expr.Conformance.V1Alpha1;
+using Google.Api.Expr.V1Alpha1;
 using Grpc.Core;
 
 
@@ -27,7 +27,7 @@ namespace Cel.Server
 	{
 		const int Port = 30051;
 
-		public static void Main2(string[] args)
+		public static void Main(string[] args)
 		{
 			Grpc.Core.Server server = new Grpc.Core.Server
 			{
