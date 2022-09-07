@@ -27,7 +27,9 @@ function kill_server() {
 
 trap kill_server SIGINT SIGTERM
 
-dotnet run --project "${wd}" | grep Listening
+dotnet run --project "${wd}" 2>&1 | tee /tmp/cel_compliance.log | grep Listening &
+#echo "Listening on localhost:5000"
+
 pid=$!
 echo "${pid}" > "${pid_file}"
 wait

@@ -27,6 +27,15 @@ cd subtrees/cel-spec || exit 1
 
 bazel build ... || exit 1
 
+cel_csharp_skips=(
+  "--skip_test=parse/repeat/select"
+  "--skip_test=dynamic/list"
+  "--skip_test=dynamic/struct"
+  "--skip_test=proto2/empty_field"
+  "--skip_test=proto3/empty_field"
+  "--skip_test=timestamps/timestamp_range/from_string_under"
+)
+
 cel_java_skips=(
   # proto2 enums are generated as Java enums, means: it is not possible to assign arbitrary
   # ordinals, so these tests cannot work against the CEL-Java implementation (limitation of the
@@ -92,6 +101,7 @@ test_files=(
 
 bazel-bin/tests/simple/simple_test_/simple_test \
   --server ../../src/conformance/conformance-server.sh \
+  "${cel_csharp_skips[@]}" \
   "${cel_java_skips[@]}" \
   "${cel_go_skips[@]}" \
   "${test_files[@]}"
