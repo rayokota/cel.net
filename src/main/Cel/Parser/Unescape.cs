@@ -19,8 +19,8 @@ namespace Cel.Parser;
 
 public sealed class Unescape
 {
-    private static readonly UTF8Encoding UTF8 = new UTF8Encoding(false, true);
-    
+    private static readonly UTF8Encoding UTF8 = new(false, true);
+
     /// <summary>
     ///     Unescape takes a quoted string, unquotes, and unescapes it.
     ///     <para>

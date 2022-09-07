@@ -33,7 +33,7 @@ public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
     public static readonly Type StringType = TypeT.NewTypeValue(TypeEnum.String, Trait.AdderType,
         Trait.ComparerType, Trait.MatcherType, Trait.ReceiverType, Trait.SizerType);
 
-    public static readonly UTF8Encoding UTF8 = new UTF8Encoding(false, true);
+    public static readonly UTF8Encoding UTF8 = new(false, true);
 
     private static readonly IDictionary<string, Func<string, Val, Val>> stringOneArgOverloads;
 

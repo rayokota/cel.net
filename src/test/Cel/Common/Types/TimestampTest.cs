@@ -327,7 +327,7 @@ public class TimestampTest
         Assert.That(new List<Val>
         {
             TimestampT.TimestampGetFullYear(value), TimestampT.TimestampGetMonth(value),
-            TimestampT.TimestampGetDayOfMonthOneBased(value), 
+            TimestampT.TimestampGetDayOfMonthOneBased(value),
             TimestampT.TimestampGetDayOfMonthZeroBased(value),
             TimestampT.TimestampGetHours(value), TimestampT.TimestampGetMinutes(value),
             TimestampT.TimestampGetSeconds(value), TimestampT.TimestampGetDayOfWeek(value),
@@ -364,7 +364,7 @@ public class TimestampTest
                 IntT.IntOf(atZone.Year),
                 IntT.IntOf(atZone.Month - 1),
                 IntT.IntOf(atZone.Day),
-                IntT.IntOf(atZone.Day - 1), 
+                IntT.IntOf(atZone.Day - 1),
                 IntT.IntOf(atZone.Hour), IntT.IntOf(atZone.Minute),
                 IntT.IntOf(atZone.Second), IntT.IntOf((int)atZone.DayOfWeek),
                 IntT.IntOf(atZone.DayOfYear - 1)

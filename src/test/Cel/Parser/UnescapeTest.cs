@@ -162,11 +162,10 @@ internal class UnescapeTest
             Throws.Exception.TypeOf(typeof(ArgumentException)));
     }
 
-    // TODO
-[Test]
+    [Test]
     public virtual void InvalidUtf8()
     {
-        Assert.That(() => Unescape.ToUtf8(new MemoryStream(new byte[] { 0, unchecked((byte)255) })),
+        Assert.That(() => Unescape.ToUtf8(new MemoryStream(new byte[] { 0, 255 })),
             Throws.Exception.TypeOf(typeof(DecoderFallbackException)));
     }
 

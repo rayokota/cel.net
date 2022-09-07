@@ -1,5 +1,4 @@
-﻿using System.Text;
-using Cel.Common.Types.Ref;
+﻿using Cel.Common.Types.Ref;
 using Cel.Common.Types.Traits;
 using Cel.Parser;
 using Google.Api.Expr.V1Alpha1;

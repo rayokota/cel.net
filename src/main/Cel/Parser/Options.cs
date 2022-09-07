@@ -56,10 +56,6 @@ public sealed class Options
 
         internal int maxRecursionDepth = 250;
 
-        public Builder()
-        {
-        }
-
         public Builder MaxRecursionDepth(int maxRecursionDepth)
         {
             if (maxRecursionDepth < -1)
