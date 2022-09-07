@@ -366,7 +366,7 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
 
     public static Val TimestampGetMilliseconds(ZonedDateTime t)
     {
-        return IntT.IntOf(t.ToInstant().ToUnixTimeMilliseconds() + t.NanosecondOfSecond * 1000000);
+        return IntT.IntOf(t.Millisecond);
     }
 
     public static Val TimestampGetFullYearWithTz(ZonedDateTime t, Val tz)
@@ -432,7 +432,7 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
         }
         catch (Exception e)
         {
-            return Err.NewErr(e, "no conversion of '{0}' to time-zone '{0}': {0}", t, val, e);
+            return Err.NewErr(e, "no conversion of '{0}' to time-zone '{1}': {2}", t, val, e);
         }
     }
 

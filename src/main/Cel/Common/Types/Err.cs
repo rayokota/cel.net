@@ -78,20 +78,20 @@ public sealed class Err : BaseVal
         if (val != null)
         {
             var vt = val is Type ? (Type)val : val.Type();
-            return ValOrErr(other, "no such overload: {0}.{0}({0})", vt.TypeName(), function, otName);
+            return ValOrErr(other, "no such overload: {0}.{1}({2})", vt.TypeName(), function, otName);
         }
 
-        return ValOrErr(other, "no such overload: *.{0}({0})", function, otName);
+        return ValOrErr(other, "no such overload: *.{0}({1})", function, otName);
     }
 
     public static Val NoSuchOverload(Val val, string function, Type argA, Type argB)
     {
-        return NewErr("no such overload: {0}.{0}({0},{0},...)", val.Type().TypeName(), function, argA, argB);
+        return NewErr("no such overload: {0}.{1}({2},{3},...)", val.Type().TypeName(), function, argA, argB);
     }
 
     public static Val NoSuchOverload(Val val, string function, string overload, Val[] args)
     {
-        return NewErr("no such overload: {0}.{0}[{0}]({0})", val.Type().TypeName(), function, overload,
+        return NewErr("no such overload: {0}.{1}[{2}]({3})", val.Type().TypeName(), function, overload,
             string.Join(", ", args.Select(a => a.Type().TypeName())));
     }
 
@@ -130,7 +130,7 @@ public sealed class Err : BaseVal
     /// </summary>
     public static Val UnsupportedRefValConversionErr(object val)
     {
-        return NewErr("unsupported conversion to ref.Val: ({0}){0}", val.GetType().FullName, val);
+        return NewErr("unsupported conversion to ref.Val: ({0}){1}", val.GetType().FullName, val);
     }
 
     /// <summary>
@@ -178,12 +178,12 @@ public sealed class Err : BaseVal
 
     public static Val RangeError(object from, object to)
     {
-        return NewErr("range error converting {0} to {0}", from, to);
+        return NewErr("range error converting {0} to {1}", from, to);
     }
 
     public static Val NewTypeConversionError(object from, object to)
     {
-        return NewErr("type conversion error from '{0}' to '{0}'", from, to);
+        return NewErr("type conversion error from '{0}' to '{1}'", from, to);
     }
 
     public static Exception NoSuchAttributeException(object context)

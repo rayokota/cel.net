@@ -19,6 +19,8 @@ namespace Cel.Parser;
 
 public sealed class Unescape
 {
+    private static readonly UTF8Encoding UTF8 = new UTF8Encoding(false, true);
+    
     /// <summary>
     ///     Unescape takes a quoted string, unquotes, and unescapes it.
     ///     <para>
@@ -165,7 +167,7 @@ public sealed class Unescape
                         }
 
                         if (!isBytes)
-                            EncodeCodePoint(buf, v, Encoding.UTF8);
+                            EncodeCodePoint(buf, v, UTF8);
                         else
                             buf.WriteByte(Convert.ToByte(v));
 
@@ -189,7 +191,7 @@ public sealed class Unescape
                         }
 
                         if (!isBytes)
-                            EncodeCodePoint(buf, v, Encoding.UTF8);
+                            EncodeCodePoint(buf, v, UTF8);
                         else
                             buf.WriteByte(Convert.ToByte(v));
 
@@ -204,7 +206,7 @@ public sealed class Unescape
             {
                 // not an escape sequence
                 if (!isBytes)
-                    EncodeCodePoint(buf, c, Encoding.UTF8);
+                    EncodeCodePoint(buf, c, UTF8);
                 else
                     buf.WriteByte(Convert.ToByte(c));
             }
@@ -216,7 +218,7 @@ public sealed class Unescape
 
     private static MemoryStream WrapBlindly(string value)
     {
-        var encoding = Encoding.UTF8;
+        var encoding = UTF8;
         return new MemoryStream(encoding.GetBytes(value));
     }
 
@@ -250,7 +252,7 @@ public sealed class Unescape
 
     public static string ToUtf8(MemoryStream buf)
     {
-        var reader = new StreamReader(buf, Encoding.UTF8);
+        var reader = new StreamReader(buf, UTF8);
         return reader.ReadToEnd();
     }
 }

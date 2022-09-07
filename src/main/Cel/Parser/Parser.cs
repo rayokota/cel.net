@@ -537,13 +537,16 @@ public sealed class Parser
             {
                 @base = 16;
                 text = text.Substring(2);
-            }
-
-            if (ctx.sign != null) text = ctx.sign.Text + text;
+            } 
+            else if (ctx.sign != null) text = ctx.sign.Text + text;
 
             try
             {
                 var i = Convert.ToInt64(text, @base);
+                if (@base == 16 && ctx.sign != null && ctx.sign.Text.Equals("-"))
+                {
+                    i = -i;  // since Convert cannot handle minus sign if base is not 10
+                }
                 return helper.NewLiteralInt(ctx, i);
             }
             catch (Exception)

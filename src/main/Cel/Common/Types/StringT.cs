@@ -33,6 +33,8 @@ public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
     public static readonly Type StringType = TypeT.NewTypeValue(TypeEnum.String, Trait.AdderType,
         Trait.ComparerType, Trait.MatcherType, Trait.ReceiverType, Trait.SizerType);
 
+    public static readonly UTF8Encoding UTF8 = new UTF8Encoding(false, true);
+
     private static readonly IDictionary<string, Func<string, Val, Val>> stringOneArgOverloads;
 
     private readonly string s;
@@ -122,7 +124,7 @@ public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
     {
         if (typeDesc == typeof(string) || typeDesc == typeof(object)) return s;
 
-        if (typeDesc == typeof(byte[])) return Encoding.UTF8.GetBytes(s);
+        if (typeDesc == typeof(byte[])) return UTF8.GetBytes(s);
 
         if (typeDesc == typeof(Any))
         {
@@ -172,7 +174,7 @@ public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
 
                     break;
                 case TypeEnum.InnerEnum.Bytes:
-                    return BytesT.BytesOf(Encoding.UTF8.GetBytes(s));
+                    return BytesT.BytesOf(UTF8.GetBytes(s));
                 case TypeEnum.InnerEnum.Duration:
                     return DurationT.DurationOf(s).RangeCheck();
                 case TypeEnum.InnerEnum.Timestamp:
@@ -187,7 +189,7 @@ public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
         }
         catch (Exception e)
         {
-            return Err.NewErr(e, "error during type conversion from '{0}' to {0}: {0}", StringType, typeVal,
+            return Err.NewErr(e, "error during type conversion from '{0}' to {1}: {2}", StringType, typeVal,
                 e.ToString());
         }
     }

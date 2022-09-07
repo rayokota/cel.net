@@ -74,6 +74,7 @@ public sealed class Checked
         var map = new Type.Types.MapType();
         map.KeyType = checkedString;
         map.ValueType = checkedDyn;
+        type.MapType = map;
         checkedMapStringDyn = type;
 
         CheckedPrimitives[Field.Types.Kind.TypeBool] = checkedBool;

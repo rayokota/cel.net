@@ -100,7 +100,7 @@ public sealed class BytesT : BaseVal, Adder, Comparer, Sizer
 
     public static BytesT BytesOf(string s)
     {
-        var encoding = Encoding.UTF8;
+        var encoding = StringT.UTF8;
         return new BytesT(encoding.GetBytes(s));
     }
 
