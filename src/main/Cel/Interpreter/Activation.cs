@@ -43,7 +43,7 @@ public interface Activation
     static Activation EmptyActivation()
     {
         // This call cannot fail.
-        return NewActivation(new Dictionary<object, object>());
+        return NewActivation(new Dictionary<string, object>());
     }
 
     /// <summary>
@@ -70,8 +70,8 @@ public interface Activation
 
         if (bindings is Activation) return (Activation)bindings;
 
-        if (bindings is IDictionary<object, object>)
-            return new MapActivation((IDictionary<object, object>)bindings);
+        if (bindings is IDictionary<string, object>)
+            return new MapActivation((IDictionary<string, object>)bindings);
 
         throw new ArgumentException(string.Format(
             "activation input must be an activation or map[string]interface: got {0}", bindings.GetType().FullName));
@@ -127,9 +127,9 @@ public interface Activation
 
 public sealed class MapActivation : Activation
 {
-    internal readonly IDictionary<object, object> bindings;
+    internal readonly IDictionary<string, object> bindings;
 
-    internal MapActivation(IDictionary<object, object> bindings)
+    internal MapActivation(IDictionary<string, object> bindings)
     {
         this.bindings = bindings;
     }

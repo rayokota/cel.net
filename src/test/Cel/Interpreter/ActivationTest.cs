@@ -27,7 +27,7 @@ public class ActivationTest
     [Test]
     public virtual void Activation()
     {
-        var act = global::Cel.Interpreter.Activation.NewActivation(TestUtil.MapOf("a", BoolT.True));
+        var act = global::Cel.Interpreter.Activation.NewActivation(TestUtil.BindingsOf("a", BoolT.True));
         Assert.That(act, Is.Not.Null);
         Assert.That(global::Cel.Interpreter.Activation.NewActivation(act), Is.Not.Null);
         Assert.That(() => global::Cel.Interpreter.Activation.NewActivation(""),
@@ -37,7 +37,7 @@ public class ActivationTest
     [Test]
     public virtual void Resolve()
     {
-        var activation = global::Cel.Interpreter.Activation.NewActivation(TestUtil.MapOf("a", BoolT.True));
+        var activation = global::Cel.Interpreter.Activation.NewActivation(TestUtil.BindingsOf("a", BoolT.True));
         Assert.That(activation.ResolveName("a"), Is.SameAs(BoolT.True));
     }
 
@@ -50,7 +50,7 @@ public class ActivationTest
             if (v.Get() == null) v.Set(DefaultTypeAdapter.Instance.NativeToValue(new ZonedDateTime()));
             return v.Get();
         };
-        IDictionary<object, object> map = new Dictionary<object, object>();
+        IDictionary<string, object> map = new Dictionary<string, object>();
         map["now"] = now;
         var a = global::Cel.Interpreter.Activation.NewActivation(map);
         var first = a.ResolveName("now");
@@ -62,12 +62,12 @@ public class ActivationTest
     public virtual void HierarchicalActivation()
     {
         // compose a parent with more properties than the child
-        IDictionary<object, object> parentMap = new Dictionary<object, object>();
+        IDictionary<string, object> parentMap = new Dictionary<string, object>();
         parentMap["a"] = StringT.StringOf("world");
         parentMap["b"] = IntT.IntOf(-42);
         var parent = global::Cel.Interpreter.Activation.NewActivation(parentMap);
         // compose the child such that it shadows the parent
-        IDictionary<object, object> childMap = new Dictionary<object, object>();
+        IDictionary<string, object> childMap = new Dictionary<string, object>();
         childMap["a"] = BoolT.True;
         childMap["c"] = StringT.StringOf("universe");
         var child = global::Cel.Interpreter.Activation.NewActivation(childMap);

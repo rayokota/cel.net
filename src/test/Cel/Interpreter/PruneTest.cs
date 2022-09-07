@@ -28,7 +28,7 @@ internal class PruneTest
     {
         return new[]
         {
-            new(TestUtil.MapOf("msg", TestUtil.MapOf("foo", "bar")), "msg",
+            new(TestUtil.BindingsOf("msg", TestUtil.BindingsOf("foo", "bar")), "msg",
                 "{\"foo\": \"bar\"}"),
             new TestCase(null, "true && false", "false"),
             new TestCase(UnknownActivation("x"), "(true || false) && x", "x"),
@@ -80,7 +80,7 @@ internal class PruneTest
             pats[i] = AttributePattern.NewAttributePattern(v);
         }
 
-        return Activation.NewPartialActivation(new Dictionary<object, object>(), pats);
+        return Activation.NewPartialActivation(new Dictionary<string, object>(), pats);
     }
 
     internal virtual Activation TestActivation(object @in)

@@ -105,7 +105,7 @@ public class ProviderTest
         dict[3L] = 4L;
         TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new ParsedExpr());
         var sourceInfo = reg.NewValue("google.api.expr.v1alpha1.SourceInfo",
-            TestUtil.MappingOf("location", StringT.StringOf("TestTypeRegistryNewValue"), "line_offsets",
+            TestUtil.ValMapOf("location", StringT.StringOf("TestTypeRegistryNewValue"), "line_offsets",
                 ListT.NewGenericArrayList(reg.ToTypeAdapter(), new long?[] { 0L, 2L }), "positions",
                 MapT.NewMaybeWrappedMap(reg.ToTypeAdapter(), dict)));
         Assert.That(Err.IsError(sourceInfo), Is.False);
@@ -122,11 +122,11 @@ public class ProviderTest
     {
         TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new CheckedExpr(), new ParsedExpr());
         var exp = reg.NewValue("google.api.expr.v1alpha1.CheckedExpr",
-            TestUtil.MappingOf("expr",
+            TestUtil.ValMapOf("expr",
                 reg.NewValue("google.api.expr.v1alpha1.Expr",
-                    TestUtil.MappingOf("const_expr",
+                    TestUtil.ValMapOf("const_expr",
                         reg.NewValue("google.api.expr.v1alpha1.Constant",
-                            TestUtil.MappingOf("string_value", StringT.StringOf("oneof")))))));
+                            TestUtil.ValMapOf("string_value", StringT.StringOf("oneof")))))));
 
         Assert.That(Err.IsError(exp), Is.False);
         var ce = (CheckedExpr)exp.ConvertToNative(typeof(CheckedExpr));
@@ -138,7 +138,7 @@ public class ProviderTest
     {
         TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new TestAllTypes());
         var exp = reg.NewValue("google.api.expr.test.v1.proto3.TestAllTypes",
-            TestUtil.MappingOf("single_int32", IntT.IntOf(123)));
+            TestUtil.ValMapOf("single_int32", IntT.IntOf(123)));
         Assert.That(Err.IsError(exp), Is.False);
         var ce = (TestAllTypes)exp.ConvertToNative(typeof(TestAllTypes));
         Assert.That(ce.SingleInt32, Is.EqualTo(123));
@@ -149,7 +149,7 @@ public class ProviderTest
     {
         TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new TestAllTypes());
         var exp = reg.NewValue("google.api.expr.test.v1.proto3.TestAllTypes",
-            TestUtil.MappingOf("single_int32_wrapper", IntT.IntOf(123)));
+            TestUtil.ValMapOf("single_int32_wrapper", IntT.IntOf(123)));
         Assert.That(Err.IsError(exp), Is.False);
         var ce = (TestAllTypes)exp.ConvertToNative(typeof(TestAllTypes));
         Assert.That(ce.SingleInt32Wrapper.Value, Is.EqualTo(123));
@@ -163,7 +163,7 @@ public class ProviderTest
         dict[1L] = 2;
         dict[3L] = 4;
         var sourceInfo = reg.NewValue("google.api.expr.v1alpha1.SourceInfo",
-            TestUtil.MappingOf("location", StringT.StringOf("TestTypeRegistryGetFieldValue"), "line_offsets",
+            TestUtil.ValMapOf("location", StringT.StringOf("TestTypeRegistryGetFieldValue"), "line_offsets",
                 ListT.NewGenericArrayList(reg.ToTypeAdapter(), new long?[] { 0L, 2L }), "positions",
                 MapT.NewMaybeWrappedMap(reg.ToTypeAdapter(), dict)));
         Assert.That(Err.IsError(sourceInfo), Is.False);

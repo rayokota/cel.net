@@ -35,7 +35,7 @@ internal class AttributesTest
         TypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var cont = Container.NewContainer(Container.Name("acme.ns"));
         var attrs = AttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
-        var vars = Activation.NewActivation(TestUtil.MapOf("acme.a",
+        var vars = Activation.NewActivation(TestUtil.BindingsOf("acme.a",
             TestUtil.MapOf("b", TestUtil.MapOf(4L, TestUtil.MapOf(false, "success")))));
 
         // acme.a.b[4][false]
@@ -72,7 +72,7 @@ internal class AttributesTest
     {
         TypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var attrs = AttributeFactory.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
-        var data = TestUtil.MapOf("a", TestUtil.MapOf(-1, new[] { 2, 42 }), "b", 1);
+        var data = TestUtil.BindingsOf("a", TestUtil.MapOf(-1, new[] { 2, 42 }), "b", 1);
         var vars = Activation.NewActivation(data);
 
         // The relative attribute under test is applied to a map literal:
@@ -102,7 +102,7 @@ internal class AttributesTest
         var cont = Container.NewContainer(Container.Name("acme.ns"));
         var attrs = AttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
         var
-            data = TestUtil.MapOf("a", TestUtil.MapOf(-1, new[] { 2, 42 }), "acme.b", 1);
+            data = TestUtil.BindingsOf("a", TestUtil.MapOf(-1, new[] { 2, 42 }), "acme.b", 1);
         var vars = Activation.NewActivation(data);
 
         // The relative attribute under test is applied to a map literal:
@@ -137,7 +137,7 @@ internal class AttributesTest
     {
         TypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var attrs = AttributeFactory.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
-        var data = TestUtil.MapOf("a", TestUtil.MapOf(-1, new[] { 2, 42 }), "b",
+        var data = TestUtil.BindingsOf("a", TestUtil.MapOf(-1, new[] { 2, 42 }), "b",
             new[] { 0, 1 }, "c", new object[] { 1, 0 });
         var vars = Activation.NewActivation(data);
 
@@ -177,7 +177,7 @@ internal class AttributesTest
         var cont = Container.NewContainer(Container.Name("acme.ns"));
         TypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var attrs = AttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
-        var data = TestUtil.MapOf("a",
+        var data = TestUtil.BindingsOf("a",
             TestUtil.MapOf(-1, TestUtil.MapOf("first", 1, "second", 2, "third", 3)), "b", 2L);
         var vars = Activation.NewActivation(data);
 
@@ -232,7 +232,7 @@ internal class AttributesTest
         TypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var cont = Container.NewContainer(Container.Name("acme.ns"));
         var attrs = AttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
-        var data = TestUtil.MapOf("a", TestUtil.MapOf("b", new[] { 2, 42 }), "acme.a.b",
+        var data = TestUtil.BindingsOf("a", TestUtil.MapOf("b", new[] { 2, 42 }), "acme.a.b",
             1, "acme.ns.a.b", "found");
         var vars = Activation.NewActivation(data);
 
@@ -251,7 +251,7 @@ internal class AttributesTest
     {
         TypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var attrs = AttributeFactory.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
-        var data = TestUtil.MapOf("a", TestUtil.MapOf(-1, new[] { 2, 42 }), "b",
+        var data = TestUtil.BindingsOf("a", TestUtil.MapOf(-1, new[] { 2, 42 }), "b",
             TestUtil.MapOf("c", TestUtil.MapOf(-1, new[] { 2, 42 })));
         var vars = Activation.NewActivation(data);
 
@@ -277,7 +277,7 @@ internal class AttributesTest
     {
         TypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var attrs = AttributeFactory.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
-        var data = TestUtil.MapOf("a", TestUtil.MapOf(-1, new[] { 2, 42 }), "b",
+        var data = TestUtil.BindingsOf("a", TestUtil.MapOf(-1, new[] { 2, 42 }), "b",
             TestUtil.MapOf("c", TestUtil.MapOf(-1, new[] { 2, 42 })));
         var vars = Activation.NewActivation(data);
 
@@ -331,7 +331,7 @@ internal class AttributesTest
         msg.SingleNestedMessage = nestedMsg;
         TypeRegistry reg = ProtoTypeRegistry.NewRegistry(msg);
         var attrs = AttributeFactory.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
-        var vars = Activation.NewActivation(TestUtil.MapOf("msg", msg));
+        var vars = Activation.NewActivation(TestUtil.BindingsOf("msg", msg));
         var attr = attrs.AbsoluteAttribute(1, "msg");
         var opType = reg.FindType("google.api.expr.test.v1.proto3.TestAllTypes");
         Assert.That(opType, Is.Not.Null);
@@ -351,7 +351,7 @@ internal class AttributesTest
                 AttributeFactory.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg));
         var msg = new TestAllTypes.Types.NestedMessage();
         msg.Bb = 123;
-        var vars = Activation.NewActivation(TestUtil.MapOf("msg", msg));
+        var vars = Activation.NewActivation(TestUtil.BindingsOf("msg", msg));
         var attr = attrs.AbsoluteAttribute(1, "msg");
         var type = new Type();
         type.MessageType = "google.api.expr.test.v1.proto3.TestAllTypes.NestedMessage";
@@ -370,7 +370,7 @@ internal class AttributesTest
         TypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var attrs = AttributeFactory.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
         var any = Any.Pack(new TestAllTypes());
-        var vars = Activation.NewActivation(TestUtil.MapOf("missing_msg", any));
+        var vars = Activation.NewActivation(TestUtil.BindingsOf("missing_msg", any));
 
         // missing_msg.field
         var attr = attrs.AbsoluteAttribute(1, "missing_msg");
@@ -385,7 +385,7 @@ internal class AttributesTest
         TypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var attrs = AttributePattern.NewPartialAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
         var any = Any.Pack(new TestAllTypes());
-        Activation vars = Activation.NewPartialActivation(TestUtil.MapOf("missing_msg", any),
+        Activation vars = Activation.NewPartialActivation(TestUtil.BindingsOf("missing_msg", any),
             AttributePattern.NewAttributePattern("missing_msg").QualString("field"));
 
         // missing_msg.field
@@ -400,22 +400,22 @@ internal class AttributesTest
     {
         return new[]
         {
-            new TestDef("[{\"field\": true}][0].field").Env().In(TestUtil.MapOf()).Out(BoolT.True).State(
+            new TestDef("[{\"field\": true}][0].field").Env().In(TestUtil.BindingsOf()).Out(BoolT.True).State(
                 TestUtil.MapOf(1L, true, 6L, TestUtil.MapOf(StringT.StringOf("field"), BoolT.True), 8L, true)),
             new TestDef("a[1]['two']")
                 .Env(Decls.NewVar("a", Decls.NewMapType(Decls.Int, Decls.NewMapType(Decls.String, Decls.Bool))))
-                .In(TestUtil.MapOf("a", TestUtil.MapOf(1L, TestUtil.MapOf("two", true)))).Out(BoolT.True)
+                .In(TestUtil.BindingsOf("a", TestUtil.MapOf(1L, TestUtil.MapOf("two", true)))).Out(BoolT.True)
                 .State(TestUtil.MapOf(1L, true, 2L, TestUtil.MapOf("two", true), 4L, true)),
             new TestDef("a[1][2][3]")
                 .Env(Decls.NewVar("a", Decls.NewMapType(Decls.Int, Decls.NewMapType(Decls.Dyn, Decls.Dyn))))
-                .In(TestUtil.MapOf("a",
+                .In(TestUtil.BindingsOf("a",
                     TestUtil.MapOf(1, TestUtil.MapOf(1L, 0L, 2L, new[] { "index", "middex", "outdex", "dex" }))))
                 .Out(StringT.StringOf("dex")).State(TestUtil.MapOf(1L, "dex", 2L,
                     TestUtil.MapOf(1L, 0L, 2L, new[] { "index", "middex", "outdex", "dex" }), 4L,
                     new[] { "index", "middex", "outdex", "dex" }, 6L, "dex")),
             new TestDef("a[1][2][a[1][1]]")
                 .Env(Decls.NewVar("a", Decls.NewMapType(Decls.Int, Decls.NewMapType(Decls.Dyn, Decls.Dyn))))
-                .In(TestUtil.MapOf("a",
+                .In(TestUtil.BindingsOf("a",
                     TestUtil.MapOf(1L,
                         TestUtil.MapOf(1L, 0L, 2L, new[] { "index", "middex", "outdex", "dex" }))))
                 .Out(StringT.StringOf("index")).State(TestUtil.MapOf(1L, "index", 2L,
@@ -469,7 +469,7 @@ internal class AttributesTest
                 AttributeFactory.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg));
         var msg = new TestAllTypes.Types.NestedMessage();
         msg.Bb = 123;
-        var vars = Activation.NewActivation(TestUtil.MapOf("msg", msg));
+        var vars = Activation.NewActivation(TestUtil.BindingsOf("msg", msg));
         var attr = attrs.AbsoluteAttribute(1, "msg");
         var type = new Type();
         type.MessageType = "google.api.expr.test.v1.proto3.TestAllTypes.NestedMessage";
@@ -488,7 +488,7 @@ internal class AttributesTest
     {
         internal readonly string expr;
         internal IList<Decl> env;
-        internal IDictionary<object, object> @in;
+        internal IDictionary<string, object> @in;
         internal Val @out;
         internal IDictionary<object, object> state;
 
@@ -503,7 +503,7 @@ internal class AttributesTest
             return this;
         }
 
-        internal virtual TestDef In(IDictionary<object, object> @in)
+        internal virtual TestDef In(IDictionary<string, object> @in)
         {
             this.@in = @in;
             return this;

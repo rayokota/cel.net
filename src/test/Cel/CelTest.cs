@@ -95,7 +95,7 @@ public class CELTest
 
         // If the Eval() call were provided with cel.evalOptions(OptTrackState) the details response
         // (2nd return) would be non-nil.
-        var @out = prg.Eval(TestUtil.MapOf("i", "CEL", "you", "world"));
+        var @out = prg.Eval(TestUtil.BindingsOf("i", "CEL", "you", "world"));
 
         Assert.That(@out.Val.Equal(StringT.StringOf("Hello world! I'm CEL.")), Is.SameAs(BoolT.True));
     }
@@ -109,7 +109,7 @@ public class CELTest
         var astIss = env.Compile("\"hello \"+ name.first"); // abbreviation resolved here.
         Assert.That(astIss.HasIssues(), Is.False);
         var prg = env.Program(astIss.Ast);
-        var @out = prg.Eval(TestUtil.MapOf("qualified.identifier.name.first", "Jim"));
+        var @out = prg.Eval(TestUtil.BindingsOf("qualified.identifier.name.first", "Jim"));
         Assert.That(@out.Val.Value(), Is.EqualTo("hello Jim"));
     }
 
@@ -122,8 +122,8 @@ public class CELTest
         Assert.That(astIss.HasIssues(), Is.False);
         var prg = env.Program(astIss.Ast); // abbreviation resolved here.
         var @out =
-            prg.Eval(TestUtil.MapOf("qualified.identifier.name",
-                TestUtil.MapOf("first", "Jim")));
+            prg.Eval(TestUtil.BindingsOf("qualified.identifier.name",
+                TestUtil.BindingsOf("first", "Jim")));
         Assert.That(@out.Val.Value(), Is.EqualTo("hello Jim"));
     }
 
@@ -139,9 +139,9 @@ public class CELTest
         var astIss = env.Compile("test ? dyn(Expr) : google.api.expr.v1alpha1.Expr{id: 1}");
         Assert.That(astIss.HasIssues(), Is.False);
         var prg = env.Program(astIss.Ast);
-        var @out = prg.Eval(TestUtil.MapOf("test", true, "external.Expr", "string expr"));
+        var @out = prg.Eval(TestUtil.BindingsOf("test", true, "external.Expr", "string expr"));
         Assert.That(@out.Val.Value(), Is.EqualTo("string expr"));
-        @out = prg.Eval(TestUtil.MapOf("test", false, "external.Expr", "wrong expr"));
+        @out = prg.Eval(TestUtil.BindingsOf("test", false, "external.Expr", "wrong expr"));
         var want = new Expr();
         want.Id = 1;
         var got = (Expr)@out.Val.ConvertToNative(typeof(Expr));
@@ -169,7 +169,7 @@ public class CELTest
         var astIss = e.Compile("a.b.c");
         Assert.That(astIss.HasIssues(), Is.False);
         var prg = e.Program(astIss.Ast);
-        var @out = prg.Eval(TestUtil.MapOf("a.b.c", true));
+        var @out = prg.Eval(TestUtil.BindingsOf("a.b.c", true));
         Assert.That(@out.Val, Is.SameAs(BoolT.True));
     }
 
@@ -211,14 +211,14 @@ public class CELTest
         var astIss = e.Compile("name in ['hello', 'world']");
         Assert.That(astIss.HasIssues(), Is.False);
         var prg = e.Program(astIss.Ast, funcs);
-        var @out = prg.Eval(TestUtil.MapOf("name", "world"));
+        var @out = prg.Eval(TestUtil.BindingsOf("name", "world"));
         Assert.That(@out.Val, Is.SameAs(BoolT.True));
         // })
         // t.Run("ok_map", func(t *testing.T) {
         astIss = e.Compile("name in {'hello': false, 'world': true}");
         Assert.That(astIss.HasIssues(), Is.False);
         prg = e.Program(astIss.Ast, funcs);
-        @out = prg.Eval(TestUtil.MapOf("name", "world"));
+        @out = prg.Eval(TestUtil.BindingsOf("name", "world"));
         Assert.That(@out.Val, Is.SameAs(BoolT.True));
         // })
     }
@@ -257,7 +257,7 @@ public class CELTest
         var expr2 = new Expr();
         expr2.Id = 2;
         expr2.CallExpr = call;
-        object vars = TestUtil.MapOf("expr", expr2);
+        object vars = TestUtil.BindingsOf("expr", expr2);
         var @out = prg.Eval(vars);
         Assert.That(@out.Val, Is.SameAs(BoolT.True));
     }
@@ -412,22 +412,22 @@ public class CELTest
 
         // Global variables can be configured as a ProgramOption and optionally overridden on Eval.
         var prg = e.Program(astIss.Ast, funcs,
-            IProgramOption.Globals(TestUtil.MapOf("default", "third")));
+            IProgramOption.Globals(TestUtil.BindingsOf("default", "third")));
 
         // t.Run("global_default", func(t *testing.T) {
-        object vars = TestUtil.MapOf("attrs", TestUtil.MapOf());
+        object vars = TestUtil.BindingsOf("attrs", TestUtil.BindingsOf());
         var @out = prg.Eval(vars);
         Assert.That(@out.Val.Equal(StringT.StringOf("third")), Is.SameAs(BoolT.True));
         // })
 
         // t.Run("attrs_alt", func(t *testing.T) {
-        vars = TestUtil.MapOf("attrs", TestUtil.MapOf("second", "yep"));
+        vars = TestUtil.BindingsOf("attrs", TestUtil.BindingsOf("second", "yep"));
         @out = prg.Eval(vars);
         Assert.That(@out.Val.Equal(StringT.StringOf("yep")), Is.SameAs(BoolT.True));
         // })
 
         // t.Run("local_default", func(t *testing.T) {
-        vars = TestUtil.MapOf("attrs", TestUtil.MapOf(), "default", "fourth");
+        vars = TestUtil.BindingsOf("attrs", TestUtil.BindingsOf(), "default", "fourth");
         @out = prg.Eval(vars);
         Assert.That(@out.Val.Equal(StringT.StringOf("fourth")), Is.SameAs(BoolT.True));
         // })
@@ -478,7 +478,7 @@ public class CELTest
         var astIss = e.Compile("{k: true}[k] || v != false");
 
         var prg = e.Program(astIss.Ast, IProgramOption.EvalOptions(EvalOption.OptExhaustiveEval));
-        var outDetails = prg.Eval(TestUtil.MapOf("k", "key", "v", true));
+        var outDetails = prg.Eval(TestUtil.BindingsOf("k", "key", "v", true));
         Assert.That(outDetails.Val, Is.SameAs(BoolT.True));
 
         // Test to see whether 'v != false' was resolved to a value.
@@ -529,8 +529,8 @@ public class CELTest
             Decls.NewVar("request.time", Decls.Timestamp),
             Decls.NewVar("request.auth.claims", Decls.NewMapType(Decls.String, Decls.String))));
         var unkVars = Cel.PartialVars(
-            TestUtil.MapOf("resource.name", "bucket/my-bucket/objects/private", "request.auth.claims",
-                TestUtil.MapOf("email_verified", "true")),
+            TestUtil.BindingsOf("resource.name", "bucket/my-bucket/objects/private", "request.auth.claims",
+                TestUtil.BindingsOf("email_verified", "true")),
             Cel.NewAttributePattern("request.auth.claims").QualString("email"));
         var astIss = e.Compile("resource.name.startsWith(\"bucket/my-bucket\") &&\n" +
                                "\t\t bool(request.auth.claims.email_verified) == true &&\n" +
@@ -672,7 +672,7 @@ public class CELTest
         var prg = e.Program(astIss.Ast,
             IProgramOption.EvalOptions(EvalOption.OptTrackState, EvalOption.OptPartialEval));
         var vars = Cel.PartialVars(
-            TestUtil.MapOf("x", TestUtil.MapOf("zero", 0, "abc", 123, "string", "abc"),
+            TestUtil.BindingsOf("x", TestUtil.BindingsOf("zero", 0, "abc", 123, "string", "abc"),
                 "y",
                 new List<int> { 123 }), Cel.NewAttributePattern("u"));
         var outDet = prg.Eval(vars);
@@ -694,7 +694,7 @@ public class CELTest
         for (var x = 123; x < 456; x++)
         {
             var vars =
-                Cel.PartialVars(TestUtil.MapOf("x", x), Cel.NewAttributePattern("y"));
+                Cel.PartialVars(TestUtil.BindingsOf("x", x), Cel.NewAttributePattern("y"));
             var outDet = prg.Eval(vars);
             Assert.That(outDet.Val, Is.Not.Null.And.Matches<object>(o => UnknownT.IsUnknown(o)));
             var residual = e.ResidualAst(astIss.Ast, outDet.EvalDetails);

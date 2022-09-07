@@ -22,6 +22,20 @@ namespace Cel;
 
 public class TestUtil
 {
+    public static IDictionary<string, object> BindingsOf(string k, object v, params object[] kvPairs)
+    {
+        IDictionary<string, object> map = new Dictionary<string, object>();
+        Assert.That(kvPairs.Length % 2, Is.EqualTo(0));
+        map[k] = v;
+        for (var i = 0; i < kvPairs.Length; i += 2) map[kvPairs[i].ToString()] = kvPairs[i + 1];
+        return map;
+    }
+
+    public static IDictionary<string, object> BindingsOf()
+    {
+        return new Dictionary<string, object>();
+    }
+
     public static IDictionary<object, object> MapOf(object k, object v, params object[] kvPairs)
     {
         IDictionary<object, object> map = new Dictionary<object, object>();
@@ -31,12 +45,7 @@ public class TestUtil
         return map;
     }
 
-    public static IDictionary<object, object> MapOf()
-    {
-        return new Dictionary<object, object>();
-    }
-
-    public static IDictionary<string, Val> MappingOf(string k, Val v, params object[] kvPairs)
+    public static IDictionary<string, Val> ValMapOf(string k, Val v, params object[] kvPairs)
     {
         IDictionary<string, Val> map = new Dictionary<string, Val>();
         Assert.That(kvPairs.Length % 2, Is.EqualTo(0));
