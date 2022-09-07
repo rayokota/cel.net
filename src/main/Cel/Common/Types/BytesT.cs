@@ -130,7 +130,7 @@ public sealed class BytesT : BaseVal, Adder, Comparer, Sizer
             return Any.Pack(value);
         }
 
-        if (typeDesc == typeof(BytesValue)) return b;
+        if (typeDesc == typeof(BytesValue)) return ByteString.CopyFrom(b);
         /*
             var value = new BytesValue();
             value.Value = ByteString.CopyFrom(b);
