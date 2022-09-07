@@ -50,6 +50,11 @@ public class TypeT : Type, Val
         throw new NotSupportedException();
     }
 
+    public virtual ulong UintValue()
+    {
+        throw new NotSupportedException();
+    }
+
     /// <summary>
     ///     ConvertToNative implements ref.Val.ConvertToNative.
     /// </summary>

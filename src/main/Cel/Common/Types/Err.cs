@@ -266,6 +266,11 @@ public sealed class Err : BaseVal
         throw new NotSupportedException();
     }
 
+    public override ulong UintValue()
+    {
+        throw new NotSupportedException();
+    }
+
     /// <summary>
     ///     IsError returns whether the input element ref.Type or ref.Val is equal to the ErrType
     ///     singleton.

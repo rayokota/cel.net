@@ -61,6 +61,11 @@ public sealed class UnknownT : BaseVal
         return value;
     }
 
+    public override ulong UintValue()
+    {
+        return Convert.ToUInt64(value);
+    }
+
     /// <summary>
     ///     ConvertToType implements ref.Val.ConvertToType.
     /// </summary>

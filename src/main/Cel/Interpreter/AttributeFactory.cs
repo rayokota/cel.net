@@ -123,7 +123,7 @@ public interface AttributeFactory
                 case TypeEnum.InnerEnum.Int:
                     return new IntQualifier(id, val.IntValue(), val, adapter);
                 case TypeEnum.InnerEnum.Uint:
-                    return new UintQualifier(id, (ulong)val.IntValue(), val, adapter);
+                    return new UintQualifier(id, val.UintValue(), val, adapter);
                 case TypeEnum.InnerEnum.Bool:
                     return new BoolQualifier(id, val.BooleanValue(), val, adapter);
             }

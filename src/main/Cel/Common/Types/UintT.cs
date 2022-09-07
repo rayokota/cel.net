@@ -148,6 +148,11 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
         return Convert.ToInt64(i);
     }
 
+    public override ulong UintValue()
+    {
+        return i;
+    }
+
     /// <summary>
     ///     ConvertToNative implements ref.Val.ConvertToNative.
     /// </summary>

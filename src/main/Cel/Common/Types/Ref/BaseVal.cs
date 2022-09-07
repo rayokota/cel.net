@@ -34,6 +34,11 @@ public abstract class BaseVal : Val
         return ConvertToType(IntT.IntType).IntValue();
     }
 
+    public virtual ulong UintValue()
+    {
+        return ConvertToType(UintT.UintType).UintValue();
+    }
+
     public override int GetHashCode()
     {
         return Value().GetHashCode();

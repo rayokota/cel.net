@@ -239,7 +239,7 @@ public class ConformanceServiceImpl : ConformanceServiceImplBase
                 val.TypeValue = ((TypeT)res).TypeName();
                 return val;
             case TypeEnum.InnerEnum.Uint:
-                val.Uint64Value = (ulong)res.IntValue();
+                val.Uint64Value = res.UintValue();
                 return val;
             case TypeEnum.InnerEnum.Duration:
                 var d = (Duration)res.ConvertToNative(typeof(Duration));
