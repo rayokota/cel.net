@@ -57,10 +57,8 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
         timestampZeroArgOverloads[Overloads.TimeGetFullYear] = TimestampGetFullYear;
         timestampZeroArgOverloads[Overloads.TimeGetMonth] = TimestampGetMonth;
         timestampZeroArgOverloads[Overloads.TimeGetDayOfYear] = TimestampGetDayOfYear;
-        /*
         timestampZeroArgOverloads[Overloads.TimeGetDate] = TimestampT.TimestampGetDayOfMonthOneBased;
         timestampZeroArgOverloads[Overloads.TimeGetDayOfMonth] = TimestampT.TimestampGetDayOfMonthZeroBased;
-        */
         timestampZeroArgOverloads[Overloads.TimeGetDayOfWeek] = TimestampGetDayOfWeek;
         timestampZeroArgOverloads[Overloads.TimeGetHours] = TimestampGetHours;
         timestampZeroArgOverloads[Overloads.TimeGetMinutes] = TimestampGetMinutes;
@@ -71,10 +69,8 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
         timestampOneArgOverloads[Overloads.TimeGetFullYear] = TimestampGetFullYearWithTz;
         timestampOneArgOverloads[Overloads.TimeGetMonth] = TimestampGetMonthWithTz;
         timestampOneArgOverloads[Overloads.TimeGetDayOfYear] = TimestampGetDayOfYearWithTz;
-        /*
         timestampOneArgOverloads[Overloads.TimeGetDate] = TimestampT.TimestampGetDayOfMonthOneBasedWithTz;
         timestampOneArgOverloads[Overloads.TimeGetDayOfMonth] = TimestampT.TimestampGetDayOfMonthZeroBasedWithTz;
-        */
         timestampOneArgOverloads[Overloads.TimeGetDayOfWeek] = TimestampGetDayOfWeekWithTz;
         timestampOneArgOverloads[Overloads.TimeGetHours] = TimestampGetHoursWithTz;
         timestampOneArgOverloads[Overloads.TimeGetMinutes] = TimestampGetMinutesWithTz;
@@ -115,7 +111,7 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
     }
 
     /// <summary>
-    ///     Receive implements traits.Reciever.Receive.
+    ///     Receive implements traits.Receiver.Receive.
     /// </summary>
     public Val Receive(string function, string overload, params Val[] args)
     {
@@ -338,18 +334,15 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
         return IntT.IntOf(t.DayOfYear - 1);
     }
 
-    // TODO
-    /*
     public static Val TimestampGetDayOfMonthZeroBased(ZonedDateTime t)
     {
-      return IntT.IntOf(t.DayOfMonth() - 1);
+      return IntT.IntOf(t.Day - 1);
     }
 
     public static Val TimestampGetDayOfMonthOneBased(ZonedDateTime t)
     {
-      return intOf(t.getDayOfMonth());
+      return IntT.IntOf(t.Day);
     }
-    */
 
     public static Val TimestampGetDayOfWeek(ZonedDateTime t)
     {
@@ -391,17 +384,15 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
         return TimeZone(tz, TimestampGetDayOfYear, t);
     }
 
-    /*
     public static Val TimestampGetDayOfMonthZeroBasedWithTz(ZonedDateTime t, Val tz)
     {
-      return TimeZone(tz, TimestampT.TimestampGetDayOfMonthZeroBased, t);
+      return TimeZone(tz, TimestampGetDayOfMonthZeroBased, t);
     }
 
     public static Val TimestampGetDayOfMonthOneBasedWithTz(ZonedDateTime t, Val tz)
     {
-      return TimeZone(tz, TimestampT.TimestampGetDayOfMonthOneBased, t);
+      return TimeZone(tz, TimestampGetDayOfMonthOneBased, t);
     }
-    */
 
     public static Val TimestampGetDayOfWeekWithTz(ZonedDateTime t, Val tz)
     {

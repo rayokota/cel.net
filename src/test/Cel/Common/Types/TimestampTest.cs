@@ -327,10 +327,8 @@ public class TimestampTest
         Assert.That(new List<Val>
         {
             TimestampT.TimestampGetFullYear(value), TimestampT.TimestampGetMonth(value),
-            /*
             TimestampT.TimestampGetDayOfMonthOneBased(value), 
             TimestampT.TimestampGetDayOfMonthZeroBased(value),
-            */
             TimestampT.TimestampGetHours(value), TimestampT.TimestampGetMinutes(value),
             TimestampT.TimestampGetSeconds(value), TimestampT.TimestampGetDayOfWeek(value),
             TimestampT.TimestampGetDayOfYear(value)
@@ -338,9 +336,7 @@ public class TimestampTest
         {
             IntT.IntOf(dtZlocal.Year),
             IntT.IntOf(dtZlocal.Month - 1),
-            /*
             IntT.IntOf(dtZlocal.Day), IntT.IntOf(dtZlocal.Day - 1),
-            */
             IntT.IntOf(dtZlocal.Hour), IntT.IntOf(dtZlocal.Minute), IntT.IntOf(dtZlocal.Second),
             IntT.IntOf(dayOfWeekToIso(dtZlocal.DayOfWeek)), IntT.IntOf(dtZlocal.DayOfYear - 1)
         }));
@@ -356,10 +352,8 @@ public class TimestampTest
             {
                 TimestampT.TimestampGetFullYearWithTz(value, tzVal),
                 TimestampT.TimestampGetMonthWithTz(value, tzVal),
-                /*
                 TimestampT.TimestampGetDayOfMonthOneBasedWithTz(value, tzVal),
                 TimestampT.TimestampGetDayOfMonthZeroBasedWithTz(value, tzVal),
-                */
                 TimestampT.TimestampGetHoursWithTz(value, tzVal), TimestampT.TimestampGetMinutesWithTz(value, tzVal),
                 TimestampT.TimestampGetSecondsWithTz(value, tzVal),
                 TimestampT.TimestampGetDayOfWeekWithTz(value, tzVal),
@@ -369,10 +363,8 @@ public class TimestampTest
             {
                 IntT.IntOf(atZone.Year),
                 IntT.IntOf(atZone.Month - 1),
-                /*
-                IntT.IntOf(atZone.getDayOfMonth()),
-                IntT.IntOf(atZone.getDayOfMonth() - 1), 
-                */
+                IntT.IntOf(atZone.Day),
+                IntT.IntOf(atZone.Day - 1), 
                 IntT.IntOf(atZone.Hour), IntT.IntOf(atZone.Minute),
                 IntT.IntOf(atZone.Second), IntT.IntOf((int)atZone.DayOfWeek),
                 IntT.IntOf(atZone.DayOfYear - 1)

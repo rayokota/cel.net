@@ -48,7 +48,7 @@ cel_java_skips=(
   "--skip_test=parse/nest/message_literal"
   "--skip_test=parse/repeat/index"
 
-  # TODO Actual known issux to fix, a protobuf Any returned via this test is wrapped twice (Any in Any).
+  # TODO Actual known issue to fix, a protobuf Any returned via this test is wrapped twice (Any in Any).
   "--skip_test=dynamic/any/var"
 )
 
