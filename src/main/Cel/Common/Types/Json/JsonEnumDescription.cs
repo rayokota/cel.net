@@ -18,26 +18,26 @@ using Type = Google.Api.Expr.V1Alpha1.Type;
  */
 namespace Cel.Common.Types.Json;
 
-internal sealed class JsonEnumDescription
+public sealed class JsonEnumDescription
 {
     private readonly IEnumerable<Enum> enumValues;
 
     private readonly string name;
     private readonly Type pbType;
 
-    internal JsonEnumDescription(System.Type type)
+    public JsonEnumDescription(System.Type type)
     {
         name = type.FullName;
         enumValues = (IEnumerable<Enum>)Enum.GetValues(type);
         pbType = Checked.checkedInt;
     }
 
-    internal Type PbType()
+    public Type PbType()
     {
         return pbType;
     }
 
-    internal IEnumerable<JsonEnumValue> BuildValues()
+    public IEnumerable<JsonEnumValue> BuildValues()
     {
         return enumValues.Select(v => new JsonEnumValue(v));
     }

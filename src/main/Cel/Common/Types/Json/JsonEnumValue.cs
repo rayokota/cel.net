@@ -18,29 +18,29 @@ using Cel.Common.Types.Ref;
 
 namespace Cel.Common.Types.Json;
 
-internal sealed class JsonEnumValue
+public sealed class JsonEnumValue
 {
     private readonly Enum enumValue;
 
     private readonly Val ordinalValue;
 
-    internal JsonEnumValue(Enum enumValue)
+    public JsonEnumValue(Enum enumValue)
     {
         ordinalValue = IntT.IntOf(Convert.ToInt32(enumValue));
         this.enumValue = enumValue;
     }
 
-    internal static string FullyQualifiedName(Enum value)
+    public static string FullyQualifiedName(Enum value)
     {
         return value.GetType().FullName + '.' + Enum.GetName(value.GetType(), value);
     }
 
-    internal string FullyQualifiedName()
+    public string FullyQualifiedName()
     {
         return FullyQualifiedName(enumValue);
     }
 
-    internal Val OrdinalValue()
+    public Val OrdinalValue()
     {
         return ordinalValue;
     }

@@ -13,7 +13,7 @@ using Duration = NodaTime.Duration;
 using Type = System.Type;
 
 /*
- * Copyright (C) 2021 The Authors of CEL-Java
+ * Copyright (C) 2022 Robert Yokota
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ namespace Cel.Types.Json
             Google.Api.Expr.V1Alpha1.Type t = reg.FindType(typeof(CollectionsObject).FullName);
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
             Assert.That(t.MessageType, Is.EqualTo(typeof(CollectionsObject).FullName));
-            Assert.That(t.TypeKindCase, Is.EqualTo(TypeKindCase.MessageType);
+            Assert.That(t.TypeKindCase, Is.EqualTo(TypeKindCase.MessageType));
 
             JsonTypeDescription td = reg.TypeDescription(typeof(CollectionsObject));
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
@@ -68,22 +68,21 @@ namespace Cel.Types.Json
             Assert.That(tdInner.ReflectType(), Is.EqualTo(typeof(InnerType)));
             Assert.That(tdInner.Name(), Is.EqualTo(typeof(InnerType).FullName));
             Assert.That(tdInner.Type(), Is.EqualTo(TypeT.NewObjectTypeValue(typeof(InnerType).FullName)));
-            
+
             //
 
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-            Assert.That(reg)
-                .extracting(r => r.findIdent(typeof(CollectionsObject).FullName),
-                    r => r.findIdent(typeof(InnerType).FullName),
-                    r => r.findIdent(typeof(AnEnum).FullName + '.' + AnEnum.ENUM_VALUE_2.ToString())).containsExactly(
-                    TypeT.NewObjectTypeValue(typeof(CollectionsObject).FullName),
-                    TypeT.NewObjectTypeValue(typeof(InnerType).FullName), IntT.IntOf(AnEnum.ENUM_VALUE_2.ordinal()));
+            Assert.That(reg.FindIdent(typeof(CollectionsObject).FullName),
+                Is.EqualTo(TypeT.NewObjectTypeValue(typeof(CollectionsObject).FullName)));
+            Assert.That(reg.FindIdent(typeof(InnerType).FullName),
+                Is.EqualTo(TypeT.NewObjectTypeValue(typeof(InnerType).FullName)));
+            Assert.That(reg.FindIdent(typeof(AnEnum).FullName + '.' + AnEnum.ENUM_VALUE_2.ToString()),
+                Is.EqualTo(IntT.IntOf((int)AnEnum.ENUM_VALUE_1)));
 
-            Assert.ThatThrownBy(() => reg.TypeDescription(typeof(AnEnum)))
-                .isInstanceOf(typeof(System.ArgumentException));
-
-            Assert.ThatThrownBy(() => reg.EnumDescription(typeof(InnerType)))
-                .isInstanceOf(typeof(System.ArgumentException));
+            Assert.That(() => reg.TypeDescription(typeof(AnEnum)),
+                Throws.Exception.InstanceOf(typeof(ArgumentException)));
+            Assert.That(() => reg.EnumDescription(typeof(InnerType)),
+                Throws.Exception.InstanceOf(typeof(ArgumentException)));
         }
 
 //JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
@@ -95,67 +94,67 @@ namespace Cel.Types.Json
 
             // verify the map-type-fields
 
-            CheckMapType(reg, "stringBooleanMap", typeof(string), Checked.checkedString, typeof(Boolean),
+            CheckMapType(reg, "stringBooleanMap", typeof(string), Checked.checkedString, typeof(bool),
                 Checked.checkedBool);
-            CheckMapType(reg, "byteShortMap", typeof(Byte), Checked.checkedInt, typeof(Short), Checked.checkedInt);
-            CheckMapType(reg, "intLongMap", typeof(Integer), Checked.checkedInt, typeof(Long), Checked.checkedInt);
-            CheckMapType(reg, "ulongTimestampMap", typeof(ULong), Checked.checkedUint, typeof(Timestamp),
+            CheckMapType(reg, "byteShortMap", typeof(byte), Checked.checkedInt, typeof(short), Checked.checkedInt);
+            CheckMapType(reg, "intLongMap", typeof(int), Checked.checkedInt, typeof(long), Checked.checkedInt);
+            CheckMapType(reg, "ulongTimestampMap", typeof(ulong), Checked.checkedUint, typeof(Timestamp),
                 Checked.checkedTimestamp);
-            CheckMapType(reg, "ulongZonedDateTimeMap", typeof(ULong), Checked.checkedUint, typeof(ZonedDateTime),
+            CheckMapType(reg, "ulongZonedDateTimeMap", typeof(ulong), Checked.checkedUint, typeof(ZonedDateTime),
                 Checked.checkedTimestamp);
             CheckMapType(reg, "stringProtoDurationMap", typeof(string), Checked.checkedString, typeof(Duration),
                 Checked.checkedDuration);
             CheckMapType(reg, "stringJavaDurationMap", typeof(string), Checked.checkedString,
-                typeof(java.time.Duration), Checked.checkedDuration);
+                typeof(Period), Checked.checkedDuration);
             CheckMapType(reg, "stringBytesMap", typeof(string), Checked.checkedString, typeof(ByteString),
                 Checked.checkedBytes);
-            CheckMapType(reg, "floatDoubleMap", typeof(Float), Checked.checkedDouble, typeof(Double),
+            CheckMapType(reg, "floatDoubleMap", typeof(float), Checked.checkedDouble, typeof(double),
                 Checked.checkedDouble);
 
             // verify the list-type-fields
 
             CheckListType(reg, "stringList", typeof(string), Checked.checkedString);
-            CheckListType(reg, "booleanList", typeof(Boolean), Checked.checkedBool);
-            CheckListType(reg, "byteList", typeof(Byte), Checked.checkedInt);
-            CheckListType(reg, "shortList", typeof(Short), Checked.checkedInt);
-            CheckListType(reg, "intList", typeof(Integer), Checked.checkedInt);
-            CheckListType(reg, "longList", typeof(Long), Checked.checkedInt);
-            CheckListType(reg, "ulongList", typeof(ULong), Checked.checkedUint);
+            CheckListType(reg, "booleanList", typeof(bool), Checked.checkedBool);
+            CheckListType(reg, "byteList", typeof(byte), Checked.checkedInt);
+            CheckListType(reg, "shortList", typeof(short), Checked.checkedInt);
+            CheckListType(reg, "intList", typeof(int), Checked.checkedInt);
+            CheckListType(reg, "longList", typeof(long), Checked.checkedInt);
+            CheckListType(reg, "ulongList", typeof(ulong), Checked.checkedUint);
             CheckListType(reg, "timestampList", typeof(Timestamp), Checked.checkedTimestamp);
             CheckListType(reg, "zonedDateTimeList", typeof(ZonedDateTime), Checked.checkedTimestamp);
             CheckListType(reg, "durationList", typeof(Duration), Checked.checkedDuration);
-            CheckListType(reg, "javaDurationList", typeof(java.time.Duration), Checked.checkedDuration);
+            CheckListType(reg, "javaDurationList", typeof(Period), Checked.checkedDuration);
             CheckListType(reg, "bytesList", typeof(ByteString), Checked.checkedBytes);
-            CheckListType(reg, "floatList", typeof(Float), Checked.checkedDouble);
-            CheckListType(reg, "doubleList", typeof(Double), Checked.checkedDouble);
+            CheckListType(reg, "floatList", typeof(float), Checked.checkedDouble);
+            CheckListType(reg, "doubleList", typeof(double), Checked.checkedDouble);
         }
 
         private void CheckListType(JsonRegistry reg, string prop, Type valueClass,
-            com.google.api.expr.v1alpha1.Type valueType)
+            Google.Api.Expr.V1Alpha1.Type valueType)
         {
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
             JsonFieldType ft = (JsonFieldType)reg.FindFieldType(typeof(CollectionsObject).FullName, prop);
-            Assert.That(ft).isNotNull();
-            JavaType javaType = ft.PropertyWriter().getType();
+            Assert.That(ft, Is.Not.Null);
+            Type javaType = ft.PropertyWriter().GetType();
 
-            Assert.That(javaType).extracting(JavaType.isCollectionLikeType).isEqualTo(true);
-            Assert.That(javaType.getContentType()).extracting(JavaType.getRawClass).isSameAs(valueClass);
+            Assert.That(javaType).extracting(JavaType.isCollectionLikeType, Is.EqualTo(true));
+            Assert.That(javaType.getContentType()).extracting(JavaType.getRawClass, Is.SameAs(valueClass));
 
             Assert.That(ft.type).extracting(com.google.api.expr.v1alpha1.Type.getListType)
-                .extracting(Google.Api.Expr.V1Alpha1.Type.Types.ListType.getElemType).isSameAs(valueType);
+                .extracting(Google.Api.Expr.V1Alpha1.Type.Types.ListType.getElemType, Is.SameAs(valueType));
         }
 
         private void CheckMapType(JsonRegistry reg, string prop, Type keyClass,
-            com.google.api.expr.v1alpha1.Type keyType, Type valueClass, com.google.api.expr.v1alpha1.Type valueType)
+            Google.Api.Expr.V1Alpha1.Type keyType, Type valueClass, Google.Api.Expr.V1Alpha1.Type valueType)
         {
 //JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
             JsonFieldType ft = (JsonFieldType)reg.FindFieldType(typeof(CollectionsObject).FullName, prop);
             Assert.That(ft).isNotNull();
             JavaType javaType = ft.PropertyWriter().getType();
 
-            Assert.That(javaType).extracting(JavaType.isMapLikeType).isEqualTo(true);
-            Assert.That(javaType.getKeyType()).extracting(JavaType.getRawClass).isSameAs(keyClass);
-            Assert.That(javaType.getContentType()).extracting(JavaType.getRawClass).isSameAs(valueClass);
+            Assert.That(javaType).extracting(JavaType.isMapLikeType, Is.EqualTo(true));
+            Assert.That(javaType.getKeyType()).extracting(JavaType.getRawClass, Is.SameAs(keyClass));
+            Assert.That(javaType.getContentType()).extracting(JavaType.getRawClass, Is.SameAs(valueClass));
 
             Assert.That(ft.type).extracting(com.google.api.expr.v1alpha1.Type.getMapType)
                 .extracting(Google.Api.Expr.V1Alpha1.Type.Types.MapType.getKeyType,
@@ -172,17 +171,17 @@ namespace Cel.Types.Json
             reg.Register(typeof(CollectionsObject));
 
             Val collectionsVal = reg.NativeToValue(collectionsObject);
-            Assert.That(collectionsVal).isInstanceOf(typeof(ObjectT));
+            Assert.That(collectionsVal, Is.InstanceOf(typeof(ObjectT));
             ObjectT obj = (ObjectT)collectionsVal;
 
             Val x = obj.IsSet(StringT.StringOf("bart"));
 //JAVA TO C# CONVERTER TODO TASK: Method reference arbitrary object instance method syntax is not converted by Java to C# Converter:
-            Assert.That(x).isInstanceOf(typeof(Err)).extracting(e => (Err)e).extracting(Err::value)
+            Assert.That(x, Is.InstanceOf(typeof(Err)).extracting(e => (Err)e).extracting(Err::value)
                 .isEqualTo("no such field 'bart'");
 
             x = obj.Get(StringT.StringOf("bart"));
 //JAVA TO C# CONVERTER TODO TASK: Method reference arbitrary object instance method syntax is not converted by Java to C# Converter:
-            Assert.That(x).isInstanceOf(typeof(Err)).extracting(e => (Err)e).extracting(Err::value)
+            Assert.That(x, Is.InstanceOf(typeof(Err)).extracting(e => (Err)e).extracting(Err::value)
                 .isEqualTo("no such field 'bart'");
         }
 
@@ -196,13 +195,13 @@ namespace Cel.Types.Json
             reg.Register(typeof(CollectionsObject));
 
             Val collectionsVal = reg.NativeToValue(collectionsObject);
-            Assert.That(collectionsVal).isInstanceOf(typeof(ObjectT));
+            Assert.That(collectionsVal, Is.InstanceOf(typeof(ObjectT));
             ObjectT obj = (ObjectT)collectionsVal;
 
             foreach (string field in CollectionsObject.ALL_PROPERTIES)
             {
-                Assert.That(obj.IsSet(StringT.StringOf(field))).isSameAs(BoolT.False);
-                Assert.That(obj.Get(StringT.StringOf(field))).isSameAs(NullT.NullValue);
+                Assert.That(obj.IsSet(StringT.StringOf(field)), Is.SameAs(BoolT.False));
+                Assert.That(obj.Get(StringT.StringOf(field)), Is.SameAs(NullT.NullValue));
             }
         }
 
@@ -287,28 +286,28 @@ namespace Cel.Types.Json
             reg.Register(typeof(CollectionsObject));
 
             Val collectionsVal = reg.NativeToValue(collectionsObject);
-            Assert.That(collectionsVal).isInstanceOf(typeof(ObjectT));
+            Assert.That(collectionsVal, Is.InstanceOf(typeof(ObjectT));
             ObjectT obj = (ObjectT)collectionsVal;
 
             // briefly verify all fields
 
             foreach (string field in CollectionsObject.ALL_PROPERTIES)
             {
-                Assert.That(obj.IsSet(StringT.StringOf(field))).isSameAs(BoolT.True);
+                Assert.That(obj.IsSet(StringT.StringOf(field)), Is.SameAs(BoolT.True));
                 Assert.That(obj.Get(StringT.StringOf(field))).isNotNull();
 
                 Val fieldVal = obj.Get(StringT.StringOf(field));
                 object fieldObj = typeof(CollectionsObject).getDeclaredField(field).get(collectionsObject);
                 if (fieldObj is System.Collections.IDictionary)
                 {
-                    Assert.That(fieldVal).isInstanceOf(typeof(MapT));
+                    Assert.That(fieldVal, Is.InstanceOf(typeof(MapT));
                 }
                 else if (fieldObj is System.Collections.IList)
                 {
-                    Assert.That(fieldVal).isInstanceOf(typeof(ListT));
+                    Assert.That(fieldVal, Is.InstanceOf(typeof(ListT));
                 }
 
-                Assert.That(fieldVal.Equal(reg.NativeToValue(fieldObj))).isSameAs(BoolT.True);
+                Assert.That(fieldVal.Equal(reg.NativeToValue(fieldObj)), Is.SameAs(BoolT.True));
             }
 
             // check a few properties manually/explicitly
@@ -353,7 +352,7 @@ namespace Cel.Types.Json
             // verify enums
 
             Val x = obj.Get(StringT.StringOf("anEnum"));
-            Assert.That(x).isInstanceOf(typeof(IntT)).isEqualTo(IntT.IntOf(AnEnum.ENUM_VALUE_2.ordinal()));
+            Assert.That(x, Is.InstanceOf(typeof(IntT)).isEqualTo(IntT.IntOf(AnEnum.ENUM_VALUE_2.ordinal()));
             listVal = (ListT)obj.Get(StringT.StringOf("anEnumList"));
             Assert.That(listVal).extracting(l => l.get(IntT.IntOf(0)), l => l.get(IntT.IntOf(1)))
                 .containsExactly(IntT.IntOf(AnEnum.ENUM_VALUE_2.ordinal()), IntT.IntOf(AnEnum.ENUM_VALUE_3.ordinal()));

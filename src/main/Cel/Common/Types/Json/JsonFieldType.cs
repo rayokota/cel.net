@@ -20,17 +20,17 @@ using Type = Google.Api.Expr.V1Alpha1.Type;
 
 namespace Cel.Common.Types.Json;
 
-internal sealed class JsonFieldType : FieldType
+public sealed class JsonFieldType : FieldType
 {
     private readonly IValueProvider propertyWriter;
 
-    internal JsonFieldType(Type type, FieldTester isSet, FieldGetter getFrom, IValueProvider propertyWriter) : base(
+    public JsonFieldType(Type type, FieldTester isSet, FieldGetter getFrom, IValueProvider propertyWriter) : base(
         type, isSet, getFrom)
     {
         this.propertyWriter = propertyWriter;
     }
 
-    internal IValueProvider PropertyWriter()
+    public IValueProvider PropertyWriter()
     {
         return propertyWriter;
     }

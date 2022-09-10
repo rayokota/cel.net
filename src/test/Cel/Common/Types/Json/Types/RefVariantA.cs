@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright (C) 2021 The Authors of CEL-Java
+ * Copyright (C) 2022 Robert Yokota
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,6 @@
 namespace Cel.Common.Types.Json.Types
 {
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Value.Immutable(prehash = true) @JsonSerialize(as = ImmutableRefVariantA.class) @JsonDeserialize(as = ImmutableRefVariantA.class) @JsonTypeName("A") public interface RefVariantA extends RefBase
 	public class RefVariantA : RefBase
 	{
 		public virtual string Type { get; } = "A";
