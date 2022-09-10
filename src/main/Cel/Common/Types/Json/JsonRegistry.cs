@@ -129,7 +129,7 @@ public sealed class JsonRegistry : TypeRegistry
         }
     }
 
-    internal JsonEnumDescription EnumDescription(Type clazz)
+    public JsonEnumDescription EnumDescription(Type clazz)
     {
         if (!clazz.IsAssignableFrom(typeof(Enum))) throw new ArgumentException("only enum allowed here");
 
@@ -150,7 +150,7 @@ public sealed class JsonRegistry : TypeRegistry
         return enumDesc;
     }
 
-    internal JsonTypeDescription TypeDescription(Type clazz)
+    public JsonTypeDescription TypeDescription(Type clazz)
     {
         if (clazz.IsAssignableFrom(typeof(Enum))) throw new ArgumentException("enum not allowed here");
 

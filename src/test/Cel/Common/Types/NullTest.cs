@@ -18,7 +18,7 @@ using Cel.Common.Types;
 using Google.Protobuf.WellKnownTypes;
 using NUnit.Framework;
 
-namespace org.projectnessie.cel.common.types;
+namespace Cel.Common.Types;
 
 public class NullTest
 {

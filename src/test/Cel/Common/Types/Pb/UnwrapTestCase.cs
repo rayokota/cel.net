@@ -25,7 +25,7 @@ public delegate Message messageSupplier();
 
 /// <summary>
 ///     Test cases for {@link
-///     PbTypeDescriptionTest#benchmarkTypeDescriptionMaybeUnwrap(org.projectnessie.cel.common.types.pb.UnwrapTestCase)}
+///     PbTypeDescriptionTest#benchmarkTypeDescriptionMaybeUnwrap(Cel.Common.Types.Pb.UnwrapTestCase)}
 ///     and {@code TypeDescriptorBnch} JMH benchmark, latter requires this class to be a top-level public
 ///     enum.
 /// </summary>

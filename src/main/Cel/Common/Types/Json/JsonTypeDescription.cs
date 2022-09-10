@@ -27,7 +27,7 @@ using Type = Google.Api.Expr.V1Alpha1.Type;
  */
 namespace Cel.Common.Types.Json;
 
-internal sealed class JsonTypeDescription : TypeDescription
+public sealed class JsonTypeDescription : TypeDescription
 {
     private readonly IDictionary<string, JsonFieldType> fieldTypes;
     private readonly string name;
@@ -35,7 +35,7 @@ internal sealed class JsonTypeDescription : TypeDescription
     private readonly Ref.Type refType;
     private readonly System.Type type;
 
-    internal JsonTypeDescription(System.Type type, JsonSerializer ser, TypeQuery typeQuery)
+    public JsonTypeDescription(System.Type type, JsonSerializer ser, TypeQuery typeQuery)
     {
         this.type = type;
         name = type.FullName;
@@ -70,7 +70,7 @@ internal sealed class JsonTypeDescription : TypeDescription
         return type;
     }
 
-    internal Type FindTypeForJsonType(System.Type type, TypeQuery typeQuery)
+    public Type FindTypeForJsonType(System.Type type, TypeQuery typeQuery)
     {
         if (type == typeof(bool)) return Checked.checkedBool;
 
@@ -131,12 +131,12 @@ internal sealed class JsonTypeDescription : TypeDescription
         return t;
     }
 
-    internal bool HasProperty(string property)
+    public bool HasProperty(string property)
     {
         return fieldTypes.ContainsKey(property);
     }
 
-    internal object FromObject(object value, string property)
+    public object FromObject(object value, string property)
     {
         var ft = fieldTypes[property];
         if (ft == null) throw new ArgumentException(string.Format("No property named '{0}'", property));
@@ -148,20 +148,20 @@ internal sealed class JsonTypeDescription : TypeDescription
         return pw.GetValue(value);
     }
 
-    internal Ref.Type Type()
+    public Ref.Type Type()
     {
         return refType;
     }
 
-    internal Type PbType()
+    public Type PbType()
     {
         return pbType;
     }
 
-    internal FieldType FieldType(string fieldName)
+    public FieldType FieldType(string fieldName)
     {
         return fieldTypes[fieldName];
     }
 
-    internal delegate Type TypeQuery(System.Type Type);
+    public delegate Type TypeQuery(System.Type Type);
 }

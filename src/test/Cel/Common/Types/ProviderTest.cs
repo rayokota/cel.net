@@ -68,7 +68,7 @@ public class ProviderTest
                 .isEqualTo(OutOfOrderEnumOuterClass.OutOfOrderEnum.TWO.getValueDescriptor().getIndex())
                 .isNotEqualTo(OutOfOrderEnumOuterClass.OutOfOrderEnum.TWO.getNumber());
             // Check that we correctly get the protobuf-defined number.
-            Val enumVal3 = reg.EnumValue("org.projectnessie.cel.test.proto3.OutOfOrderEnum.TWO");
+            Val enumVal3 = reg.EnumValue("Cel.Test.Proto3.OutOfOrderEnum.TWO");
             Assert.That(enumVal3).extracting(Val::intValue)
                 .isEqualTo((long)OutOfOrderEnumOuterClass.OutOfOrderEnum.TWO.getNumber());
 
@@ -77,7 +77,7 @@ public class ProviderTest
                 .isEqualTo(OutOfOrderEnumOuterClass.OutOfOrderEnum.FIVE.getValueDescriptor().getIndex())
                 .isNotEqualTo(OutOfOrderEnumOuterClass.OutOfOrderEnum.FIVE.getNumber());
             // Check that we correctly get the protobuf-defined number.
-            Val enumVal4 = reg.EnumValue("org.projectnessie.cel.test.proto3.OutOfOrderEnum.FIVE");
+            Val enumVal4 = reg.EnumValue("Cel.Test.Proto3.OutOfOrderEnum.FIVE");
             Assert.That(enumVal4).extracting(Val::intValue)
                 .isEqualTo((long)OutOfOrderEnumOuterClass.OutOfOrderEnum.FIVE.getNumber());
         }
