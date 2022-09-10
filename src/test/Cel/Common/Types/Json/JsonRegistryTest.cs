@@ -27,9 +27,8 @@ namespace Cel.Types.Json
 {
 	internal class JsonRegistryTest
 	{
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void nessieBranch()
-	  internal virtual void NessieBranch()
+[Test]
+	  public virtual void NessieBranch()
 	  {
 		TypeRegistry reg = JsonRegistry.NewRegistry();
 
@@ -38,7 +37,6 @@ namespace Cel.Types.Json
 		Val branchVal = reg.ToTypeAdapter()(refVariantB);
 		Assert.That(branchVal, Is.InstanceOf(typeof(ObjectT)));
 		Assert.That(branchVal.Type().TypeEnum(), Is.SameAs(TypeEnum.Object));
-//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
 		Assert.That(branchVal.Type().TypeName(), Is.EqualTo(refVariantB.GetType().FullName));
 
 		ObjectT branchObj = (ObjectT) branchVal;
@@ -50,9 +48,8 @@ namespace Cel.Types.Json
 		Assert.That(branchObj.Get(StringT.StringOf("hash")), Is.EqualTo(StringT.StringOf("cafebabe123412341234123412341234")));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void nessieCommitMetaFull()
-	  internal virtual void NessieCommitMetaFull()
+[Test]
+	  public virtual void NessieCommitMetaFull()
 	  {
 		TypeRegistry reg = JsonRegistry.NewRegistry();
 
@@ -71,7 +68,6 @@ namespace Cel.Types.Json
 		Val cmVal = reg.ToTypeAdapter()(cm);
 		Assert.That(cmVal, Is.InstanceOf(typeof(ObjectT)));
 		Assert.That(cmVal.Type().TypeEnum(), Is.SameAs(TypeEnum.Object));
-//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
 		Assert.That(cmVal.Type().TypeName(), Is.EqualTo(cm.GetType().FullName));
 		Assert.That(cmVal.Type().TypeEnum(), Is.SameAs(TypeEnum.Object));
 		ObjectT cmObj = (ObjectT) cmVal;
@@ -98,9 +94,8 @@ namespace Cel.Types.Json
 		Assert.That(cmObj.Get(StringT.StringOf("properties")), Is.EqualTo(MapT.NewMaybeWrappedMap(reg.ToTypeAdapter(), expectMap)));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void nessieCommitMetaPart()
-	  internal virtual void NessieCommitMetaPart()
+[Test]
+	  public virtual void NessieCommitMetaPart()
 	  {
 		TypeRegistry reg = JsonRegistry.NewRegistry();
 
@@ -114,7 +109,6 @@ namespace Cel.Types.Json
 		Val cmVal = reg.ToTypeAdapter()(cm);
 		Assert.That(cmVal, Is.InstanceOf(typeof(ObjectT)));
 		Assert.That(cmVal.Type().TypeEnum(), Is.SameAs(TypeEnum.Object));
-//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
 		Assert.That(cmVal.Type().TypeName(), Is.EqualTo(cm.GetType().FullName));
 		Assert.That(cmVal.Type().TypeEnum(), Is.SameAs(TypeEnum.Object));
 		ObjectT cmObj = (ObjectT) cmVal;
@@ -138,18 +132,15 @@ namespace Cel.Types.Json
 		Assert.That(cmObj.Get(StringT.StringOf("properties")), Is.EqualTo(MapT.NewMaybeWrappedMap(reg.ToTypeAdapter(), new Hashtable())));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void copy()
-	  internal virtual void Copy()
+[Test]
+	  public virtual void Copy()
 	  {
 		TypeRegistry reg = JsonRegistry.NewRegistry();
-//JAVA TO C# CONVERTER TODO TASK: Method reference arbitrary object instance method syntax is not converted by Java to C# Converter:
 		Assert.That(reg.ToTypeAdapter(), Is.SameAs(reg.ToTypeAdapter()));
 	  }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void registerType()
-	  internal virtual void RegisterType()
+[Test]
+	  public virtual void RegisterType()
 	  {
 		TypeRegistry reg = JsonRegistry.NewRegistry();
 		Assert.That(() => reg.RegisterType(IntT.IntType), Throws.Exception.InstanceOf(typeof(System.NotSupportedException)));

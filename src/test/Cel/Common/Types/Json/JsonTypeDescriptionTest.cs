@@ -38,22 +38,17 @@ namespace Cel.Types.Json
 
     internal class JsonTypeDescriptionTest
     {
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void basics()
-        internal virtual void Basics()
+[Test]
+        public virtual void Basics()
         {
             JsonRegistry reg = (JsonRegistry)JsonRegistry.NewRegistry();
 
             reg.Register(typeof(CollectionsObject));
-//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
             Google.Api.Expr.V1Alpha1.Type t = reg.FindType(typeof(CollectionsObject).FullName);
-//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
             Assert.That(t.MessageType, Is.EqualTo(typeof(CollectionsObject).FullName));
             Assert.That(t.TypeKindCase, Is.EqualTo(TypeKindCase.MessageType));
 
             JsonTypeDescription td = reg.TypeDescription(typeof(CollectionsObject));
-//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-//JAVA TO C# CONVERTER TODO TASK: Method reference arbitrary object instance method syntax is not converted by Java to C# Converter:
             Assert.That(td.PbType(), Is.EqualTo(t));
             Assert.That(td.ReflectType(), Is.EqualTo(typeof(CollectionsObject)));
             Assert.That(td.Name(), Is.EqualTo(typeof(CollectionsObject).FullName));
@@ -62,8 +57,6 @@ namespace Cel.Types.Json
             // check that the nested-class `InnerType` has been implicitly registered
 
             JsonTypeDescription tdInner = reg.TypeDescription(typeof(InnerType));
-//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
-//JAVA TO C# CONVERTER TODO TASK: Method reference arbitrary object instance method syntax is not converted by Java to C# Converter:
             Assert.That(tdInner.PbType(), Is.EqualTo(new Google.Api.Expr.V1Alpha1.Type(){ MessageType = typeof(InnerType).FullName}));
             Assert.That(tdInner.ReflectType(), Is.EqualTo(typeof(InnerType)));
             Assert.That(tdInner.Name(), Is.EqualTo(typeof(InnerType).FullName));
@@ -71,7 +64,6 @@ namespace Cel.Types.Json
 
             //
 
-//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
             Assert.That(reg.FindIdent(typeof(CollectionsObject).FullName),
                 Is.EqualTo(TypeT.NewObjectTypeValue(typeof(CollectionsObject).FullName)));
             Assert.That(reg.FindIdent(typeof(InnerType).FullName),
@@ -85,9 +77,8 @@ namespace Cel.Types.Json
                 Throws.Exception.InstanceOf(typeof(ArgumentException)));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void types()
-        internal virtual void Types()
+[Test]
+        public virtual void Types()
         {
             JsonRegistry reg = (JsonRegistry)JsonRegistry.NewRegistry();
             reg.Register(typeof(CollectionsObject));
@@ -104,7 +95,7 @@ namespace Cel.Types.Json
                 Checked.checkedTimestamp);
             CheckMapType(reg, "stringProtoDurationMap", typeof(string), Checked.checkedString, typeof(Duration),
                 Checked.checkedDuration);
-            CheckMapType(reg, "stringJavaDurationMap", typeof(string), Checked.checkedString,
+            CheckMapType(reg, "stringPeriodMap", typeof(string), Checked.checkedString,
                 typeof(Period), Checked.checkedDuration);
             CheckMapType(reg, "stringBytesMap", typeof(string), Checked.checkedString, typeof(ByteString),
                 Checked.checkedBytes);
@@ -123,7 +114,7 @@ namespace Cel.Types.Json
             CheckListType(reg, "timestampList", typeof(Timestamp), Checked.checkedTimestamp);
             CheckListType(reg, "zonedDateTimeList", typeof(ZonedDateTime), Checked.checkedTimestamp);
             CheckListType(reg, "durationList", typeof(Duration), Checked.checkedDuration);
-            CheckListType(reg, "javaDurationList", typeof(Period), Checked.checkedDuration);
+            CheckListType(reg, "periodList", typeof(Period), Checked.checkedDuration);
             CheckListType(reg, "bytesList", typeof(ByteString), Checked.checkedBytes);
             CheckListType(reg, "floatList", typeof(float), Checked.checkedDouble);
             CheckListType(reg, "doubleList", typeof(double), Checked.checkedDouble);
@@ -132,38 +123,36 @@ namespace Cel.Types.Json
         private void CheckListType(JsonRegistry reg, string prop, Type valueClass,
             Google.Api.Expr.V1Alpha1.Type valueType)
         {
-//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
             JsonFieldType ft = (JsonFieldType)reg.FindFieldType(typeof(CollectionsObject).FullName, prop);
             Assert.That(ft, Is.Not.Null);
-            Type javaType = ft.PropertyWriter().GetType();
+            Type type = ft.PropertyWriter().GetType();
 
-            Assert.That(javaType).extracting(JavaType.isCollectionLikeType, Is.EqualTo(true));
-            Assert.That(javaType.getContentType()).extracting(JavaType.getRawClass, Is.SameAs(valueClass));
-
-            Assert.That(ft.type).extracting(com.google.api.expr.v1alpha1.Type.getListType)
-                .extracting(Google.Api.Expr.V1Alpha1.Type.Types.ListType.getElemType, Is.SameAs(valueType));
+            Assert.That(type.IsGenericType, Is.True);
+            Assert.That(type.GetGenericTypeDefinition(), Is.EqualTo(typeof(List<>)));
+            Type itemType = type.GetGenericArguments()[0];
+            Assert.That(itemType, Is.SameAs(valueClass));
+            Assert.That(ft.type.ListType.ElemType, Is.SameAs(valueType));
         }
 
         private void CheckMapType(JsonRegistry reg, string prop, Type keyClass,
             Google.Api.Expr.V1Alpha1.Type keyType, Type valueClass, Google.Api.Expr.V1Alpha1.Type valueType)
         {
-//JAVA TO C# CONVERTER WARNING: The .NET Type.FullName property will not always yield results identical to the Java Class.getName method:
             JsonFieldType ft = (JsonFieldType)reg.FindFieldType(typeof(CollectionsObject).FullName, prop);
-            Assert.That(ft).isNotNull();
-            JavaType javaType = ft.PropertyWriter().getType();
+            Assert.That(ft, Is.Not.Null);
+            Type type = ft.PropertyWriter().GetType();
 
-            Assert.That(javaType).extracting(JavaType.isMapLikeType, Is.EqualTo(true));
-            Assert.That(javaType.getKeyType()).extracting(JavaType.getRawClass, Is.SameAs(keyClass));
-            Assert.That(javaType.getContentType()).extracting(JavaType.getRawClass, Is.SameAs(valueClass));
-
-            Assert.That(ft.type).extracting(com.google.api.expr.v1alpha1.Type.getMapType)
-                .extracting(Google.Api.Expr.V1Alpha1.Type.Types.MapType.getKeyType,
-                    Google.Api.Expr.V1Alpha1.Type.Types.MapType.getValueType).containsExactly(keyType, valueType);
+            Assert.That(type.IsGenericType, Is.True);
+            Assert.That(type.GetGenericTypeDefinition(), Is.EqualTo(typeof(Dictionary<,>)));
+            Type keyT = type.GetGenericArguments()[0];
+            Type valueT = type.GetGenericArguments()[0];
+            Assert.That(keyT, Is.SameAs(keyClass));
+            Assert.That(valueT, Is.SameAs(valueClass));
+            Assert.That(ft.type.MapType.KeyType, Is.SameAs(keyType));
+            Assert.That(ft.type.MapType.ValueType, Is.SameAs(valueType));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void unknownProperties()
-        internal virtual void UnknownProperties()
+[Test]
+        public virtual void UnknownProperties()
         {
             CollectionsObject collectionsObject = new CollectionsObject();
 
@@ -171,23 +160,18 @@ namespace Cel.Types.Json
             reg.Register(typeof(CollectionsObject));
 
             Val collectionsVal = reg.NativeToValue(collectionsObject);
-            Assert.That(collectionsVal, Is.InstanceOf(typeof(ObjectT));
+            Assert.That(collectionsVal, Is.InstanceOf(typeof(ObjectT)));
             ObjectT obj = (ObjectT)collectionsVal;
 
             Val x = obj.IsSet(StringT.StringOf("bart"));
-//JAVA TO C# CONVERTER TODO TASK: Method reference arbitrary object instance method syntax is not converted by Java to C# Converter:
-            Assert.That(x, Is.InstanceOf(typeof(Err)).extracting(e => (Err)e).extracting(Err::value)
-                .isEqualTo("no such field 'bart'");
+            Assert.That(x, Is.InstanceOf(typeof(Err)));
 
             x = obj.Get(StringT.StringOf("bart"));
-//JAVA TO C# CONVERTER TODO TASK: Method reference arbitrary object instance method syntax is not converted by Java to C# Converter:
-            Assert.That(x, Is.InstanceOf(typeof(Err)).extracting(e => (Err)e).extracting(Err::value)
-                .isEqualTo("no such field 'bart'");
+            Assert.That(x, Is.InstanceOf(typeof(Err)));
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void collectionsObjectEmpty()
-        internal virtual void CollectionsObjectEmpty()
+[Test]
+        public virtual void CollectionsObjectEmpty()
         {
             CollectionsObject collectionsObject = new CollectionsObject();
 
@@ -195,7 +179,7 @@ namespace Cel.Types.Json
             reg.Register(typeof(CollectionsObject));
 
             Val collectionsVal = reg.NativeToValue(collectionsObject);
-            Assert.That(collectionsVal, Is.InstanceOf(typeof(ObjectT));
+            Assert.That(collectionsVal, Is.InstanceOf(typeof(ObjectT)));
             ObjectT obj = (ObjectT)collectionsVal;
 
             foreach (string field in CollectionsObject.ALL_PROPERTIES)
@@ -205,58 +189,70 @@ namespace Cel.Types.Json
             }
         }
 
-//JAVA TO C# CONVERTER TODO TASK: Most Java annotations will not have direct .NET equivalent attributes:
-//ORIGINAL LINE: @Test void collectionsObjectTypeTest() throws Exception
-//JAVA TO C# CONVERTER WARNING: Method 'throws' clauses are not available in C#:
-        internal virtual void CollectionsObjectTypeTest()
+[Test]
+        public virtual void CollectionsObjectTypeTest()
         {
             CollectionsObject collectionsObject = new CollectionsObject();
 
             // populate (primitive) map types
 
-            collectionsObject.stringBooleanMap = singletonMap("a", true);
-            collectionsObject.byteShortMap = singletonMap((sbyte)1, (short)2);
-            collectionsObject.intLongMap = singletonMap(1, 2L);
+            collectionsObject.stringBooleanMap = new Dictionary<string, bool> { { "a", true } };
+            collectionsObject.byteShortMap = new Dictionary<byte, short> { { (byte)1, (short)2 } };
+            collectionsObject.intLongMap = new Dictionary<int, long> { { 1, 2L } };
             collectionsObject.ulongTimestampMap =
-                singletonMap(ULong.ValueOf(1), Timestamp.newBuilder().setSeconds(1).build());
-            collectionsObject.ulongZonedDateTimeMap = singletonMap(ULong.ValueOf(1),
-                ZonedDateTime.of(LocalDateTime.ofEpochSecond(1, 0, ZoneOffset.UTC), ZoneId.of("UTC")));
-            collectionsObject.stringProtoDurationMap = singletonMap("a", Duration.newBuilder().setSeconds(1).build());
-            collectionsObject.stringJavaDurationMap = singletonMap("a", java.time.Duration.ofSeconds(1));
-            collectionsObject.stringBytesMap = singletonMap("a", ByteString.copyFrom(new sbyte[] { (sbyte)1 }));
-            collectionsObject.floatDoubleMap = singletonMap(1f, 2d);
+                new Dictionary<ulong, Timestamp> { { 1, new Timestamp { Seconds = 1 } } };
+            collectionsObject.ulongZonedDateTimeMap = new Dictionary<ulong, ZonedDateTime>
+            {
+                {
+                    1,
+                    new ZonedDateTime(Instant.FromUnixTimeSeconds(1), DateTimeZone.Utc)
+                }
+            };
+            collectionsObject.stringProtoDurationMap =
+                new Dictionary<string, Duration> { { "a", new Duration { Seconds = 1 } } };
 
-            // populate (primitive) list types
+        collectionsObject.stringPeriodMap = new Dictionary<string, Period> { { "a", Period.FromSeconds(1) } };
+            collectionsObject.stringBytesMap = new Dictionary<string, ByteString>
+                { { "a", ByteString.CopyFrom(new byte[] { (byte)1 }) } };
+            collectionsObject.floatDoubleMap = new Dictionary<float, double> { { 1f, 2d } };
+
+        // populate (primitive) list types
 
             collectionsObject.stringList = new List<string> { "a", "b", "c" };
             collectionsObject.booleanList = new List<bool> { true, true, false, false };
-            collectionsObject.byteList = new List<sbyte> { (sbyte)1, (sbyte)2, (sbyte)3 };
+            collectionsObject.byteList = new List<byte> { (byte)1, (byte)2, (byte)3 };
             collectionsObject.shortList = new List<short> { (short)4, (short)5, (short)6 };
             collectionsObject.intList = new List<int> { 7, 8, 9 };
             collectionsObject.longList = new List<long> { 10L, 11L, 12L };
-            collectionsObject.ulongList = new List<ULong> { ULong.ValueOf(1), ULong.ValueOf(2), ULong.ValueOf(3) };
+            collectionsObject.ulongList = new List<ulong> { 1, 2, 3 };
             collectionsObject.timestampList = new List<Timestamp>
             {
-                Timestamp.newBuilder().setSeconds(1).build(), Timestamp.newBuilder().setSeconds(2).build(),
-                Timestamp.newBuilder().setSeconds(3).build()
+                new Timestamp{ Seconds = 1 }, 
+                new Timestamp{ Seconds = 2 },
+                new Timestamp{ Seconds = 3 }
             };
             collectionsObject.zonedDateTimeList = new List<ZonedDateTime>
             {
-                ZonedDateTime.of(LocalDateTime.ofEpochSecond(1, 0, ZoneOffset.UTC), ZoneId.of("UTC")),
-                ZonedDateTime.of(LocalDateTime.ofEpochSecond(2, 0, ZoneOffset.UTC), ZoneId.of("UTC")),
-                ZonedDateTime.of(LocalDateTime.ofEpochSecond(3, 0, ZoneOffset.UTC), ZoneId.of("UTC"))
+                    new ZonedDateTime(Instant.FromUnixTimeSeconds(1), DateTimeZone.Utc),
+                    new ZonedDateTime(Instant.FromUnixTimeSeconds(2), DateTimeZone.Utc),
+                    new ZonedDateTime(Instant.FromUnixTimeSeconds(3), DateTimeZone.Utc)
             };
             collectionsObject.durationList = new List<Duration>
             {
-                Duration.newBuilder().setSeconds(1).build(), Duration.newBuilder().setSeconds(2).build(),
-                Duration.newBuilder().setSeconds(3).build()
+                new Duration{ Seconds = 1 }, 
+                new Duration{ Seconds = 2 },
+                new Duration{ Seconds = 3 }
             };
-            collectionsObject.javaDurationList = new List<java.time.Duration>
-                { java.time.Duration.ofSeconds(1), java.time.Duration.ofSeconds(2), java.time.Duration.ofSeconds(3) };
+            collectionsObject.periodList = new List<Period>
+            {
+                Period.FromSeconds(1),
+                Period.FromSeconds(2),
+                Period.FromSeconds(3)
+            };
             collectionsObject.bytesList = new List<ByteString>
             {
-                ByteString.copyFrom(new sbyte[] { (sbyte)1 }), ByteString.copyFrom(new sbyte[] { (sbyte)2 }),
-                ByteString.copyFrom(new sbyte[] { (sbyte)3 })
+                ByteString.CopyFrom(new byte[] { (byte)1 }), ByteString.CopyFrom(new byte[] { (byte)2 }),
+                ByteString.CopyFrom(new byte[] { (byte)3 })
             };
             collectionsObject.floatList = new List<float> { 1f, 2f, 3f };
             collectionsObject.doubleList = new List<double> { 1d, 2d, 3d };
@@ -266,7 +262,7 @@ namespace Cel.Types.Json
             InnerType inner1 = new InnerType();
             inner1.intProp = 1;
             inner1.wrappedIntProp = 2;
-            collectionsObject.stringInnerMap = singletonMap("a", inner1);
+            collectionsObject.stringInnerMap = new Dictionary<string, InnerType>{{"a", inner1}};
 
             InnerType inner2 = new InnerType();
             inner2.intProp = 3;
@@ -277,8 +273,8 @@ namespace Cel.Types.Json
 
             collectionsObject.anEnum = AnEnum.ENUM_VALUE_2;
             collectionsObject.anEnumList = new List<AnEnum> { AnEnum.ENUM_VALUE_2, AnEnum.ENUM_VALUE_3 };
-            collectionsObject.anEnumStringMap = singletonMap(AnEnum.ENUM_VALUE_2, "a");
-            collectionsObject.stringAnEnumMap = singletonMap("a", AnEnum.ENUM_VALUE_2);
+            collectionsObject.anEnumStringMap = new Dictionary<AnEnum, string>{{AnEnum.ENUM_VALUE_2, "a"}};
+            collectionsObject.stringAnEnumMap = new Dictionary<string, AnEnum>{{"a", AnEnum.ENUM_VALUE_2}};
 
             // prepare registry
 
@@ -286,7 +282,7 @@ namespace Cel.Types.Json
             reg.Register(typeof(CollectionsObject));
 
             Val collectionsVal = reg.NativeToValue(collectionsObject);
-            Assert.That(collectionsVal, Is.InstanceOf(typeof(ObjectT));
+            Assert.That(collectionsVal, Is.InstanceOf(typeof(ObjectT)));
             ObjectT obj = (ObjectT)collectionsVal;
 
             // briefly verify all fields
@@ -294,17 +290,17 @@ namespace Cel.Types.Json
             foreach (string field in CollectionsObject.ALL_PROPERTIES)
             {
                 Assert.That(obj.IsSet(StringT.StringOf(field)), Is.SameAs(BoolT.True));
-                Assert.That(obj.Get(StringT.StringOf(field))).isNotNull();
+                Assert.That(obj.Get(StringT.StringOf(field)), Is.Not.Null);
 
                 Val fieldVal = obj.Get(StringT.StringOf(field));
-                object fieldObj = typeof(CollectionsObject).getDeclaredField(field).get(collectionsObject);
+                object fieldObj = typeof(CollectionsObject).GetField(field).GetValue(collectionsObject);
                 if (fieldObj is System.Collections.IDictionary)
                 {
-                    Assert.That(fieldVal, Is.InstanceOf(typeof(MapT));
+                    Assert.That(fieldVal, Is.InstanceOf(typeof(MapT)));
                 }
                 else if (fieldObj is System.Collections.IList)
                 {
-                    Assert.That(fieldVal, Is.InstanceOf(typeof(ListT));
+                    Assert.That(fieldVal, Is.InstanceOf(typeof(ListT)));
                 }
 
                 Assert.That(fieldVal.Equal(reg.NativeToValue(fieldObj)), Is.SameAs(BoolT.True));
@@ -313,55 +309,51 @@ namespace Cel.Types.Json
             // check a few properties manually/explicitly
 
             MapT mapVal = (MapT)obj.Get(StringT.StringOf("intLongMap"));
-//JAVA TO C# CONVERTER TODO TASK: Method reference arbitrary object instance method syntax is not converted by Java to C# Converter:
-            Assert.That(mapVal)
-                .extracting(MapT::size, m => m.contains(IntT.IntOf(42)), m => m.contains(IntT.IntOf(1)),
-                    m => m.contains(IntT.IntOf(2)), m => m.contains(IntT.IntOf(3)), m => m.get(IntT.IntOf(1)))
-                .containsExactly(IntT.IntOf(1), BoolT.False, BoolT.True, BoolT.False, BoolT.False, IntT.IntOf(2));
+            Assert.That(mapVal.Size(), Is.EqualTo(IntT.IntOf(1)));
+            Assert.That(mapVal.Contains(IntT.IntOf(42)), Is.EqualTo(BoolT.False));
+            Assert.That(mapVal.Contains(IntT.IntOf(1)), Is.EqualTo(BoolT.True));
+            Assert.That(mapVal.Contains(IntT.IntOf(2)), Is.EqualTo(BoolT.False));
+            Assert.That(mapVal.Get(IntT.IntOf(1)), Is.EqualTo(IntT.IntOf(2)));
 
             ListT listVal = (ListT)obj.Get(StringT.StringOf("ulongList"));
-//JAVA TO C# CONVERTER TODO TASK: Method reference arbitrary object instance method syntax is not converted by Java to C# Converter:
-            Assert.That(listVal)
-                .extracting(ListT::size, l => l.contains(UintT.UintOf(42)), l => l.contains(UintT.UintOf(1)),
-                    l => l.contains(UintT.UintOf(2)), l => l.contains(UintT.UintOf(3)), l => l.get(IntT.IntOf(0)),
-                    l => l.get(IntT.IntOf(1)), l => l.get(IntT.IntOf(2))).containsExactly(IntT.IntOf(3), BoolT.False,
-                    BoolT.True, BoolT.True, BoolT.True, UintT.UintOf(1), UintT.UintOf(2), UintT.UintOf(3));
+            Assert.That(listVal.Size(), Is.EqualTo(IntT.IntOf(3)));
+            Assert.That(listVal.Contains(IntT.IntOf(42)), Is.EqualTo(BoolT.False));
+            Assert.That(listVal.Contains(IntT.IntOf(1)), Is.EqualTo(BoolT.True));
+            Assert.That(listVal.Contains(IntT.IntOf(2)), Is.EqualTo(BoolT.True));
+            Assert.That(listVal.Contains(IntT.IntOf(3)), Is.EqualTo(BoolT.True));
+            Assert.That(listVal.Get(IntT.IntOf(0)), Is.EqualTo(IntT.IntOf(1)));
+            Assert.That(listVal.Get(IntT.IntOf(1)), Is.EqualTo(IntT.IntOf(2)));
+            Assert.That(listVal.Get(IntT.IntOf(2)), Is.EqualTo(IntT.IntOf(3)));
 
             mapVal = (MapT)obj.Get(StringT.StringOf("stringInnerMap"));
-//JAVA TO C# CONVERTER TODO TASK: Method reference arbitrary object instance method syntax is not converted by Java to C# Converter:
-            Assert.That(mapVal)
-                .extracting(MapT::size, m => m.contains(StringT.StringOf("42")), m => m.contains(StringT.StringOf("a")))
-                .containsExactly(IntT.IntOf(1), BoolT.False, BoolT.True);
+            Assert.That(mapVal.Size(), Is.EqualTo(IntT.IntOf(1)));
+            Assert.That(mapVal.Contains(StringT.StringOf("42")), Is.EqualTo(BoolT.False));
+            Assert.That(mapVal.Contains(StringT.StringOf("a")), Is.EqualTo(BoolT.True));
             ObjectT i = (ObjectT)mapVal.Get(StringT.StringOf("a"));
-            Assert.That(i)
-                .extracting(o => o.get(StringT.StringOf("intProp")), o => o.get(StringT.StringOf("wrappedIntProp")))
-                .containsExactly(IntT.IntOf(1), IntT.IntOf(2));
+            Assert.That(i.Get(StringT.StringOf("intProp")), Is.EqualTo(IntT.IntOf(1)));
+            Assert.That(i.Get(StringT.StringOf("wrappedIntProp")), Is.EqualTo(IntT.IntOf(2)));
 
             listVal = (ListT)obj.Get(StringT.StringOf("innerTypes"));
-//JAVA TO C# CONVERTER TODO TASK: Method reference arbitrary object instance method syntax is not converted by Java to C# Converter:
-            Assert.That(listVal).extracting(ListT::size).isEqualTo(IntT.IntOf(2));
+            Assert.That(listVal.Size(), Is.EqualTo(IntT.IntOf(2)));
             i = (ObjectT)listVal.Get(IntT.IntOf(0));
-            Assert.That(i)
-                .extracting(o => o.get(StringT.StringOf("intProp")), o => o.get(StringT.StringOf("wrappedIntProp")))
-                .containsExactly(IntT.IntOf(1), IntT.IntOf(2));
+            Assert.That(i.Get(StringT.StringOf("intProp")), Is.EqualTo(IntT.IntOf(1)));
+            Assert.That(i.Get(StringT.StringOf("wrappedIntProp")), Is.EqualTo(IntT.IntOf(2)));
             i = (ObjectT)listVal.Get(IntT.IntOf(1));
-            Assert.That(i)
-                .extracting(o => o.get(StringT.StringOf("intProp")), o => o.get(StringT.StringOf("wrappedIntProp")))
-                .containsExactly(IntT.IntOf(3), IntT.IntOf(4));
+            Assert.That(i.Get(StringT.StringOf("intProp")), Is.EqualTo(IntT.IntOf(3)));
+            Assert.That(i.Get(StringT.StringOf("wrappedIntProp")), Is.EqualTo(IntT.IntOf(4)));
 
             // verify enums
 
             Val x = obj.Get(StringT.StringOf("anEnum"));
-            Assert.That(x, Is.InstanceOf(typeof(IntT)).isEqualTo(IntT.IntOf(AnEnum.ENUM_VALUE_2.ordinal()));
+            Assert.That(x, Is.InstanceOf(typeof(IntT)));
+            Assert.That(x, Is.EqualTo(IntT.IntOf((int)AnEnum.ENUM_VALUE_2)));
             listVal = (ListT)obj.Get(StringT.StringOf("anEnumList"));
-            Assert.That(listVal).extracting(l => l.get(IntT.IntOf(0)), l => l.get(IntT.IntOf(1)))
-                .containsExactly(IntT.IntOf(AnEnum.ENUM_VALUE_2.ordinal()), IntT.IntOf(AnEnum.ENUM_VALUE_3.ordinal()));
+            Assert.That(listVal.Get(IntT.IntOf(0)), Is.EqualTo(IntT.IntOf((int)AnEnum.ENUM_VALUE_2)));
+            Assert.That(listVal.Get(IntT.IntOf(1)), Is.EqualTo(IntT.IntOf((int)AnEnum.ENUM_VALUE_3)));
             mapVal = (MapT)obj.Get(StringT.StringOf("anEnumStringMap"));
-            Assert.That(mapVal).extracting(l => l.get(IntT.IntOf(AnEnum.ENUM_VALUE_2.ordinal())))
-                .isEqualTo(StringT.StringOf("a"));
+            Assert.That(mapVal.Get(IntT.IntOf((int)AnEnum.ENUM_VALUE_2)), Is.EqualTo(StringT.StringOf("a'")));
             mapVal = (MapT)obj.Get(StringT.StringOf("stringAnEnumMap"));
-            Assert.That(mapVal).extracting(l => l.get(StringT.StringOf("a")))
-                .isEqualTo(IntT.IntOf(AnEnum.ENUM_VALUE_2.ordinal()));
+            Assert.That(mapVal.Get(StringT.StringOf("a")), Is.EqualTo(IntT.IntOf((int)AnEnum.ENUM_VALUE_2)));
         }
     }
 }

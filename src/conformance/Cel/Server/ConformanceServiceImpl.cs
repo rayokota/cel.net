@@ -329,7 +329,7 @@ public class ConformanceServiceImpl : ConformanceServiceImplBase
             case Value.KindOneofCase.NullValue:
                 return NullT.NullValue;
             case Value.KindOneofCase.BoolValue:
-                return Types.BoolOf(v.BoolValue);
+                return global::Cel.Common.Types.Types.BoolOf(v.BoolValue);
             case Value.KindOneofCase.Int64Value:
                 return IntT.IntOf(v.Int64Value);
             case Value.KindOneofCase.Uint64Value:
@@ -360,7 +360,7 @@ public class ConformanceServiceImpl : ConformanceServiceImplBase
                 return adapter(elts);
             case Value.KindOneofCase.TypeValue:
                 var typeName = v.TypeValue;
-                var tv = Types.GetTypeByName(typeName);
+                var tv = global::Cel.Common.Types.Types.GetTypeByName(typeName);
                 if (tv != null) return tv;
                 return TypeT.NewObjectTypeValue(typeName);
             default:
