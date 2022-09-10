@@ -37,7 +37,8 @@ public sealed class JsonEnumValue
 
     public string FullyQualifiedName()
     {
-        return FullyQualifiedName(enumValue);
+        string s = FullyQualifiedName(enumValue);
+        return s;
     }
 
     public Val OrdinalValue()

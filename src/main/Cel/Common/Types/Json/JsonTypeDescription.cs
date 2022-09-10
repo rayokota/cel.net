@@ -72,6 +72,12 @@ public sealed class JsonTypeDescription : TypeDescription
 
     public Type FindTypeForJsonType(System.Type type, TypeQuery typeQuery)
     {
+        System.Type underlyingType = Nullable.GetUnderlyingType(type);
+        if (underlyingType != null)
+        {
+            type = underlyingType;
+        }
+        
         if (type == typeof(bool)) return Checked.checkedBool;
 
         if (type == typeof(long) || type == typeof(int) ||
@@ -93,7 +99,7 @@ public sealed class JsonTypeDescription : TypeDescription
             type.IsAssignableFrom(typeof(ZonedDateTime)))
             return Checked.checkedTimestamp;
 
-        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+        if (type.IsGenericType && type.GetGenericTypeDefinition().IsAssignableFrom(typeof(Dictionary<,>)))
         {
             var arguments = type.GetGenericArguments();
             var keyType = FindTypeForJsonType(arguments[0], typeQuery);
@@ -107,7 +113,7 @@ public sealed class JsonTypeDescription : TypeDescription
             return Decls.NewMapType(objType, objType);
         }
 
-        if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+        if (type.IsGenericType && type.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>)))
         {
             var arguments = type.GetGenericArguments();
             var valueType = FindTypeForJsonType(arguments[0], typeQuery);
@@ -138,7 +144,7 @@ public sealed class JsonTypeDescription : TypeDescription
 
     public object FromObject(object value, string property)
     {
-        var ft = fieldTypes[property];
+        fieldTypes.TryGetValue(property, out var ft);
         if (ft == null) throw new ArgumentException(string.Format("No property named '{0}'", property));
 
         var pw = ft.PropertyWriter();
@@ -160,7 +166,8 @@ public sealed class JsonTypeDescription : TypeDescription
 
     public FieldType FieldType(string fieldName)
     {
-        return fieldTypes[fieldName];
+        fieldTypes.TryGetValue(fieldName, out var ft);
+        return ft;
     }
 
     public delegate Type TypeQuery(System.Type Type);

@@ -397,11 +397,11 @@ public class CELTest
             if (args.Length != 3) return Err.NewErr("invalid arguments to 'get'");
 
             if (!(args[0] is Mapper))
-                return Err.NewErr("invalid operand of type '%s' to obj.get(key, def)", args[0].Type());
+                return Err.NewErr("invalid operand of type '{0}' to obj.get(key, def)", args[0].Type());
 
             var attrs = (Mapper)args[0];
             if (!(args[1] is StringT))
-                return Err.NewErr("invalid key of type '%s' to obj.get(key, def)", args[1].Type());
+                return Err.NewErr("invalid key of type '{0}' to obj.get(key, def)", args[1].Type());
 
             var key = (StringT)args[1];
             var defVal = args[2];
@@ -734,7 +734,7 @@ public class CELTest
     //            Overload.binary(
     //                "string_greet_string",
     //                (lhs, rhs) ->
-    //                    StringT.StringOf(String.format("Hello %s! Nice to meet you, I'm %s.\n", rhs,
+    //                    StringT.StringOf(String.format("Hello {0}! Nice to meet you, I'm {1}.\n", rhs,
     // lhs))));
     //    Program prg = e.program(astIss.getAst(), funcs);
     //
@@ -785,16 +785,16 @@ public class CELTest
     //                "shake_hands_string_string",
     //                (lhs, rhs) -> {
     //                  if (!(lhs instanceof StringT)) {
-    //                    return Err.ValOrErr(lhs, "unexpected type '%s' passed to shake_hands",
+    //                    return Err.ValOrErr(lhs, "unexpected type '{0}' passed to shake_hands",
     // lhs.type());
     //                  }
     //                  if (!(rhs instanceof StringT)) {
-    //                    return Err.ValOrErr(rhs, "unexpected type '%s' passed to shake_hands",
+    //                    return Err.ValOrErr(rhs, "unexpected type '{0}' passed to shake_hands",
     // rhs.type());
     //                  }
     //                  StringT s1 = (StringT) lhs;
     //                  StringT s2 = (StringT) rhs;
-    //                  return StringT.StringOf(String.format("%s and %s are shaking hands.\n", s1, s2));
+    //                  return StringT.StringOf(String.format("{0} and {1} are shaking hands.\n", s1, s2));
     //                }));
     //    Program prg = e.program(astIss.getAst(), funcs);
     //

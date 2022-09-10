@@ -19,7 +19,7 @@ namespace Cel.Common;
 
 internal class SourceTest
 {
-    internal const string unexpectedSnippet = "got snippet '%s', want '%s'";
+    internal const string unexpectedSnippet = "got snippet '{0}', want '{1}'";
     internal const string snippetFound = "snippet found at line %d, wanted none";
 
     /// <summary>

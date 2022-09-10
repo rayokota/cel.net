@@ -66,31 +66,31 @@ public sealed class JsonRegistry : TypeRegistry
 
     public Val EnumValue(string enumName)
     {
-        var enumVal = enumValues[enumName];
-        if (enumVal == null) return Err.NewErr("unknown enum name '%s'", enumName);
+        enumValues.TryGetValue(enumName, out var enumVal);
+        if (enumVal == null) return Err.NewErr("unknown enum name '{0}'", enumName);
         return enumVal.OrdinalValue();
     }
 
     public Val FindIdent(string identName)
     {
-        var td = knownTypesByName[identName];
+        knownTypesByName.TryGetValue(identName, out var td);
         if (td != null) return td.Type();
 
-        var enumVal = enumValues[identName];
+        enumValues.TryGetValue(identName, out var enumVal);
         if (enumVal != null) return enumVal.OrdinalValue();
         return null;
     }
 
     public Google.Api.Expr.V1Alpha1.Type FindType(string typeName)
     {
-        var td = knownTypesByName[typeName];
+        knownTypesByName.TryGetValue(typeName, out var td);
         if (td == null) return null;
         return td.PbType();
     }
 
     public FieldType FindFieldType(string messageType, string fieldName)
     {
-        var td = knownTypesByName[messageType];
+        knownTypesByName.TryGetValue(messageType, out var td);
         if (td == null) return null;
         return td.FieldType(fieldName);
     }
@@ -114,8 +114,8 @@ public sealed class JsonRegistry : TypeRegistry
         if (value is Enum)
         {
             var fq = JsonEnumValue.FullyQualifiedName((Enum)value);
-            var v = enumValues[fq];
-            if (v == null) return Err.NewErr("unknown enum name '%s'", fq);
+            enumValues.TryGetValue(fq, out var v);
+            if (v == null) return Err.NewErr("unknown enum name '{0}'", fq);
             return v.OrdinalValue();
         }
 
@@ -131,9 +131,9 @@ public sealed class JsonRegistry : TypeRegistry
 
     public JsonEnumDescription EnumDescription(Type clazz)
     {
-        if (!clazz.IsAssignableFrom(typeof(Enum))) throw new ArgumentException("only enum allowed here");
+        if (!clazz.IsEnum) throw new ArgumentException("only enum allowed here");
 
-        var ed = enumMap[clazz];
+        enumMap.TryGetValue(clazz, out var ed);
         if (ed != null) return ed;
         ed = ComputeEnumDescription(clazz);
         enumMap[clazz] = ed;
@@ -145,16 +145,19 @@ public sealed class JsonRegistry : TypeRegistry
         var enumDesc = new JsonEnumDescription(type);
         enumMap[type] = enumDesc;
 
-        enumDesc.BuildValues().Select(v => enumValues[v.FullyQualifiedName()] = v);
+        foreach (var v in enumDesc.BuildValues())
+        {
+            enumValues[v.FullyQualifiedName()] = v;
+        }
 
         return enumDesc;
     }
 
     public JsonTypeDescription TypeDescription(Type clazz)
     {
-        if (clazz.IsAssignableFrom(typeof(Enum))) throw new ArgumentException("enum not allowed here");
+        if (clazz.IsEnum) throw new ArgumentException("enum not allowed here");
 
-        var td = knownTypes[clazz];
+        knownTypes.TryGetValue(clazz, out var td);
         if (td != null) return td;
         td = ComputeTypeDescription(clazz);
         knownTypes[clazz] = td;

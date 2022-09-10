@@ -53,7 +53,7 @@ namespace Cel.Common.Types.Json.Types
 	  public IDictionary<string, InnerType> stringInnerMap;
 	  public IList<InnerType> innerTypes;
 
-	  public AnEnum anEnum;
+	  public AnEnum? anEnum;
 	  public IList<AnEnum> anEnumList;
 	  public IDictionary<AnEnum, string> anEnumStringMap;
 	  public IDictionary<string, AnEnum> stringAnEnumMap;

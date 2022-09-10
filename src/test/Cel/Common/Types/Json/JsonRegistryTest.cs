@@ -40,12 +40,12 @@ namespace Cel.Types.Json
 		Assert.That(branchVal.Type().TypeName(), Is.EqualTo(refVariantB.GetType().FullName));
 
 		ObjectT branchObj = (ObjectT) branchVal;
-		Assert.That(branchObj.IsSet(StringT.StringOf("foo")), Is.InstanceOf(typeof(Err)));
-		Assert.That(branchObj.IsSet(StringT.StringOf("name")), Is.EqualTo(BoolT.True));
-		Assert.That(branchObj.IsSet(StringT.StringOf("hash")), Is.EqualTo(BoolT.True));
-		Assert.That(branchObj.Get(StringT.StringOf("foo")), Is.InstanceOf(typeof(Err)));
-		Assert.That(branchObj.Get(StringT.StringOf("name")), Is.EqualTo(StringT.StringOf("main")));
-		Assert.That(branchObj.Get(StringT.StringOf("hash")), Is.EqualTo(StringT.StringOf("cafebabe123412341234123412341234")));
+		Assert.That(branchObj.IsSet(StringT.StringOf("Foo")), Is.InstanceOf(typeof(Err)));
+		Assert.That(branchObj.IsSet(StringT.StringOf("Name")), Is.EqualTo(BoolT.True));
+		Assert.That(branchObj.IsSet(StringT.StringOf("Hash")), Is.EqualTo(BoolT.True));
+		Assert.That(branchObj.Get(StringT.StringOf("Foo")), Is.InstanceOf(typeof(Err)));
+		Assert.That(branchObj.Get(StringT.StringOf("Name")), Is.EqualTo(StringT.StringOf("main")));
+		Assert.That(branchObj.Get(StringT.StringOf("Hash")), Is.EqualTo(StringT.StringOf("cafebabe123412341234123412341234")));
 	  }
 
 [Test]
@@ -71,27 +71,27 @@ namespace Cel.Types.Json
 		Assert.That(cmVal.Type().TypeName(), Is.EqualTo(cm.GetType().FullName));
 		Assert.That(cmVal.Type().TypeEnum(), Is.SameAs(TypeEnum.Object));
 		ObjectT cmObj = (ObjectT) cmVal;
-		Assert.That(cmObj.IsSet(StringT.StringOf("foo")), Is.InstanceOf(typeof(Err)));
-		Assert.That(cmObj.IsSet(StringT.StringOf("commitTime")), Is.EqualTo(BoolT.True));
-		Assert.That(cmObj.IsSet(StringT.StringOf("authorTime")), Is.EqualTo(BoolT.True));
-		Assert.That(cmObj.IsSet(StringT.StringOf("committer")), Is.EqualTo(BoolT.True));
-		Assert.That(cmObj.IsSet(StringT.StringOf("author")), Is.EqualTo(BoolT.True));
-		Assert.That(cmObj.IsSet(StringT.StringOf("hash")), Is.EqualTo(BoolT.True));
-		Assert.That(cmObj.IsSet(StringT.StringOf("message")), Is.EqualTo(BoolT.True));
-		Assert.That(cmObj.IsSet(StringT.StringOf("signedOffBy")), Is.EqualTo(BoolT.True));
-		Assert.That(cmObj.IsSet(StringT.StringOf("properties")), Is.EqualTo(BoolT.True));
+		Assert.That(cmObj.IsSet(StringT.StringOf("Foo")), Is.InstanceOf(typeof(Err)));
+		Assert.That(cmObj.IsSet(StringT.StringOf("CommitTime")), Is.EqualTo(BoolT.True));
+		Assert.That(cmObj.IsSet(StringT.StringOf("AuthorTime")), Is.EqualTo(BoolT.True));
+		Assert.That(cmObj.IsSet(StringT.StringOf("Committer")), Is.EqualTo(BoolT.True));
+		Assert.That(cmObj.IsSet(StringT.StringOf("Author")), Is.EqualTo(BoolT.True));
+		Assert.That(cmObj.IsSet(StringT.StringOf("Hash")), Is.EqualTo(BoolT.True));
+		Assert.That(cmObj.IsSet(StringT.StringOf("Message")), Is.EqualTo(BoolT.True));
+		Assert.That(cmObj.IsSet(StringT.StringOf("SignedOffBy")), Is.EqualTo(BoolT.True));
+		Assert.That(cmObj.IsSet(StringT.StringOf("Properties")), Is.EqualTo(BoolT.True));
 		IDictionary expectMap = new Dictionary<string, string>();
 		expectMap["prop-1"] = "value-1";
 		expectMap["prop-2"] = "value-2";
-		Assert.That(cmObj.Get(StringT.StringOf("foo")), Is.InstanceOf(typeof(Err)));
-		Assert.That(cmObj.Get(StringT.StringOf("commitTime")), Is.EqualTo(TimestampT.TimestampOf(now)));
-		Assert.That(cmObj.Get(StringT.StringOf("authorTime")), Is.EqualTo(TimestampT.TimestampOf(nowMinus5)));
-		Assert.That(cmObj.Get(StringT.StringOf("committer")), Is.EqualTo(StringT.StringOf("committer@projectnessie.org")));
-		Assert.That(cmObj.Get(StringT.StringOf("author")), Is.EqualTo(StringT.StringOf("author@projectnessie.org")));
-		Assert.That(cmObj.Get(StringT.StringOf("hash")), Is.EqualTo(StringT.StringOf("beeffeed123412341234123412341234")));
-		Assert.That(cmObj.Get(StringT.StringOf("message")), Is.EqualTo(StringT.StringOf("Feed of beef")));
-		Assert.That(cmObj.Get(StringT.StringOf("signedOffBy")), Is.EqualTo(StringT.StringOf("signed-off@projectnessie.org")));
-		Assert.That(cmObj.Get(StringT.StringOf("properties")), Is.EqualTo(MapT.NewMaybeWrappedMap(reg.ToTypeAdapter(), expectMap)));
+		Assert.That(cmObj.Get(StringT.StringOf("Foo")), Is.InstanceOf(typeof(Err)));
+		Assert.That(cmObj.Get(StringT.StringOf("CommitTime")), Is.EqualTo(TimestampT.TimestampOf(now)));
+		Assert.That(cmObj.Get(StringT.StringOf("AuthorTime")), Is.EqualTo(TimestampT.TimestampOf(nowMinus5)));
+		Assert.That(cmObj.Get(StringT.StringOf("Committer")), Is.EqualTo(StringT.StringOf("committer@projectnessie.org")));
+		Assert.That(cmObj.Get(StringT.StringOf("Author")), Is.EqualTo(StringT.StringOf("author@projectnessie.org")));
+		Assert.That(cmObj.Get(StringT.StringOf("Hash")), Is.EqualTo(StringT.StringOf("beeffeed123412341234123412341234")));
+		Assert.That(cmObj.Get(StringT.StringOf("Message")), Is.EqualTo(StringT.StringOf("Feed of beef")));
+		Assert.That(cmObj.Get(StringT.StringOf("SignedOffBy")), Is.EqualTo(StringT.StringOf("signed-off@projectnessie.org")));
+		Assert.That(cmObj.Get(StringT.StringOf("Properties")), Is.EqualTo(MapT.NewMaybeWrappedMap(reg.ToTypeAdapter(), expectMap)));
 	  }
 
 [Test]
@@ -112,31 +112,31 @@ namespace Cel.Types.Json
 		Assert.That(cmVal.Type().TypeName(), Is.EqualTo(cm.GetType().FullName));
 		Assert.That(cmVal.Type().TypeEnum(), Is.SameAs(TypeEnum.Object));
 		ObjectT cmObj = (ObjectT) cmVal;
-		Assert.That(cmObj.IsSet(StringT.StringOf("foo")), Is.InstanceOf(typeof(Err)));
-		Assert.That(cmObj.IsSet(StringT.StringOf("commitTime")), Is.EqualTo(BoolT.True));
-		Assert.That(cmObj.IsSet(StringT.StringOf("authorTime")), Is.EqualTo(BoolT.False));
-		Assert.That(cmObj.IsSet(StringT.StringOf("committer")), Is.EqualTo(BoolT.True));
-		Assert.That(cmObj.IsSet(StringT.StringOf("author")), Is.EqualTo(BoolT.False));
-		Assert.That(cmObj.IsSet(StringT.StringOf("hash")), Is.EqualTo(BoolT.True));
-		Assert.That(cmObj.IsSet(StringT.StringOf("message")), Is.EqualTo(BoolT.True));
-		Assert.That(cmObj.IsSet(StringT.StringOf("signedOffBy")), Is.EqualTo(BoolT.False));
-		Assert.That(cmObj.IsSet(StringT.StringOf("properties")), Is.EqualTo(BoolT.True)); // just empty
-		Assert.That(cmObj.Get(StringT.StringOf("foo")), Is.InstanceOf(typeof(Err)));
-		Assert.That(cmObj.Get(StringT.StringOf("commitTime")), Is.EqualTo(TimestampT.TimestampOf(now)));
-		Assert.That(cmObj.Get(StringT.StringOf("authorTime")), Is.EqualTo(NullT.NullValue));
-		Assert.That(cmObj.Get(StringT.StringOf("committer")), Is.EqualTo(StringT.StringOf("committer@projectnessie.org")));
-		Assert.That(cmObj.Get(StringT.StringOf("author")), Is.EqualTo(NullT.NullValue));
-		Assert.That(cmObj.Get(StringT.StringOf("hash")), Is.EqualTo(StringT.StringOf("beeffeed123412341234123412341234")));
-		Assert.That(cmObj.Get(StringT.StringOf("message")), Is.EqualTo(StringT.StringOf("Feed of beef")));
-		Assert.That(cmObj.Get(StringT.StringOf("signedOffBy")), Is.EqualTo(NullT.NullValue));
-		Assert.That(cmObj.Get(StringT.StringOf("properties")), Is.EqualTo(MapT.NewMaybeWrappedMap(reg.ToTypeAdapter(), new Hashtable())));
+		Assert.That(cmObj.IsSet(StringT.StringOf("Foo")), Is.InstanceOf(typeof(Err)));
+		Assert.That(cmObj.IsSet(StringT.StringOf("CommitTime")), Is.EqualTo(BoolT.True));
+		Assert.That(cmObj.IsSet(StringT.StringOf("AuthorTime")), Is.EqualTo(BoolT.False));
+		Assert.That(cmObj.IsSet(StringT.StringOf("Committer")), Is.EqualTo(BoolT.True));
+		Assert.That(cmObj.IsSet(StringT.StringOf("Author")), Is.EqualTo(BoolT.False));
+		Assert.That(cmObj.IsSet(StringT.StringOf("Hash")), Is.EqualTo(BoolT.True));
+		Assert.That(cmObj.IsSet(StringT.StringOf("Message")), Is.EqualTo(BoolT.True));
+		Assert.That(cmObj.IsSet(StringT.StringOf("SignedOffBy")), Is.EqualTo(BoolT.False));
+		Assert.That(cmObj.IsSet(StringT.StringOf("Properties")), Is.EqualTo(BoolT.True)); // just empty
+		Assert.That(cmObj.Get(StringT.StringOf("Foo")), Is.InstanceOf(typeof(Err)));
+		Assert.That(cmObj.Get(StringT.StringOf("CommitTime")), Is.EqualTo(TimestampT.TimestampOf(now)));
+		Assert.That(cmObj.Get(StringT.StringOf("AuthorTime")), Is.EqualTo(NullT.NullValue));
+		Assert.That(cmObj.Get(StringT.StringOf("Committer")), Is.EqualTo(StringT.StringOf("committer@projectnessie.org")));
+		Assert.That(cmObj.Get(StringT.StringOf("Author")), Is.EqualTo(NullT.NullValue));
+		Assert.That(cmObj.Get(StringT.StringOf("Hash")), Is.EqualTo(StringT.StringOf("beeffeed123412341234123412341234")));
+		Assert.That(cmObj.Get(StringT.StringOf("Message")), Is.EqualTo(StringT.StringOf("Feed of beef")));
+		Assert.That(cmObj.Get(StringT.StringOf("SignedOffBy")), Is.EqualTo(NullT.NullValue));
+		Assert.That(cmObj.Get(StringT.StringOf("Properties")), Is.EqualTo(MapT.NewMaybeWrappedMap(reg.ToTypeAdapter(), new Dictionary<string, string>())));
 	  }
 
 [Test]
 	  public virtual void Copy()
 	  {
 		TypeRegistry reg = JsonRegistry.NewRegistry();
-		Assert.That(reg.ToTypeAdapter(), Is.SameAs(reg.ToTypeAdapter()));
+		Assert.That(reg.ToTypeAdapter(), Is.EqualTo(reg.ToTypeAdapter()));
 	  }
 
 [Test]

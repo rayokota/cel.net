@@ -85,7 +85,8 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
 
         public override object? ConvertToNative(System.Type typeDesc)
         {
-            var isGenericDict = typeDesc.IsGenericType && typeDesc.GetGenericTypeDefinition() == typeof(Dictionary<,>);
+            var isGenericDict = typeDesc.IsGenericType &&
+                                    typeDesc.GetGenericTypeDefinition().IsAssignableFrom(typeof(Dictionary<,>));
             if (isGenericDict ||
                 typeDesc.IsAssignableFrom(typeof(IDictionary)) ||
                 typeDesc == typeof(object)) return ToHashtable();

@@ -20,7 +20,7 @@ namespace Cel.Common.Types.Json;
 
 public sealed class JsonEnumDescription
 {
-    private readonly IEnumerable<Enum> enumValues;
+    private readonly IList<Enum> enumValues;
 
     private readonly string name;
     private readonly Type pbType;
@@ -28,7 +28,12 @@ public sealed class JsonEnumDescription
     public JsonEnumDescription(System.Type type)
     {
         name = type.FullName;
-        enumValues = (IEnumerable<Enum>)Enum.GetValues(type);
+
+        enumValues = new List<Enum>();
+        foreach (Enum e in Enum.GetValues(type))
+        {
+            enumValues.Add(e);
+        }
         pbType = Checked.checkedInt;
     }
 

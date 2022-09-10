@@ -68,8 +68,8 @@ namespace Cel.Types.Json
                 Is.EqualTo(TypeT.NewObjectTypeValue(typeof(CollectionsObject).FullName)));
             Assert.That(reg.FindIdent(typeof(InnerType).FullName),
                 Is.EqualTo(TypeT.NewObjectTypeValue(typeof(InnerType).FullName)));
-            Assert.That(reg.FindIdent(typeof(AnEnum).FullName + '.' + AnEnum.ENUM_VALUE_2.ToString()),
-                Is.EqualTo(IntT.IntOf((int)AnEnum.ENUM_VALUE_1)));
+            Assert.That(reg.FindIdent(typeof(AnEnum).FullName + '.' + AnEnum.ENUM_VALUE_2),
+                Is.EqualTo(IntT.IntOf((int)AnEnum.ENUM_VALUE_2)));
 
             Assert.That(() => reg.TypeDescription(typeof(AnEnum)),
                 Throws.Exception.InstanceOf(typeof(ArgumentException)));
@@ -125,12 +125,7 @@ namespace Cel.Types.Json
         {
             JsonFieldType ft = (JsonFieldType)reg.FindFieldType(typeof(CollectionsObject).FullName, prop);
             Assert.That(ft, Is.Not.Null);
-            Type type = ft.PropertyWriter().GetType();
-
-            Assert.That(type.IsGenericType, Is.True);
-            Assert.That(type.GetGenericTypeDefinition(), Is.EqualTo(typeof(List<>)));
-            Type itemType = type.GetGenericArguments()[0];
-            Assert.That(itemType, Is.SameAs(valueClass));
+            
             Assert.That(ft.type.ListType.ElemType, Is.SameAs(valueType));
         }
 
@@ -139,14 +134,7 @@ namespace Cel.Types.Json
         {
             JsonFieldType ft = (JsonFieldType)reg.FindFieldType(typeof(CollectionsObject).FullName, prop);
             Assert.That(ft, Is.Not.Null);
-            Type type = ft.PropertyWriter().GetType();
-
-            Assert.That(type.IsGenericType, Is.True);
-            Assert.That(type.GetGenericTypeDefinition(), Is.EqualTo(typeof(Dictionary<,>)));
-            Type keyT = type.GetGenericArguments()[0];
-            Type valueT = type.GetGenericArguments()[0];
-            Assert.That(keyT, Is.SameAs(keyClass));
-            Assert.That(valueT, Is.SameAs(valueClass));
+            
             Assert.That(ft.type.MapType.KeyType, Is.SameAs(keyType));
             Assert.That(ft.type.MapType.ValueType, Is.SameAs(valueType));
         }
@@ -317,13 +305,13 @@ namespace Cel.Types.Json
 
             ListT listVal = (ListT)obj.Get(StringT.StringOf("ulongList"));
             Assert.That(listVal.Size(), Is.EqualTo(IntT.IntOf(3)));
-            Assert.That(listVal.Contains(IntT.IntOf(42)), Is.EqualTo(BoolT.False));
-            Assert.That(listVal.Contains(IntT.IntOf(1)), Is.EqualTo(BoolT.True));
-            Assert.That(listVal.Contains(IntT.IntOf(2)), Is.EqualTo(BoolT.True));
-            Assert.That(listVal.Contains(IntT.IntOf(3)), Is.EqualTo(BoolT.True));
-            Assert.That(listVal.Get(IntT.IntOf(0)), Is.EqualTo(IntT.IntOf(1)));
-            Assert.That(listVal.Get(IntT.IntOf(1)), Is.EqualTo(IntT.IntOf(2)));
-            Assert.That(listVal.Get(IntT.IntOf(2)), Is.EqualTo(IntT.IntOf(3)));
+            Assert.That(listVal.Contains(UintT.UintOf(42)), Is.EqualTo(BoolT.False));
+            Assert.That(listVal.Contains(UintT.UintOf(1)), Is.EqualTo(BoolT.True));
+            Assert.That(listVal.Contains(UintT.UintOf(2)), Is.EqualTo(BoolT.True));
+            Assert.That(listVal.Contains(UintT.UintOf(3)), Is.EqualTo(BoolT.True));
+            Assert.That(listVal.Get(IntT.IntOf(0)), Is.EqualTo(UintT.UintOf(1)));
+            Assert.That(listVal.Get(IntT.IntOf(1)), Is.EqualTo(UintT.UintOf(2)));
+            Assert.That(listVal.Get(IntT.IntOf(2)), Is.EqualTo(UintT.UintOf(3)));
 
             mapVal = (MapT)obj.Get(StringT.StringOf("stringInnerMap"));
             Assert.That(mapVal.Size(), Is.EqualTo(IntT.IntOf(1)));
@@ -351,7 +339,7 @@ namespace Cel.Types.Json
             Assert.That(listVal.Get(IntT.IntOf(0)), Is.EqualTo(IntT.IntOf((int)AnEnum.ENUM_VALUE_2)));
             Assert.That(listVal.Get(IntT.IntOf(1)), Is.EqualTo(IntT.IntOf((int)AnEnum.ENUM_VALUE_3)));
             mapVal = (MapT)obj.Get(StringT.StringOf("anEnumStringMap"));
-            Assert.That(mapVal.Get(IntT.IntOf((int)AnEnum.ENUM_VALUE_2)), Is.EqualTo(StringT.StringOf("a'")));
+            Assert.That(mapVal.Get(IntT.IntOf((int)AnEnum.ENUM_VALUE_2)), Is.EqualTo(StringT.StringOf("a")));
             mapVal = (MapT)obj.Get(StringT.StringOf("stringAnEnumMap"));
             Assert.That(mapVal.Get(StringT.StringOf("a")), Is.EqualTo(IntT.IntOf((int)AnEnum.ENUM_VALUE_2)));
         }

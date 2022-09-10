@@ -72,7 +72,7 @@ public sealed class BoolT : BaseVal, Comparer, Negater
     /// </summary>
     public override object? ConvertToNative(System.Type typeDesc)
     {
-        if (typeDesc == typeof(bool) || typeDesc == typeof(bool) || typeDesc == typeof(object))
+        if (typeDesc == typeof(bool) || typeDesc == typeof(object))
             return Convert.ToBoolean(b);
 
         if (typeDesc == typeof(Any))

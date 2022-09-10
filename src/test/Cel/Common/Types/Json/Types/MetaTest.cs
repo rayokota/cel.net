@@ -34,12 +34,12 @@ namespace Cel.Common.Types.Json.Types
 	  public string Message {get; set; }
 
 	  [JsonConverter(typeof(InstantConverter))]
-	  public Instant CommitTime {get; set; }
+	  public Instant? CommitTime {get; set; }
 
 	  [JsonConverter(typeof(InstantConverter))]
-	  public Instant AuthorTime {get; set; }
+	  public Instant? AuthorTime {get; set; }
 
-	  public IDictionary<string, string> Properties {get; set; }
+	  public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
 
 	  public class InstantConverter : JsonConverter<Instant>
 	  {

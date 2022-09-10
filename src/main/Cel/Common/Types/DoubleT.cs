@@ -114,10 +114,10 @@ public sealed class DoubleT : BaseVal, Adder, Comparer, Divider, Multiplier, Neg
     /// </summary>
     public override object? ConvertToNative(System.Type typeDesc)
     {
-        if (typeDesc == typeof(double) || typeDesc == typeof(double) || typeDesc == typeof(object))
+        if (typeDesc == typeof(double) || typeDesc == typeof(object))
             return Convert.ToDouble(d);
 
-        if (typeDesc == typeof(float) || typeDesc == typeof(float))
+        if (typeDesc == typeof(float))
             // TODO needs overflow check
             return Convert.ToSingle((float)d);
 
