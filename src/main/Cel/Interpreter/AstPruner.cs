@@ -414,7 +414,7 @@ public sealed class AstPruner
         return node;
     }
 
-    internal IVal Value(long id)
+    internal IVal? Value(long id)
     {
         return state.Value(id);
     }

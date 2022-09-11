@@ -32,7 +32,7 @@ public interface IInterpretablePlanner
     /// <summary>
     ///     Plan generates an Interpretable value (or error) from the input proto Expr.
     /// </summary>
-    IInterpretable Plan(Expr expr);
+    IInterpretable? Plan(Expr expr);
 
     /// <summary>
     ///     newPlanner creates an interpretablePlanner which references a Dispatcher, TypeProvider,

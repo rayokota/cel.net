@@ -30,7 +30,7 @@ public interface ITypeProvider
     /// <summary>
     ///     FindIdent takes a qualified identifier name and returns a Value if one exists.
     /// </summary>
-    IVal FindIdent(string identName);
+    IVal? FindIdent(string identName);
 
     /// <summary>
     ///     FindType looks up the Type given a qualified typeName. Returns false if not found.
@@ -38,7 +38,7 @@ public interface ITypeProvider
     ///         Used during type-checking only.
     ///     </para>
     /// </summary>
-    Google.Api.Expr.V1Alpha1.Type FindType(string typeName);
+    Google.Api.Expr.V1Alpha1.Type? FindType(string typeName);
 
     /// <summary>
     ///     FieldFieldType returns the field type for a checked type value. Returns false if the field
@@ -47,7 +47,7 @@ public interface ITypeProvider
     ///         Used during type-checking only.
     ///     </para>
     /// </summary>
-    FieldType FindFieldType(string messageType, string fieldName);
+    FieldType? FindFieldType(string messageType, string fieldName);
 
     /// <summary>
     ///     NewValue creates a new type value from a qualified name and map of field name to value.

@@ -235,7 +235,7 @@ public sealed class Checker
         if (sel.Operand == null) sel.Operand = new Expr();
         Check(sel.Operand);
 
-        var targetType = GetType(sel.Operand);
+        var targetType = GetType(sel.Operand)!;
         // Assume error type by default as most types do not support field selection.
         var resultType = Decls.Error;
         switch (Types.KindOf(targetType))

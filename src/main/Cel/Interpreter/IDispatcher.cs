@@ -30,7 +30,7 @@ public interface IDispatcher
     /// <summary>
     ///     FindOverload returns an Overload definition matching the provided name.
     /// </summary>
-    Overload FindOverload(string overload);
+    Overload? FindOverload(string overload);
 
     /// <summary>
     ///     OverloadIds returns the set of all overload identifiers configured for dispatch.

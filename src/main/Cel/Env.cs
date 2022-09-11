@@ -201,7 +201,7 @@ public sealed class Env
         }
 
         var pr = new Parser.Parser.ParseResult(pe.Expr, new Errors(ast.Source), pe.SourceInfo);
-        var checkRes = Checker.Checker.Check(pr, ast.Source, chk);
+        var checkRes = Checker.Checker.Check(pr, ast.Source, chk!);
         if (checkRes.HasErrors()) return new AstIssuesTuple(null, Issues.NewIssues(checkRes.Errors));
 
         // Manually create the Ast to ensure that the Ast source information (which may be more
