@@ -447,7 +447,7 @@ public class ProviderTest
             Assert.That(val, Is.EqualTo(@out));
     }
 
-    internal static void ExpectNativeToValue(object @in, IVal @out)
+    internal static void ExpectNativeToValue(object? @in, IVal @out)
     {
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry(new ParsedExpr());
         var val = reg.ToTypeAdapter()(@in);

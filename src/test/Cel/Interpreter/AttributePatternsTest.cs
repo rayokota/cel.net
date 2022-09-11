@@ -75,7 +75,7 @@ internal class AttributePatternsTest
             var cont = Container.DefaultContainer;
             if (m.@unchecked) cont = Container.NewContainer(Container.Name(m.container));
 
-            var fac = AttributePattern.NewPartialAttributeFactory(cont, reg.ToTypeAdapter(), reg);
+            var fac = AttributePattern.NewPartialAttributeFactory(cont!, reg.ToTypeAdapter(), reg);
             var attr = GenAttr(fac, m);
             var partVars =
                 IActivation.NewPartialActivation(IActivation.EmptyActivation(), tst.pattern);
@@ -89,7 +89,7 @@ internal class AttributePatternsTest
             var cont = Container.DefaultContainer;
             if (m.@unchecked) cont = Container.NewContainer(Container.Name(m.container));
 
-            var fac = AttributePattern.NewPartialAttributeFactory(cont, reg.ToTypeAdapter(), reg);
+            var fac = AttributePattern.NewPartialAttributeFactory(cont!, reg.ToTypeAdapter(), reg);
             var attr = GenAttr(fac, m);
             var partVars =
                 IActivation.NewPartialActivation(IActivation.EmptyActivation(), tst.pattern);
@@ -237,9 +237,9 @@ internal class AttributePatternsTest
     {
         internal readonly string name;
         internal readonly AttributePattern pattern;
-        internal string disabled;
-        internal Attr[] matches;
-        internal Attr[] misses;
+        internal string? disabled;
+        internal Attr[]? matches;
+        internal Attr[]? misses;
 
         internal PatternTest(string name, AttributePattern pattern)
         {

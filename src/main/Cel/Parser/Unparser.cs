@@ -38,10 +38,10 @@ using ExprKindCase = Expr.ExprKindOneofCase;
 /// </summary>
 public sealed class Unparser
 {
-    private readonly SourceInfo info;
+    private readonly SourceInfo? info;
     private readonly StringBuilder str;
 
-    private Unparser(SourceInfo info)
+    private Unparser(SourceInfo? info)
     {
         this.info = info;
         str = new StringBuilder();
@@ -50,7 +50,7 @@ public sealed class Unparser
     /// <summary>
     ///     unparser visits an expression to reconstruct a human-readable string from an AST.
     /// </summary>
-    public static string Unparse(Expr expr, SourceInfo info)
+    public static string Unparse(Expr expr, SourceInfo? info)
     {
         var unparser = new Unparser(info);
         unparser.Visit(expr);

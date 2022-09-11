@@ -24,7 +24,7 @@ namespace Cel.Common.Types.Pb;
 /// </summary>
 internal class UnwrapContext
 {
-    private static UnwrapContext instance;
+    private static UnwrapContext? instance;
     internal readonly PbTypeDescription msgDesc;
 
     internal readonly Db pbdb;

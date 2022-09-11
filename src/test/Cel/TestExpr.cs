@@ -210,7 +210,7 @@ public class TestExpr
     /// <summary>
     ///     ExprLiteral creates a literal (constant) Expr.
     /// </summary>
-    public static Expr ExprLiteral(long id, object value)
+    public static Expr ExprLiteral(long id, object? value)
     {
         var literal = new Constant();
         if (value is bool)

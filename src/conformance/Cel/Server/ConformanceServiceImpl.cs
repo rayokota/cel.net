@@ -59,7 +59,7 @@ public class ConformanceServiceImpl : ConformanceServiceImplBase
         var response = new ParseResponse();
         if (!astIss.HasIssues())
             // Success
-            response.ParsedExpr = Cel.AstToParsedExpr(astIss.Ast);
+            response.ParsedExpr = Cel.AstToParsedExpr(astIss.Ast!);
         else
             // Failure
             AppendErrors(astIss.Issues.Errors, response.Issues);
@@ -84,7 +84,7 @@ public class ConformanceServiceImpl : ConformanceServiceImplBase
 
         if (!astIss.HasIssues())
             // Success
-            resp.CheckedExpr = Cel.AstToCheckedExpr(astIss.Ast);
+            resp.CheckedExpr = Cel.AstToCheckedExpr(astIss.Ast!);
         else
             // Failure
             AppendErrors(astIss.Issues.Errors, resp.Issues);

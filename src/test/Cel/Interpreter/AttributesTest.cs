@@ -34,7 +34,7 @@ internal class AttributesTest
     {
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var cont = Container.NewContainer(Container.Name("acme.ns"));
-        var attrs = IAttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
+        var attrs = IAttributeFactory.NewAttributeFactory(cont!, reg.ToTypeAdapter(), reg);
         var vars = IActivation.NewActivation(TestUtil.BindingsOf("acme.a",
             TestUtil.MapOf("b", TestUtil.MapOf(4L, TestUtil.MapOf(false, "success")))));
 
@@ -100,7 +100,7 @@ internal class AttributesTest
     {
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var cont = Container.NewContainer(Container.Name("acme.ns"));
-        var attrs = IAttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
+        var attrs = IAttributeFactory.NewAttributeFactory(cont!, reg.ToTypeAdapter(), reg);
         var
             data = TestUtil.BindingsOf("a", TestUtil.MapOf(-1, new[] { 2, 42 }), "acme.b", 1);
         var vars = IActivation.NewActivation(data);
@@ -488,9 +488,9 @@ internal class AttributesTest
     {
         internal readonly string expr;
         internal IList<Decl>? env;
-        internal IDictionary<string, object> @in;
-        internal IVal @out;
-        internal IDictionary<object, object> state;
+        internal IDictionary<string, object>? @in;
+        internal IVal? @out;
+        internal IDictionary<object, object>? state;
 
         internal TestDef(string expr)
         {
@@ -536,7 +536,7 @@ internal class AttributesTest
             this.af = af;
         }
 
-        public virtual IQualifier NewQualifier(Type objType, long qualID, object val)
+        public virtual IQualifier NewQualifier(Type? objType, long qualID, object val)
         {
             if (objType.MessageType.Equals("google.api.expr.test.v1.proto3.TestAllTypes.NestedMessage"))
                 return new NestedMsgQualifier(qualID, (string)val);

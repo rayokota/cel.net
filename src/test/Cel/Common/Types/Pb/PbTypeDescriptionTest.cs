@@ -187,8 +187,8 @@ public class PbTypeDescriptionTest
     public class MaybeUnwrapTestCase
     {
         internal readonly string name;
-        internal Message @in;
-        internal object @out;
+        internal Message? @in;
+        internal object? @out;
 
         internal MaybeUnwrapTestCase(string name)
         {

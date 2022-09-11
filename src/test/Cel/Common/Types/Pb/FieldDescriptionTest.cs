@@ -163,8 +163,8 @@ public class FieldDescriptionTest
 
     public class GetFromTestCase
     {
-        internal string field;
-        internal object want;
+        internal string? field;
+        internal object? want;
 
         internal virtual GetFromTestCase Field(string field)
         {
@@ -186,11 +186,11 @@ public class FieldDescriptionTest
 
     public class TestCase
     {
-        internal string field;
+        internal string? field;
         internal bool isSet;
-        internal Message msg;
+        internal Message? msg;
 
-        internal virtual TestCase Msg(Message msg)
+        internal virtual TestCase Msg(Message? msg)
         {
             this.msg = msg;
             return this;

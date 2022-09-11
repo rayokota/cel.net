@@ -40,7 +40,7 @@ public class CELTest
             Env.NewEnv(IEnvOption.Declarations(Decls.NewVar("a", Decls.Dyn), Decls.NewVar("b", Decls.Dyn)));
         var astIss = stdEnv.Parse("a + b");
         Assert.That(astIss.HasIssues(), Is.False);
-        var parsed = Cel.AstToParsedExpr(astIss.Ast);
+        var parsed = Cel.AstToParsedExpr(astIss.Ast!);
         var ast2 = Cel.ParsedExprToAst(parsed);
         Assert.That(ast2.Expr, Is.EqualTo(astIss.Ast.Expr));
 
@@ -49,9 +49,9 @@ public class CELTest
         var astIss2 = stdEnv.Check(astIss.Ast);
         Assert.That(astIss2.HasIssues(), Is.False);
         // Assert.That(astIss.hasIssues(), Is.False);
-        var @checked = Cel.AstToCheckedExpr(astIss2.Ast);
+        var @checked = Cel.AstToCheckedExpr(astIss2.Ast!);
         var ast3 = Cel.CheckedExprToAst(@checked);
-        Assert.That(ast3.Expr, Is.EqualTo(astIss2.Ast.Expr));
+        Assert.That(ast3.Expr, Is.EqualTo(astIss2.Ast!.Expr));
     }
 
     [Test]
@@ -61,7 +61,7 @@ public class CELTest
         var @in = "a + b - (c ? (-d + 4) : e)";
         var astIss = stdEnv.Parse(@in);
         Assert.That(astIss.HasIssues(), Is.False);
-        var expr = Cel.AstToString(astIss.Ast);
+        var expr = Cel.AstToString(astIss.Ast!);
         Assert.That(expr, Is.EqualTo(@in));
     }
 
@@ -72,9 +72,9 @@ public class CELTest
         var @in = "10";
         var astIss = stdEnv.Compile(@in);
         Assert.That(astIss.HasIssues(), Is.False);
-        var expr = Cel.AstToCheckedExpr(astIss.Ast);
+        var expr = Cel.AstToCheckedExpr(astIss.Ast!);
         var ast2 = Cel.CheckedExprToAst(expr);
-        Assert.That(ast2.Expr, Is.EqualTo(astIss.Ast.Expr));
+        Assert.That(ast2.Expr, Is.EqualTo(astIss.Ast!.Expr));
     }
 
 
@@ -91,7 +91,7 @@ public class CELTest
         Assert.That(astIss.HasIssues(), Is.False);
 
         // Create the program, and evaluate it against some input.
-        var prg = env.Program(astIss.Ast);
+        var prg = env.Program(astIss.Ast!);
 
         // If the Eval() call were provided with cel.evalOptions(OptTrackState) the details response
         // (2nd return) would be non-nil.
@@ -108,7 +108,7 @@ public class CELTest
             IEnvOption.Declarations(Decls.NewVar("qualified.identifier.name.first", Decls.String)));
         var astIss = env.Compile("\"hello \"+ name.first"); // abbreviation resolved here.
         Assert.That(astIss.HasIssues(), Is.False);
-        var prg = env.Program(astIss.Ast);
+        var prg = env.Program(astIss.Ast!);
         var @out = prg.Eval(TestUtil.BindingsOf("qualified.identifier.name.first", "Jim"));
         Assert.That(@out.Val.Value(), Is.EqualTo("hello Jim"));
     }
@@ -120,7 +120,7 @@ public class CELTest
         var env = Env.NewEnv(IEnvOption.Abbrevs("qualified.identifier.name"));
         var astIss = env.Parse("\"hello \" + name.first");
         Assert.That(astIss.HasIssues(), Is.False);
-        var prg = env.Program(astIss.Ast); // abbreviation resolved here.
+        var prg = env.Program(astIss.Ast!); // abbreviation resolved here.
         var @out =
             prg.Eval(TestUtil.BindingsOf("qualified.identifier.name",
                 TestUtil.BindingsOf("first", "Jim")));
@@ -138,7 +138,7 @@ public class CELTest
         // typed 'Expr' should be used rather than the abbreviatation for 'external.Expr'.
         var astIss = env.Compile("test ? dyn(Expr) : google.api.expr.v1alpha1.Expr{id: 1}");
         Assert.That(astIss.HasIssues(), Is.False);
-        var prg = env.Program(astIss.Ast);
+        var prg = env.Program(astIss.Ast!);
         var @out = prg.Eval(TestUtil.BindingsOf("test", true, "external.Expr", "string expr"));
         Assert.That(@out.Val.Value(), Is.EqualTo("string expr"));
         @out = prg.Eval(TestUtil.BindingsOf("test", false, "external.Expr", "wrong expr"));
@@ -168,7 +168,7 @@ public class CELTest
         // t.Run("ok", func(t *testing.T) {
         var astIss = e.Compile("a.b.c");
         Assert.That(astIss.HasIssues(), Is.False);
-        var prg = e.Program(astIss.Ast);
+        var prg = e.Program(astIss.Ast!);
         var @out = prg.Eval(TestUtil.BindingsOf("a.b.c", true));
         Assert.That(@out.Val, Is.SameAs(BoolT.True));
     }
@@ -210,14 +210,14 @@ public class CELTest
         // t.Run("ok_list", func(t *testing.T) {
         var astIss = e.Compile("name in ['hello', 'world']");
         Assert.That(astIss.HasIssues(), Is.False);
-        var prg = e.Program(astIss.Ast, funcs);
+        var prg = e.Program(astIss.Ast!, funcs);
         var @out = prg.Eval(TestUtil.BindingsOf("name", "world"));
         Assert.That(@out.Val, Is.SameAs(BoolT.True));
         // })
         // t.Run("ok_map", func(t *testing.T) {
         astIss = e.Compile("name in {'hello': false, 'world': true}");
         Assert.That(astIss.HasIssues(), Is.False);
-        prg = e.Program(astIss.Ast, funcs);
+        prg = e.Program(astIss.Ast!, funcs);
         @out = prg.Eval(TestUtil.BindingsOf("name", "world"));
         Assert.That(@out.Val, Is.SameAs(BoolT.True));
         // })
@@ -238,7 +238,7 @@ public class CELTest
                                "\t\t\t\t\tExpr{id: 1, ident_expr: Expr.Ident{ name: \"a\" }},\n" +
                                "\t\t\t\t\tExpr{id: 3, ident_expr: Expr.Ident{ name: \"b\" }}]\n" +
                                "\t\t\t}}");
-        Assert.That(astIss.Ast.ResultType, Is.EqualTo(Decls.Bool));
+        Assert.That(astIss.Ast!.ResultType, Is.EqualTo(Decls.Bool));
         var prg = e.Program(astIss.Ast);
 
         var ident1 = new Expr.Types.Ident();
@@ -411,7 +411,7 @@ public class CELTest
         }));
 
         // Global variables can be configured as a ProgramOption and optionally overridden on Eval.
-        var prg = e.Program(astIss.Ast, funcs,
+        var prg = e.Program(astIss.Ast!, funcs,
             IProgramOption.Globals(TestUtil.BindingsOf("default", "third")));
 
         // t.Run("global_default", func(t *testing.T) {
@@ -453,7 +453,7 @@ public class CELTest
         var e = Env.NewEnv(IEnvOption.Macros(joinMacro));
         var astIss = e.Compile("['hello', 'cel', 'friend'].join(',')");
         Assert.That(astIss.HasIssues(), Is.False);
-        var prg = e.Program(astIss.Ast, IProgramOption.EvalOptions(EvalOption.OptExhaustiveEval));
+        var prg = e.Program(astIss.Ast!, IProgramOption.EvalOptions(EvalOption.OptExhaustiveEval));
         var @out = prg.Eval(Cel.NoVars());
         Assert.That(@out.Val.Equal(StringT.StringOf("hello,cel,friend")), Is.SameAs(BoolT.True));
     }
@@ -464,7 +464,7 @@ public class CELTest
         var e = Env.NewEnv();
         var astIss = e.Compile("true");
         Assert.That(astIss.HasIssues(), Is.False);
-        Assert.That(astIss.Ast.Checked, Is.EqualTo(true));
+        Assert.That(astIss.Ast!.Checked, Is.EqualTo(true));
         var ce = Cel.AstToCheckedExpr(astIss.Ast);
         var ast2 = Cel.CheckedExprToAst(ce);
         Assert.That(ast2.Checked, Is.EqualTo(true));
@@ -477,7 +477,7 @@ public class CELTest
         var e = Env.NewEnv(IEnvOption.Declarations(Decls.NewVar("k", Decls.String), Decls.NewVar("v", Decls.Bool)));
         var astIss = e.Compile("{k: true}[k] || v != false");
 
-        var prg = e.Program(astIss.Ast, IProgramOption.EvalOptions(EvalOption.OptExhaustiveEval));
+        var prg = e.Program(astIss.Ast!, IProgramOption.EvalOptions(EvalOption.OptExhaustiveEval));
         var outDetails = prg.Eval(TestUtil.BindingsOf("k", "key", "v", true));
         Assert.That(outDetails.Val, Is.SameAs(BoolT.True));
 
@@ -500,10 +500,10 @@ public class CELTest
                 args => { throw new Exception("watch me recover"); }));
         // Test standard evaluation.
         var pAst = e.Parse("panic()");
-        var prgm1 = e.Program(pAst.Ast, funcs);
+        var prgm1 = e.Program(pAst.Ast!, funcs);
         Assert.That(() => prgm1.Eval(new Dictionary<object, object>()), Throws.Exception.TypeOf(typeof(Exception)));
         // Test the factory-based evaluation.
-        var prgm2 = e.Program(pAst.Ast, funcs, IProgramOption.EvalOptions(EvalOption.OptTrackState));
+        var prgm2 = e.Program(pAst.Ast!, funcs, IProgramOption.EvalOptions(EvalOption.OptTrackState));
         Assert.That(() => prgm2.Eval(new Dictionary<object, object>()), Throws.Exception.TypeOf(typeof(Exception)));
     }
 
@@ -513,12 +513,12 @@ public class CELTest
         var e = Env.NewEnv(IEnvOption.Declarations(Decls.NewVar("x", Decls.Int), Decls.NewVar("y", Decls.Int)));
         var unkVars = e.UnknownVars;
         var astIss = e.Parse("x < 10 && (y == 0 || 'hello' != 'goodbye')");
-        var prg = e.Program(astIss.Ast,
+        var prg = e.Program(astIss.Ast!,
             IProgramOption.EvalOptions(EvalOption.OptTrackState, EvalOption.OptPartialEval));
         var outDet = prg.Eval(unkVars);
         Assert.That(outDet.Val, Is.Not.Null.And.Matches<object>(o => UnknownT.IsUnknown(o)));
-        var residual = e.ResidualAst(astIss.Ast, outDet.EvalDetails);
-        var expr = Cel.AstToString(residual);
+        var residual = e.ResidualAst(astIss.Ast!, outDet.EvalDetails);
+        var expr = Cel.AstToString(residual!);
         Assert.That(expr, Is.EqualTo("x < 10"));
     }
 
@@ -536,12 +536,12 @@ public class CELTest
                                "\t\t bool(request.auth.claims.email_verified) == true &&\n" +
                                "\t\t request.auth.claims.email == \"wiley@acme.co\"");
         Assert.That(astIss.HasIssues(), Is.False);
-        var prg = e.Program(astIss.Ast,
+        var prg = e.Program(astIss.Ast!,
             IProgramOption.EvalOptions(EvalOption.OptTrackState, EvalOption.OptPartialEval));
         var outDet = prg.Eval(unkVars);
         Assert.That(outDet.Val, Is.Not.Null.And.Matches<object>(o => UnknownT.IsUnknown(o)));
-        var residual = e.ResidualAst(astIss.Ast, outDet.EvalDetails);
-        var expr = Cel.AstToString(residual);
+        var residual = e.ResidualAst(astIss.Ast!, outDet.EvalDetails);
+        var expr = Cel.AstToString(residual!);
         Assert.That(expr, Is.EqualTo("request.auth.claims.email == \"wiley@acme.co\""));
     }
 
@@ -623,7 +623,7 @@ public class CELTest
 
         var env = Env.NewEnv(IEnvOption.Declarations(Decls.NewVar("foo", Decls.Int)));
         var astIss = env.Compile("foo == -1 + 2 * 3 / 3");
-        env.Program(astIss.Ast, IProgramOption.EvalOptions(EvalOption.OptPartialEval),
+        env.Program(astIss.Ast!, IProgramOption.EvalOptions(EvalOption.OptPartialEval),
             IProgramOption.CustomDecorator(optimizeArith));
         Assert.That(lastInstruction.Get(), Is.InstanceOf(typeof(IInterpretableCall)));
         var call = (IInterpretableCall)lastInstruction.Get();
@@ -651,12 +651,12 @@ public class CELTest
         var wantedCost = Interpreter.Cost.None;
 
         // Test standard evaluation cost.
-        var prg = e.Program(astIss.Ast);
+        var prg = e.Program(astIss.Ast!);
         var c = Interpreter.Cost.EstimateCost(prg);
         Assert.That(c, Is.EqualTo(wantedCost));
 
         // Test the factory-based evaluation cost.
-        prg = e.Program(astIss.Ast, IProgramOption.EvalOptions(EvalOption.OptExhaustiveEval));
+        prg = e.Program(astIss.Ast!, IProgramOption.EvalOptions(EvalOption.OptExhaustiveEval));
         c = Interpreter.Cost.EstimateCost(prg);
         Assert.That(c, Is.EqualTo(wantedCost));
     }
@@ -669,7 +669,7 @@ public class CELTest
         var astIss =
             e.Parse(
                 "x.abc == u && x[\"abc\"] == u && x[x.string] == u && y[0] == u && y[x.zero] == u && (true ? x : y).abc == u && (false ? y : x).abc == u");
-        var prg = e.Program(astIss.Ast,
+        var prg = e.Program(astIss.Ast!,
             IProgramOption.EvalOptions(EvalOption.OptTrackState, EvalOption.OptPartialEval));
         var vars = Cel.PartialVars(
             TestUtil.BindingsOf("x", TestUtil.BindingsOf("zero", 0, "abc", 123, "string", "abc"),
@@ -677,8 +677,8 @@ public class CELTest
                 new List<int> { 123 }), Cel.NewAttributePattern("u"));
         var outDet = prg.Eval(vars);
         Assert.That(outDet.Val, Is.Not.Null.And.Matches<object>(o => UnknownT.IsUnknown(o)));
-        var residual = e.ResidualAst(astIss.Ast, outDet.EvalDetails);
-        var expr = Cel.AstToString(residual);
+        var residual = e.ResidualAst(astIss.Ast!, outDet.EvalDetails);
+        var expr = Cel.AstToString(residual!);
         Assert.That(expr,
             Is.EqualTo("123 == u && 123 == u && 123 == u && 123 == u && 123 == u && 123 == u && 123 == u"));
     }
@@ -689,7 +689,7 @@ public class CELTest
         var e = Env.NewEnv(IEnvOption.Declarations(Decls.NewVar("x", Decls.NewMapType(Decls.String, Decls.Int)),
             Decls.NewVar("y", Decls.Int)));
         var astIss = e.Parse("x == y");
-        var prg = e.Program(astIss.Ast,
+        var prg = e.Program(astIss.Ast!,
             IProgramOption.EvalOptions(EvalOption.OptTrackState, EvalOption.OptPartialEval));
         for (var x = 123; x < 456; x++)
         {
@@ -697,10 +697,10 @@ public class CELTest
                 Cel.PartialVars(TestUtil.BindingsOf("x", x), Cel.NewAttributePattern("y"));
             var outDet = prg.Eval(vars);
             Assert.That(outDet.Val, Is.Not.Null.And.Matches<object>(o => UnknownT.IsUnknown(o)));
-            var residual = e.ResidualAst(astIss.Ast, outDet.EvalDetails);
-            var orig = Cel.AstToString(astIss.Ast);
+            var residual = e.ResidualAst(astIss.Ast!, outDet.EvalDetails);
+            var orig = Cel.AstToString(astIss.Ast!);
             Assert.That(orig, Is.EqualTo("x == y"));
-            var expr = Cel.AstToString(residual);
+            var expr = Cel.AstToString(residual!);
             var want = string.Format("{0:D} == y", x);
             Assert.That(expr, Is.EqualTo(want));
         }

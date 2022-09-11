@@ -97,7 +97,7 @@ public class UnparserTest
         var p = parser.Parse(ISource.NewTextSource(@in));
         if (p.HasErrors()) Assert.Fail(p.Errors.ToDisplayString());
 
-        var @out = Unparser.Unparse(p.Expr, p.SourceInfo);
+        var @out = Unparser.Unparse(p.Expr!, p.SourceInfo);
         Assert.That(@out, Is.EqualTo(@in));
 
         var p2 = parser.Parse(ISource.NewTextSource(@out));
@@ -163,7 +163,7 @@ public class UnparserTest
 
         var p = parser.Parse(ISource.NewTextSource(@in[0]));
         if (p.HasErrors()) Assert.Fail(p.Errors.ToDisplayString());
-        var @out = Unparser.Unparse(p.Expr, p.SourceInfo);
+        var @out = Unparser.Unparse(p.Expr!, p.SourceInfo);
         Assert.That(@out, Is.EqualTo(@in[1]));
 
         var p2 = parser.Parse(ISource.NewTextSource(@out));

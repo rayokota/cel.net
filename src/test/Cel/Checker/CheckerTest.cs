@@ -697,7 +697,7 @@ public class CheckerTest
             new TestAllTypes(),
             new Google.Api.Expr.Test.V1.Proto3.TestAllTypes());
         var cont = Container.NewContainer(Container.Name(tc.container));
-        var env = CheckerEnv.NewStandardCheckerEnv(cont, reg);
+        var env = CheckerEnv.NewStandardCheckerEnv(cont!, reg);
         if (tc.disableStdEnv) env = CheckerEnv.NewCheckerEnv(cont, reg);
 
         if (tc.homogeneousAggregateLiterals) env.EnableDynamicAggregateLiterals(false);
@@ -728,7 +728,7 @@ public class CheckerTest
             Assert.That(tc.error, Is.Null);
         }
 
-        var actual = checkResult.CheckedExpr.TypeMap[parsed.Expr.Id];
+        var actual = checkResult.CheckedExpr.TypeMap[parsed.Expr!.Id];
         if (tc.error == null)
             if (actual == null || !actual.Equals(tc.type))
                 Assert.Fail("Type Error: '{0}' vs expected '{1}'", actual, tc.type);
@@ -750,7 +750,7 @@ public class CheckerTest
         /// </summary>
         internal string container = "";
 
-        internal string disabled;
+        internal string? disabled;
 
         /// <summary>
         ///     DisableStdEnv indicates whether the standard functions should be disabled.
@@ -760,12 +760,12 @@ public class CheckerTest
         /// <summary>
         ///     Env is the environment to use for testing.
         /// </summary>
-        internal Env env;
+        internal Env? env;
 
         /// <summary>
         ///     Error is the expected error for negative test cases.
         /// </summary>
-        internal string error;
+        internal string? error;
 
         /// <summary>
         ///     HomogeneousAggregateLiterals indicates whether list and map literals must have homogeneous
@@ -846,8 +846,8 @@ public class CheckerTest
 
     internal class Env
     {
-        internal Decl[] functions;
-        internal Decl[] idents;
+        internal Decl[]? functions;
+        internal Decl[]? idents;
 
         internal virtual Env Idents(params Decl[] idents)
         {

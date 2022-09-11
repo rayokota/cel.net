@@ -423,13 +423,13 @@ public class TimestampTest
         internal readonly DateTime ldt;
         internal readonly string timestamp;
         internal readonly int[] tuple;
-        internal string tz;
+        internal string? tz;
 
         internal ParseTestCase(string timestamp, int[] tuple)
         {
             this.timestamp = timestamp;
             this.tuple = tuple;
-            ldt = new DateTime(tuple[0], tuple[1], tuple[2], tuple[3], tuple[4], tuple[5]);
+            this.ldt = new DateTime(tuple[0], tuple[1], tuple[2], tuple[3], tuple[4], tuple[5]);
         }
 
         internal virtual ParseTestCase WithTZ(string tz)

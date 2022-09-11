@@ -733,7 +733,7 @@ internal class InterpreterTest
         var attrs = IAttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
         var intr =
             global::Cel.Interpreter.IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
-        Assert.That(() => intr.NewUncheckedInterpretable(parsed.Expr),
+        Assert.That(() => intr.NewUncheckedInterpretable(parsed.Expr!),
             Throws.Exception.InstanceOf(typeof(InvalidOperationException)));
     }
 
@@ -751,7 +751,7 @@ internal class InterpreterTest
         var intr =
             global::Cel.Interpreter.IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
         var interpretable =
-            intr.NewUncheckedInterpretable(parsed.Expr, global::Cel.Interpreter.IInterpreter.ExhaustiveEval(state));
+            intr.NewUncheckedInterpretable(parsed.Expr!, global::Cel.Interpreter.IInterpreter.ExhaustiveEval(state));
         var vars = IActivation.NewActivation(TestUtil.BindingsOf("a", BoolT.True, "b", DoubleT.DoubleOf(0.999),
             "c", ListT.NewStringArrayList(new[] { "hello" })));
         var result = interpretable.Eval(vars);
@@ -778,7 +778,7 @@ internal class InterpreterTest
         var attrs = IAttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
         var interp =
             global::Cel.Interpreter.IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
-        var i = interp.NewUncheckedInterpretable(parsed.Expr,
+        var i = interp.NewUncheckedInterpretable(parsed.Expr!,
             global::Cel.Interpreter.IInterpreter.ExhaustiveEval(state));
         var vars = IActivation.NewActivation(TestUtil.BindingsOf("a", true, "b", "b"));
         var result = i.Eval(vars);
@@ -868,7 +868,6 @@ internal class InterpreterTest
 
     internal static ConvTestCase[] TypeConversionOptTests()
     {
-        var uint64_10000000000000000000 = -8446744073709551616L;
         var ts1 = new Timestamp();
         ts1.Seconds = TimestampT.maxUnixTime;
 
@@ -978,7 +977,7 @@ internal class InterpreterTest
 
     internal static Container TestContainer(string name)
     {
-        return Container.NewContainer(Container.Name(name));
+        return Container.NewContainer(Container.Name(name))!;
     }
 
     internal static Program program(TestCase tst, params InterpretableDecorator[] opts)
@@ -994,7 +993,7 @@ internal class InterpreterTest
         reg = ProtoTypeRegistry.NewRegistry();
         if (tst.types != null) reg = ProtoTypeRegistry.NewRegistry(tst.types);
 
-        var attrs = IAttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
+        var attrs = IAttributeFactory.NewAttributeFactory(cont!, reg.ToTypeAdapter(), reg);
         if (tst.attrs != null) attrs = tst.attrs;
 
         // Configure the environment.
@@ -1023,7 +1022,7 @@ internal class InterpreterTest
         if (tst.@unchecked)
         {
             // Build the program plan.
-            prg = interp.NewUncheckedInterpretable(parsed.Expr, opts);
+            prg = interp.NewUncheckedInterpretable(parsed.Expr!, opts)!;
             return new Program(prg, vars);
         }
 
@@ -1033,7 +1032,7 @@ internal class InterpreterTest
         Assert.That(checkResult.HasErrors(), Is.False);
 
         // Build the program plan.
-        prg = interp.NewInterpretable(checkResult.CheckedExpr, opts);
+        prg = interp.NewInterpretable(checkResult.CheckedExpr, opts)!;
         return new Program(prg, vars);
     }
 
@@ -1054,20 +1053,20 @@ internal class InterpreterTest
     internal class TestCase
     {
         internal readonly InterpreterTestCase name;
-        internal string[] abbrevs;
+        internal string[]? abbrevs;
         internal IAttributeFactory? attrs;
-        internal string container;
-        internal Cost cost;
+        internal string? container;
+        internal Cost? cost;
         internal string? disabled;
         internal Decl[]? env;
-        internal string err;
-        internal Cost exhaustiveCost;
-        internal string expr;
-        internal Overload[] funcs;
+        internal string? err;
+        internal Cost? exhaustiveCost;
+        internal string? expr;
+        internal Overload[]? funcs;
 
-        internal IDictionary<string, object> @in;
-        internal Cost optimizedCost;
-        internal object @out;
+        internal IDictionary<string, object>? @in;
+        internal Cost? optimizedCost;
+        internal object? @out;
         internal Message[]? types;
         internal bool @unchecked;
 
@@ -1185,9 +1184,9 @@ internal class InterpreterTest
     internal class ConvTestCase
     {
         internal readonly string @in;
-        internal string err;
+        internal string? err;
         internal bool fail;
-        internal IVal @out;
+        internal IVal? @out;
 
         internal ConvTestCase(string @in)
         {
