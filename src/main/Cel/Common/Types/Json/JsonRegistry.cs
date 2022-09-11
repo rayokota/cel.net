@@ -1,6 +1,5 @@
 ﻿using Cel.Common.Types.Ref;
 using Newtonsoft.Json;
-using Type = System.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -54,7 +53,7 @@ public sealed class JsonRegistry : ITypeRegistry
         TypeDescription(cls);
     }
 
-    public void RegisterType(params Ref.IType[] types)
+    public void RegisterType(params IType[] types)
     {
         throw new NotSupportedException();
     }

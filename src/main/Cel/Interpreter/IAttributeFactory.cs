@@ -1,8 +1,8 @@
 ﻿using System.Collections;
+using Cel.Common.Containers;
 using Cel.Common.Types;
 using Cel.Common.Types.Ref;
 using Cel.Common.Types.Traits;
-using Container = Cel.Common.Containers.Container;
 using Type = Google.Api.Expr.V1Alpha1.Type;
 
 /*
@@ -397,7 +397,7 @@ public sealed class AbsoluteAttribute : IQualifier,
         var max = 0L;
         foreach (var q in qualifiers)
         {
-            var qc = global::Cel.Interpreter.Cost.EstimateCost(q);
+            var qc = Interpreter.Cost.EstimateCost(q);
             min += qc.min;
             max += qc.max;
         }
@@ -574,9 +574,9 @@ public sealed class ConditionalAttribute : IQualifier, IAttribute,
     /// </summary>
     public Cost Cost()
     {
-        var t = global::Cel.Interpreter.Cost.EstimateCost(truthy);
-        var f = global::Cel.Interpreter.Cost.EstimateCost(falsy);
-        var e = global::Cel.Interpreter.Cost.EstimateCost(expr);
+        var t = Interpreter.Cost.EstimateCost(truthy);
+        var f = Interpreter.Cost.EstimateCost(falsy);
+        var e = Interpreter.Cost.EstimateCost(expr);
         return ICoster.CostOf(e.min + Math.Min(t.min, f.min), e.max + Math.Max(t.max, f.max));
     }
 
@@ -754,7 +754,7 @@ public sealed class MaybeAttribute : ICoster, IAttribute, IQualifier
         var max = 0L;
         foreach (var a in attrs)
         {
-            var ac = global::Cel.Interpreter.Cost.EstimateCost(a);
+            var ac = Interpreter.Cost.EstimateCost(a);
             min = Math.Min(min, ac.min);
             max = Math.Max(max, ac.max);
         }
@@ -830,12 +830,12 @@ public sealed class RelativeAttribute : ICoster, IQualifier,
     /// </summary>
     public Cost Cost()
     {
-        var c = global::Cel.Interpreter.Cost.EstimateCost(operand);
+        var c = Interpreter.Cost.EstimateCost(operand);
         var min = c.min;
         var max = c.max;
         foreach (var qual in qualifiers)
         {
-            var q = global::Cel.Interpreter.Cost.EstimateCost(qual);
+            var q = Interpreter.Cost.EstimateCost(qual);
             min += q.min;
             max += q.max;
         }
@@ -908,7 +908,7 @@ public sealed class AttrQualifier : ICoster, IAttribute
     /// </summary>
     public Cost Cost()
     {
-        return global::Cel.Interpreter.Cost.EstimateCost(attribute);
+        return Interpreter.Cost.EstimateCost(attribute);
     }
 
     public override string ToString()
@@ -992,7 +992,7 @@ public sealed class StringQualifier : ICoster, IConstantQualifierEquator,
     /// </summary>
     public Cost Cost()
     {
-        return global::Cel.Interpreter.Cost.None;
+        return Interpreter.Cost.None;
     }
 
     public override string ToString()
@@ -1101,7 +1101,7 @@ public sealed class IntQualifier : ICoster, IConstantQualifierEquator
     /// </summary>
     public Cost Cost()
     {
-        return global::Cel.Interpreter.Cost.None;
+        return Interpreter.Cost.None;
     }
 
     public override string ToString()
@@ -1187,7 +1187,7 @@ public sealed class UintQualifier : ICoster, IConstantQualifierEquator
     /// </summary>
     public Cost Cost()
     {
-        return global::Cel.Interpreter.Cost.None;
+        return Interpreter.Cost.None;
     }
 
     public override string ToString()
@@ -1267,7 +1267,7 @@ public sealed class BoolQualifier : ICoster, IConstantQualifierEquator
     /// </summary>
     public Cost Cost()
     {
-        return global::Cel.Interpreter.Cost.None;
+        return Interpreter.Cost.None;
     }
 
     public override string ToString()
@@ -1330,7 +1330,7 @@ public sealed class FieldQualifier : ICoster, IConstantQualifierEquator
     /// </summary>
     public Cost Cost()
     {
-        return global::Cel.Interpreter.Cost.None;
+        return Interpreter.Cost.None;
     }
 
     /// <summary>

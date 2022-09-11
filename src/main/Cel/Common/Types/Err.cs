@@ -208,7 +208,7 @@ public sealed class Err : BaseVal
     /// <summary>
     ///     ConvertToNative implements ref.Val.ConvertToNative.
     /// </summary>
-    public override object? ConvertToNative(System.Type typeDesc)
+    public override object? ConvertToNative(Type typeDesc)
     {
         throw new NotSupportedException(error);
     }

@@ -57,14 +57,14 @@ public sealed class Cel
             p.attrFactory = IAttributeFactory.NewAttributeFactory(e.Container, e.TypeAdapter, e.TypeProvider);
 
         var interp =
-            Interpreter.IInterpreter.NewInterpreter(disp, e.Container, e.TypeProvider, e.TypeAdapter, p.attrFactory);
+            IInterpreter.NewInterpreter(disp, e.Container, e.TypeProvider, e.TypeAdapter, p.attrFactory);
         p.interpreter = interp;
 
         // Translate the EvalOption flags into InterpretableDecorator instances.
         IList<InterpretableDecorator> decorators = new List<InterpretableDecorator>(p.decorators);
 
         // Enable constant folding first.
-        if (p.evalOpts.Contains(EvalOption.OptOptimize)) decorators.Add(Interpreter.IInterpreter.Optimize());
+        if (p.evalOpts.Contains(EvalOption.OptOptimize)) decorators.Add(IInterpreter.Optimize());
 
         var pp = p;
 
@@ -76,7 +76,7 @@ public sealed class Cel
             ProgFactory factory = state =>
             {
                 IList<InterpretableDecorator> decs = new List<InterpretableDecorator>(decorators);
-                decs.Add(Interpreter.IInterpreter.ExhaustiveEval(state));
+                decs.Add(IInterpreter.ExhaustiveEval(state));
                 var clone = new Prog(e, pp.evalOpts, pp.defaultVars, disp, interp, state);
                 return InitInterpretable(clone, ast, decs);
             };
@@ -90,7 +90,7 @@ public sealed class Cel
             ProgFactory factory = state =>
             {
                 IList<InterpretableDecorator> decs = new List<InterpretableDecorator>(decorators);
-                decs.Add(Interpreter.IInterpreter.TrackState(state));
+                decs.Add(IInterpreter.TrackState(state));
                 var clone = new Prog(e, pp.evalOpts, pp.defaultVars, disp, interp, state);
                 return InitInterpretable(clone, ast, decs);
             };

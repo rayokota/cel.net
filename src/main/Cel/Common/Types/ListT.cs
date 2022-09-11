@@ -5,6 +5,7 @@ using Cel.Common.Types.Traits;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Enum = System.Enum;
+using Type = System.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -39,7 +40,7 @@ public abstract class ListT : BaseVal, ILister
     public abstract override object Value();
     public abstract override IVal Equal(IVal other);
     public abstract override IVal ConvertToType(IType typeValue);
-    public abstract override object? ConvertToNative(System.Type typeDesc);
+    public abstract override object? ConvertToNative(Type typeDesc);
 
     public override IType Type()
     {
@@ -81,7 +82,7 @@ public abstract class ListT : BaseVal, ILister
             this.size = size;
         }
 
-        public override object? ConvertToNative(System.Type typeDesc)
+        public override object? ConvertToNative(Type typeDesc)
         {
             if (typeDesc.IsArray)
             {
@@ -150,7 +151,7 @@ public abstract class ListT : BaseVal, ILister
             return new List<object> { ConvertToNative(typeof(Array))! };
         }
 
-        internal virtual object ToArray<T>(System.Type typeDesc)
+        internal virtual object ToArray<T>(Type typeDesc)
         {
             var s = (int)size;
             var compType = typeDesc.GetElementType()!;
@@ -263,7 +264,7 @@ public abstract class ListT : BaseVal, ILister
                 return Err.NoMoreElements();
             }
 
-            public override object? ConvertToNative(System.Type typeDesc)
+            public override object? ConvertToNative(Type typeDesc)
             {
                 throw new NotSupportedException("IMPLEMENT ME??");
             }

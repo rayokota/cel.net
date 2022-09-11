@@ -5,6 +5,7 @@ using Google.Protobuf.Reflection;
 using Google.Protobuf.WellKnownTypes;
 using NodaTime;
 using Duration = Google.Protobuf.WellKnownTypes.Duration;
+using Type = System.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -28,8 +29,8 @@ namespace Cel.Common.Types.Ref;
 /// </summary>
 public sealed class TypeAdapterSupport
 {
-    private static readonly IDictionary<System.Type, Func<TypeAdapter, object, IVal>> NativeToValueExact =
-        new Dictionary<System.Type, Func<TypeAdapter, object, IVal>>(ReferenceEqualityComparer.Instance);
+    private static readonly IDictionary<Type, Func<TypeAdapter, object, IVal>> NativeToValueExact =
+        new Dictionary<Type, Func<TypeAdapter, object, IVal>>(ReferenceEqualityComparer.Instance);
 
     static TypeAdapterSupport()
     {

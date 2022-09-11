@@ -1,10 +1,10 @@
-﻿using Cel.Common.Operators;
+﻿using Cel.Common.Containers;
+using Cel.Common.Operators;
 using Cel.Common.Types;
 using Cel.Common.Types.Ref;
 using Cel.Common.Types.Traits;
 using Cel.Interpreter.Functions;
 using Google.Api.Expr.V1Alpha1;
-using Container = Cel.Common.Containers.Container;
 using Type = Google.Api.Expr.V1Alpha1.Type;
 
 /*

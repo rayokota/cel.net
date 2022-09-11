@@ -1,5 +1,4 @@
-﻿using Cel.Common.Types;
-using Cel.Common.Types.Ref;
+﻿using Cel.Common.Types.Ref;
 
 /*
  * Copyright (C) 2022 Robert Yokota

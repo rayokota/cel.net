@@ -1,5 +1,6 @@
 ﻿using Cel.Common.Types.Ref;
 using Google.Protobuf.WellKnownTypes;
+using Type = System.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -48,7 +49,7 @@ public sealed class NullT : BaseVal
     /// <summary>
     ///     ConvertToNative implements ref.Val.ConvertToNative.
     /// </summary>
-    public override object? ConvertToNative(System.Type typeDesc)
+    public override object? ConvertToNative(Type typeDesc)
     {
         if (typeDesc == typeof(int)) return (int?)0;
 
@@ -134,7 +135,7 @@ public sealed class NullT : BaseVal
     public override bool Equals(object? obj)
     {
         if (obj == null) return false;
-        
+
         return obj.GetType() == typeof(NullT);
     }
 }

@@ -26,7 +26,7 @@ public interface IVal
     ///     ConvertToNative converts the Value to a native Go struct according to the reflected type
     ///     description, or error if the conversion is not feasible.
     /// </summary>
-    object? ConvertToNative(System.Type typeDesc);
+    object? ConvertToNative(Type typeDesc);
 
     /// <summary>
     ///     ConvertToType supports type conversions between value types supported by the expression

@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using Type = Google.Api.Expr.V1Alpha1.Type;
+
 namespace Cel.Common.Types.Ref;
 
 /// <summary>
@@ -34,9 +36,9 @@ public class FieldType
     /// <summary>
     ///     Type of the field.
     /// </summary>
-    public readonly Google.Api.Expr.V1Alpha1.Type type;
+    public readonly Type type;
 
-    public FieldType(Google.Api.Expr.V1Alpha1.Type type, FieldTester isSet, FieldGetter getFrom)
+    public FieldType(Type type, FieldTester isSet, FieldGetter getFrom)
     {
         this.type = type;
         this.isSet = isSet;

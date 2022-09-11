@@ -285,7 +285,7 @@ public sealed class Container
         return c =>
         {
             if (c == null) return null;
-            
+
             if (alias.Length == 0 || alias.IndexOf('.') != -1)
                 throw new ArgumentException(
                     string.Format("{0} must be non-empty and simple (not qualified): {1}={2}", kind, kind, alias));
@@ -325,7 +325,7 @@ public sealed class Container
         return c =>
         {
             if (c == null) return null;
-            
+
             if (name.Length > 0 && name[0] == '.')
                 throw new ArgumentException(
                     string.Format("container name must not contain a leading '.': {0}", name));

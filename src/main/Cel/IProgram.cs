@@ -55,16 +55,13 @@ public interface IProgram
 
 public sealed class EvalResult
 {
-    private readonly EvalDetails evalDetails;
-    private readonly IVal val;
-
     internal EvalResult(IVal val, EvalDetails evalDetails)
     {
-        this.val = val;
-        this.evalDetails = evalDetails;
+        this.Val = val;
+        this.EvalDetails = evalDetails;
     }
 
-    public IVal Val => val;
+    public IVal Val { get; }
 
-    public EvalDetails EvalDetails => evalDetails;
+    public EvalDetails EvalDetails { get; }
 }

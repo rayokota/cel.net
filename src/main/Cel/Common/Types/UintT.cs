@@ -1,6 +1,7 @@
 ﻿using Cel.Common.Types.Ref;
 using Cel.Common.Types.Traits;
 using Google.Protobuf.WellKnownTypes;
+using Type = System.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -155,7 +156,7 @@ public sealed class UintT : BaseVal, IAdder, IComparer, IDivider, IModder, IMult
     /// <summary>
     ///     ConvertToNative implements ref.Val.ConvertToNative.
     /// </summary>
-    public override object? ConvertToNative(System.Type typeDesc)
+    public override object? ConvertToNative(Type typeDesc)
     {
         if (typeDesc == typeof(long) || typeDesc == typeof(object))
         {

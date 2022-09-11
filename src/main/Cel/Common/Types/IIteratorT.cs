@@ -1,5 +1,4 @@
 ﻿using Cel.Common.Types.Ref;
-using Type = System.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -82,7 +81,7 @@ internal class IteratorAdapter<T> : BaseVal, IIteratorT
         throw new NotSupportedException();
     }
 
-    public override IVal ConvertToType(Ref.IType typeValue)
+    public override IVal ConvertToType(IType typeValue)
     {
         throw new NotSupportedException();
     }
@@ -92,7 +91,7 @@ internal class IteratorAdapter<T> : BaseVal, IIteratorT
         throw new NotSupportedException();
     }
 
-    public override Ref.IType Type()
+    public override IType Type()
     {
         throw new NotSupportedException();
     }

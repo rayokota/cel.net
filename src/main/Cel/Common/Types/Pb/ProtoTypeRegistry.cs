@@ -5,6 +5,7 @@ using Google.Protobuf.Reflection;
 using Google.Protobuf.WellKnownTypes;
 using Enum = System.Enum;
 using FieldType = Cel.Common.Types.Ref.FieldType;
+using Type = Google.Api.Expr.V1Alpha1.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -96,15 +97,15 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
         return null;
     }
 
-    public Google.Api.Expr.V1Alpha1.Type? FindType(string typeName)
+    public Type? FindType(string typeName)
     {
         if (pbdb.DescribeType(typeName) == null) return null;
 
         if (typeName.Length > 0 && typeName[0] == '.') typeName = typeName.Substring(1);
 
-        var type = new Google.Api.Expr.V1Alpha1.Type();
+        var type = new Type();
         type.MessageType = typeName;
-        var result = new Google.Api.Expr.V1Alpha1.Type();
+        var result = new Type();
         result.Type_ = type;
         return result;
     }

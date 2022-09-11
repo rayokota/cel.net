@@ -15,7 +15,6 @@
  */
 
 using Cel.Common.Types.Ref;
-using Type = System.Type;
 
 namespace Cel.Common.Types.Json;
 

@@ -4,6 +4,7 @@ using Cel.Parser;
 using Google.Api.Expr.V1Alpha1;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
+using Type = System.Type;
 using Value = Google.Protobuf.WellKnownTypes.Value;
 
 /*
@@ -105,7 +106,7 @@ public sealed class BytesT : BaseVal, IAdder, IComparer, ISizer
     /// <summary>
     ///     ConvertToNative implements the ref.Val interface method.
     /// </summary>
-    public override object? ConvertToNative(System.Type typeDesc)
+    public override object? ConvertToNative(Type typeDesc)
     {
         if (typeDesc == typeof(ByteString) || typeDesc == typeof(object)) return ByteString.CopyFrom(b);
 

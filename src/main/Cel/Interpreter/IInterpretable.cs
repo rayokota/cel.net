@@ -220,8 +220,8 @@ public sealed class EvalTestOnly : IInterpretable, ICoster
     /// </summary>
     public Cost Cost()
     {
-        var c = global::Cel.Interpreter.Cost.EstimateCost(op);
-        return c.Add(global::Cel.Interpreter.Cost.OneOne);
+        var c = Interpreter.Cost.EstimateCost(op);
+        return c.Add(Interpreter.Cost.OneOne);
     }
 
     /// <summary>
@@ -327,7 +327,7 @@ public sealed class EvalConst : AbstractEval, IInterpretableConst, ICoster
     /// </summary>
     public Cost Cost()
     {
-        return global::Cel.Interpreter.Cost.None;
+        return Interpreter.Cost.None;
     }
 
     /// <summary>
@@ -588,7 +588,7 @@ public sealed class EvalZeroArity : AbstractEval, IInterpretableCall,
     /// </summary>
     public Cost Cost()
     {
-        return global::Cel.Interpreter.Cost.OneOne;
+        return Interpreter.Cost.OneOne;
     }
 
     /// <summary>
@@ -653,8 +653,8 @@ public sealed class EvalUnary : AbstractEval, IInterpretableCall, ICoster
     /// </summary>
     public Cost Cost()
     {
-        var c = global::Cel.Interpreter.Cost.EstimateCost(arg);
-        return global::Cel.Interpreter.Cost.OneOne.Add(c); // add cost for function
+        var c = Interpreter.Cost.EstimateCost(arg);
+        return Interpreter.Cost.OneOne.Add(c); // add cost for function
     }
 
     /// <summary>
@@ -810,7 +810,7 @@ public sealed class EvalVarArgs : AbstractEval, ICoster, IInterpretableCall
     public Cost Cost()
     {
         var c = IInterpretable.SumOfCost(args);
-        return c.Add(global::Cel.Interpreter.Cost.OneOne); // add cost for function
+        return c.Add(Interpreter.Cost.OneOne); // add cost for function
     }
 
     /// <summary>
@@ -1057,13 +1057,13 @@ public sealed class EvalFold : AbstractEval, ICoster
     public Cost Cost()
     {
         // Compute the cost for evaluating iterRange.
-        var i = global::Cel.Interpreter.Cost.EstimateCost(iterRange);
+        var i = Interpreter.Cost.EstimateCost(iterRange);
 
         // Compute the size of iterRange. If the size depends on the input, return the maximum
         // possible
         // cost range.
         var foldRange = iterRange.Eval(IActivation.EmptyActivation());
-        if (!foldRange.Type().HasTrait(Trait.IterableType)) return global::Cel.Interpreter.Cost.Unknown;
+        if (!foldRange.Type().HasTrait(Trait.IterableType)) return Interpreter.Cost.Unknown;
 
         var rangeCnt = 0L;
         var it = ((IIterableT)foldRange).Iterator();
@@ -1073,10 +1073,10 @@ public sealed class EvalFold : AbstractEval, ICoster
             rangeCnt++;
         }
 
-        var a = global::Cel.Interpreter.Cost.EstimateCost(accu);
-        var c = global::Cel.Interpreter.Cost.EstimateCost(cond);
-        var s = global::Cel.Interpreter.Cost.EstimateCost(step);
-        var r = global::Cel.Interpreter.Cost.EstimateCost(result);
+        var a = Interpreter.Cost.EstimateCost(accu);
+        var c = Interpreter.Cost.EstimateCost(cond);
+        var s = Interpreter.Cost.EstimateCost(step);
+        var r = Interpreter.Cost.EstimateCost(result);
 
         // The cond and step costs are multiplied by size(iterRange). The minimum possible cost incurs
         // when the evaluation result can be determined by the first iteration.
@@ -1148,7 +1148,7 @@ public sealed class EvalSetMembership : AbstractEval, ICoster
     /// </summary>
     public Cost Cost()
     {
-        return global::Cel.Interpreter.Cost.EstimateCost(arg);
+        return Interpreter.Cost.EstimateCost(arg);
     }
 
     /// <summary>
@@ -1185,7 +1185,7 @@ public sealed class EvalWatch : IInterpretable, ICoster
     /// </summary>
     public Cost Cost()
     {
-        return global::Cel.Interpreter.Cost.EstimateCost(i);
+        return Interpreter.Cost.EstimateCost(i);
     }
 
     public long Id()
@@ -1227,7 +1227,7 @@ public sealed class EvalWatchAttr : ICoster, IInterpretableAttribute,
     /// </summary>
     public Cost Cost()
     {
-        return global::Cel.Interpreter.Cost.EstimateCost(attr);
+        return Interpreter.Cost.EstimateCost(attr);
     }
 
     public long Id()
@@ -1316,7 +1316,7 @@ public abstract class AbstractEvalWatch<T> : AbstractEval, ICoster,
     /// </summary>
     public virtual Cost Cost()
     {
-        return global::Cel.Interpreter.Cost.EstimateCost(@delegate);
+        return Interpreter.Cost.EstimateCost(@delegate);
     }
 
     /// <summary>
@@ -1430,7 +1430,7 @@ public sealed class EvalWatchConst : IInterpretableConst, ICoster
     /// </summary>
     public Cost Cost()
     {
-        return global::Cel.Interpreter.Cost.EstimateCost(c);
+        return Interpreter.Cost.EstimateCost(c);
     }
 
     public long Id()
@@ -1612,13 +1612,13 @@ public sealed class EvalExhaustiveFold : AbstractEval, ICoster
     public Cost Cost()
     {
         // Compute the cost for evaluating iterRange.
-        var i = global::Cel.Interpreter.Cost.EstimateCost(iterRange);
+        var i = Interpreter.Cost.EstimateCost(iterRange);
 
         // Compute the size of iterRange. If the size depends on the input, return the maximum
         // possible
         // cost range.
         var foldRange = iterRange.Eval(IActivation.EmptyActivation());
-        if (!foldRange.Type().HasTrait(Trait.IterableType)) return global::Cel.Interpreter.Cost.Unknown;
+        if (!foldRange.Type().HasTrait(Trait.IterableType)) return Interpreter.Cost.Unknown;
 
         var rangeCnt = 0L;
         var it = ((IIterableT)foldRange).Iterator();
@@ -1628,10 +1628,10 @@ public sealed class EvalExhaustiveFold : AbstractEval, ICoster
             rangeCnt++;
         }
 
-        var a = global::Cel.Interpreter.Cost.EstimateCost(accu);
-        var c = global::Cel.Interpreter.Cost.EstimateCost(cond);
-        var s = global::Cel.Interpreter.Cost.EstimateCost(step);
-        var r = global::Cel.Interpreter.Cost.EstimateCost(result);
+        var a = Interpreter.Cost.EstimateCost(accu);
+        var c = Interpreter.Cost.EstimateCost(cond);
+        var s = Interpreter.Cost.EstimateCost(step);
+        var r = Interpreter.Cost.EstimateCost(result);
 
         // The cond and step costs are multiplied by size(iterRange).
         return i.Add(a).Add(c.Multiply(rangeCnt)).Add(s.Multiply(rangeCnt)).Add(r);
@@ -1696,7 +1696,7 @@ public sealed class EvalAttr : AbstractEval, IInterpretableAttribute,
     /// </summary>
     public Cost Cost()
     {
-        return global::Cel.Interpreter.Cost.EstimateCost(attr);
+        return Interpreter.Cost.EstimateCost(attr);
     }
 
     /// <summary>

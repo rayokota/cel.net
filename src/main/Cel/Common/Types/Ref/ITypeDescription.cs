@@ -29,5 +29,5 @@ public interface ITypeDescription
     /// <summary>
     ///     ReflectType returns the Golang reflect.Type for this type.
     /// </summary>
-    System.Type ReflectType();
+    Type ReflectType();
 }

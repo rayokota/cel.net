@@ -22,7 +22,7 @@ public abstract class BaseVal : IVal
     public abstract IType Type();
     public abstract IVal Equal(IVal other);
     public abstract IVal ConvertToType(IType typeValue);
-    public abstract object? ConvertToNative(System.Type typeDesc);
+    public abstract object? ConvertToNative(Type typeDesc);
 
     public virtual bool BooleanValue()
     {

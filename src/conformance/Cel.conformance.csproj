@@ -8,22 +8,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../main/Cel.main.csproj" />
-        <ProjectReference Include="../test/Cel.test.csproj" />
-    </ItemGroup>
-    
-    <ItemGroup>
-        <Protobuf Include="generated-pb/**/*.proto" Exclude="generated-pb/googleapis/google/api/expr/v1alpha1/**/*.proto" GrpcServices="None" OutputDir="generated-pb/build/generated-src" ProtoRoot="generated-pb/googleapis" AdditionalImportDirs="../main/generated-pb/googleapis" />
-        <Protobuf Update="generated-pb/**/*_service.proto" GrpcServices="Both" />
+        <ProjectReference Include="../main/Cel.main.csproj"/>
+        <ProjectReference Include="../test/Cel.test.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="NodaTime" Version="3.1.2" />
-        <PackageReference Include="Google.Protobuf" Version="3.19.4" />
-        <PackageReference Include="Grpc" Version="2.44.0" />
-        <PackageReference Include="Grpc.AspNetCore" Version="2.44.0" />
-        <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.44.0" />
-        <PackageReference Include="Grpc.Net.Client" Version="2.44.0" />
+        <Protobuf Include="generated-pb/**/*.proto" Exclude="generated-pb/googleapis/google/api/expr/v1alpha1/**/*.proto" GrpcServices="None" OutputDir="generated-pb/build/generated-src" ProtoRoot="generated-pb/googleapis" AdditionalImportDirs="../main/generated-pb/googleapis"/>
+        <Protobuf Update="generated-pb/**/*_service.proto" GrpcServices="Both"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="NodaTime" Version="3.1.2"/>
+        <PackageReference Include="Google.Protobuf" Version="3.19.4"/>
+        <PackageReference Include="Grpc" Version="2.44.0"/>
+        <PackageReference Include="Grpc.AspNetCore" Version="2.44.0"/>
+        <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.44.0"/>
+        <PackageReference Include="Grpc.Net.Client" Version="2.44.0"/>
         <PackageReference Include="Grpc.Tools" Version="2.44.0">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
@@ -31,7 +31,7 @@
     </ItemGroup>
 
     <Target Name="Clean">
-        <RemoveDir Directories="generated-pb/build" />
+        <RemoveDir Directories="generated-pb/build"/>
     </Target>
 
 </Project>

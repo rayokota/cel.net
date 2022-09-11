@@ -4,6 +4,7 @@ using Cel.Common.Types.Ref;
 using Cel.Common.Types.Traits;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
+using Type = System.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -37,7 +38,7 @@ public abstract class MapT : BaseVal, IMapper, IContainer, IIndexer, IIterableT,
     public abstract override object Value();
     public abstract override IVal Equal(IVal other);
     public abstract override IVal ConvertToType(IType typeValue);
-    public abstract override object? ConvertToNative(System.Type typeDesc);
+    public abstract override object? ConvertToNative(Type typeDesc);
     public abstract IVal? Find(IVal key);
 
     public override IType Type()
@@ -82,7 +83,7 @@ public abstract class MapT : BaseVal, IMapper, IContainer, IIndexer, IIterableT,
             this.map = map;
         }
 
-        public override object? ConvertToNative(System.Type typeDesc)
+        public override object? ConvertToNative(Type typeDesc)
         {
             var isGenericDict = typeDesc.IsGenericType &&
                                 (typeDesc.GetGenericTypeDefinition() == typeof(Dictionary<,>) ||

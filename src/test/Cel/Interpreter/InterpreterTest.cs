@@ -1,6 +1,7 @@
 ﻿using System.Text;
 using Cel.Checker;
 using Cel.Common;
+using Cel.Common.Containers;
 using Cel.Common.Types;
 using Cel.Common.Types.Pb;
 using Cel.Common.Types.Ref;
@@ -12,7 +13,6 @@ using Google.Protobuf;
 using Google.Protobuf.Collections;
 using Google.Protobuf.WellKnownTypes;
 using NUnit.Framework;
-using Container = Cel.Common.Containers.Container;
 using ListValue = Google.Protobuf.WellKnownTypes.ListValue;
 using Type = Google.Api.Expr.V1Alpha1.Type;
 using Value = Google.Api.Expr.V1Alpha1.Value;
@@ -638,9 +638,9 @@ internal class InterpreterTest
 
         var state = IEvalState.NewEvalState();
         IDictionary<string, InterpretableDecorator> opts = new Dictionary<string, InterpretableDecorator>();
-        opts["Interpreter.Optimize"] = global::Cel.Interpreter.IInterpreter.Optimize();
-        opts["exhaustive"] = global::Cel.Interpreter.IInterpreter.ExhaustiveEval(state);
-        opts["track"] = global::Cel.Interpreter.IInterpreter.TrackState(state);
+        opts["Interpreter.Optimize"] = IInterpreter.Optimize();
+        opts["exhaustive"] = IInterpreter.ExhaustiveEval(state);
+        opts["track"] = IInterpreter.TrackState(state);
         foreach (var en in opts)
         {
             var mode = en.Key;
@@ -706,7 +706,7 @@ internal class InterpreterTest
                     .Types(new TestAllTypesPb3())
                     .Env(Decls.NewVar("pb3", Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes"))).In(
                         "pb3", t),
-                global::Cel.Interpreter.IInterpreter.Optimize());
+                IInterpreter.Optimize());
         Assert.That(inst.interpretable, Is.InstanceOf(typeof(IInterpretableAttribute)));
         var attr = (IInterpretableAttribute)inst.interpretable;
         Assert.That(attr.Attr(), Is.InstanceOf(typeof(INamespacedAttribute)));
@@ -732,7 +732,7 @@ internal class InterpreterTest
         var cont = Container.DefaultContainer;
         var attrs = IAttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
         var intr =
-            global::Cel.Interpreter.IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
+            IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
         Assert.That(() => intr.NewUncheckedInterpretable(parsed.Expr!),
             Throws.Exception.InstanceOf(typeof(InvalidOperationException)));
     }
@@ -749,9 +749,9 @@ internal class InterpreterTest
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry(new ParsedExpr());
         var attrs = IAttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
         var intr =
-            global::Cel.Interpreter.IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
+            IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
         var interpretable =
-            intr.NewUncheckedInterpretable(parsed.Expr!, global::Cel.Interpreter.IInterpreter.ExhaustiveEval(state))!;
+            intr.NewUncheckedInterpretable(parsed.Expr!, IInterpreter.ExhaustiveEval(state))!;
         var vars = IActivation.NewActivation(TestUtil.BindingsOf("a", BoolT.True, "b", DoubleT.DoubleOf(0.999),
             "c", ListT.NewStringArrayList(new[] { "hello" })));
         var result = interpretable.Eval(vars);
@@ -777,9 +777,9 @@ internal class InterpreterTest
         var cont = TestContainer("test");
         var attrs = IAttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
         var interp =
-            global::Cel.Interpreter.IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
+            IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
         var i = interp.NewUncheckedInterpretable(parsed.Expr!,
-            global::Cel.Interpreter.IInterpreter.ExhaustiveEval(state))!;
+            IInterpreter.ExhaustiveEval(state))!;
         var vars = IActivation.NewActivation(TestUtil.BindingsOf("a", true, "b", "b"));
         var result = i.Eval(vars);
         var rhv = state.Value(3);
@@ -793,10 +793,10 @@ internal class InterpreterTest
     {
         // Test the use of proto2 primitives within object construction.
         var src = ISource.NewTextSource("input == TestAllTypes{\n" + "  single_int32: 1,\n" +
-                                       "  single_int64: 2,\n" + "  single_uint32: 3u,\n" +
-                                       "  single_uint64: 4u,\n" + "  single_float: -3.3,\n" +
-                                       "  single_double: -2.2,\n" + "  single_string: \"hello world\",\n" +
-                                       "  single_bool: true\n" + "}");
+                                        "  single_int64: 2,\n" + "  single_uint32: 3u,\n" +
+                                        "  single_uint64: 4u,\n" + "  single_float: -3.3,\n" +
+                                        "  single_double: -2.2,\n" + "  single_string: \"hello world\",\n" +
+                                        "  single_bool: true\n" + "}");
         var parsed = Parser.Parser.ParseAllMacros(src);
         Assert.That(parsed.HasErrors(), Is.False);
 
@@ -813,7 +813,7 @@ internal class InterpreterTest
 
         var attrs = IAttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
         var i =
-            global::Cel.Interpreter.IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
+            IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
         var eval = i.NewInterpretable(checkResult.CheckedExpr)!;
         var one = 1;
         var two = 2L;
@@ -854,7 +854,7 @@ internal class InterpreterTest
         if (parsed.HasErrors()) throw new ArgumentException(parsed.Errors.ToDisplayString());
 
         var attrs = AttributePattern.NewPartialAttributeFactory(cont, reg.ToTypeAdapter(), reg);
-        var interp = global::Cel.Interpreter.IInterpreter.NewStandardInterpreter(cont, reg,
+        var interp = IInterpreter.NewStandardInterpreter(cont, reg,
             reg.ToTypeAdapter(), attrs);
         var i = interp.NewInterpretable(checkResult.CheckedExpr)!;
         IActivation vars = IActivation.NewPartialActivation(TestUtil.BindingsOf("a.b", TestUtil.MapOf("d", "hello")),
@@ -930,7 +930,7 @@ internal class InterpreterTest
 
         var attrs = IAttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
         var interp =
-            global::Cel.Interpreter.IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
+            IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
         // Show that program planning will now produce an error.
 
         if (!tc.fail)
@@ -966,7 +966,7 @@ internal class InterpreterTest
         IInterpreter interp)
     {
         var i =
-            interp.NewInterpretable(checkResult.CheckedExpr, global::Cel.Interpreter.IInterpreter.Optimize());
+            interp.NewInterpretable(checkResult.CheckedExpr, IInterpreter.Optimize());
         if (tc.@out != null)
         {
             Assert.That(i, Is.InstanceOf(typeof(IInterpretableConst)));
@@ -1012,7 +1012,7 @@ internal class InterpreterTest
         if (tst.funcs != null) disp.Add(tst.funcs);
 
         var interp =
-            global::Cel.Interpreter.IInterpreter.NewInterpreter(disp, cont, reg, reg.ToTypeAdapter(), attrs);
+            IInterpreter.NewInterpreter(disp, cont, reg, reg.ToTypeAdapter(), attrs);
 
         // Parse the expression.
         var s = ISource.NewTextSource(tst.expr!);

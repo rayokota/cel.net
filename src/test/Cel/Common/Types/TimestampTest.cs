@@ -429,7 +429,7 @@ public class TimestampTest
         {
             this.timestamp = timestamp;
             this.tuple = tuple;
-            this.ldt = new DateTime(tuple[0], tuple[1], tuple[2], tuple[3], tuple[4], tuple[5]);
+            ldt = new DateTime(tuple[0], tuple[1], tuple[2], tuple[3], tuple[4], tuple[5]);
         }
 
         internal virtual ParseTestCase WithTZ(string tz)

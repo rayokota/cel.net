@@ -1,6 +1,7 @@
 ﻿using Cel.Common.Types.Ref;
 using Cel.Common.Types.Traits;
 using Google.Protobuf.WellKnownTypes;
+using Type = System.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -69,7 +70,7 @@ public sealed class BoolT : BaseVal, IComparer, INegater
     /// <summary>
     ///     ConvertToNative implements the ref.Val interface method.
     /// </summary>
-    public override object? ConvertToNative(System.Type typeDesc)
+    public override object? ConvertToNative(Type typeDesc)
     {
         if (typeDesc == typeof(bool) || typeDesc == typeof(object))
             return Convert.ToBoolean(b);

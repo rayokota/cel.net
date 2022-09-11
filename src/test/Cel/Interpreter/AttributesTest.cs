@@ -581,7 +581,7 @@ internal class AttributesTest
         /// </summary>
         public virtual Cost Cost()
         {
-            return global::Cel.Interpreter.Cost.None;
+            return Interpreter.Cost.None;
         }
 
         public virtual long Id()

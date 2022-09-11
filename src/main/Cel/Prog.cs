@@ -34,7 +34,7 @@ public sealed class Prog : IProgram, ICoster
     internal IAttributeFactory? attrFactory;
     internal IActivation? defaultVars;
     internal IInterpretable? interpretable;
-    internal Interpreter.IInterpreter? interpreter;
+    internal IInterpreter? interpreter;
 
     internal Prog(Env e, IDispatcher dispatcher)
     {
@@ -44,7 +44,7 @@ public sealed class Prog : IProgram, ICoster
     }
 
     internal Prog(Env e, ISet<EvalOption> evalOpts, IActivation? defaultVars, IDispatcher dispatcher,
-        Interpreter.IInterpreter interpreter, IEvalState state)
+        IInterpreter interpreter, IEvalState state)
     {
         this.e = e;
         this.evalOpts.UnionWith(evalOpts);

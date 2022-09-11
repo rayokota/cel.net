@@ -57,7 +57,7 @@ public class TypeT : IType, IVal
     /// <summary>
     ///     ConvertToNative implements ref.Val.ConvertToNative.
     /// </summary>
-    public virtual object? ConvertToNative(System.Type typeDesc)
+    public virtual object? ConvertToNative(Type typeDesc)
     {
         throw new NotSupportedException("type conversion not supported for 'type'");
     }

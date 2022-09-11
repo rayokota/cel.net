@@ -97,7 +97,7 @@ public class ConformanceServiceImpl : ConformanceServiceImplBase
         var env = Env.NewEnv(IEnvOption.Container(request.Container),
             IEnvOption.Types(new TestAllTypesPb2(), new TestAllTypesPb3()));
 
-        global::Cel.IProgram prg;
+        IProgram prg;
         Ast ast;
 
         switch (request.ExprKindCase)

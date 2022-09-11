@@ -34,7 +34,7 @@ public sealed class JsonTypeDescription : ITypeDescription
     private readonly IDictionary<string, JsonFieldType> fieldTypes;
     private readonly string name;
     private readonly Type pbType;
-    private readonly Ref.IType refType;
+    private readonly IType refType;
     private readonly System.Type type;
 
     public JsonTypeDescription(System.Type type, JsonSerializer ser, TypeQuery typeQuery)
@@ -153,7 +153,7 @@ public sealed class JsonTypeDescription : ITypeDescription
         return pw.GetValue(value);
     }
 
-    public Ref.IType Type()
+    public IType Type()
     {
         return refType;
     }

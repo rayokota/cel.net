@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+using Type = Google.Api.Expr.V1Alpha1.Type;
+
 namespace Cel.Common.Types.Ref;
 
 /// <summary>
@@ -38,7 +40,7 @@ public interface ITypeProvider
     ///         Used during type-checking only.
     ///     </para>
     /// </summary>
-    Google.Api.Expr.V1Alpha1.Type? FindType(string typeName);
+    Type? FindType(string typeName);
 
     /// <summary>
     ///     FieldFieldType returns the field type for a checked type value. Returns false if the field

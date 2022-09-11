@@ -52,7 +52,7 @@ public sealed class Ast
     /// <summary>
     ///     IsChecked returns whether the Ast value has been successfully type-checked.
     /// </summary>
-    public bool Checked => typeMap != null && typeMap.Count > 0;
+    public bool Checked => typeMap.Count > 0;
 
     public ISource Source { get; }
 

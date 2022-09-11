@@ -1,6 +1,7 @@
 ﻿using Cel.Common.Types.Ref;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
+using Type = System.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -67,7 +68,7 @@ public sealed class PbObjectT : ObjectT
         return NativeToValue(fd.GetField(value));
     }
 
-    public override object? ConvertToNative(System.Type typeDesc)
+    public override object? ConvertToNative(Type typeDesc)
     {
         if (typeDesc.IsAssignableFrom(value.GetType())) return value;
 
@@ -126,7 +127,7 @@ public sealed class PbObjectT : ObjectT
         return (PbTypeDescription)typeDesc;
     }
 
-    private Message BuildFrom(System.Type typeDesc)
+    private Message BuildFrom(Type typeDesc)
     {
         try
         {
