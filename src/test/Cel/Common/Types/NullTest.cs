@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-using Cel.Common.Types;
 using Google.Protobuf.WellKnownTypes;
 using NUnit.Framework;
 

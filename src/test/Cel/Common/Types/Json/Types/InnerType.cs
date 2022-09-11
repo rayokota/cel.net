@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.Common.Types.Json.Types
-{
-	public class InnerType
-	{
-	  public int intProp;
-	  public int? wrappedIntProp;
-	}
 
+namespace Cel.Common.Types.Json.Types;
+
+public class InnerType
+{
+    public int intProp;
+    public int? wrappedIntProp;
 }

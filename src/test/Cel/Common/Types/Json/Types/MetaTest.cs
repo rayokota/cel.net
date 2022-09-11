@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using NodaTime;
 using NodaTime.Text;
 
@@ -19,40 +17,39 @@ using NodaTime.Text;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.Common.Types.Json.Types
+namespace Cel.Common.Types.Json.Types;
+
+public class MetaTest
 {
-	public class MetaTest
-	{
-		public string Hash {get; set; }
+    public string Hash { get; set; }
 
-	  public string Committer {get; set; }
+    public string Committer { get; set; }
 
-	  public string Author {get; set; }
+    public string Author { get; set; }
 
-	  public string SignedOffBy {get; set; }
+    public string SignedOffBy { get; set; }
 
-	  public string Message {get; set; }
+    public string Message { get; set; }
 
-	  [JsonConverter(typeof(InstantConverter))]
-	  public Instant? CommitTime {get; set; }
+    [JsonConverter(typeof(InstantConverter))]
+    public Instant? CommitTime { get; set; }
 
-	  [JsonConverter(typeof(InstantConverter))]
-	  public Instant? AuthorTime {get; set; }
+    [JsonConverter(typeof(InstantConverter))]
+    public Instant? AuthorTime { get; set; }
 
-	  public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
+    public IDictionary<string, string> Properties { get; set; } = new Dictionary<string, string>();
 
-	  public class InstantConverter : JsonConverter<Instant>
-	  {
-		public override void WriteJson(JsonWriter writer, Instant value, JsonSerializer serializer)
-		{
-			writer.WriteValue(InstantPattern.General.Format(value));
-		}
-		
-		public override Instant ReadJson(JsonReader reader, Type objectType, Instant existingValue, bool hasExistingValue, JsonSerializer serializer)
-		{
-			return InstantPattern.General.Parse((string)reader.Value).GetValueOrThrow();
-		}
-	  }
-	}
+    public class InstantConverter : JsonConverter<Instant>
+    {
+        public override void WriteJson(JsonWriter writer, Instant value, JsonSerializer serializer)
+        {
+            writer.WriteValue(InstantPattern.General.Format(value));
+        }
 
+        public override Instant ReadJson(JsonReader reader, Type objectType, Instant existingValue,
+            bool hasExistingValue, JsonSerializer serializer)
+        {
+            return InstantPattern.General.Parse((string)reader.Value).GetValueOrThrow();
+        }
+    }
 }

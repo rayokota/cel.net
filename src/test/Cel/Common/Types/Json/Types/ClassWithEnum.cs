@@ -13,28 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.Common.Types.Json.Types
+
+namespace Cel.Common.Types.Json.Types;
+
+public class ClassWithEnum
 {
-	public class ClassWithEnum
-	{
-	  public enum ClassEnum
-	  {
-		VAL_1,
-		VAL_2,
-		VAL_3,
-		VAL_4
-	  }
+    public enum ClassEnum
+    {
+        VAL_1,
+        VAL_2,
+        VAL_3,
+        VAL_4
+    }
 
-	  public string value;
+    public string value;
 
-	  public ClassWithEnum()
-	  {
-	  }
+    public ClassWithEnum()
+    {
+    }
 
-	  public ClassWithEnum(string value)
-	  {
-		this.value = value;
-	  }
-	}
-
+    public ClassWithEnum(string value)
+    {
+        this.value = value;
+    }
 }

@@ -145,10 +145,7 @@ public sealed class JsonRegistry : TypeRegistry
         var enumDesc = new JsonEnumDescription(type);
         enumMap[type] = enumDesc;
 
-        foreach (var v in enumDesc.BuildValues())
-        {
-            enumValues[v.FullyQualifiedName()] = v;
-        }
+        foreach (var v in enumDesc.BuildValues()) enumValues[v.FullyQualifiedName()] = v;
 
         return enumDesc;
     }

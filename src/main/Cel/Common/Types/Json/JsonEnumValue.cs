@@ -37,7 +37,7 @@ public sealed class JsonEnumValue
 
     public string FullyQualifiedName()
     {
-        string s = FullyQualifiedName(enumValue);
+        var s = FullyQualifiedName(enumValue);
         return s;
     }
 

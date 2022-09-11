@@ -15,7 +15,6 @@ using NUnit.Framework;
 using Container = Cel.Common.Containers.Container;
 using ListValue = Google.Protobuf.WellKnownTypes.ListValue;
 using Type = Google.Api.Expr.V1Alpha1.Type;
-using Types = Cel.Common.Types.Types;
 using Value = Google.Api.Expr.V1Alpha1.Value;
 
 /*
@@ -174,7 +173,7 @@ internal class InterpreterTest
             new TestCase(InterpreterTestCase.elem_in_mixed_type_list_error)
                 .Expr("'elem' in [1u, 'str', 2, b'bytes']").Err("no such overload: string.@in(uint,bytes,...)"),
             new TestCase(InterpreterTestCase.elem_in_mixed_type_list).Expr("'elem' in [1, 'elem', 2]")
-                .Out(global::Cel.Common.Types.Types.BoolOf(true)),
+                .Out(Common.Types.Types.BoolOf(true)),
             new TestCase(InterpreterTestCase.select_literal_uint).Expr("google.protobuf.UInt32Value{value: 123u}")
                 .Out((ulong)123),
             new TestCase(InterpreterTestCase.select_on_int64).Expr("a.pancakes")

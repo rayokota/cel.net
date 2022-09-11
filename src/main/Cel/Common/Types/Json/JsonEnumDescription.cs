@@ -30,10 +30,7 @@ public sealed class JsonEnumDescription
         name = type.FullName;
 
         enumValues = new List<Enum>();
-        foreach (Enum e in Enum.GetValues(type))
-        {
-            enumValues.Add(e);
-        }
+        foreach (Enum e in Enum.GetValues(type)) enumValues.Add(e);
         pbType = Checked.checkedInt;
     }
 

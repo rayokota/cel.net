@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.Common.Types.Json.Types
-{
-	public enum AnEnum
-	{
-	  ENUM_VALUE_1,
-	  ENUM_VALUE_2,
-	  ENUM_VALUE_3
-	}
 
+namespace Cel.Common.Types.Json.Types;
+
+public enum AnEnum
+{
+    ENUM_VALUE_1,
+    ENUM_VALUE_2,
+    ENUM_VALUE_3
 }

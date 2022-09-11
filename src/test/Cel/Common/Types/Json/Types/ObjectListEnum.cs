@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -15,17 +15,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.Common.Types.Json.Types
+namespace Cel.Common.Types.Json.Types;
+
+public class ObjectListEnum
 {
-	public class ObjectListEnum
-	{
-		private IList<ObjectListEnum_Entry> Entries {get; set; }
-	}
-	  public class ObjectListEnum_Entry
-	  {
-		  private ClassWithEnum.ClassEnum Type {get; set;  }
+    private IList<ObjectListEnum_Entry> Entries { get; set; }
+}
 
-	  private 	ClassWithEnum Holder {get; set; } 
-	  }
+public class ObjectListEnum_Entry
+{
+    private ClassWithEnum.ClassEnum Type { get; set; }
 
+    private ClassWithEnum Holder { get; set; }
 }

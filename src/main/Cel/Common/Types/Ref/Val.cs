@@ -54,6 +54,6 @@ public interface Val
     bool BooleanValue();
 
     long IntValue();
-    
+
     ulong UintValue();
 }

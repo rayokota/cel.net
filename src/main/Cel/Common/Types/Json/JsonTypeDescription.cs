@@ -29,6 +29,8 @@ namespace Cel.Common.Types.Json;
 
 public sealed class JsonTypeDescription : TypeDescription
 {
+    public delegate Type TypeQuery(System.Type Type);
+
     private readonly IDictionary<string, JsonFieldType> fieldTypes;
     private readonly string name;
     private readonly Type pbType;
@@ -72,12 +74,9 @@ public sealed class JsonTypeDescription : TypeDescription
 
     public Type FindTypeForJsonType(System.Type type, TypeQuery typeQuery)
     {
-        System.Type underlyingType = Nullable.GetUnderlyingType(type);
-        if (underlyingType != null)
-        {
-            type = underlyingType;
-        }
-        
+        var underlyingType = Nullable.GetUnderlyingType(type);
+        if (underlyingType != null) type = underlyingType;
+
         if (type == typeof(bool)) return Checked.checkedBool;
 
         if (type == typeof(long) || type == typeof(int) ||
@@ -99,8 +98,9 @@ public sealed class JsonTypeDescription : TypeDescription
             type == typeof(ZonedDateTime))
             return Checked.checkedTimestamp;
 
-        if (type.IsGenericType && 
-            (type.GetGenericTypeDefinition() == typeof(Dictionary<,>) || type.GetGenericTypeDefinition() == typeof(IDictionary<,>)))  
+        if (type.IsGenericType &&
+            (type.GetGenericTypeDefinition() == typeof(Dictionary<,>) ||
+             type.GetGenericTypeDefinition() == typeof(IDictionary<,>)))
         {
             var arguments = type.GetGenericArguments();
             var keyType = FindTypeForJsonType(arguments[0], typeQuery);
@@ -114,7 +114,7 @@ public sealed class JsonTypeDescription : TypeDescription
             return Decls.NewMapType(objType, objType);
         }
 
-        if (type.IsGenericType && 
+        if (type.IsGenericType &&
             (type.GetGenericTypeDefinition() == typeof(List<>) || type.GetGenericTypeDefinition() == typeof(IList<>)))
         {
             var arguments = type.GetGenericArguments();
@@ -128,10 +128,7 @@ public sealed class JsonTypeDescription : TypeDescription
             return Decls.NewListType(objType);
         }
 
-        if (type.IsEnum)
-        {
-            return typeQuery(type);
-        }
+        if (type.IsEnum) return typeQuery(type);
 
         var t = typeQuery(type);
         if (t == null) throw new NotSupportedException(string.Format("Unsupported Type '{0}'", type));
@@ -171,6 +168,4 @@ public sealed class JsonTypeDescription : TypeDescription
         fieldTypes.TryGetValue(fieldName, out var ft);
         return ft;
     }
-
-    public delegate Type TypeQuery(System.Type Type);
 }

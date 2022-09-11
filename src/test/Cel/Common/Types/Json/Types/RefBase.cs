@@ -17,19 +17,17 @@
 using JsonSubTypes;
 using Newtonsoft.Json;
 
-namespace Cel.Common.Types.Json.Types
-{
+namespace Cel.Common.Types.Json.Types;
+
 [JsonConverter(typeof(JsonSubtypes), "Type")]
-[JsonSubtypes.KnownSubType(typeof(RefVariantA), "A")]
-[JsonSubtypes.KnownSubType(typeof(RefVariantB), "B")]
-[JsonSubtypes.KnownSubType(typeof(RefVariantC), "C")]
-	public interface RefBase
-	{
-		string Type { get; }
+[JsonSubtypes.KnownSubTypeAttribute(typeof(RefVariantA), "A")]
+[JsonSubtypes.KnownSubTypeAttribute(typeof(RefVariantB), "B")]
+[JsonSubtypes.KnownSubTypeAttribute(typeof(RefVariantC), "C")]
+public interface RefBase
+{
+    string Type { get; }
 
-	  string Name {get;}
+    string Name { get; }
 
-	  string Hash {get;}
-	}
-
+    string Hash { get; }
 }

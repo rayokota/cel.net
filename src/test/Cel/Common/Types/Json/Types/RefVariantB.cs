@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.Common.Types.Json.Types
+
+namespace Cel.Common.Types.Json.Types;
+
+public class RefVariantB : RefBase
 {
-	public class RefVariantB : RefBase
-	{
-		public virtual string Type { get; } = "B";
-		
-	  public virtual string Name {get; set; }
+    public virtual string Type { get; } = "B";
 
-	  public virtual string Hash {get; set; }
-	}
+    public virtual string Name { get; set; }
 
+    public virtual string Hash { get; set; }
 }
