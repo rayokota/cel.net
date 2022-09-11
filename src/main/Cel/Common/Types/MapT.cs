@@ -4,7 +4,6 @@ using Cel.Common.Types.Ref;
 using Cel.Common.Types.Traits;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
-using Type = Cel.Common.Types.Ref.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -23,37 +22,37 @@ using Type = Cel.Common.Types.Ref.Type;
  */
 namespace Cel.Common.Types;
 
-public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Sizer
+public abstract class MapT : BaseVal, IMapper, IContainer, IIndexer, IIterableT, ISizer
 {
     /// <summary>
     ///     MapType singleton.
     /// </summary>
-    public static readonly Type MapType = TypeT.NewTypeValue(TypeEnum.Map, Trait.ContainerType, Trait.IndexerType,
+    public static readonly IType MapType = TypeT.NewTypeValue(TypeEnum.Map, Trait.ContainerType, Trait.IndexerType,
         Trait.IterableType, Trait.SizerType);
 
-    public abstract Val Size();
-    public abstract IteratorT Iterator();
-    public abstract Val Get(Val index);
-    public abstract Val Contains(Val value);
+    public abstract IVal Size();
+    public abstract IIteratorT Iterator();
+    public abstract IVal Get(IVal index);
+    public abstract IVal Contains(IVal value);
     public abstract override object Value();
-    public abstract override Val Equal(Val other);
-    public abstract override Val ConvertToType(Type typeValue);
+    public abstract override IVal Equal(IVal other);
+    public abstract override IVal ConvertToType(IType typeValue);
     public abstract override object? ConvertToNative(System.Type typeDesc);
-    public abstract Val Find(Val key);
+    public abstract IVal Find(IVal key);
 
-    public override Type Type()
+    public override IType Type()
     {
         return MapType;
     }
 
-    public static Val NewWrappedMap(TypeAdapter adapter, IDictionary<Val, Val> value)
+    public static IVal NewWrappedMap(TypeAdapter adapter, IDictionary<IVal, IVal> value)
     {
         return new ValMapT(adapter, value);
     }
 
-    public static Val NewMaybeWrappedMap(TypeAdapter adapter, IDictionary value)
+    public static IVal NewMaybeWrappedMap(TypeAdapter adapter, IDictionary value)
     {
-        IDictionary<Val, Val> newMap = new Dictionary<Val, Val>(value.Count * 4 / 3 + 1);
+        IDictionary<IVal, IVal> newMap = new Dictionary<IVal, IVal>(value.Count * 4 / 3 + 1);
         foreach (DictionaryEntry entry in value) newMap.Add(adapter(entry.Key), adapter(entry.Value));
 
         return NewWrappedMap(adapter, newMap);
@@ -66,7 +65,7 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
     ///         The `adapter` argument provides type adaptation capabilities from proto to CEL.
     ///     </para>
     /// </summary>
-    public static Val NewJSONStruct(TypeAdapter adapter, Struct value)
+    public static IVal NewJSONStruct(TypeAdapter adapter, Struct value)
     {
         IDictionary fields = value.Fields;
         return NewMaybeWrappedMap(adapter, fields);
@@ -75,9 +74,9 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
     internal sealed class ValMapT : MapT
     {
         internal readonly TypeAdapter adapter;
-        internal readonly IDictionary<Val, Val> map;
+        internal readonly IDictionary<IVal, IVal> map;
 
-        internal ValMapT(TypeAdapter adapter, IDictionary<Val, Val> map)
+        internal ValMapT(TypeAdapter adapter, IDictionary<IVal, IVal> map)
         {
             this.adapter = adapter;
             this.map = map;
@@ -136,7 +135,7 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
             return r;
         }
 
-        public override Val ConvertToType(Type typeValue)
+        public override IVal ConvertToType(IType typeValue)
         {
             if (typeValue == MapType) return this;
 
@@ -145,12 +144,12 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
             return Err.NewTypeConversionError(MapType, typeValue);
         }
 
-        public override IteratorT Iterator()
+        public override IIteratorT Iterator()
         {
-            return IteratorT.Iterator(adapter, map.Keys.GetEnumerator());
+            return IIteratorT.Iterator(adapter, map.Keys.GetEnumerator());
         }
 
-        public override Val Equal(Val other)
+        public override IVal Equal(IVal other)
         {
             // TODO this is expensive :(
             if (!(other is MapT)) return BoolT.False;
@@ -189,23 +188,23 @@ public abstract class MapT : BaseVal, Mapper, Container, Indexer, IterableT, Siz
             return nativeMap;
         }
 
-        public override Val Contains(Val value)
+        public override IVal Contains(IVal value)
         {
             return Types.BoolOf(map.ContainsKey(value));
         }
 
-        public override Val Get(Val index)
+        public override IVal Get(IVal index)
         {
             map.TryGetValue(index, out var v);
             return v;
         }
 
-        public override Val Size()
+        public override IVal Size()
         {
             return IntT.IntOf(map.Count);
         }
 
-        public override Val Find(Val key)
+        public override IVal Find(IVal key)
         {
             map.TryGetValue(key, out var v);
             return v;

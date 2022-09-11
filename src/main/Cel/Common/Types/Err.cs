@@ -1,5 +1,4 @@
 ﻿using Cel.Common.Types.Ref;
-using Type = Cel.Common.Types.Ref.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -26,37 +25,37 @@ public sealed class Err : BaseVal
     /// <summary>
     ///     ErrType singleton.
     /// </summary>
-    public static readonly Type ErrType = TypeT.NewTypeValue(TypeEnum.Err);
+    public static readonly IType ErrType = TypeT.NewTypeValue(TypeEnum.Err);
 
     /// <summary>
     ///     errIntOverflow is an error representing integer overflow.
     /// </summary>
-    public static readonly Val ErrIntOverflow = NewErr("integer overflow");
+    public static readonly IVal ErrIntOverflow = NewErr("integer overflow");
 
     /// <summary>
     ///     errUintOverflow is an error representing unsigned integer overflow.
     /// </summary>
-    public static readonly Val ErrUintOverflow = NewErr("unsigned integer overflow");
+    public static readonly IVal ErrUintOverflow = NewErr("unsigned integer overflow");
 
     /// <summary>
     ///     errDurationOverflow is an error representing duration overflow.
     /// </summary>
-    public static readonly Val ErrDurationOverflow = NewErr("duration overflow");
+    public static readonly IVal ErrDurationOverflow = NewErr("duration overflow");
 
     /// <summary>
     ///     errDurationOutOfRange is an error representing duration out of range.
     /// </summary>
-    public static readonly Val ErrDurationOutOfRange = NewErr("duration out of range");
+    public static readonly IVal ErrDurationOutOfRange = NewErr("duration out of range");
 
     /// <summary>
     ///     errTimestampOverflow is an error representing timestamp overflow.
     /// </summary>
-    public static readonly Val ErrTimestampOverflow = NewErr("timestamp overflow");
+    public static readonly IVal ErrTimestampOverflow = NewErr("timestamp overflow");
 
     /// <summary>
     ///     errTimestampOutOfRange is an error representing duration out of range.
     /// </summary>
-    public static readonly Val ErrTimestampOutOfRange = NewErr("timestamp out of range");
+    public static readonly IVal ErrTimestampOutOfRange = NewErr("timestamp out of range");
 
     private readonly string error;
 
@@ -72,24 +71,24 @@ public sealed class Err : BaseVal
 
     public Exception Cause { get; }
 
-    public static Val NoSuchOverload(Val val, string function, Val other)
+    public static IVal NoSuchOverload(IVal val, string function, IVal other)
     {
-        var otName = other != null ? (other is Type ? (Type)other : other.Type()).TypeName() : "*";
+        var otName = other != null ? (other is IType ? (IType)other : other.Type()).TypeName() : "*";
         if (val != null)
         {
-            var vt = val is Type ? (Type)val : val.Type();
+            var vt = val is IType ? (IType)val : val.Type();
             return ValOrErr(other, "no such overload: {0}.{1}({2})", vt.TypeName(), function, otName);
         }
 
         return ValOrErr(other, "no such overload: *.{0}({1})", function, otName);
     }
 
-    public static Val NoSuchOverload(Val val, string function, Type argA, Type argB)
+    public static IVal NoSuchOverload(IVal val, string function, IType argA, IType argB)
     {
         return NewErr("no such overload: {0}.{1}({2},{3},...)", val.Type().TypeName(), function, argA, argB);
     }
 
-    public static Val NoSuchOverload(Val val, string function, string overload, Val[] args)
+    public static IVal NoSuchOverload(IVal val, string function, string overload, IVal[] args)
     {
         return NewErr("no such overload: {0}.{1}[{2}]({3})", val.Type().TypeName(), function, overload,
             string.Join(", ", args.Select(a => a.Type().TypeName())));
@@ -99,7 +98,7 @@ public sealed class Err : BaseVal
     ///     MaybeNoSuchOverloadErr returns the error or unknown if the input ref.Val is one of these types,
     ///     else a new no such overload error.
     /// </summary>
-    public static Val MaybeNoSuchOverloadErr(Val val)
+    public static IVal MaybeNoSuchOverloadErr(IVal val)
     {
         return ValOrErr(val, "no such overload");
     }
@@ -108,7 +107,7 @@ public sealed class Err : BaseVal
     ///     NewErr creates a new Err described by the format string and args. TODO: Audit the use of this
     ///     function and standardize the error messages and codes.
     /// </summary>
-    public static Val NewErr(string format, params object[] args)
+    public static IVal NewErr(string format, params object[] args)
     {
         return new Err(string.Format(format, args));
     }
@@ -117,7 +116,7 @@ public sealed class Err : BaseVal
     ///     NewErr creates a new Err described by the format string and args. TODO: Audit the use of this
     ///     function and standardize the error messages and codes.
     /// </summary>
-    public static Val NewErr(Exception cause, string format, params object[] args)
+    public static IVal NewErr(Exception cause, string format, params object[] args)
     {
         if (cause is ErrException) return ((ErrException)cause).Err;
 
@@ -128,7 +127,7 @@ public sealed class Err : BaseVal
     ///     UnsupportedRefValConversionErr returns a types.NewErr instance with a no such conversion
     ///     message that indicates that the native value could not be converted to a CEL ref.Val.
     /// </summary>
-    public static Val UnsupportedRefValConversionErr(object val)
+    public static IVal UnsupportedRefValConversionErr(object val)
     {
         return NewErr("unsupported conversion to ref.Val: ({0}){1}", val.GetType().FullName, val);
     }
@@ -137,7 +136,7 @@ public sealed class Err : BaseVal
     ///     ValOrErr either returns the existing error or create a new one. TODO: Audit the use of this
     ///     function and standardize the error messages and codes.
     /// </summary>
-    public static Val ValOrErr(Val val, string format, params object[] args)
+    public static IVal ValOrErr(IVal val, string format, params object[] args)
     {
         if (val == null) return NewErr(format, args);
 
@@ -146,42 +145,42 @@ public sealed class Err : BaseVal
         return NewErr(format, args);
     }
 
-    public static Val NoSuchField(object field)
+    public static IVal NoSuchField(object field)
     {
         return NewErr("no such field '{0}'", field);
     }
 
-    public static Val UnknownType(object field)
+    public static IVal UnknownType(object field)
     {
         return NewErr("unknown type '{0}'", field);
     }
 
-    public static Val AnyWithEmptyType()
+    public static IVal AnyWithEmptyType()
     {
         return NewErr("conversion error: got Any with empty type-url");
     }
 
-    public static Val DivideByZero()
+    public static IVal DivideByZero()
     {
         return NewErr("divide by zero");
     }
 
-    public static Val NoMoreElements()
+    public static IVal NoMoreElements()
     {
         return NewErr("no more elements");
     }
 
-    public static Val ModulusByZero()
+    public static IVal ModulusByZero()
     {
         return NewErr("modulus by zero");
     }
 
-    public static Val RangeError(object from, object to)
+    public static IVal RangeError(object from, object to)
     {
         return NewErr("range error converting {0} to {1}", from, to);
     }
 
-    public static Val NewTypeConversionError(object from, object to)
+    public static IVal NewTypeConversionError(object from, object to)
     {
         return NewErr("type conversion error from '{0}' to '{1}'", from, to);
     }
@@ -191,7 +190,7 @@ public sealed class Err : BaseVal
         return new ErrException("undeclared reference to '{0}' (in container '')", context);
     }
 
-    public static Val NoSuchKey(object key)
+    public static IVal NoSuchKey(object key)
     {
         return NewErr("no such key: {0}", key);
     }
@@ -217,7 +216,7 @@ public sealed class Err : BaseVal
     /// <summary>
     ///     ConvertToType implements ref.Val.ConvertToType.
     /// </summary>
-    public override Val ConvertToType(Type typeVal)
+    public override IVal ConvertToType(IType typeVal)
     {
         // Errors are not convertible to other representations.
         return this;
@@ -226,7 +225,7 @@ public sealed class Err : BaseVal
     /// <summary>
     ///     Equal implements ref.Val.Equal.
     /// </summary>
-    public override Val Equal(Val other)
+    public override IVal Equal(IVal other)
     {
         // An error cannot be equal to any other value, so it returns itself.
         return this;
@@ -243,7 +242,7 @@ public sealed class Err : BaseVal
     /// <summary>
     ///     Type implements ref.Val.Type.
     /// </summary>
-    public override Type Type()
+    public override IType Type()
     {
         return ErrType;
     }
@@ -275,7 +274,7 @@ public sealed class Err : BaseVal
     ///     IsError returns whether the input element ref.Type or ref.Val is equal to the ErrType
     ///     singleton.
     /// </summary>
-    public static bool IsError(Val val)
+    public static bool IsError(IVal val)
     {
         return val != null && val.Type() == ErrType;
     }
@@ -292,7 +291,7 @@ public sealed class Err : BaseVal
         throw new Exception(error);
     }
 
-    public static void ThrowErrorAsIllegalStateException(Val val)
+    public static void ThrowErrorAsIllegalStateException(IVal val)
     {
         if (val is Err)
         {
@@ -314,6 +313,6 @@ public sealed class Err : BaseVal
             this.args = args;
         }
 
-        public Val Err => NewErr(format, args);
+        public IVal Err => NewErr(format, args);
     }
 }

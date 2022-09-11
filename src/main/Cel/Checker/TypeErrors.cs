@@ -24,36 +24,36 @@ namespace Cel.Checker;
 /// </summary>
 public sealed class TypeErrors : Errors
 {
-    public TypeErrors(Source source) : base(source)
+    public TypeErrors(ISource source) : base(source)
     {
     }
 
-    internal void UndeclaredReference(Location l, string container, string name)
+    internal void UndeclaredReference(ILocation l, string container, string name)
     {
         ReportError(l, "undeclared reference to '{0}' (in container '{1}')", name, container);
     }
 
-    internal void ExpressionDoesNotSelectField(Location l)
+    internal void ExpressionDoesNotSelectField(ILocation l)
     {
         ReportError(l, "expression does not select a field");
     }
 
-    internal void TypeDoesNotSupportFieldSelection(Location l, Type t)
+    internal void TypeDoesNotSupportFieldSelection(ILocation l, Type t)
     {
         ReportError(l, "type '{0}' does not support field selection", Types.FormatCheckedType(t));
     }
 
-    internal void UndefinedField(Location l, string field)
+    internal void UndefinedField(ILocation l, string field)
     {
         ReportError(l, "undefined field '{0}'", field);
     }
 
-    internal void FieldDoesNotSupportPresenceCheck(Location l, string field)
+    internal void FieldDoesNotSupportPresenceCheck(ILocation l, string field)
     {
         ReportError(l, "field '{0}' does not support presence check", field);
     }
 
-    internal void OverlappingOverload(Location l, string name, string overloadID1, Type f1, string overloadID2,
+    internal void OverlappingOverload(ILocation l, string name, string overloadID1, Type f1, string overloadID2,
         Type f2)
     {
         ReportError(l,
@@ -62,59 +62,59 @@ public sealed class TypeErrors : Errors
             overloadID2);
     }
 
-    internal void OverlappingMacro(Location l, string name, int args)
+    internal void OverlappingMacro(ILocation l, string name, int args)
     {
         ReportError(l, "overload for name '{0}' with %d argument(s) overlaps with predefined macro", name, args);
     }
 
-    internal void NoMatchingOverload(Location l, string name, IList<Type> args, bool isInstance)
+    internal void NoMatchingOverload(ILocation l, string name, IList<Type> args, bool isInstance)
     {
         var signature = FormatFunction(null, args, isInstance);
         ReportError(l, "found no matching overload for '{0}' applied to '{1}'", name, signature);
     }
 
-    internal void AggregateTypeMismatch(Location l, Type aggregate, Type member)
+    internal void AggregateTypeMismatch(ILocation l, Type aggregate, Type member)
     {
         ReportError(l,
             "type '{0}' does not match previous type '{1}' in aggregate. Use 'dyn(x)' to make the aggregate dynamic.",
             Types.FormatCheckedType(member), Types.FormatCheckedType(aggregate));
     }
 
-    internal void NotAType(Location l, Type t)
+    internal void NotAType(ILocation l, Type t)
     {
         ReportError(l, "'{0}' is not a type", Types.FormatCheckedType(t), t);
     }
 
-    internal void NotAMessageType(Location l, Type t)
+    internal void NotAMessageType(ILocation l, Type t)
     {
         ReportError(l, "'{0}' is not a message type", Types.FormatCheckedType(t));
     }
 
-    internal void FieldTypeMismatch(Location l, string name, Type field, Type value)
+    internal void FieldTypeMismatch(ILocation l, string name, Type field, Type value)
     {
         ReportError(l, "expected type of field '{0}' is '{1}' but provided type is '{2}'", name,
             Types.FormatCheckedType(field), Types.FormatCheckedType(value));
     }
 
-    internal void UnexpectedFailedResolution(Location l, string typeName)
+    internal void UnexpectedFailedResolution(ILocation l, string typeName)
     {
         ReportError(l, "[internal] unexpected failed resolution of '{0}'", typeName);
     }
 
-    internal void NotAComprehensionRange(Location l, Type t)
+    internal void NotAComprehensionRange(ILocation l, Type t)
     {
         ReportError(l,
             "expression of type '{0}' cannot be range of a comprehension (must be list, map, or dynamic)",
             Types.FormatCheckedType(t));
     }
 
-    internal void TypeMismatch(Location l, Type expected, Type actual)
+    internal void TypeMismatch(ILocation l, Type expected, Type actual)
     {
         ReportError(l, "expected type '{0}' but found '{1}'", Types.FormatCheckedType(expected),
             Types.FormatCheckedType(actual));
     }
 
-    public void UnknownType(Location l, string info)
+    public void UnknownType(ILocation l, string info)
     {
         //    reportError(l, "unknown type{0}", info != null ? " for: " + info : "");
     }

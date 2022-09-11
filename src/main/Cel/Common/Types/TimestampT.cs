@@ -3,7 +3,6 @@ using Cel.Common.Types.Traits;
 using Google.Protobuf.WellKnownTypes;
 using NodaTime;
 using NodaTime.Text;
-using Type = Cel.Common.Types.Ref.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -26,7 +25,7 @@ namespace Cel.Common.Types;
 ///     Timestamp type implementation which supports add, compare, and subtract operations. Timestamps
 ///     are also capable of participating in dynamic function dispatch to instance methods.
 /// </summary>
-public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
+public sealed class TimestampT : BaseVal, IAdder, IComparer, IReceiver, ISubtractor
 {
     /// <summary>
     ///     Number of seconds between `0001-01-01T00:00:00Z` and the Unix epoch.
@@ -41,19 +40,19 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
     /// <summary>
     ///     TimestampType singleton.
     /// </summary>
-    public static readonly Type TimestampType = TypeT.NewTypeValue(TypeEnum.Timestamp, Trait.AdderType,
+    public static readonly IType TimestampType = TypeT.NewTypeValue(TypeEnum.Timestamp, Trait.AdderType,
         Trait.ComparerType, Trait.ReceiverType, Trait.SubtractorType);
 
     public static readonly DateTimeZone ZoneIdZ = DateTimeZone.Utc;
 
-    private static readonly IDictionary<string, Func<ZonedDateTime, Val>> timestampZeroArgOverloads;
-    private static readonly IDictionary<string, Func<ZonedDateTime, Val, Val>> timestampOneArgOverloads;
+    private static readonly IDictionary<string, Func<ZonedDateTime, IVal>> timestampZeroArgOverloads;
+    private static readonly IDictionary<string, Func<ZonedDateTime, IVal, IVal>> timestampOneArgOverloads;
 
     private readonly ZonedDateTime t;
 
     static TimestampT()
     {
-        timestampZeroArgOverloads = new Dictionary<string, Func<ZonedDateTime, Val>>();
+        timestampZeroArgOverloads = new Dictionary<string, Func<ZonedDateTime, IVal>>();
         timestampZeroArgOverloads[Overloads.TimeGetFullYear] = TimestampGetFullYear;
         timestampZeroArgOverloads[Overloads.TimeGetMonth] = TimestampGetMonth;
         timestampZeroArgOverloads[Overloads.TimeGetDayOfYear] = TimestampGetDayOfYear;
@@ -65,7 +64,7 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
         timestampZeroArgOverloads[Overloads.TimeGetSeconds] = TimestampGetSeconds;
         timestampZeroArgOverloads[Overloads.TimeGetMilliseconds] = TimestampGetMilliseconds;
 
-        timestampOneArgOverloads = new Dictionary<string, Func<ZonedDateTime, Val, Val>>();
+        timestampOneArgOverloads = new Dictionary<string, Func<ZonedDateTime, IVal, IVal>>();
         timestampOneArgOverloads[Overloads.TimeGetFullYear] = TimestampGetFullYearWithTz;
         timestampOneArgOverloads[Overloads.TimeGetMonth] = TimestampGetMonthWithTz;
         timestampOneArgOverloads[Overloads.TimeGetDayOfYear] = TimestampGetDayOfYearWithTz;
@@ -86,7 +85,7 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
     /// <summary>
     ///     Add implements traits.Adder.Add.
     /// </summary>
-    public Val Add(Val other)
+    public IVal Add(IVal other)
     {
         if (other.Type().TypeEnum() == TypeEnum.Duration) return ((DurationT)other).Add(this);
 
@@ -96,7 +95,7 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
     /// <summary>
     ///     Compare implements traits.Comparer.Compare.
     /// </summary>
-    public Val Compare(Val other)
+    public IVal Compare(IVal other)
     {
         if (TimestampType != other.Type()) return Err.NoSuchOverload(this, "compare", other);
 
@@ -113,7 +112,7 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
     /// <summary>
     ///     Receive implements traits.Receiver.Receive.
     /// </summary>
-    public Val Receive(string function, string overload, params Val[] args)
+    public IVal Receive(string function, string overload, params IVal[] args)
     {
         switch (args.Length)
         {
@@ -135,7 +134,7 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
     /// <summary>
     ///     Subtract implements traits.Subtractor.Subtract.
     /// </summary>
-    public Val Subtract(Val other)
+    public IVal Subtract(IVal other)
     {
         switch (other.Type().TypeEnum().InnerEnumValue)
         {
@@ -199,7 +198,7 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
         return new TimestampT(t);
     }
 
-    public Val RangeCheck()
+    public IVal RangeCheck()
     {
         long unitTime = t.Second;
         if (unitTime < minUnixTime || unitTime > maxUnixTime) return Err.ErrTimestampOutOfRange;
@@ -224,7 +223,7 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
 
         if (typeDesc == typeof(Timestamp) || typeDesc == typeof(object)) return ToPbTimestamp();
 
-        if (typeDesc == typeof(Val) || typeDesc == typeof(TimestampT)) return this;
+        if (typeDesc == typeof(IVal) || typeDesc == typeof(TimestampT)) return this;
 
         if (typeDesc == typeof(Value))
         {
@@ -259,7 +258,7 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
     /// <summary>
     ///     ConvertToType implements ref.Val.ConvertToType.
     /// </summary>
-    public override Val ConvertToType(Type typeValue)
+    public override IVal ConvertToType(IType typeValue)
     {
         switch (typeValue.TypeEnum().InnerEnumValue)
         {
@@ -279,7 +278,7 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
     /// <summary>
     ///     Equal implements ref.Val.Equal.
     /// </summary>
-    public override Val Equal(Val other)
+    public override IVal Equal(IVal other)
     {
         if (TimestampType != other.Type()) return Err.NoSuchOverload(this, "equal", other);
 
@@ -289,7 +288,7 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
     /// <summary>
     ///     Type implements ref.Val.Type.
     /// </summary>
-    public override Type Type()
+    public override IType Type()
     {
         return TimestampType;
     }
@@ -317,109 +316,109 @@ public sealed class TimestampT : BaseVal, Adder, Comparer, Receiver, Subtractor
         return HashCode.Combine(base.GetHashCode(), t);
     }
 
-    public static Val TimestampGetFullYear(ZonedDateTime t)
+    public static IVal TimestampGetFullYear(ZonedDateTime t)
     {
         return IntT.IntOf(t.Year);
     }
 
-    public static Val TimestampGetMonth(ZonedDateTime t)
+    public static IVal TimestampGetMonth(ZonedDateTime t)
     {
         // CEL spec indicates that the month should be 0-based, but the Time value
         // for Month() is 1-based. */
         return IntT.IntOf(t.Month - 1);
     }
 
-    public static Val TimestampGetDayOfYear(ZonedDateTime t)
+    public static IVal TimestampGetDayOfYear(ZonedDateTime t)
     {
         return IntT.IntOf(t.DayOfYear - 1);
     }
 
-    public static Val TimestampGetDayOfMonthZeroBased(ZonedDateTime t)
+    public static IVal TimestampGetDayOfMonthZeroBased(ZonedDateTime t)
     {
         return IntT.IntOf(t.Day - 1);
     }
 
-    public static Val TimestampGetDayOfMonthOneBased(ZonedDateTime t)
+    public static IVal TimestampGetDayOfMonthOneBased(ZonedDateTime t)
     {
         return IntT.IntOf(t.Day);
     }
 
-    public static Val TimestampGetDayOfWeek(ZonedDateTime t)
+    public static IVal TimestampGetDayOfWeek(ZonedDateTime t)
     {
         return IntT.IntOf((int)t.DayOfWeek);
     }
 
-    public static Val TimestampGetHours(ZonedDateTime t)
+    public static IVal TimestampGetHours(ZonedDateTime t)
     {
         return IntT.IntOf(t.Hour);
     }
 
-    public static Val TimestampGetMinutes(ZonedDateTime t)
+    public static IVal TimestampGetMinutes(ZonedDateTime t)
     {
         return IntT.IntOf(t.Minute);
     }
 
-    public static Val TimestampGetSeconds(ZonedDateTime t)
+    public static IVal TimestampGetSeconds(ZonedDateTime t)
     {
         return IntT.IntOf(t.Second);
     }
 
-    public static Val TimestampGetMilliseconds(ZonedDateTime t)
+    public static IVal TimestampGetMilliseconds(ZonedDateTime t)
     {
         return IntT.IntOf(t.Millisecond);
     }
 
-    public static Val TimestampGetFullYearWithTz(ZonedDateTime t, Val tz)
+    public static IVal TimestampGetFullYearWithTz(ZonedDateTime t, IVal tz)
     {
         return TimeZone(tz, TimestampGetFullYear, t);
     }
 
-    public static Val TimestampGetMonthWithTz(ZonedDateTime t, Val tz)
+    public static IVal TimestampGetMonthWithTz(ZonedDateTime t, IVal tz)
     {
         return TimeZone(tz, TimestampGetMonth, t);
     }
 
-    public static Val TimestampGetDayOfYearWithTz(ZonedDateTime t, Val tz)
+    public static IVal TimestampGetDayOfYearWithTz(ZonedDateTime t, IVal tz)
     {
         return TimeZone(tz, TimestampGetDayOfYear, t);
     }
 
-    public static Val TimestampGetDayOfMonthZeroBasedWithTz(ZonedDateTime t, Val tz)
+    public static IVal TimestampGetDayOfMonthZeroBasedWithTz(ZonedDateTime t, IVal tz)
     {
         return TimeZone(tz, TimestampGetDayOfMonthZeroBased, t);
     }
 
-    public static Val TimestampGetDayOfMonthOneBasedWithTz(ZonedDateTime t, Val tz)
+    public static IVal TimestampGetDayOfMonthOneBasedWithTz(ZonedDateTime t, IVal tz)
     {
         return TimeZone(tz, TimestampGetDayOfMonthOneBased, t);
     }
 
-    public static Val TimestampGetDayOfWeekWithTz(ZonedDateTime t, Val tz)
+    public static IVal TimestampGetDayOfWeekWithTz(ZonedDateTime t, IVal tz)
     {
         return TimeZone(tz, TimestampGetDayOfWeek, t);
     }
 
-    public static Val TimestampGetHoursWithTz(ZonedDateTime t, Val tz)
+    public static IVal TimestampGetHoursWithTz(ZonedDateTime t, IVal tz)
     {
         return TimeZone(tz, TimestampGetHours, t);
     }
 
-    public static Val TimestampGetMinutesWithTz(ZonedDateTime t, Val tz)
+    public static IVal TimestampGetMinutesWithTz(ZonedDateTime t, IVal tz)
     {
         return TimeZone(tz, TimestampGetMinutes, t);
     }
 
-    public static Val TimestampGetSecondsWithTz(ZonedDateTime t, Val tz)
+    public static IVal TimestampGetSecondsWithTz(ZonedDateTime t, IVal tz)
     {
         return TimeZone(tz, TimestampGetSeconds, t);
     }
 
-    public static Val TimestampGetMillisecondsWithTz(ZonedDateTime t, Val tz)
+    public static IVal TimestampGetMillisecondsWithTz(ZonedDateTime t, IVal tz)
     {
         return TimeZone(tz, TimestampGetMilliseconds, t);
     }
 
-    private static Val TimeZone(Val tz, Func<ZonedDateTime, Val> funct, ZonedDateTime t)
+    private static IVal TimeZone(IVal tz, Func<ZonedDateTime, IVal> funct, ZonedDateTime t)
     {
         if (tz.Type().TypeEnum() != TypeEnum.String) return Err.NoSuchOverload(TimestampType, "_op_with_timezone", tz);
 

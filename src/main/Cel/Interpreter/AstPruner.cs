@@ -72,17 +72,17 @@ namespace Cel.Interpreter;
 public sealed class AstPruner
 {
     private readonly Expr expr;
-    private readonly EvalState state;
+    private readonly IEvalState state;
     private long nextExprID;
 
-    private AstPruner(Expr expr, EvalState state, long nextExprID)
+    private AstPruner(Expr expr, IEvalState state, long nextExprID)
     {
         this.expr = expr;
         this.state = state;
         this.nextExprID = nextExprID;
     }
 
-    public static Expr PruneAst(Expr expr, EvalState state)
+    public static Expr PruneAst(Expr expr, IEvalState state)
     {
         var pruner = new AstPruner(expr, state, 1);
         var newExpr = pruner.Prune(expr);
@@ -97,7 +97,7 @@ public sealed class AstPruner
         return expr;
     }
 
-    internal Expr MaybeCreateLiteral(long id, Val v)
+    internal Expr MaybeCreateLiteral(long id, IVal v)
     {
         var constant = new Constant();
         var t = v.Type();
@@ -127,9 +127,9 @@ public sealed class AstPruner
         }
 
         // Attempt to build a list literal.
-        if (v is Lister)
+        if (v is ILister)
         {
-            var list = (Lister)v;
+            var list = (ILister)v;
             var sz = (int)list.Size().IntValue();
             IList<Expr> elemExprs = new List<Expr>(sz);
             for (var i = 0; i < sz; i++)
@@ -152,9 +152,9 @@ public sealed class AstPruner
         }
 
         // Create a map literal if possible.
-        if (v is Mapper)
+        if (v is IMapper)
         {
-            var mp = (Mapper)v;
+            var mp = (IMapper)v;
             var it = mp.Iterator();
             IList<Expr.Types.CreateStruct.Types.Entry> entries =
                 new List<Expr.Types.CreateStruct.Types.Entry>((int)mp.Size().IntValue());
@@ -414,7 +414,7 @@ public sealed class AstPruner
         return node;
     }
 
-    internal Val Value(long id)
+    internal IVal Value(long id)
     {
         return state.Value(id);
     }

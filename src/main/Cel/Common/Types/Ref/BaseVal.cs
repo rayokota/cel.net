@@ -16,12 +16,12 @@
 
 namespace Cel.Common.Types.Ref;
 
-public abstract class BaseVal : Val
+public abstract class BaseVal : IVal
 {
     public abstract object Value();
-    public abstract Type Type();
-    public abstract Val Equal(Val other);
-    public abstract Val ConvertToType(Type typeValue);
+    public abstract IType Type();
+    public abstract IVal Equal(IVal other);
+    public abstract IVal ConvertToType(IType typeValue);
     public abstract object? ConvertToNative(System.Type typeDesc);
 
     public virtual bool BooleanValue()
@@ -46,7 +46,7 @@ public abstract class BaseVal : Val
 
     public override bool Equals(object obj)
     {
-        if (obj is Val) return Equal((Val)obj) == BoolT.True;
+        if (obj is IVal) return Equal((IVal)obj) == BoolT.True;
 
         return Value().Equals(obj);
     }

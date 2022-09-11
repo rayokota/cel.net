@@ -53,7 +53,7 @@ public sealed class Checker
     ///     of protocol buffers, and a registry for errors. Returns a CheckedExpr proto, which might not be
     ///     usable if there are errors in the error registry.
     /// </summary>
-    public static CheckResult Check(Parser.Parser.ParseResult parsedExpr, Source source, CheckerEnv env)
+    public static CheckResult Check(Parser.Parser.ParseResult parsedExpr, ISource source, CheckerEnv env)
     {
         var errors = new TypeErrors(source);
         var c = new Checker(env, errors, Mapping.NewMapping(), 0, parsedExpr.SourceInfo);
@@ -358,7 +358,7 @@ public sealed class Checker
         errors.UndeclaredReference(LocationByExpr(e), env.container.Name(), fnName);
     }
 
-    internal void ResolveOverloadOrError(Location loc, Expr e, Decl fn, Expr target, IList<Expr> args)
+    internal void ResolveOverloadOrError(ILocation loc, Expr e, Decl fn, Expr target, IList<Expr> args)
     {
         // Attempt to resolve the overload.
         var resolution = ResolveOverload(loc, fn, target, args);
@@ -374,7 +374,7 @@ public sealed class Checker
         SetReference(e, resolution.reference);
     }
 
-    internal OverloadResolution ResolveOverload(Location loc, Decl fn, Expr target, IList<Expr> args)
+    internal OverloadResolution ResolveOverload(ILocation loc, Decl fn, Expr target, IList<Expr> args)
     {
         IList<Type> argTypes = new List<Type>();
         if (target != null)
@@ -664,7 +664,7 @@ public sealed class Checker
     /// <summary>
     ///     Checks compatibility of joined types, and returns the most general common type.
     /// </summary>
-    internal Type JoinTypes(Location loc, Type previous, Type current)
+    internal Type JoinTypes(ILocation loc, Type previous, Type current)
     {
         if (previous == null) return current;
 
@@ -712,7 +712,7 @@ public sealed class Checker
         return false;
     }
 
-    internal FieldType LookupFieldType(Location l, string messageType, string fieldName)
+    internal FieldType LookupFieldType(ILocation l, string messageType, string fieldName)
     {
         if (env.provider.FindType(messageType) == null)
         {
@@ -764,12 +764,12 @@ public sealed class Checker
         return new OverloadResolution(checkedRef, t);
     }
 
-    internal Location LocationByExpr(Expr e)
+    internal ILocation LocationByExpr(Expr e)
     {
         return LocationByID(e.Id);
     }
 
-    internal Location LocationByID(long id)
+    internal ILocation LocationByID(long id)
     {
         IDictionary<long, int> positions = sourceInfo.Positions;
         var line = 1;
@@ -789,10 +789,10 @@ public sealed class Checker
                     break;
                 }
 
-            return Location.NewLocation(line, col);
+            return ILocation.NewLocation(line, col);
         }
 
-        return Location.NoLocation;
+        return ILocation.NoLocation;
     }
 
     internal static Reference NewIdentReference(string name, Constant value)

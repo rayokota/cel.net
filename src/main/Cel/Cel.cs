@@ -2,7 +2,6 @@
 using Cel.Interpreter;
 using Cel.Parser;
 using Google.Api.Expr.V1Alpha1;
-using EvalState = Cel.Interpreter.EvalState;
 using Type = Google.Api.Expr.V1Alpha1.Type;
 
 /*
@@ -34,7 +33,7 @@ public sealed class Cel
     public static IProgram NewProgram(Env e, Ast ast, params ProgramOption[] opts)
     {
         // Build the dispatcher, interpreter, and default program value.
-        var disp = Dispatcher.NewDispatcher();
+        var disp = IDispatcher.NewDispatcher();
 
         // Ensure the default attribute factory is set after the adapter and provider are
         // configured.
@@ -55,17 +54,17 @@ public sealed class Cel
         if (p.evalOpts.Contains(EvalOption.OptPartialEval))
             p.attrFactory = AttributePattern.NewPartialAttributeFactory(e.Container, e.TypeAdapter, e.TypeProvider);
         else
-            p.attrFactory = AttributeFactory.NewAttributeFactory(e.Container, e.TypeAdapter, e.TypeProvider);
+            p.attrFactory = IAttributeFactory.NewAttributeFactory(e.Container, e.TypeAdapter, e.TypeProvider);
 
         var interp =
-            Interpreter.Interpreter.NewInterpreter(disp, e.Container, e.TypeProvider, e.TypeAdapter, p.attrFactory);
+            Interpreter.IInterpreter.NewInterpreter(disp, e.Container, e.TypeProvider, e.TypeAdapter, p.attrFactory);
         p.interpreter = interp;
 
         // Translate the EvalOption flags into InterpretableDecorator instances.
         IList<InterpretableDecorator> decorators = new List<InterpretableDecorator>(p.decorators);
 
         // Enable constant folding first.
-        if (p.evalOpts.Contains(EvalOption.OptOptimize)) decorators.Add(Interpreter.Interpreter.Optimize());
+        if (p.evalOpts.Contains(EvalOption.OptOptimize)) decorators.Add(Interpreter.IInterpreter.Optimize());
 
         var pp = p;
 
@@ -77,7 +76,7 @@ public sealed class Cel
             ProgFactory factory = state =>
             {
                 IList<InterpretableDecorator> decs = new List<InterpretableDecorator>(decorators);
-                decs.Add(Interpreter.Interpreter.ExhaustiveEval(state));
+                decs.Add(Interpreter.IInterpreter.ExhaustiveEval(state));
                 var clone = new Prog(e, pp.evalOpts, pp.defaultVars, disp, interp, state);
                 return InitInterpretable(clone, ast, decs);
             };
@@ -91,7 +90,7 @@ public sealed class Cel
             ProgFactory factory = state =>
             {
                 IList<InterpretableDecorator> decs = new List<InterpretableDecorator>(decorators);
-                decs.Add(Interpreter.Interpreter.TrackState(state));
+                decs.Add(Interpreter.IInterpreter.TrackState(state));
                 var clone = new Prog(e, pp.evalOpts, pp.defaultVars, disp, interp, state);
                 return InitInterpretable(clone, ast, decs);
             };
@@ -108,7 +107,7 @@ public sealed class Cel
     private static IProgram InitProgGen(ProgFactory factory)
     {
         // Test the factory to make sure that configuration errors are spotted at config
-        factory(EvalState.NewEvalState());
+        factory(IEvalState.NewEvalState());
         return new ProgGen(factory);
     }
 
@@ -143,7 +142,7 @@ public sealed class Cel
     {
         IDictionary<long, Reference> refMap = checkedExpr.ReferenceMap;
         IDictionary<long, Type> typeMap = checkedExpr.TypeMap;
-        return new Ast(checkedExpr.Expr, checkedExpr.SourceInfo, Source.NewInfoSource(checkedExpr.SourceInfo),
+        return new Ast(checkedExpr.Expr, checkedExpr.SourceInfo, ISource.NewInfoSource(checkedExpr.SourceInfo),
             refMap, typeMap);
     }
 
@@ -172,7 +171,7 @@ public sealed class Cel
     {
         var si = parsedExpr.SourceInfo;
         if (si == null) si = new SourceInfo();
-        return new Ast(parsedExpr.Expr, si, Source.NewInfoSource(si));
+        return new Ast(parsedExpr.Expr, si, ISource.NewInfoSource(si));
     }
 
     /// <summary>
@@ -203,9 +202,9 @@ public sealed class Cel
     /// <summary>
     ///     NoVars returns an empty Activation.
     /// </summary>
-    public static Activation NoVars()
+    public static IActivation NoVars()
     {
-        return Activation.EmptyActivation();
+        return IActivation.EmptyActivation();
     }
 
     /// <summary>
@@ -216,9 +215,9 @@ public sealed class Cel
     ///         interpreter.NewActivation call.
     ///     </para>
     /// </summary>
-    public static PartialActivation PartialVars(object vars, params AttributePattern[] unknowns)
+    public static IPartialActivation PartialVars(object vars, params AttributePattern[] unknowns)
     {
-        return Activation.NewPartialActivation(vars, unknowns);
+        return IActivation.NewPartialActivation(vars, unknowns);
     }
 
     /// <summary>
@@ -252,7 +251,7 @@ public sealed class Cel
     /// </summary>
     public static Cost EstimateCost(object p)
     {
-        if (p is Coster) return ((Coster)p).Cost();
+        if (p is ICoster) return ((ICoster)p).Cost();
 
         return Cost.Unknown;
     }

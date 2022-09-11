@@ -19,10 +19,10 @@ namespace Cel.Parser;
 
 public sealed class ParseError : Exception
 {
-    public ParseError(Location location, string message) : base(message)
+    public ParseError(ILocation location, string message) : base(message)
     {
         Location = location;
     }
 
-    public Location Location { get; }
+    public ILocation Location { get; }
 }

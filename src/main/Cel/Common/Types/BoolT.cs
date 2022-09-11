@@ -1,7 +1,6 @@
 ﻿using Cel.Common.Types.Ref;
 using Cel.Common.Types.Traits;
 using Google.Protobuf.WellKnownTypes;
-using Type = Cel.Common.Types.Ref.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -23,12 +22,12 @@ namespace Cel.Common.Types;
 /// <summary>
 ///     Bool type that implements ref.Val and supports comparison and negation.
 /// </summary>
-public sealed class BoolT : BaseVal, Comparer, Negater
+public sealed class BoolT : BaseVal, IComparer, INegater
 {
     /// <summary>
     ///     BoolType singleton.
     /// </summary>
-    public static readonly Type BoolType = TypeT.NewTypeValue(TypeEnum.Bool, Trait.ComparerType, Trait.NegatorType);
+    public static readonly IType BoolType = TypeT.NewTypeValue(TypeEnum.Bool, Trait.ComparerType, Trait.NegatorType);
 
     /// <summary>
     ///     Boolean constants
@@ -47,7 +46,7 @@ public sealed class BoolT : BaseVal, Comparer, Negater
     /// <summary>
     ///     Compare implements the traits.Comparer interface method.
     /// </summary>
-    public Val Compare(Val other)
+    public IVal Compare(IVal other)
     {
         if (!(other is BoolT)) return Err.NoSuchOverload(this, "compare", other);
 
@@ -57,7 +56,7 @@ public sealed class BoolT : BaseVal, Comparer, Negater
     /// <summary>
     ///     Negate implements the traits.Negater interface method.
     /// </summary>
-    public Val Negate()
+    public IVal Negate()
     {
         return Types.BoolOf(!b);
     }
@@ -88,7 +87,7 @@ public sealed class BoolT : BaseVal, Comparer, Negater
             value.Value = b;
             return value;
             */
-        if (typeDesc == typeof(Val) || typeDesc == typeof(BoolT)) return this;
+        if (typeDesc == typeof(IVal) || typeDesc == typeof(BoolT)) return this;
 
         if (typeDesc == typeof(Value))
         {
@@ -104,7 +103,7 @@ public sealed class BoolT : BaseVal, Comparer, Negater
     /// <summary>
     ///     ConvertToType implements the ref.Val interface method.
     /// </summary>
-    public override Val ConvertToType(Type typeVal)
+    public override IVal ConvertToType(IType typeVal)
     {
         switch (typeVal.TypeEnum().InnerEnumValue)
         {
@@ -122,7 +121,7 @@ public sealed class BoolT : BaseVal, Comparer, Negater
     /// <summary>
     ///     Equal implements the ref.Val interface method.
     /// </summary>
-    public override Val Equal(Val other)
+    public override IVal Equal(IVal other)
     {
         if (!(other is BoolT)) return Err.NoSuchOverload(this, "equal", other);
 
@@ -132,7 +131,7 @@ public sealed class BoolT : BaseVal, Comparer, Negater
     /// <summary>
     ///     Type implements the ref.Val interface method.
     /// </summary>
-    public override Type Type()
+    public override IType Type()
     {
         return BoolType;
     }

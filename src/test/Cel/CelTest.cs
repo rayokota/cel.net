@@ -203,7 +203,7 @@ public class CELTest
 
         var funcs = IProgramOption.Functions(Overload.Binary(Operator.In.id, (lhs, rhs) =>
         {
-            if (rhs.Type().HasTrait(Trait.ContainerType)) return ((Container)rhs).Contains(lhs);
+            if (rhs.Type().HasTrait(Trait.ContainerType)) return ((IContainer)rhs).Contains(lhs);
 
             return Err.ValOrErr(rhs, "no such overload");
         }));
@@ -227,7 +227,7 @@ public class CELTest
     public virtual void Customtypes()
     {
         var exprType = Decls.NewObjectType("google.api.expr.v1alpha1.Expr");
-        TypeRegistry reg = ProtoTypeRegistry.NewEmptyRegistry();
+        ITypeRegistry reg = ProtoTypeRegistry.NewEmptyRegistry();
         var e = Env.NewEnv(IEnvOption.CustomTypeAdapter(reg.ToTypeAdapter()), IEnvOption.CustomTypeProvider(reg),
             IEnvOption.Container("google.api.expr.v1alpha1"),
             IEnvOption.Types(new Expr(), BoolT.BoolType, IntT.IntType, StringT.StringType),
@@ -396,10 +396,10 @@ public class CELTest
         {
             if (args.Length != 3) return Err.NewErr("invalid arguments to 'get'");
 
-            if (!(args[0] is Mapper))
+            if (!(args[0] is IMapper))
                 return Err.NewErr("invalid operand of type '{0}' to obj.get(key, def)", args[0].Type());
 
-            var attrs = (Mapper)args[0];
+            var attrs = (IMapper)args[0];
             if (!(args[1] is StringT))
                 return Err.NewErr("invalid key of type '{0}' to obj.get(key, def)", args[1].Type());
 
@@ -589,14 +589,14 @@ public class CELTest
     [Test]
     public virtual void CustomInterpreterDecorator()
     {
-        var lastInstruction = new AtomicReference<Interpretable>();
+        var lastInstruction = new AtomicReference<IInterpretable>();
         InterpretableDecorator optimizeArith = i =>
         {
             lastInstruction.Set(i);
             // Only optimize the instruction if it is a call.
-            if (!(i is InterpretableCall)) return i;
+            if (!(i is IInterpretableCall)) return i;
 
-            var call = (InterpretableCall)i;
+            var call = (IInterpretableCall)i;
             // Only optimize the math functions when they have constant arguments.
             switch (call.Function())
             {
@@ -608,14 +608,14 @@ public class CELTest
                     var args = call.Args();
                     // When the values are constant then the call can be evaluated with
                     // an empty activation and the value returns as a constant.
-                    if (!(args[0] is InterpretableConst) ||
-                        !(args[1] is InterpretableConst))
+                    if (!(args[0] is IInterpretableConst) ||
+                        !(args[1] is IInterpretableConst))
                         return i;
 
-                    var val = call.Eval(Activation.EmptyActivation());
+                    var val = call.Eval(IActivation.EmptyActivation());
                     if (Err.IsError(val)) throw new Exception(val.ToString());
 
-                    return Interpretable.NewConstValue(call.Id(), val);
+                    return IInterpretable.NewConstValue(call.Id(), val);
                 default:
                     return i;
             }
@@ -625,18 +625,18 @@ public class CELTest
         var astIss = env.Compile("foo == -1 + 2 * 3 / 3");
         env.Program(astIss.Ast, IProgramOption.EvalOptions(EvalOption.OptPartialEval),
             IProgramOption.CustomDecorator(optimizeArith));
-        Assert.That(lastInstruction.Get(), Is.InstanceOf(typeof(InterpretableCall)));
-        var call = (InterpretableCall)lastInstruction.Get();
+        Assert.That(lastInstruction.Get(), Is.InstanceOf(typeof(IInterpretableCall)));
+        var call = (IInterpretableCall)lastInstruction.Get();
         var args = call.Args();
         var lhs = args[0];
-        Assert.That(lhs, Is.InstanceOf(typeof(InterpretableAttribute)));
-        var lastAttr = (InterpretableAttribute)lhs;
-        var absAttr = (NamespacedAttribute)lastAttr.Attr();
+        Assert.That(lhs, Is.InstanceOf(typeof(IInterpretableAttribute)));
+        var lastAttr = (IInterpretableAttribute)lhs;
+        var absAttr = (INamespacedAttribute)lastAttr.Attr();
         var varNames = absAttr.CandidateVariableNames();
         Assert.That(varNames, Has.Exactly(1).EqualTo("foo"));
         var rhs = args[1];
-        Assert.That(rhs, Is.InstanceOf(typeof(InterpretableConst)));
-        var lastConst = (InterpretableConst)rhs;
+        Assert.That(rhs, Is.InstanceOf(typeof(IInterpretableConst)));
+        var lastConst = (IInterpretableConst)rhs;
         // This is the last number produced by the optimization.
         Assert.That(lastConst.Value(), Is.SameAs(IntT.IntOne));
     }

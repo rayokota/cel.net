@@ -25,7 +25,7 @@ using Message = IMessage;
 /// <summary>
 ///     defaultTypeAdapter converts go native types to CEL values.
 /// </summary>
-public sealed class DefaultTypeAdapter : TypeAdapterProvider
+public sealed class DefaultTypeAdapter : ITypeAdapterProvider
 {
     /// <summary>
     ///     DefaultTypeAdapter adapts canonical CEL types from their equivalent Go values.
@@ -47,7 +47,7 @@ public sealed class DefaultTypeAdapter : TypeAdapterProvider
     /// <summary>
     ///     NativeToValue implements the ref.TypeAdapter interface.
     /// </summary>
-    public Val NativeToValue(object value)
+    public IVal NativeToValue(object value)
     {
         var val = NativeToValue(db, ToTypeAdapter(), value);
         if (val != null) return val;
@@ -59,13 +59,13 @@ public sealed class DefaultTypeAdapter : TypeAdapterProvider
     ///     nativeToValue returns the converted (ref.Val, true) of a conversion is found, otherwise (nil,
     ///     false)
     /// </summary>
-    public static Val NativeToValue(Db db, TypeAdapter a, object value)
+    public static IVal NativeToValue(Db db, TypeAdapter a, object value)
     {
         var v = TypeAdapterSupport.MaybeNativeToValue(a, value);
         if (v != null) return v;
 
         // additional specializations may be added upon request / need.
-        if (value is Val) return (Val)value;
+        if (value is IVal) return (IVal)value;
 
         if (value is Message)
         {

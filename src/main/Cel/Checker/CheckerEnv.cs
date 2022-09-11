@@ -36,10 +36,10 @@ public sealed class CheckerEnv
     internal const int HomogenousElementType = 1;
     internal readonly Container container;
     private readonly Scopes declarations;
-    internal readonly TypeProvider provider;
+    internal readonly ITypeProvider provider;
     internal int aggLitElemType;
 
-    private CheckerEnv(Container container, TypeProvider provider, Scopes declarations, int aggLitElemType)
+    private CheckerEnv(Container container, ITypeProvider provider, Scopes declarations, int aggLitElemType)
     {
         this.container = container;
         this.provider = provider;
@@ -50,7 +50,7 @@ public sealed class CheckerEnv
     /// <summary>
     ///     NewEnv returns a new *Env with the given parameters.
     /// </summary>
-    public static CheckerEnv NewCheckerEnv(Container container, TypeProvider provider)
+    public static CheckerEnv NewCheckerEnv(Container container, ITypeProvider provider)
     {
         var declarations = Scopes.NewScopes();
         // declarations.push(); // TODO why this ??
@@ -61,7 +61,7 @@ public sealed class CheckerEnv
     /// <summary>
     ///     NewStandardEnv returns a new *Env with the given params plus standard declarations.
     /// </summary>
-    public static CheckerEnv NewStandardCheckerEnv(Container container, TypeProvider provider)
+    public static CheckerEnv NewStandardCheckerEnv(Container container, ITypeProvider provider)
     {
         var e = NewCheckerEnv(container, provider);
         e.Add(Checker.StandardDeclarations);

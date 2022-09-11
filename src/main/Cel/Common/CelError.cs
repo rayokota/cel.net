@@ -27,13 +27,13 @@ public sealed class CelError : IComparable<CelError>
     // private static final char wideDot = '\uFF0E'; // result of Go's width.Widen(".")
     // private static final char wideInd = '\uFF3E'; // result of Go's width.Widen("^")
 
-    public CelError(Location location, string message)
+    public CelError(ILocation location, string message)
     {
         Location = location;
         Message = message;
     }
 
-    public Location Location { get; }
+    public ILocation Location { get; }
 
     public string Message { get; }
 
@@ -68,7 +68,7 @@ public sealed class CelError : IComparable<CelError>
     /// <summary>
     ///     ToDisplayString decorates the error message with the source location.
     /// </summary>
-    public string ToDisplayString(Source source)
+    public string ToDisplayString(ISource source)
     {
         var result = new StringBuilder(string.Format("ERROR: {0}:{1:D}:{2:D}: {3}", source.Description(),
             Location.Line(), Location.Column() + 1, Message));

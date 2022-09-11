@@ -45,12 +45,12 @@ public class TestUtil
         return map;
     }
 
-    public static IDictionary<string, Val> ValMapOf(string k, Val v, params object[] kvPairs)
+    public static IDictionary<string, IVal> ValMapOf(string k, IVal v, params object[] kvPairs)
     {
-        IDictionary<string, Val> map = new Dictionary<string, Val>();
+        IDictionary<string, IVal> map = new Dictionary<string, IVal>();
         Assert.That(kvPairs.Length % 2, Is.EqualTo(0));
         map[k] = v;
-        for (var i = 0; i < kvPairs.Length; i += 2) map[kvPairs[i].ToString()] = (Val)kvPairs[i + 1];
+        for (var i = 0; i < kvPairs.Length; i += 2) map[kvPairs[i].ToString()] = (IVal)kvPairs[i + 1];
         return map;
     }
 
@@ -61,15 +61,15 @@ public class TestUtil
         if (b == null) Assert.Fail("deepEquals({0}), a!=null, b==null", context);
         if (!a.GetType().IsAssignableFrom(b.GetType()))
         {
-            if (a is Val && !(b is Val))
+            if (a is IVal && !(b is IVal))
             {
-                DeepEquals(context, ((Val)a).Value(), b);
+                DeepEquals(context, ((IVal)a).Value(), b);
                 return;
             }
 
-            if (!(a is Val) && b is Val)
+            if (!(a is IVal) && b is IVal)
             {
-                DeepEquals(context, a, ((Val)b).Value());
+                DeepEquals(context, a, ((IVal)b).Value());
                 return;
             }
 
@@ -120,9 +120,9 @@ public class TestUtil
                 if (!bm.Contains(ak))
                 {
                     var f = true;
-                    if (ak is Val)
+                    if (ak is IVal)
                     {
-                        var an = ((Val)ak).Value();
+                        var an = ((IVal)ak).Value();
                         if (bm.Contains(an))
                         {
                             ak = an;

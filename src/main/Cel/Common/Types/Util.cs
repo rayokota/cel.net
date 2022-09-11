@@ -23,7 +23,7 @@ public sealed class Util
     /// <summary>
     ///     IsUnknownOrError returns whether the input element ref.Val is an ErrType or UnknonwType.
     /// </summary>
-    public static bool IsUnknownOrError(Val val)
+    public static bool IsUnknownOrError(IVal val)
     {
         switch (val.Type().TypeEnum().InnerEnumValue)
         {
@@ -39,7 +39,7 @@ public sealed class Util
     ///     IsPrimitiveType returns whether the input element ref.Val is a primitive type. Note, primitive
     ///     types do not include well-known types such as Duration and Timestamp.
     /// </summary>
-    public static bool IsPrimitiveType(Val val)
+    public static bool IsPrimitiveType(IVal val)
     {
         switch (val.Type().TypeEnum().InnerEnumValue)
         {

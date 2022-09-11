@@ -16,19 +16,17 @@
 
 using Cel.Common.Types.Ref;
 using Cel.Common.Types.Traits;
-using FieldTester = Cel.Common.Types.Traits.FieldTester;
-using Type = Cel.Common.Types.Ref.Type;
 
 namespace Cel.Common.Types;
 
-public abstract class ObjectT : BaseVal, FieldTester, Indexer, TypeAdapterProvider
+public abstract class ObjectT : BaseVal, IFieldTester, IIndexer, ITypeAdapterProvider
 {
     protected internal readonly TypeAdapter adapter;
-    protected internal readonly TypeDescription typeDesc;
-    protected internal readonly Type typeValue;
+    protected internal readonly ITypeDescription typeDesc;
+    protected internal readonly IType typeValue;
     protected internal readonly object value;
 
-    protected internal ObjectT(TypeAdapter adapter, object value, TypeDescription typeDesc, Type typeValue)
+    protected internal ObjectT(TypeAdapter adapter, object value, ITypeDescription typeDesc, IType typeValue)
     {
         this.adapter = adapter;
         this.value = value;
@@ -36,15 +34,15 @@ public abstract class ObjectT : BaseVal, FieldTester, Indexer, TypeAdapterProvid
         this.typeValue = typeValue;
     }
 
-    public abstract Val IsSet(Val field);
-    public abstract Val Get(Val index);
+    public abstract IVal IsSet(IVal field);
+    public abstract IVal Get(IVal index);
 
     public TypeAdapter ToTypeAdapter()
     {
         return NativeToValue;
     }
 
-    public override Val ConvertToType(Type typeVal)
+    public override IVal ConvertToType(IType typeVal)
     {
         switch (typeVal.TypeEnum().InnerEnumValue)
         {
@@ -59,14 +57,14 @@ public abstract class ObjectT : BaseVal, FieldTester, Indexer, TypeAdapterProvid
         return Err.NewTypeConversionError(typeDesc.Name(), typeVal);
     }
 
-    public override Val Equal(Val other)
+    public override IVal Equal(IVal other)
     {
         if (!typeDesc.Name().Equals(other.Type().TypeName())) return Err.NoSuchOverload(this, "equal", other);
 
         return Types.BoolOf(value.Equals(other.Value()));
     }
 
-    public override Type Type()
+    public override IType Type()
     {
         return typeValue;
     }
@@ -76,7 +74,7 @@ public abstract class ObjectT : BaseVal, FieldTester, Indexer, TypeAdapterProvid
         return value;
     }
 
-    public virtual Val NativeToValue(object value)
+    public virtual IVal NativeToValue(object value)
     {
         return adapter(value);
     }

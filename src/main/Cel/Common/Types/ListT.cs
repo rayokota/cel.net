@@ -5,7 +5,6 @@ using Cel.Common.Types.Traits;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Enum = System.Enum;
-using Type = Cel.Common.Types.Ref.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -24,40 +23,40 @@ using Type = Cel.Common.Types.Ref.Type;
  */
 namespace Cel.Common.Types;
 
-public abstract class ListT : BaseVal, Lister
+public abstract class ListT : BaseVal, ILister
 {
     /// <summary>
     ///     ListType singleton.
     /// </summary>
-    public static readonly Type ListType = TypeT.NewTypeValue(TypeEnum.List, Trait.AdderType, Trait.ContainerType,
+    public static readonly IType ListType = TypeT.NewTypeValue(TypeEnum.List, Trait.AdderType, Trait.ContainerType,
         Trait.IndexerType, Trait.IterableType, Trait.SizerType);
 
-    public abstract Val Size();
-    public abstract IteratorT Iterator();
-    public abstract Val Get(Val index);
-    public abstract Val Contains(Val value);
-    public abstract Val Add(Val other);
+    public abstract IVal Size();
+    public abstract IIteratorT Iterator();
+    public abstract IVal Get(IVal index);
+    public abstract IVal Contains(IVal value);
+    public abstract IVal Add(IVal other);
     public abstract override object Value();
-    public abstract override Val Equal(Val other);
-    public abstract override Val ConvertToType(Type typeValue);
+    public abstract override IVal Equal(IVal other);
+    public abstract override IVal ConvertToType(IType typeValue);
     public abstract override object? ConvertToNative(System.Type typeDesc);
 
-    public override Type Type()
+    public override IType Type()
     {
         return ListType;
     }
 
-    public static Val NewStringArrayList(string[] value)
+    public static IVal NewStringArrayList(string[] value)
     {
         return NewGenericArrayList(v => StringT.StringOf((string)v), value);
     }
 
-    public static Val NewGenericArrayList(TypeAdapter adapter, Array value)
+    public static IVal NewGenericArrayList(TypeAdapter adapter, Array value)
     {
         return new GenericListT(adapter, value);
     }
 
-    public static Val NewValArrayList(TypeAdapter adapter, Val[] value)
+    public static IVal NewValArrayList(TypeAdapter adapter, IVal[] value)
     {
         return new ValListT(adapter, value);
     }
@@ -65,7 +64,7 @@ public abstract class ListT : BaseVal, Lister
     /// <summary>
     ///     NewJSONList returns a traits.Lister based on structpb.ListValue instance.
     /// </summary>
-    public static Val NewJSONList(TypeAdapter adapter, ListValue l)
+    public static IVal NewJSONList(TypeAdapter adapter, ListValue l)
     {
         IList<Value> vals = l.Values;
         return NewGenericArrayList(adapter, vals.ToArray());
@@ -174,7 +173,7 @@ public abstract class ListT : BaseVal, Lister
             return array;
         }
 
-        public override Val ConvertToType(Type typeValue)
+        public override IVal ConvertToType(IType typeValue)
         {
             switch (typeValue.TypeEnum().InnerEnumValue)
             {
@@ -187,12 +186,12 @@ public abstract class ListT : BaseVal, Lister
             return Err.NewTypeConversionError(ListType, typeValue);
         }
 
-        public override IteratorT Iterator()
+        public override IIteratorT Iterator()
         {
             return new ArrayListIteratorT(this);
         }
 
-        public override Val Equal(Val other)
+        public override IVal Equal(IVal other)
         {
             if (other.Type() != ListType) return BoolT.False;
 
@@ -216,10 +215,10 @@ public abstract class ListT : BaseVal, Lister
             return BoolT.True;
         }
 
-        public override Val Contains(Val value)
+        public override IVal Contains(IVal value)
         {
-            Type firstType = null;
-            Type mixedType = null;
+            IType firstType = null;
+            IType mixedType = null;
             for (long i = 0; i < size; i++)
             {
                 var elem = Get(IntT.IntOf(i));
@@ -236,12 +235,12 @@ public abstract class ListT : BaseVal, Lister
             return BoolT.False;
         }
 
-        public override Val Size()
+        public override IVal Size()
         {
             return IntT.IntOf(size);
         }
 
-        private sealed class ArrayListIteratorT : BaseVal, IteratorT
+        private sealed class ArrayListIteratorT : BaseVal, IIteratorT
         {
             private readonly BaseListT outerInstance;
 
@@ -252,12 +251,12 @@ public abstract class ListT : BaseVal, Lister
                 this.outerInstance = outerInstance;
             }
 
-            public Val HasNext()
+            public IVal HasNext()
             {
                 return Types.BoolOf(index < outerInstance.size);
             }
 
-            public Val Next()
+            public IVal Next()
             {
                 if (index < outerInstance.size) return outerInstance.Get(IntT.IntOf(index++));
 
@@ -269,17 +268,17 @@ public abstract class ListT : BaseVal, Lister
                 throw new NotSupportedException("IMPLEMENT ME??");
             }
 
-            public override Val ConvertToType(Type typeValue)
+            public override IVal ConvertToType(IType typeValue)
             {
                 throw new NotSupportedException("IMPLEMENT ME??");
             }
 
-            public override Val Equal(Val other)
+            public override IVal Equal(IVal other)
             {
                 throw new NotSupportedException("IMPLEMENT ME??");
             }
 
-            public override Type Type()
+            public override IType Type()
             {
                 throw new NotSupportedException("IMPLEMENT ME??");
             }
@@ -305,11 +304,11 @@ public abstract class ListT : BaseVal, Lister
             return array;
         }
 
-        public override Val Add(Val other)
+        public override IVal Add(IVal other)
         {
-            if (!(other is Lister)) return Err.NoSuchOverload(this, "add", other);
+            if (!(other is ILister)) return Err.NoSuchOverload(this, "add", other);
 
-            var otherList = (Lister)other;
+            var otherList = (ILister)other;
             var otherArray = (Array)otherList.Value();
             var newArray = new object[array.Length + otherArray.Length];
             Array.Copy(array, 0, newArray, 0, array.Length);
@@ -317,7 +316,7 @@ public abstract class ListT : BaseVal, Lister
             return new GenericListT(adapter, newArray);
         }
 
-        public override Val Get(Val index)
+        public override IVal Get(IVal index)
         {
             if (!(index is IntT)) return Err.ValOrErr(index, "unsupported index type '{0}' in list", index.Type());
 
@@ -339,9 +338,9 @@ public abstract class ListT : BaseVal, Lister
 
     internal sealed class ValListT : BaseListT
     {
-        internal readonly Val[] array;
+        internal readonly IVal[] array;
 
-        internal ValListT(TypeAdapter adapter, Val[] array) : base(adapter, array.Length)
+        internal ValListT(TypeAdapter adapter, IVal[] array) : base(adapter, array.Length)
         {
             this.array = array;
         }
@@ -354,23 +353,23 @@ public abstract class ListT : BaseVal, Lister
             return nativeArray;
         }
 
-        public override Val Add(Val other)
+        public override IVal Add(IVal other)
         {
-            if (!(other is Lister)) return Err.NoSuchOverload(this, "add", other);
+            if (!(other is ILister)) return Err.NoSuchOverload(this, "add", other);
 
             if (other is ValListT)
             {
                 var otherArray = ((ValListT)other).array;
-                var newArray = new Val[array.Length + otherArray.Length];
+                var newArray = new IVal[array.Length + otherArray.Length];
                 Array.Copy(array, 0, newArray, 0, array.Length);
                 Array.Copy(otherArray, 0, newArray, array.Length, otherArray.Length);
                 return new ValListT(adapter, newArray);
             }
             else
             {
-                var otherLister = (Lister)other;
+                var otherLister = (ILister)other;
                 var otherSIze = (int)otherLister.Size().IntValue();
-                var newArray = new Val[array.Length + otherSIze];
+                var newArray = new IVal[array.Length + otherSIze];
                 Array.Copy(array, 0, newArray, 0, array.Length);
                 for (var i = 0; i < otherSIze; i++) newArray[array.Length + i] = otherLister.Get(IntT.IntOf(i));
 
@@ -378,7 +377,7 @@ public abstract class ListT : BaseVal, Lister
             }
         }
 
-        public override Val Get(Val index)
+        public override IVal Get(IVal index)
         {
             if (!(index is IntT)) return Err.ValOrErr(index, "unsupported index type '{0}' in list", index.Type());
 
@@ -410,7 +409,7 @@ public abstract class ListT : BaseVal, Lister
 
         public override string ToString()
         {
-            return "ValListT{" + "array=" + "[" + string.Join<Val>(", ", array) + "]" + ", adapter=" + adapter +
+            return "ValListT{" + "array=" + "[" + string.Join<IVal>(", ", array) + "]" + ", adapter=" + adapter +
                    ", size=" + size + '}';
         }
     }

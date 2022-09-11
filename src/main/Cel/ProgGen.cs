@@ -18,7 +18,7 @@ using Cel.Interpreter;
 
 namespace Cel;
 
-internal sealed class ProgGen : IProgram, Coster
+internal sealed class ProgGen : IProgram, ICoster
 {
     private readonly ProgFactory factory;
 
@@ -45,7 +45,7 @@ internal sealed class ProgGen : IProgram, Coster
         // The factory based Eval() differs from the standard evaluation model in that it generates a
         // new EvalState instance for each call to ensure that unique evaluations yield unique stateful
         // results.
-        var state = EvalState.NewEvalState();
+        var state = IEvalState.NewEvalState();
 
         // Generate a new instance of the interpretable using the factory configured during the call to
         // newProgram(). It is incredibly unlikely that the factory call will generate an error given

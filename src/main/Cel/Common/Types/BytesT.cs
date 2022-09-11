@@ -4,7 +4,6 @@ using Cel.Parser;
 using Google.Api.Expr.V1Alpha1;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
-using Type = Cel.Common.Types.Ref.Type;
 using Value = Google.Protobuf.WellKnownTypes.Value;
 
 /*
@@ -27,12 +26,12 @@ namespace Cel.Common.Types;
 /// <summary>
 ///     Bytes type that implements ref.Val and supports add, compare, and size operations.
 /// </summary>
-public sealed class BytesT : BaseVal, Adder, Comparer, Sizer
+public sealed class BytesT : BaseVal, IAdder, IComparer, ISizer
 {
     /// <summary>
     ///     BytesType singleton.
     /// </summary>
-    public static readonly Type BytesType =
+    public static readonly IType BytesType =
         TypeT.NewTypeValue(TypeEnum.Bytes, Trait.AdderType, Trait.ComparerType, Trait.SizerType);
 
     private readonly byte[] b;
@@ -45,7 +44,7 @@ public sealed class BytesT : BaseVal, Adder, Comparer, Sizer
     /// <summary>
     ///     Add implements traits.Adder interface method by concatenating byte sequences.
     /// </summary>
-    public Val Add(Val other)
+    public IVal Add(IVal other)
     {
         if (!(other is BytesT)) return Err.NoSuchOverload(this, "add", other);
 
@@ -59,7 +58,7 @@ public sealed class BytesT : BaseVal, Adder, Comparer, Sizer
     /// <summary>
     ///     Compare implments traits.Comparer interface method by lexicographic ordering.
     /// </summary>
-    public Val Compare(Val other)
+    public IVal Compare(IVal other)
     {
         if (!(other is BytesT)) return Err.NoSuchOverload(this, "compare", other);
 
@@ -82,7 +81,7 @@ public sealed class BytesT : BaseVal, Adder, Comparer, Sizer
     /// <summary>
     ///     Size implements the traits.Sizer interface method.
     /// </summary>
-    public Val Size()
+    public IVal Size()
     {
         return IntT.IntOf(b.Length);
     }
@@ -92,7 +91,7 @@ public sealed class BytesT : BaseVal, Adder, Comparer, Sizer
         return new BytesT(b);
     }
 
-    public static Val BytesOf(ByteString value)
+    public static IVal BytesOf(ByteString value)
     {
         return BytesOf(value.ToByteArray());
     }
@@ -137,7 +136,7 @@ public sealed class BytesT : BaseVal, Adder, Comparer, Sizer
             */
         if (typeDesc == typeof(MemoryStream)) return new MemoryStream(b);
 
-        if (typeDesc == typeof(Val) || typeDesc == typeof(BytesT)) return this;
+        if (typeDesc == typeof(IVal) || typeDesc == typeof(BytesT)) return this;
 
         if (typeDesc == typeof(Value))
         {
@@ -156,7 +155,7 @@ public sealed class BytesT : BaseVal, Adder, Comparer, Sizer
     /// <summary>
     ///     ConvertToType implements the ref.Val interface method.
     /// </summary>
-    public override Val ConvertToType(Type typeValue)
+    public override IVal ConvertToType(IType typeValue)
     {
         switch (typeValue.TypeEnum().InnerEnumValue)
         {
@@ -181,7 +180,7 @@ public sealed class BytesT : BaseVal, Adder, Comparer, Sizer
     /// <summary>
     ///     Equal implements the ref.Val interface method.
     /// </summary>
-    public override Val Equal(Val other)
+    public override IVal Equal(IVal other)
     {
         if (!(other is BytesT)) return Err.NoSuchOverload(this, "equal", other);
 
@@ -191,7 +190,7 @@ public sealed class BytesT : BaseVal, Adder, Comparer, Sizer
     /// <summary>
     ///     Type implements the ref.Val interface method.
     /// </summary>
-    public override Type Type()
+    public override IType Type()
     {
         return BytesType;
     }

@@ -19,9 +19,9 @@ namespace Cel.Common;
 public class Errors
 {
     private readonly IList<CelError> errors = new List<CelError>();
-    private readonly Source source;
+    private readonly ISource source;
 
-    public Errors(Source source)
+    public Errors(ISource source)
     {
         this.source = source;
     }
@@ -34,7 +34,7 @@ public class Errors
     /// <summary>
     ///     ReportError records an error at a source location.
     /// </summary>
-    public virtual void ReportError(Location l, string format, params object[] args)
+    public virtual void ReportError(ILocation l, string format, params object[] args)
     {
         var err = new CelError(l, string.Format(format, args));
         errors.Add(err);
@@ -71,7 +71,7 @@ public class Errors
             .Select(e => e.ToDisplayString(source)));
     }
 
-    public virtual void SyntaxError(Location l, string msg)
+    public virtual void SyntaxError(ILocation l, string msg)
     {
         ReportError(l, "Syntax error: {0}", msg);
     }

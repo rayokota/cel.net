@@ -23,7 +23,7 @@ namespace Cel;
 /// </summary>
 public sealed class EvalDetails
 {
-    public EvalDetails(EvalState state)
+    public EvalDetails(IEvalState state)
     {
         State = state;
     }
@@ -32,5 +32,5 @@ public sealed class EvalDetails
     ///     State of the evaluation, non-nil if the OptTrackState or OptExhaustiveEval is specified within
     ///     EvalOptions.
     /// </summary>
-    public EvalState State { get; }
+    public IEvalState State { get; }
 }

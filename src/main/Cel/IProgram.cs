@@ -23,7 +23,7 @@ namespace Cel;
 /// </summary>
 public interface IProgram
 {
-    static EvalResult NewEvalResult(Val val, EvalDetails evalDetails)
+    static EvalResult NewEvalResult(IVal val, EvalDetails evalDetails)
     {
         return new EvalResult(val, evalDetails);
     }
@@ -56,15 +56,15 @@ public interface IProgram
 public sealed class EvalResult
 {
     private readonly EvalDetails evalDetails;
-    private readonly Val val;
+    private readonly IVal val;
 
-    internal EvalResult(Val val, EvalDetails evalDetails)
+    internal EvalResult(IVal val, EvalDetails evalDetails)
     {
         this.val = val;
         this.evalDetails = evalDetails;
     }
 
-    public Val Val => val;
+    public IVal Val => val;
 
     public EvalDetails EvalDetails => evalDetails;
 }

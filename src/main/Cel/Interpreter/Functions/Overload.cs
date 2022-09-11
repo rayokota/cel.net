@@ -148,7 +148,7 @@ public sealed class Overload
         {
             Unary(Operator.LogicalNot, Trait.NegatorType, v =>
             {
-                if (v.Type().TypeEnum() == TypeEnum.Bool) return ((Negater)v).Negate();
+                if (v.Type().TypeEnum() == TypeEnum.Bool) return ((INegater)v).Negate();
 
                 return Err.NoSuchOverload(null, Operator.LogicalNot.id, v);
             }),
@@ -156,7 +156,7 @@ public sealed class Overload
             Unary(Operator.OldNotStrictlyFalse, NotStrictlyFalse), Binary(Operator.Less,
                 Trait.ComparerType, (lhs, rhs) =>
                 {
-                    var cmp = ((Comparer)lhs).Compare(rhs);
+                    var cmp = ((IComparer)lhs).Compare(rhs);
                     if (cmp == IntT.IntNegOne) return BoolT.True;
 
                     if (cmp == IntT.IntOne || cmp == IntT.IntZero) return BoolT.False;
@@ -165,7 +165,7 @@ public sealed class Overload
                 }),
             Binary(Operator.LessEquals, Trait.ComparerType, (lhs, rhs) =>
             {
-                var cmp = ((Comparer)lhs).Compare(rhs);
+                var cmp = ((IComparer)lhs).Compare(rhs);
                 if (cmp == IntT.IntNegOne || cmp == IntT.IntZero) return BoolT.True;
 
                 if (cmp == IntT.IntOne) return BoolT.False;
@@ -174,7 +174,7 @@ public sealed class Overload
             }),
             Binary(Operator.Greater, Trait.ComparerType, (lhs, rhs) =>
             {
-                var cmp = ((Comparer)lhs).Compare(rhs);
+                var cmp = ((IComparer)lhs).Compare(rhs);
                 if (cmp == IntT.IntOne) return BoolT.True;
 
                 if (cmp == IntT.IntNegOne || cmp == IntT.IntZero) return BoolT.False;
@@ -183,28 +183,28 @@ public sealed class Overload
             }),
             Binary(Operator.GreaterEquals, Trait.ComparerType, (lhs, rhs) =>
             {
-                var cmp = ((Comparer)lhs).Compare(rhs);
+                var cmp = ((IComparer)lhs).Compare(rhs);
                 if (cmp == IntT.IntOne || cmp == IntT.IntZero) return BoolT.True;
 
                 if (cmp == IntT.IntNegOne) return BoolT.False;
 
                 return cmp;
             }),
-            Binary(Operator.Add, Trait.AdderType, (lhs, rhs) => ((Adder)lhs).Add(rhs)),
-            Binary(Operator.Subtract, Trait.SubtractorType, (lhs, rhs) => ((Subtractor)lhs).Subtract(rhs)),
-            Binary(Operator.Multiply, Trait.MultiplierType, (lhs, rhs) => ((Multiplier)lhs).Multiply(rhs)),
-            Binary(Operator.Divide, Trait.DividerType, (lhs, rhs) => ((Divider)lhs).Divide(rhs)),
-            Binary(Operator.Modulo, Trait.ModderType, (lhs, rhs) => ((Modder)lhs).Modulo(rhs)), Unary(
+            Binary(Operator.Add, Trait.AdderType, (lhs, rhs) => ((IAdder)lhs).Add(rhs)),
+            Binary(Operator.Subtract, Trait.SubtractorType, (lhs, rhs) => ((ISubtractor)lhs).Subtract(rhs)),
+            Binary(Operator.Multiply, Trait.MultiplierType, (lhs, rhs) => ((IMultiplier)lhs).Multiply(rhs)),
+            Binary(Operator.Divide, Trait.DividerType, (lhs, rhs) => ((IDivider)lhs).Divide(rhs)),
+            Binary(Operator.Modulo, Trait.ModderType, (lhs, rhs) => ((IModder)lhs).Modulo(rhs)), Unary(
                 Operator.Negate, Trait.NegatorType, v =>
                 {
-                    if (v.Type().TypeEnum() != TypeEnum.Bool) return ((Negater)v).Negate();
+                    if (v.Type().TypeEnum() != TypeEnum.Bool) return ((INegater)v).Negate();
 
                     return Err.NoSuchOverload(null, Operator.Negate.id, v);
                 }),
-            Binary(Operator.Index, Trait.IndexerType, (lhs, rhs) => ((Indexer)lhs).Get(rhs)),
-            Unary(Overloads.Size, Trait.SizerType, v => ((Sizer)v).Size()),
+            Binary(Operator.Index, Trait.IndexerType, (lhs, rhs) => ((IIndexer)lhs).Get(rhs)),
+            Unary(Overloads.Size, Trait.SizerType, v => ((ISizer)v).Size()),
             Binary(Operator.In, InAggregate), Binary(Operator.OldIn, InAggregate),
-            Binary(Overloads.Matches, Trait.MatcherType, (lhs, rhs) => ((Matcher)lhs).Match(rhs)),
+            Binary(Overloads.Matches, Trait.MatcherType, (lhs, rhs) => ((IMatcher)lhs).Match(rhs)),
             Unary(Overloads.TypeConvertInt, v => v.ConvertToType(IntT.IntType)),
             Unary(Overloads.TypeConvertUint, v => v.ConvertToType(UintT.UintType)),
             Unary(Overloads.TypeConvertDouble, v => v.ConvertToType(DoubleT.DoubleType)),
@@ -215,22 +215,22 @@ public sealed class Overload
             Unary(Overloads.TypeConvertDuration, v => v.ConvertToType(DurationT.DurationType)),
             Unary(Overloads.TypeConvertType, v => v.ConvertToType(TypeT.TypeType)),
             Unary(Overloads.TypeConvertDyn, v => v),
-            Unary(Overloads.Iterator, Trait.IterableType, v => ((IterableT)v).Iterator()),
-            Unary(Overloads.HasNext, Trait.IteratorType, v => ((IteratorT)v).HasNext()),
-            Unary(Overloads.Next, Trait.IteratorType, v => ((IteratorT)v).Next())
+            Unary(Overloads.Iterator, Trait.IterableType, v => ((IIterableT)v).Iterator()),
+            Unary(Overloads.HasNext, Trait.IteratorType, v => ((IIteratorT)v).HasNext()),
+            Unary(Overloads.Next, Trait.IteratorType, v => ((IIteratorT)v).Next())
         };
     }
 
-    internal static Val NotStrictlyFalse(Val value)
+    internal static IVal NotStrictlyFalse(IVal value)
     {
         if (value.Type().TypeEnum() == TypeEnum.Bool) return value;
 
         return BoolT.True;
     }
 
-    internal static Val InAggregate(Val lhs, Val rhs)
+    internal static IVal InAggregate(IVal lhs, IVal rhs)
     {
-        if (rhs.Type().HasTrait(Trait.ContainerType)) return ((Container)rhs).Contains(lhs);
+        if (rhs.Type().HasTrait(Trait.ContainerType)) return ((IContainer)rhs).Contains(lhs);
 
         return Err.NoSuchOverload(lhs, Operator.In.id, rhs);
     }

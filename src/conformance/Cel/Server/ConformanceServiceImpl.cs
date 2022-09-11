@@ -188,7 +188,7 @@ public class ConformanceServiceImpl : ConformanceServiceImplBase
     /// <summary>
     ///     RefValueToExprValue converts between ref.Val and exprpb.ExprValue.
     /// </summary>
-    internal static ExprValue RefValueToExprValue(Val res)
+    internal static ExprValue RefValueToExprValue(IVal res)
     {
         if (UnknownT.IsUnknown(res))
         {
@@ -212,7 +212,7 @@ public class ConformanceServiceImpl : ConformanceServiceImplBase
     /// <summary>
     ///     RefValueToValue converts between ref.Val and Value. The ref.Val must not be error or unknown.
     /// </summary>
-    internal static Value RefValueToValue(Val res)
+    internal static Value RefValueToValue(IVal res)
     {
         var val = new Value();
         switch (res.Type().TypeEnum().InnerEnumValue)
@@ -250,7 +250,7 @@ public class ConformanceServiceImpl : ConformanceServiceImplBase
                 val.ObjectValue = Any.Pack(t);
                 return val;
             case TypeEnum.InnerEnum.List:
-                var l = (Lister)res;
+                var l = (ILister)res;
                 var elts = new ListValue();
                 for (var i = l.Iterator(); i.HasNext() == BoolT.True;)
                 {
@@ -261,7 +261,7 @@ public class ConformanceServiceImpl : ConformanceServiceImplBase
                 val.ListValue = elts;
                 return val;
             case TypeEnum.InnerEnum.Map:
-                var m = (Mapper)res;
+                var m = (IMapper)res;
                 var elems = new MapValue();
                 for (var i = m.Iterator(); i.HasNext() == BoolT.True;)
                 {
@@ -297,7 +297,7 @@ public class ConformanceServiceImpl : ConformanceServiceImplBase
     /// <summary>
     ///     ExprValueToRefValue converts between exprpb.ExprValue and ref.Val.
     /// </summary>
-    internal static Val ExprValueToRefValue(TypeAdapter adapter, ExprValue ev)
+    internal static IVal ExprValueToRefValue(TypeAdapter adapter, ExprValue ev)
     {
         switch (ev.KindCase)
         {
@@ -322,7 +322,7 @@ public class ConformanceServiceImpl : ConformanceServiceImplBase
     /// <summary>
     ///     ValueToRefValue converts between exprpb.Value and ref.Val.
     /// </summary>
-    internal static Val ValueToRefValue(TypeAdapter adapter, Value v)
+    internal static IVal ValueToRefValue(TypeAdapter adapter, Value v)
     {
         switch (v.KindCase)
         {
@@ -345,7 +345,7 @@ public class ConformanceServiceImpl : ConformanceServiceImplBase
                 return adapter(any);
             case Value.KindOneofCase.MapValue:
                 var m = v.MapValue;
-                IDictionary<Val, Val> entries = new Dictionary<Val, Val>();
+                IDictionary<IVal, IVal> entries = new Dictionary<IVal, IVal>();
                 foreach (var entry in m.Entries)
                 {
                     var key = ValueToRefValue(adapter, entry.Key);
@@ -356,7 +356,7 @@ public class ConformanceServiceImpl : ConformanceServiceImplBase
                 return adapter(entries);
             case Value.KindOneofCase.ListValue:
                 var l = v.ListValue;
-                IList<Val> elts = l.Values.Select(el => ValueToRefValue(adapter, el)).ToList();
+                IList<IVal> elts = l.Values.Select(el => ValueToRefValue(adapter, el)).ToList();
                 return adapter(elts);
             case Value.KindOneofCase.TypeValue:
                 var typeName = v.TypeValue;

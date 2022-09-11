@@ -21,4 +21,4 @@ namespace Cel.Interpreter.Functions;
 /// <summary>
 ///     UnaryOp is a function that takes a single value and produces an output.
 /// </summary>
-public delegate Val UnaryOp(Val val);
+public delegate IVal UnaryOp(IVal val);

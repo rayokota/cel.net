@@ -324,7 +324,7 @@ public class TimestampTest
 
         // check the timestampGetXyz methods (without a time-zone), (assuming UTC)
 
-        Assert.That(new List<Val>
+        Assert.That(new List<IVal>
         {
             TimestampT.TimestampGetFullYear(value), TimestampT.TimestampGetMonth(value),
             TimestampT.TimestampGetDayOfMonthOneBased(value),
@@ -332,7 +332,7 @@ public class TimestampTest
             TimestampT.TimestampGetHours(value), TimestampT.TimestampGetMinutes(value),
             TimestampT.TimestampGetSeconds(value), TimestampT.TimestampGetDayOfWeek(value),
             TimestampT.TimestampGetDayOfYear(value)
-        }, Is.EquivalentTo(new List<Val>
+        }, Is.EquivalentTo(new List<IVal>
         {
             IntT.IntOf(dtZlocal.Year),
             IntT.IntOf(dtZlocal.Month - 1),
@@ -346,9 +346,9 @@ public class TimestampTest
         var zoneId = TimestampT.ParseTz(tc.tz);
 
         var atZone = new ZonedDateTime(value.ToInstant(), zoneId);
-        Val tzVal = StringT.StringOf(tc.tz);
+        IVal tzVal = StringT.StringOf(tc.tz);
 
-        Assert.That(new List<Val>
+        Assert.That(new List<IVal>
             {
                 TimestampT.TimestampGetFullYearWithTz(value, tzVal),
                 TimestampT.TimestampGetMonthWithTz(value, tzVal),
@@ -359,7 +359,7 @@ public class TimestampTest
                 TimestampT.TimestampGetDayOfWeekWithTz(value, tzVal),
                 TimestampT.TimestampGetDayOfYearWithTz(value, tzVal)
             },
-            Is.EquivalentTo(new List<Val>
+            Is.EquivalentTo(new List<IVal>
             {
                 IntT.IntOf(atZone.Year),
                 IntT.IntOf(atZone.Month - 1),

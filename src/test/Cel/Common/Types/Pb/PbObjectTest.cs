@@ -40,20 +40,20 @@ public class PbObjectTest
         e.CallExpr = new Expr.Types.Call();
         parsedExpr.Expr = e;
         reg.RegisterMessage(parsedExpr);
-        var obj = (Indexer)reg.NativeToValue(parsedExpr);
-        var si = (Indexer)obj.Get(StringT.StringOf("source_info"));
-        var lo = (Indexer)si.Get(StringT.StringOf("line_offsets"));
+        var obj = (IIndexer)reg.NativeToValue(parsedExpr);
+        var si = (IIndexer)obj.Get(StringT.StringOf("source_info"));
+        var lo = (IIndexer)si.Get(StringT.StringOf("line_offsets"));
         Assert.That(lo.Get(IntT.IntOf(2)).Equal(IntT.IntOf(3)), Is.SameAs(BoolT.True));
 
-        var expr = (Indexer)obj.Get(StringT.StringOf("expr"));
-        var call = (Indexer)expr.Get(StringT.StringOf("call_expr"));
+        var expr = (IIndexer)obj.Get(StringT.StringOf("expr"));
+        var call = (IIndexer)expr.Get(StringT.StringOf("call_expr"));
         Assert.That(call.Get(StringT.StringOf("function")).Equal(StringT.StringOf("")), Is.SameAs(BoolT.True));
     }
 
     [Test]
     public virtual void ProtoObjectConvertToNative()
     {
-        TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new Expr());
+        ITypeRegistry reg = ProtoTypeRegistry.NewRegistry(new Expr());
         var info = new SourceInfo();
         info.LineOffsets.Add(new List<int> { 1, 2, 3 });
         var msg = new ParsedExpr();
@@ -66,7 +66,7 @@ public class PbObjectTest
 
         // Dynamic protobuf
         var dynPB = reg.NewValue(ParsedExpr.Descriptor.FullName,
-            new Dictionary<string, Val> { { "source_info", reg.ToTypeAdapter()(msg.SourceInfo) } });
+            new Dictionary<string, IVal> { { "source_info", reg.ToTypeAdapter()(msg.SourceInfo) } });
         var dynVal = reg.ToTypeAdapter()(dynPB);
         val = (ParsedExpr)dynVal.ConvertToNative(msg.GetType());
         Assert.That(val, Is.EqualTo(msg));
@@ -99,7 +99,7 @@ public class PbObjectTest
     [Test]
     public virtual void ProtoObjectIsSet()
     {
-        TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new Expr());
+        ITypeRegistry reg = ProtoTypeRegistry.NewRegistry(new Expr());
         var info = new SourceInfo();
         info.LineOffsets.Add(new List<int> { 1, 2, 3 });
         var msg = new ParsedExpr();
@@ -118,7 +118,7 @@ public class PbObjectTest
     [Test]
     public virtual void ProtoObjectGet()
     {
-        TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new Expr());
+        ITypeRegistry reg = ProtoTypeRegistry.NewRegistry(new Expr());
         var info = new SourceInfo();
         info.LineOffsets.Add(new List<int> { 1, 2, 3 });
         var msg = new ParsedExpr();
@@ -140,7 +140,7 @@ public class PbObjectTest
     [Test]
     public virtual void ProtoObjectConvertToType()
     {
-        TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new Expr());
+        ITypeRegistry reg = ProtoTypeRegistry.NewRegistry(new Expr());
         var info = new SourceInfo();
         info.LineOffsets.Add(new List<int> { 1, 2, 3 });
         var msg = new ParsedExpr();

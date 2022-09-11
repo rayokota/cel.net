@@ -51,10 +51,10 @@ public sealed class Env
 
     private Exception chkErr;
     internal Container container;
-    internal TypeProvider provider;
+    internal ITypeProvider provider;
 
     private Env(Container container, IList<Decl> declarations, IList<Macro> macros, TypeAdapter adapter,
-        TypeProvider provider, ISet<EnvFeature> features, IList<ProgramOption> progOpts)
+        ITypeProvider provider, ISet<EnvFeature> features, IList<ProgramOption> progOpts)
     {
         this.container = container;
         this.declarations = declarations;
@@ -83,7 +83,7 @@ public sealed class Env
     /// <summary>
     ///     TypeProvider returns the `ref.TypeProvider` configured for the environment.
     /// </summary>
-    public TypeProvider TypeProvider => provider;
+    public ITypeProvider TypeProvider => provider;
 
     /// <summary>
     ///     UnknownVars returns an interpreter.PartialActivation which marks all variables declared in the
@@ -93,7 +93,7 @@ public sealed class Env
     ///         PartialAttributes option is provided as a ProgramOption.
     ///     </para>
     /// </summary>
-    public PartialActivation UnknownVars
+    public IPartialActivation UnknownVars
     {
         get
         {
@@ -102,7 +102,7 @@ public sealed class Env
                 if (d.DeclKindCase == DeclKindCase.Ident)
                     unknownPatterns.Add(AttributePattern.NewAttributePattern(d.Name));
 
-            return Cel.PartialVars(Activation.EmptyActivation(),
+            return Cel.PartialVars(IActivation.EmptyActivation(),
                 ((List<AttributePattern>)unknownPatterns).ToArray());
         }
     }
@@ -138,7 +138,7 @@ public sealed class Env
     ///         environment.
     ///     </para>
     /// </summary>
-    public static Env NewCustomEnv(TypeRegistry registry, IList<EnvOption> opts)
+    public static Env NewCustomEnv(ITypeRegistry registry, IList<EnvOption> opts)
     {
         return new Env(Container.DefaultContainer, new List<Decl>(), new List<Macro>(), registry.ToTypeAdapter(),
             registry, new HashSet<EnvFeature>(), new List<ProgramOption>()).Configure(opts);
@@ -196,7 +196,7 @@ public sealed class Env
         if (chkErr != null)
         {
             var errs = new Errors(ast.Source);
-            errs.ReportError(Location.NoLocation, "{0}", chkErr.ToString());
+            errs.ReportError(ILocation.NoLocation, "{0}", chkErr.ToString());
             return new AstIssuesTuple(null, Issues.NewIssues(errs));
         }
 
@@ -225,7 +225,7 @@ public sealed class Env
     /// </summary>
     public AstIssuesTuple Compile(string txt)
     {
-        return CompileSource(Source.NewTextSource(txt));
+        return CompileSource(ISource.NewTextSource(txt));
     }
 
     /// <summary>
@@ -240,7 +240,7 @@ public sealed class Env
     ///         Note, for parse-only uses of CEL use Parse.
     ///     </para>
     /// </summary>
-    public AstIssuesTuple CompileSource(Source src)
+    public AstIssuesTuple CompileSource(ISource src)
     {
         var aiParse = ParseSource(src);
         var aiCheck = Check(aiParse.ast);
@@ -296,7 +296,7 @@ public sealed class Env
           }
         }
         */
-        if (this.provider is TypeRegistry) provider = ((TypeRegistry)this.provider).Copy();
+        if (this.provider is ITypeRegistry) provider = ((ITypeRegistry)this.provider).Copy();
 
         ISet<EnvFeature> featuresCopy = new HashSet<EnvFeature>(features);
 
@@ -327,7 +327,7 @@ public sealed class Env
     /// </summary>
     public AstIssuesTuple Parse(string txt)
     {
-        var src = Source.NewTextSource(txt);
+        var src = ISource.NewTextSource(txt);
         return ParseSource(src);
     }
 
@@ -342,7 +342,7 @@ public sealed class Env
     ///         the mere presence of an Ast does not imply that it is valid for use.
     ///     </para>
     /// </summary>
-    public AstIssuesTuple ParseSource(Source src)
+    public AstIssuesTuple ParseSource(ISource src)
     {
         var res = Parser.Parser.ParseWithMacros(src, macros);
         if (res.HasErrors()) return new AstIssuesTuple(null, Issues.NewIssues(res.Errors));

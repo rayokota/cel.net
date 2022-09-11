@@ -19,7 +19,7 @@ using Google.Protobuf;
  */
 namespace Cel.Parser;
 
-public sealed class ExprHelperImpl : ExprHelper
+public sealed class ExprHelperImpl : IExprHelper
 {
     internal readonly long id;
     internal readonly Helper parserHelper;
@@ -145,7 +145,7 @@ public sealed class ExprHelperImpl : ExprHelper
     }
 
     // OffsetLocation implements the ExprHelper interface method.
-    public Location OffsetLocation(long exprID)
+    public ILocation OffsetLocation(long exprID)
     {
         return parserHelper.GetLocation(exprID);
     }

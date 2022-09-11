@@ -23,7 +23,7 @@ namespace Cel.Common.Types;
 
 public abstract class ListTest<CONSTRUCT>
 {
-    internal abstract Val ConstructList(TypeAdapter typeAdapter, CONSTRUCT[] input);
+    internal abstract IVal ConstructList(TypeAdapter typeAdapter, CONSTRUCT[] input);
 
     // Traits: Val, Adder, Container, Indexer, IterableT, Sizer
 
@@ -36,22 +36,22 @@ public abstract class ListTest<CONSTRUCT>
         // add list to itself
         var doubleTc = tc.CopyAndAdd(tc.input, tc.validate);
         var doubleListVal = list.Add(list);
-        Assert.That(doubleListVal, Is.InstanceOf(typeof(Lister)));
+        Assert.That(doubleListVal, Is.InstanceOf(typeof(ILister)));
 
         CheckList(doubleTc, doubleListVal);
     }
 
-    internal virtual Lister CheckList(TestData tc, Val listVal)
+    internal virtual ILister CheckList(TestData tc, IVal listVal)
     {
-        Assert.That(listVal, Is.InstanceOf(typeof(Lister)));
-        Assert.That(listVal, Is.InstanceOf(typeof(Sizer)));
-        Assert.That(listVal, Is.InstanceOf(typeof(Indexer)));
-        Assert.That(listVal, Is.InstanceOf(typeof(Container)));
-        Assert.That(listVal, Is.InstanceOf(typeof(IterableT)));
-        Assert.That(listVal, Is.InstanceOf(typeof(Adder)));
-        Assert.That(listVal, Is.InstanceOf(typeof(Val)));
+        Assert.That(listVal, Is.InstanceOf(typeof(ILister)));
+        Assert.That(listVal, Is.InstanceOf(typeof(ISizer)));
+        Assert.That(listVal, Is.InstanceOf(typeof(IIndexer)));
+        Assert.That(listVal, Is.InstanceOf(typeof(IContainer)));
+        Assert.That(listVal, Is.InstanceOf(typeof(IIterableT)));
+        Assert.That(listVal, Is.InstanceOf(typeof(IAdder)));
+        Assert.That(listVal, Is.InstanceOf(typeof(IVal)));
 
-        var list = (Lister)listVal;
+        var list = (ILister)listVal;
 
         Assert.That(list.ConvertToType(ListT.ListType), Is.SameAs(list));
         Assert.That(list.ConvertToType(TypeT.TypeType), Is.SameAs(ListT.ListType));
@@ -69,7 +69,7 @@ public abstract class ListTest<CONSTRUCT>
 
             // Indexer.get()
             var elem = list.Get(IntT.IntOf(i));
-            var nat = elem.ConvertToNative(src is Val ? typeof(Val) : src.GetType());
+            var nat = elem.ConvertToNative(src is IVal ? typeof(IVal) : src.GetType());
 
             Assert.That(src, Is.InstanceOf(nat.GetType()));
             Assert.That(srcVal.Type(), Is.SameAs(elem.Type()));
@@ -94,7 +94,7 @@ public abstract class ListTest<CONSTRUCT>
         // IterableT.iterate()
         var iter = list.Iterator();
         Assert.That(iter, Is.Not.Null);
-        IList<Val> collected = new List<Val>();
+        IList<IVal> collected = new List<IVal>();
         for (var index = 0; iter.HasNext() == BoolT.True; index++)
         {
             var next = iter.Next();
@@ -125,7 +125,7 @@ public abstract class ListTest<CONSTRUCT>
         internal readonly string name;
         internal CONSTRUCT[] input;
         internal TypeAdapter typeAdapter = DefaultTypeAdapter.Instance.ToTypeAdapter();
-        internal Val[] validate;
+        internal IVal[] validate;
 
         internal TestData(string name)
         {
@@ -137,11 +137,11 @@ public abstract class ListTest<CONSTRUCT>
             return new TestData(name).Input(input).Validate(validate).TypeAdapter(typeAdapter);
         }
 
-        internal virtual TestData CopyAndAdd(CONSTRUCT[] input, params Val[] inputValidate)
+        internal virtual TestData CopyAndAdd(CONSTRUCT[] input, params IVal[] inputValidate)
         {
             Assert.That(SizeOf(input), Is.EqualTo(inputValidate.Length));
             var added = SourceAdd(input);
-            var valid = new Val[validate.Length + inputValidate.Length];
+            var valid = new IVal[validate.Length + inputValidate.Length];
             Array.Copy(validate, 0, valid, 0, validate.Length);
             Array.Copy(inputValidate, 0, valid, validate.Length, inputValidate.Length);
             return Copy().Input(added).Validate(valid);
@@ -158,7 +158,7 @@ public abstract class ListTest<CONSTRUCT>
             return this;
         }
 
-        internal virtual TestData Validate(params Val[] validate)
+        internal virtual TestData Validate(params IVal[] validate)
         {
             this.validate = validate;
             return this;
@@ -238,7 +238,7 @@ public class StringArrayListTest : ListTest<string>
         base.ListConstruction(tc);
     }
 
-    internal override Val ConstructList(TypeAdapter typeAdapter, string[] input)
+    internal override IVal ConstructList(TypeAdapter typeAdapter, string[] input)
     {
         return ListT.NewStringArrayList(input);
     }
@@ -265,7 +265,7 @@ public class GenericArrayListTest : ListTest<object>
         base.ListConstruction(tc);
     }
 
-    internal override Val ConstructList(TypeAdapter typeAdapter, object[] input)
+    internal override IVal ConstructList(TypeAdapter typeAdapter, object[] input)
     {
         return ListT.NewGenericArrayList(typeAdapter, input);
     }

@@ -27,14 +27,14 @@ using Type = Google.Api.Expr.V1Alpha1.Type;
  */
 namespace Cel.Common.Types.Json;
 
-public sealed class JsonTypeDescription : TypeDescription
+public sealed class JsonTypeDescription : ITypeDescription
 {
     public delegate Type TypeQuery(System.Type Type);
 
     private readonly IDictionary<string, JsonFieldType> fieldTypes;
     private readonly string name;
     private readonly Type pbType;
-    private readonly Ref.Type refType;
+    private readonly Ref.IType refType;
     private readonly System.Type type;
 
     public JsonTypeDescription(System.Type type, JsonSerializer ser, TypeQuery typeQuery)
@@ -153,7 +153,7 @@ public sealed class JsonTypeDescription : TypeDescription
         return pw.GetValue(value);
     }
 
-    public Ref.Type Type()
+    public Ref.IType Type()
     {
         return refType;
     }

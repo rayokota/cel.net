@@ -22,7 +22,7 @@ public sealed class JsonEnumValue
 {
     private readonly Enum enumValue;
 
-    private readonly Val ordinalValue;
+    private readonly IVal ordinalValue;
 
     public JsonEnumValue(Enum enumValue)
     {
@@ -41,7 +41,7 @@ public sealed class JsonEnumValue
         return s;
     }
 
-    public Val OrdinalValue()
+    public IVal OrdinalValue()
     {
         return ordinalValue;
     }

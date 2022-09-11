@@ -31,7 +31,7 @@ public sealed class Printer
         return Debug.ToAdornedDebugString(e, a);
     }
 
-    internal sealed class SemanticAdorner : Debug.Adorner
+    internal sealed class SemanticAdorner : Debug.IAdorner
     {
         internal readonly CheckedExpr checks;
 

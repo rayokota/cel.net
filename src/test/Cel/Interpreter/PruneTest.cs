@@ -56,22 +56,22 @@ internal class PruneTest
     [TestCaseSource(nameof(PruneTestCases))]
     public virtual void Prune(TestCase tc)
     {
-        var parseResult = Parser.Parser.ParseAllMacros(Source.NewStringSource(tc.expr, "<input>"));
+        var parseResult = Parser.Parser.ParseAllMacros(ISource.NewStringSource(tc.expr, "<input>"));
         if (parseResult.HasErrors()) Assert.Fail(parseResult.Errors.ToDisplayString());
 
-        var state = EvalState.NewEvalState();
-        TypeRegistry reg = ProtoTypeRegistry.NewRegistry();
+        var state = IEvalState.NewEvalState();
+        ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var attrs = AttributePattern.NewPartialAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
-        var interp = Interpreter.NewStandardInterpreter(Container.DefaultContainer, reg, reg.ToTypeAdapter(), attrs);
+        var interp = IInterpreter.NewStandardInterpreter(Container.DefaultContainer, reg, reg.ToTypeAdapter(), attrs);
 
-        var interpretable = interp.NewUncheckedInterpretable(parseResult.Expr, Interpreter.ExhaustiveEval(state));
+        var interpretable = interp.NewUncheckedInterpretable(parseResult.Expr, IInterpreter.ExhaustiveEval(state));
         interpretable.Eval(TestActivation(tc.@in));
         var newExpr = AstPruner.PruneAst(parseResult.Expr, state);
         var actual = Unparser.Unparse(newExpr, null);
         Assert.That(actual, Is.EqualTo(tc.expect));
     }
 
-    internal static PartialActivation UnknownActivation(params string[] vars)
+    internal static IPartialActivation UnknownActivation(params string[] vars)
     {
         var pats = new AttributePattern[vars.Length];
         for (var i = 0; i < vars.Length; i++)
@@ -80,14 +80,14 @@ internal class PruneTest
             pats[i] = AttributePattern.NewAttributePattern(v);
         }
 
-        return Activation.NewPartialActivation(new Dictionary<string, object>(), pats);
+        return IActivation.NewPartialActivation(new Dictionary<string, object>(), pats);
     }
 
-    internal virtual Activation TestActivation(object @in)
+    internal virtual IActivation TestActivation(object @in)
     {
-        if (@in == null) return Activation.EmptyActivation();
+        if (@in == null) return IActivation.EmptyActivation();
 
-        return Activation.NewActivation(@in);
+        return IActivation.NewActivation(@in);
     }
 
     internal class TestCase

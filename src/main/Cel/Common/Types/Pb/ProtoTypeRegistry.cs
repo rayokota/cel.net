@@ -5,8 +5,6 @@ using Google.Protobuf.Reflection;
 using Google.Protobuf.WellKnownTypes;
 using Enum = System.Enum;
 using FieldType = Cel.Common.Types.Ref.FieldType;
-using Type = Cel.Common.Types.Ref.Type;
-using TypeRegistry = Cel.Common.Types.Ref.TypeRegistry;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -28,12 +26,12 @@ namespace Cel.Common.Types.Pb;
 using Descriptor = MessageDescriptor;
 using Message = IMessage;
 
-public sealed class ProtoTypeRegistry : TypeRegistry
+public sealed class ProtoTypeRegistry : ITypeRegistry
 {
     private readonly Db pbdb;
-    private readonly IDictionary<string, Type> revTypeMap;
+    private readonly IDictionary<string, IType> revTypeMap;
 
-    private ProtoTypeRegistry(IDictionary<string, Type> revTypeMap, Db pbdb)
+    private ProtoTypeRegistry(IDictionary<string, IType> revTypeMap, Db pbdb)
     {
         this.revTypeMap = revTypeMap;
         this.pbdb = pbdb;
@@ -43,9 +41,9 @@ public sealed class ProtoTypeRegistry : TypeRegistry
     ///     Copy implements the ref.TypeRegistry interface method which copies the current state of the
     ///     registry into its own memory space.
     /// </summary>
-    public TypeRegistry Copy()
+    public ITypeRegistry Copy()
     {
-        return new ProtoTypeRegistry(new Dictionary<string, Type>(revTypeMap),
+        return new ProtoTypeRegistry(new Dictionary<string, IType>(revTypeMap),
             pbdb.Copy());
     }
 
@@ -58,9 +56,9 @@ public sealed class ProtoTypeRegistry : TypeRegistry
 
             RegisterMessage((Message)t);
         }
-        else if (t is Type)
+        else if (t is IType)
         {
-            RegisterType((Type)t);
+            RegisterType((IType)t);
         }
         else
         {
@@ -68,7 +66,7 @@ public sealed class ProtoTypeRegistry : TypeRegistry
         }
     }
 
-    public Val EnumValue(string enumName)
+    public IVal EnumValue(string enumName)
     {
         var enumVal = pbdb.DescribeEnum(enumName);
         if (enumVal == null) return Err.NewErr("unknown enum name '{0}'", enumName);
@@ -87,7 +85,7 @@ public sealed class ProtoTypeRegistry : TypeRegistry
         return new FieldType(field.CheckedType(), field.HasField, field.GetField);
     }
 
-    public Val FindIdent(string identName)
+    public IVal FindIdent(string identName)
     {
         revTypeMap.TryGetValue(identName, out var t);
         if (t != null) return t;
@@ -111,7 +109,7 @@ public sealed class ProtoTypeRegistry : TypeRegistry
         return result;
     }
 
-    public Val NewValue(string typeName, IDictionary<string, Val> fields)
+    public IVal NewValue(string typeName, IDictionary<string, IVal> fields)
     {
         var td = pbdb.DescribeType(typeName);
         if (td == null) return Err.UnknownType(typeName);
@@ -123,7 +121,7 @@ public sealed class ProtoTypeRegistry : TypeRegistry
         return NativeToValue(msg);
     }
 
-    public void RegisterType(params Type[] types)
+    public void RegisterType(params IType[] types)
     {
         foreach (var t in types) revTypeMap[t.TypeName()] = t;
         // TODO: generate an error when the type name is registered more than once.
@@ -142,7 +140,7 @@ public sealed class ProtoTypeRegistry : TypeRegistry
     public static ProtoTypeRegistry NewRegistry(params Message[] types)
     {
         var p =
-            new ProtoTypeRegistry(new Dictionary<string, Type>(), Db.NewDb());
+            new ProtoTypeRegistry(new Dictionary<string, IType>(), Db.NewDb());
         p.RegisterType(
             BoolT.BoolType,
             BytesT.BytesType,
@@ -199,10 +197,10 @@ public sealed class ProtoTypeRegistry : TypeRegistry
     /// </summary>
     public static ProtoTypeRegistry NewEmptyRegistry()
     {
-        return new ProtoTypeRegistry(new Dictionary<string, Type>(), Db.NewDb());
+        return new ProtoTypeRegistry(new Dictionary<string, IType>(), Db.NewDb());
     }
 
-    private Val NewValueSetFields(IDictionary<string, Val> fields, PbTypeDescription td, Message builder)
+    private IVal NewValueSetFields(IDictionary<string, IVal> fields, PbTypeDescription td, Message builder)
     {
         var fieldMap = td.FieldMap();
         foreach (var nv in fields)
@@ -355,9 +353,9 @@ public sealed class ProtoTypeRegistry : TypeRegistry
     ///         This method should be the inverse of ref.Val.ConvertToNative.
     ///     </para>
     /// </summary>
-    public Val NativeToValue(object value)
+    public IVal NativeToValue(object value)
     {
-        Val val;
+        IVal val;
         if (value is Message)
         {
             var v = (Message)value;

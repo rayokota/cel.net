@@ -20,14 +20,14 @@ using Type = System.Type;
 namespace Cel.Common.Types.Json;
 
 /// <summary>
-///     CEL <seealso cref="TypeRegistry" /> to use Json objects as input values for CEL scripts.
+///     CEL <seealso cref="ITypeRegistry" /> to use Json objects as input values for CEL scripts.
 ///     <para>
 ///         The implementation does not support the construction of Json objects in CEL expressions and
 ///         therefore returning Json objects from CEL expressions is not possible/implemented and results
 ///         in <seealso cref="System.NotSupportedException" />s.
 ///     </para>
 /// </summary>
-public sealed class JsonRegistry : TypeRegistry
+public sealed class JsonRegistry : ITypeRegistry
 {
     private readonly IDictionary<Type, JsonEnumDescription> enumMap = new Dictionary<Type, JsonEnumDescription>();
     private readonly IDictionary<string, JsonEnumValue> enumValues = new Dictionary<string, JsonEnumValue>();
@@ -43,7 +43,7 @@ public sealed class JsonRegistry : TypeRegistry
         serializer = new JsonSerializer();
     }
 
-    public TypeRegistry Copy()
+    public ITypeRegistry Copy()
     {
         return this;
     }
@@ -54,7 +54,7 @@ public sealed class JsonRegistry : TypeRegistry
         TypeDescription(cls);
     }
 
-    public void RegisterType(params Ref.Type[] types)
+    public void RegisterType(params Ref.IType[] types)
     {
         throw new NotSupportedException();
     }
@@ -64,14 +64,14 @@ public sealed class JsonRegistry : TypeRegistry
         return NativeToValue;
     }
 
-    public Val EnumValue(string enumName)
+    public IVal EnumValue(string enumName)
     {
         enumValues.TryGetValue(enumName, out var enumVal);
         if (enumVal == null) return Err.NewErr("unknown enum name '{0}'", enumName);
         return enumVal.OrdinalValue();
     }
 
-    public Val FindIdent(string identName)
+    public IVal FindIdent(string identName)
     {
         knownTypesByName.TryGetValue(identName, out var td);
         if (td != null) return td.Type();
@@ -95,19 +95,19 @@ public sealed class JsonRegistry : TypeRegistry
         return td.FieldType(fieldName);
     }
 
-    public Val NewValue(string typeName, IDictionary<string, Val> fields)
+    public IVal NewValue(string typeName, IDictionary<string, IVal> fields)
     {
         throw new NotSupportedException();
     }
 
-    public static TypeRegistry NewRegistry()
+    public static ITypeRegistry NewRegistry()
     {
         return new JsonRegistry();
     }
 
-    public Val NativeToValue(object value)
+    public IVal NativeToValue(object value)
     {
-        if (value is Val) return (Val)value;
+        if (value is IVal) return (IVal)value;
         var maybe = TypeAdapterSupport.MaybeNativeToValue(ToTypeAdapter(), value);
         if (maybe != null) return maybe;
 

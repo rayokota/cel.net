@@ -19,4 +19,4 @@ namespace Cel.Common.Types.Ref;
 /// <summary>
 ///     TypeAdapter converts native Go values of varying type and complexity to equivalent CEL values.
 /// </summary>
-public delegate Val TypeAdapter(object value);
+public delegate IVal TypeAdapter(object value);

@@ -32,7 +32,7 @@ public sealed class Debug
     /// <summary>
     ///     ToAdornedDebugString gives the adorned string representation of the Expr.
     /// </summary>
-    public static string ToAdornedDebugString(Expr e, Adorner adorner)
+    public static string ToAdornedDebugString(Expr e, IAdorner adorner)
     {
         var w = new DebugWriter(adorner);
         w.Buffer(e);
@@ -173,7 +173,7 @@ public sealed class Debug
     ///     Adorner returns debug metadata that will be tacked on to the string representation of an
     ///     expression.#
     /// </summary>
-    public interface Adorner
+    public interface IAdorner
     {
         /// <summary>
         ///     GetMetadata for the input context.
@@ -181,7 +181,7 @@ public sealed class Debug
         string GetMetadata(object ctx);
     }
 
-    internal sealed class EmptyDebugAdorner : Adorner
+    internal sealed class EmptyDebugAdorner : IAdorner
     {
         public string GetMetadata(object e)
         {
@@ -194,12 +194,12 @@ public sealed class Debug
     /// </summary>
     public sealed class DebugWriter
     {
-        internal readonly Adorner adorner;
+        internal readonly IAdorner adorner;
         internal readonly StringBuilder buffer;
         internal int indent;
         internal bool lineStart;
 
-        public DebugWriter(Adorner a)
+        public DebugWriter(IAdorner a)
         {
             adorner = a;
             buffer = new StringBuilder();

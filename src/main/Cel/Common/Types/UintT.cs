@@ -1,7 +1,6 @@
 ﻿using Cel.Common.Types.Ref;
 using Cel.Common.Types.Traits;
 using Google.Protobuf.WellKnownTypes;
-using Type = Cel.Common.Types.Ref.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -23,12 +22,12 @@ namespace Cel.Common.Types;
 /// <summary>
 ///     Uint type implementation which supports comparison and math operators.
 /// </summary>
-public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplier, Subtractor
+public sealed class UintT : BaseVal, IAdder, IComparer, IDivider, IModder, IMultiplier, ISubtractor
 {
     /// <summary>
     ///     UintType singleton.
     /// </summary>
-    public static readonly Type UintType = TypeT.NewTypeValue(TypeEnum.Uint, Trait.AdderType, Trait.ComparerType,
+    public static readonly IType UintType = TypeT.NewTypeValue(TypeEnum.Uint, Trait.AdderType, Trait.ComparerType,
         Trait.DividerType, Trait.ModderType, Trait.MultiplierType, Trait.SubtractorType);
 
     /// <summary>
@@ -52,7 +51,7 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
     /// <summary>
     ///     Add implements traits.Adder.Add.
     /// </summary>
-    public Val Add(Val other)
+    public IVal Add(IVal other)
     {
         if (other.Type() != UintType) return Err.NoSuchOverload(this, "add", other);
 
@@ -69,7 +68,7 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
     /// <summary>
     ///     Compare implements traits.Comparer.Compare.
     /// </summary>
-    public Val Compare(Val other)
+    public IVal Compare(IVal other)
     {
         if (other.Type() != UintType) return Err.NoSuchOverload(this, "compare", other);
 
@@ -79,7 +78,7 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
     /// <summary>
     ///     Divide implements traits.Divider.Divide.
     /// </summary>
-    public Val Divide(Val other)
+    public IVal Divide(IVal other)
     {
         if (other.Type() != UintType) return Err.NoSuchOverload(this, "divide", other);
 
@@ -92,7 +91,7 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
     /// <summary>
     ///     Modulo implements traits.Modder.Modulo.
     /// </summary>
-    public Val Modulo(Val other)
+    public IVal Modulo(IVal other)
     {
         if (other.Type() != UintType) return Err.NoSuchOverload(this, "modulo", other);
 
@@ -105,7 +104,7 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
     /// <summary>
     ///     Multiply implements traits.Multiplier.Multiply.
     /// </summary>
-    public Val Multiply(Val other)
+    public IVal Multiply(IVal other)
     {
         if (other.Type() != UintType) return Err.NoSuchOverload(this, "multiply", other);
 
@@ -122,7 +121,7 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
     /// <summary>
     ///     Subtract implements traits.Subtractor.Subtract.
     /// </summary>
-    public Val Subtract(Val other)
+    public IVal Subtract(IVal other)
     {
         if (other.Type() != UintType) return Err.NoSuchOverload(this, "subtract", other);
 
@@ -208,7 +207,7 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
             */
         }
 
-        if (typeDesc == typeof(Val) || typeDesc == typeof(UintT)) return this;
+        if (typeDesc == typeof(IVal) || typeDesc == typeof(UintT)) return this;
 
         if (typeDesc == typeof(Value))
         {
@@ -236,7 +235,7 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
     /// <summary>
     ///     ConvertToType implements ref.Val.ConvertToType.
     /// </summary>
-    public override Val ConvertToType(Type typeValue)
+    public override IVal ConvertToType(IType typeValue)
     {
         switch (typeValue.TypeEnum().InnerEnumValue)
         {
@@ -260,7 +259,7 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
     /// <summary>
     ///     Equal implements ref.Val.Equal.
     /// </summary>
-    public override Val Equal(Val other)
+    public override IVal Equal(IVal other)
     {
         if (other.Type() != UintType) return Err.NoSuchOverload(this, "equal", other);
 
@@ -270,7 +269,7 @@ public sealed class UintT : BaseVal, Adder, Comparer, Divider, Modder, Multiplie
     /// <summary>
     ///     Type implements ref.Val.Type.
     /// </summary>
-    public override Type Type()
+    public override IType Type()
     {
         return UintType;
     }

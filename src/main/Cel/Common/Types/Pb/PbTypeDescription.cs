@@ -29,7 +29,7 @@ using Message = IMessage;
 /// <summary>
 ///     TypeDescription is a collection of type metadata relevant to expression checking and evaluation.
 /// </summary>
-public sealed class PbTypeDescription : Description, TypeDescription
+public sealed class PbTypeDescription : Description, ITypeDescription
 {
     private static readonly IDictionary<Type, Func<Message, object>> MessageToObjectExact =
         new Dictionary<Type, Func<Message, object>>(ReferenceEqualityComparer.Instance);

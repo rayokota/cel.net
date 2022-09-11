@@ -3,7 +3,6 @@ using System.Text.RegularExpressions;
 using Cel.Common.Types.Ref;
 using Cel.Common.Types.Traits;
 using Google.Protobuf.WellKnownTypes;
-using Type = Cel.Common.Types.Ref.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -25,23 +24,23 @@ namespace Cel.Common.Types;
 /// <summary>
 ///     String type implementation which supports addition, comparison, matching, and size functions.
 /// </summary>
-public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
+public sealed class StringT : BaseVal, IAdder, IComparer, IMatcher, IReceiver, ISizer
 {
     /// <summary>
     ///     StringType singleton.
     /// </summary>
-    public static readonly Type StringType = TypeT.NewTypeValue(TypeEnum.String, Trait.AdderType,
+    public static readonly IType StringType = TypeT.NewTypeValue(TypeEnum.String, Trait.AdderType,
         Trait.ComparerType, Trait.MatcherType, Trait.ReceiverType, Trait.SizerType);
 
     public static readonly UTF8Encoding UTF8 = new(false, true);
 
-    private static readonly IDictionary<string, Func<string, Val, Val>> stringOneArgOverloads;
+    private static readonly IDictionary<string, Func<string, IVal, IVal>> stringOneArgOverloads;
 
     private readonly string s;
 
     static StringT()
     {
-        stringOneArgOverloads = new Dictionary<string, Func<string, Val, Val>>();
+        stringOneArgOverloads = new Dictionary<string, Func<string, IVal, IVal>>();
         stringOneArgOverloads[Overloads.Contains] = StringContains;
         stringOneArgOverloads[Overloads.EndsWith] = StringEndsWith;
         stringOneArgOverloads[Overloads.StartsWith] = StringStartsWith;
@@ -55,7 +54,7 @@ public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
     /// <summary>
     ///     Add implements traits.Adder.Add.
     /// </summary>
-    public Val Add(Val other)
+    public IVal Add(IVal other)
     {
         if (!(other is StringT)) return Err.NoSuchOverload(this, "add", other);
 
@@ -65,7 +64,7 @@ public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
     /// <summary>
     ///     Compare implements traits.Comparer.Compare.
     /// </summary>
-    public Val Compare(Val other)
+    public IVal Compare(IVal other)
     {
         if (!(other is StringT)) return Err.NoSuchOverload(this, "compare", other);
 
@@ -75,7 +74,7 @@ public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
     /// <summary>
     ///     Match implements traits.Matcher.Match.
     /// </summary>
-    public Val Match(Val pattern)
+    public IVal Match(IVal pattern)
     {
         if (!(pattern is StringT)) return Err.NoSuchOverload(this, "match", pattern);
 
@@ -93,7 +92,7 @@ public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
     /// <summary>
     ///     Receive implements traits.Reciever.Receive.
     /// </summary>
-    public Val Receive(string function, string overload, params Val[] args)
+    public IVal Receive(string function, string overload, params IVal[] args)
     {
         if (args.Length == 1)
         {
@@ -107,7 +106,7 @@ public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
     /// <summary>
     ///     Size implements traits.Sizer.Size.
     /// </summary>
-    public Val Size()
+    public IVal Size()
     {
         return IntT.IntOf(s.Length);
     }
@@ -139,7 +138,7 @@ public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
             value.Value = s;
             return value;
             */
-        if (typeDesc == typeof(Val) || typeDesc == typeof(StringT)) return this;
+        if (typeDesc == typeof(IVal) || typeDesc == typeof(StringT)) return this;
 
         if (typeDesc == typeof(Value))
         {
@@ -155,7 +154,7 @@ public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
     /// <summary>
     ///     ConvertToType implements ref.Val.ConvertToType.
     /// </summary>
-    public override Val ConvertToType(Type typeVal)
+    public override IVal ConvertToType(IType typeVal)
     {
         try
         {
@@ -197,7 +196,7 @@ public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
     /// <summary>
     ///     Equal implements ref.Val.Equal.
     /// </summary>
-    public override Val Equal(Val other)
+    public override IVal Equal(IVal other)
     {
         if (!(other is StringT)) return Err.NoSuchOverload(this, "equal", other);
 
@@ -207,7 +206,7 @@ public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
     /// <summary>
     ///     Type implements ref.Val.Type.
     /// </summary>
-    public override Type Type()
+    public override IType Type()
     {
         return StringType;
     }
@@ -235,21 +234,21 @@ public sealed class StringT : BaseVal, Adder, Comparer, Matcher, Receiver, Sizer
         return HashCode.Combine(base.GetHashCode(), s);
     }
 
-    internal static Val StringContains(string s, Val sub)
+    internal static IVal StringContains(string s, IVal sub)
     {
         if (!(sub is StringT)) return Err.NoSuchOverload(StringType, "contains", sub);
 
         return Types.BoolOf(s.Contains(((StringT)sub).s));
     }
 
-    internal static Val StringEndsWith(string s, Val suf)
+    internal static IVal StringEndsWith(string s, IVal suf)
     {
         if (!(suf is StringT)) return Err.NoSuchOverload(StringType, "endsWith", suf);
 
         return Types.BoolOf(s.EndsWith(((StringT)suf).s, StringComparison.Ordinal));
     }
 
-    internal static Val StringStartsWith(string s, Val pre)
+    internal static IVal StringStartsWith(string s, IVal pre)
     {
         if (!(pre is StringT)) return Err.NoSuchOverload(StringType, "startsWith", pre);
 

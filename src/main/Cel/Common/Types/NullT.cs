@@ -1,6 +1,5 @@
 ﻿using Cel.Common.Types.Ref;
 using Google.Protobuf.WellKnownTypes;
-using Type = Cel.Common.Types.Ref.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -27,7 +26,7 @@ public sealed class NullT : BaseVal
     /// <summary>
     ///     NullType singleton.
     /// </summary>
-    public static readonly Type NullType = TypeT.NewTypeValue(TypeEnum.Null);
+    public static readonly IType NullType = TypeT.NewTypeValue(TypeEnum.Null);
 
     /// <summary>
     ///     NullValue singleton.
@@ -59,7 +58,7 @@ public sealed class NullT : BaseVal
 
         if (typeDesc == typeof(NullValue)) return Google.Protobuf.WellKnownTypes.NullValue.NullValue;
 
-        if (typeDesc == typeof(Val) || typeDesc == typeof(NullT)) return this;
+        if (typeDesc == typeof(IVal) || typeDesc == typeof(NullT)) return this;
 
         if (typeDesc == typeof(object)) return null;
 
@@ -81,7 +80,7 @@ public sealed class NullT : BaseVal
     /// <summary>
     ///     ConvertToType implements ref.Val.ConvertToType.
     /// </summary>
-    public override Val ConvertToType(Type typeValue)
+    public override IVal ConvertToType(IType typeValue)
     {
         switch (typeValue.TypeEnum().InnerEnumValue)
         {
@@ -99,7 +98,7 @@ public sealed class NullT : BaseVal
     /// <summary>
     ///     Equal implements ref.Val.Equal.
     /// </summary>
-    public override Val Equal(Val other)
+    public override IVal Equal(IVal other)
     {
         if (NullType != other.Type()) return Err.NoSuchOverload(this, "equal", other);
 
@@ -109,7 +108,7 @@ public sealed class NullT : BaseVal
     /// <summary>
     ///     Type implements ref.Val.Type.
     /// </summary>
-    public override Type Type()
+    public override IType Type()
     {
         return NullType;
     }

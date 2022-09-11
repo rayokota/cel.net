@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
+using Cel.Common.Types.Ref;
 using NUnit.Framework;
-using Type = Cel.Common.Types.Ref.Type;
 
 namespace Cel.Common.Types;
 
@@ -24,7 +24,7 @@ public class TypeTest
     [Test]
     public virtual void TypeConvertToType()
     {
-        Type[] stdTypes =
+        IType[] stdTypes =
         {
             BoolT.BoolType, BytesT.BytesType, DoubleT.DoubleType, DurationT.DurationType,
             IntT.IntType, ListT.ListType, MapT.MapType, NullT.NullType, StringT.StringType,

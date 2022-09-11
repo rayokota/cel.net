@@ -16,7 +16,7 @@
 
 namespace Cel.Common.Types.Json.Types;
 
-public class RefVariantC : RefBase
+public class RefVariantC : IRefBase
 {
     public virtual string Type { get; } = "C";
 

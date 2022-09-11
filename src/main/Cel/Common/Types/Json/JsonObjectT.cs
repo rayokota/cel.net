@@ -36,7 +36,7 @@ internal sealed class JsonObjectT : ObjectT
         return (JsonTypeDescription)typeDesc;
     }
 
-    public override Val IsSet(Val field)
+    public override IVal IsSet(IVal field)
     {
         if (!(field is StringT)) return Err.NoSuchOverload(this, "isSet", field);
 
@@ -49,7 +49,7 @@ internal sealed class JsonObjectT : ObjectT
         return Types.BoolOf(value != null);
     }
 
-    public override Val Get(Val index)
+    public override IVal Get(IVal index)
     {
         if (!(index is StringT)) return Err.NoSuchOverload(this, "get", index);
 

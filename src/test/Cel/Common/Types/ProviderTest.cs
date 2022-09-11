@@ -103,7 +103,7 @@ public class ProviderTest
         IDictionary dict = new Dictionary<object, object>();
         dict[1L] = 2L;
         dict[3L] = 4L;
-        TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new ParsedExpr());
+        ITypeRegistry reg = ProtoTypeRegistry.NewRegistry(new ParsedExpr());
         var sourceInfo = reg.NewValue("google.api.expr.v1alpha1.SourceInfo",
             TestUtil.ValMapOf("location", StringT.StringOf("TestTypeRegistryNewValue"), "line_offsets",
                 ListT.NewGenericArrayList(reg.ToTypeAdapter(), new long?[] { 0L, 2L }), "positions",
@@ -120,7 +120,7 @@ public class ProviderTest
     [Test]
     public virtual void TypeRegistryNewValueOneofFields()
     {
-        TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new CheckedExpr(), new ParsedExpr());
+        ITypeRegistry reg = ProtoTypeRegistry.NewRegistry(new CheckedExpr(), new ParsedExpr());
         var exp = reg.NewValue("google.api.expr.v1alpha1.CheckedExpr",
             TestUtil.ValMapOf("expr",
                 reg.NewValue("google.api.expr.v1alpha1.Expr",
@@ -136,7 +136,7 @@ public class ProviderTest
     [Test]
     public virtual void TypeRegistryNewValueNotWrapperFields()
     {
-        TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new TestAllTypes());
+        ITypeRegistry reg = ProtoTypeRegistry.NewRegistry(new TestAllTypes());
         var exp = reg.NewValue("google.api.expr.test.v1.proto3.TestAllTypes",
             TestUtil.ValMapOf("single_int32", IntT.IntOf(123)));
         Assert.That(Err.IsError(exp), Is.False);
@@ -147,7 +147,7 @@ public class ProviderTest
     [Test]
     public virtual void TypeRegistryNewValueWrapperFields()
     {
-        TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new TestAllTypes());
+        ITypeRegistry reg = ProtoTypeRegistry.NewRegistry(new TestAllTypes());
         var exp = reg.NewValue("google.api.expr.test.v1.proto3.TestAllTypes",
             TestUtil.ValMapOf("single_int32_wrapper", IntT.IntOf(123)));
         Assert.That(Err.IsError(exp), Is.False);
@@ -158,7 +158,7 @@ public class ProviderTest
     [Test]
     public virtual void TypeRegistryGetters()
     {
-        TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new ParsedExpr());
+        ITypeRegistry reg = ProtoTypeRegistry.NewRegistry(new ParsedExpr());
         IDictionary dict = new Dictionary<long, int>();
         dict[1L] = 2;
         dict[3L] = 4;
@@ -167,7 +167,7 @@ public class ProviderTest
                 ListT.NewGenericArrayList(reg.ToTypeAdapter(), new long?[] { 0L, 2L }), "positions",
                 MapT.NewMaybeWrappedMap(reg.ToTypeAdapter(), dict)));
         Assert.That(Err.IsError(sourceInfo), Is.False);
-        var si = (Indexer)sourceInfo;
+        var si = (IIndexer)sourceInfo;
 
         var loc = si.Get(StringT.StringOf("location"));
         Assert.That(loc.Equal(StringT.StringOf("TestTypeRegistryGetFieldValue")), Is.SameAs(BoolT.True));
@@ -175,64 +175,64 @@ public class ProviderTest
         var pos = si.Get(StringT.StringOf("positions"));
         Assert.That(pos.Equal(MapT.NewMaybeWrappedMap(reg.ToTypeAdapter(), dict)), Is.SameAs(BoolT.True));
 
-        var posKeyVal = ((Indexer)pos).Get(IntT.IntOf(1));
+        var posKeyVal = ((IIndexer)pos).Get(IntT.IntOf(1));
         Assert.That(posKeyVal.IntValue(), Is.EqualTo(2));
 
         var offsets = si.Get(StringT.StringOf("line_offsets"));
         Assert.That(Err.IsError(offsets), Is.False);
-        var offset1 = ((Lister)offsets).Get(IntT.IntOf(1));
+        var offset1 = ((ILister)offsets).Get(IntT.IntOf(1));
         Assert.That(offset1, Is.EqualTo(IntT.IntOf(2)));
     }
 
     [Test]
     public virtual void ConvertToNative()
     {
-        TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new ParsedExpr());
+        ITypeRegistry reg = ProtoTypeRegistry.NewRegistry(new ParsedExpr());
 
         // Core type conversion tests.
         ExpectValueToNative(BoolT.True, true);
         ExpectValueToNative(BoolT.True, BoolT.True);
-        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new Val[] { BoolT.True, BoolT.False }),
+        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new IVal[] { BoolT.True, BoolT.False }),
             new object[] { true, false });
-        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new Val[] { BoolT.True, BoolT.False }),
-            new Val[] { BoolT.True, BoolT.False });
+        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new IVal[] { BoolT.True, BoolT.False }),
+            new IVal[] { BoolT.True, BoolT.False });
         ExpectValueToNative(IntT.IntOf(-1), -1);
         ExpectValueToNative(IntT.IntOf(2), 2L);
         ExpectValueToNative(IntT.IntOf(-1), -1);
-        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new Val[] { IntT.IntOf(4) }),
+        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new IVal[] { IntT.IntOf(4) }),
             new object[] { 4L });
-        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new Val[] { IntT.IntOf(5) }),
-            new Val[] { IntT.IntOf(5) });
+        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new IVal[] { IntT.IntOf(5) }),
+            new IVal[] { IntT.IntOf(5) });
         ExpectValueToNative(UintT.UintOf(3), (ulong)3);
         ExpectValueToNative(UintT.UintOf(4), (ulong)4);
         ExpectValueToNative(UintT.UintOf(5), 5);
-        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new Val[] { UintT.UintOf(4) }),
+        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new IVal[] { UintT.UintOf(4) }),
             new object[] { 4L }); // loses "ULong" here
-        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new Val[] { UintT.UintOf(5) }),
-            new Val[] { UintT.UintOf(5) });
+        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new IVal[] { UintT.UintOf(5) }),
+            new IVal[] { UintT.UintOf(5) });
         ExpectValueToNative(DoubleT.DoubleOf(5.5d), 5.5f);
         ExpectValueToNative(DoubleT.DoubleOf(-5.5d), -5.5d);
-        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new Val[] { DoubleT.DoubleOf(-5.5) }),
+        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new IVal[] { DoubleT.DoubleOf(-5.5) }),
             new object[] { -5.5 });
-        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new Val[] { DoubleT.DoubleOf(-5.5) }),
-            new Val[] { DoubleT.DoubleOf(-5.5) });
+        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new IVal[] { DoubleT.DoubleOf(-5.5) }),
+            new IVal[] { DoubleT.DoubleOf(-5.5) });
         ExpectValueToNative(DoubleT.DoubleOf(-5.5), DoubleT.DoubleOf(-5.5));
         ExpectValueToNative(StringT.StringOf("hello"), "hello");
         ExpectValueToNative(StringT.StringOf("hello"), StringT.StringOf("hello"));
         ExpectValueToNative(NullT.NullValue, NullValue.NullValue);
         ExpectValueToNative(NullT.NullValue, NullT.NullValue);
-        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new Val[] { NullT.NullValue }),
+        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new IVal[] { NullT.NullValue }),
             new object[] { null });
-        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new Val[] { NullT.NullValue }),
-            new Val[] { NullT.NullValue });
+        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new IVal[] { NullT.NullValue }),
+            new IVal[] { NullT.NullValue });
         ExpectValueToNative(BytesT.BytesOf("world"), Encoding.UTF8.GetBytes("world"));
         ExpectValueToNative(BytesT.BytesOf("world"), Encoding.UTF8.GetBytes("world"));
-        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new Val[] { BytesT.BytesOf("hello") }),
+        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new IVal[] { BytesT.BytesOf("hello") }),
             new object[] { ByteString.CopyFromUtf8("hello") });
-        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new Val[] { BytesT.BytesOf("hello") }),
-            new Val[] { BytesT.BytesOf("hello") });
+        ExpectValueToNative(ListT.NewGenericArrayList(reg.ToTypeAdapter(), new IVal[] { BytesT.BytesOf("hello") }),
+            new IVal[] { BytesT.BytesOf("hello") });
         ExpectValueToNative(
-            ListT.NewGenericArrayList(reg.ToTypeAdapter(), new Val[] { IntT.IntOf(1), IntT.IntOf(2), IntT.IntOf(3) }),
+            ListT.NewGenericArrayList(reg.ToTypeAdapter(), new IVal[] { IntT.IntOf(1), IntT.IntOf(2), IntT.IntOf(3) }),
             new object[] { 1L, 2L, 3L });
         ExpectValueToNative(DurationT.DurationOf(Period.FromSeconds(500)), Period.FromSeconds(500));
         var d = new Duration();
@@ -393,7 +393,7 @@ public class ProviderTest
     [Test]
     public virtual void NativeToValuePrimitive()
     {
-        TypeRegistry reg = ProtoTypeRegistry.NewEmptyRegistry();
+        ITypeRegistry reg = ProtoTypeRegistry.NewEmptyRegistry();
 
         // Core type conversions.
         ExpectNativeToValue(true, BoolT.True);
@@ -431,12 +431,12 @@ public class ProviderTest
     [Test]
     public virtual void UnsupportedConversion()
     {
-        TypeRegistry reg = ProtoTypeRegistry.NewEmptyRegistry();
+        ITypeRegistry reg = ProtoTypeRegistry.NewEmptyRegistry();
         var val = reg.ToTypeAdapter()(new nonConvertible());
         Assert.That(Err.IsError(val), Is.True);
     }
 
-    internal static void ExpectValueToNative(Val @in, object @out)
+    internal static void ExpectValueToNative(IVal @in, object @out)
     {
         var val = @in.ConvertToNative(@out.GetType());
         Assert.That(val, Is.Not.Null);
@@ -447,9 +447,9 @@ public class ProviderTest
             Assert.That(val, Is.EqualTo(@out));
     }
 
-    internal static void ExpectNativeToValue(object @in, Val @out)
+    internal static void ExpectNativeToValue(object @in, IVal @out)
     {
-        TypeRegistry reg = ProtoTypeRegistry.NewRegistry(new ParsedExpr());
+        ITypeRegistry reg = ProtoTypeRegistry.NewRegistry(new ParsedExpr());
         var val = reg.ToTypeAdapter()(@in);
         Assert.That(Err.IsError(val), Is.False);
         Assert.That(val.Equal(@out), Is.SameAs(BoolT.True));

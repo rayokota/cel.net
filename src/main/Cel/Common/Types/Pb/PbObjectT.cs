@@ -1,7 +1,6 @@
 ﻿using Cel.Common.Types.Ref;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
-using Type = Cel.Common.Types.Ref.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -24,7 +23,7 @@ using Message = IMessage;
 
 public sealed class PbObjectT : ObjectT
 {
-    private PbObjectT(TypeAdapter adapter, Message value, PbTypeDescription typeDesc, Type typeValue) : base(
+    private PbObjectT(TypeAdapter adapter, Message value, PbTypeDescription typeDesc, IType typeValue) : base(
         adapter, value, typeDesc, typeValue)
     {
     }
@@ -38,7 +37,7 @@ public sealed class PbObjectT : ObjectT
     ///         within the type adapter / provider.
     ///     </para>
     /// </summary>
-    public static Val NewObject(TypeAdapter adapter, PbTypeDescription typeDesc, Type typeValue, Message value)
+    public static IVal NewObject(TypeAdapter adapter, PbTypeDescription typeDesc, IType typeValue, Message value)
     {
         return new PbObjectT(adapter, value, typeDesc, typeValue);
     }
@@ -46,7 +45,7 @@ public sealed class PbObjectT : ObjectT
     /// <summary>
     ///     IsSet tests whether a field which is defined is set to a non-default value.
     /// </summary>
-    public override Val IsSet(Val field)
+    public override IVal IsSet(IVal field)
     {
         if (!(field is StringT)) return Err.NoSuchOverload(this, "isSet", field);
 
@@ -57,7 +56,7 @@ public sealed class PbObjectT : ObjectT
         return Types.BoolOf(fd.HasField(value));
     }
 
-    public override Val Get(Val index)
+    public override IVal Get(IVal index)
     {
         if (!(index is StringT)) return Err.NoSuchOverload(this, "get", index);
 
@@ -110,7 +109,7 @@ public sealed class PbObjectT : ObjectT
 
         if (typeDesc.IsAssignableFrom(typeof(Message))) return BuildFrom(typeDesc);
 
-        if (typeDesc == typeof(Val) || typeDesc == typeof(PbObjectT)) return this;
+        if (typeDesc == typeof(IVal) || typeDesc == typeof(PbObjectT)) return this;
 
         // impossible cast
         throw new ArgumentException(

@@ -18,10 +18,10 @@ namespace Cel.Common;
 
 public sealed class ErrorWithLocation : Exception
 {
-    public ErrorWithLocation(Location location, string message) : base(message)
+    public ErrorWithLocation(ILocation location, string message) : base(message)
     {
         Location = location;
     }
 
-    public Location Location { get; }
+    public ILocation Location { get; }
 }

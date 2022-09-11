@@ -1,4 +1,4 @@
-﻿using Type = Cel.Common.Types.Ref.Type;
+﻿using Cel.Common.Types.Ref;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -19,7 +19,7 @@ namespace Cel.Common.Types;
 
 public sealed class Types
 {
-    private static readonly IDictionary<string, Type> typeNameToTypeValue = new Dictionary<string, Type>();
+    private static readonly IDictionary<string, IType> typeNameToTypeValue = new Dictionary<string, IType>();
 
     static Types()
     {
@@ -39,7 +39,7 @@ public sealed class Types
     {
     }
 
-    public static Type GetTypeByName(string typeName)
+    public static IType GetTypeByName(string typeName)
     {
         return null;
     }

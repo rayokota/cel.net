@@ -1,5 +1,4 @@
 ﻿using Cel.Common.Types.Ref;
-using Type = Cel.Common.Types.Ref.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -27,7 +26,7 @@ public sealed class UnknownT : BaseVal
     /// <summary>
     ///     UnknownType singleton.
     /// </summary>
-    public static readonly Type UnknownType = TypeT.NewTypeValue(TypeEnum.Unknown);
+    public static readonly IType UnknownType = TypeT.NewTypeValue(TypeEnum.Unknown);
 
     private readonly long value;
 
@@ -50,7 +49,7 @@ public sealed class UnknownT : BaseVal
             typeDesc == typeof(object))
             return value;
 
-        if (typeDesc == typeof(Val) || typeDesc == typeof(UnknownT)) return this;
+        if (typeDesc == typeof(IVal) || typeDesc == typeof(UnknownT)) return this;
 
         throw new Exception(string.Format("native type conversion error from '{0}' to '{1}'", UnknownType,
             typeDesc.FullName));
@@ -69,7 +68,7 @@ public sealed class UnknownT : BaseVal
     /// <summary>
     ///     ConvertToType implements ref.Val.ConvertToType.
     /// </summary>
-    public override Val ConvertToType(Type typeVal)
+    public override IVal ConvertToType(IType typeVal)
     {
         return this;
     }
@@ -77,7 +76,7 @@ public sealed class UnknownT : BaseVal
     /// <summary>
     ///     Equal implements ref.Val.Equal.
     /// </summary>
-    public override Val Equal(Val other)
+    public override IVal Equal(IVal other)
     {
         return this;
     }
@@ -85,7 +84,7 @@ public sealed class UnknownT : BaseVal
     /// <summary>
     ///     Type implements ref.Val.Type.
     /// </summary>
-    public override Type Type()
+    public override IType Type()
     {
         return UnknownType;
     }

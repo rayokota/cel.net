@@ -23,4 +23,4 @@ namespace Cel.Parser;
 ///         Note: when the Macros.IsReceiverStyle() is true, the target argument will be nil.
 ///     </para>
 /// </summary>
-public delegate Expr MacroExpander(ExprHelper eh, Expr target, IList<Expr> args);
+public delegate Expr MacroExpander(IExprHelper eh, Expr target, IList<Expr> args);

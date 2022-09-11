@@ -25,10 +25,10 @@ using Token = IToken;
 public sealed class Helper
 {
     private readonly IDictionary<long, int> positions;
-    private readonly Source source;
+    private readonly ISource source;
     private long nextID;
 
-    internal Helper(Source source)
+    internal Helper(ISource source)
     {
         this.source = source;
         nextID = 1;
@@ -224,7 +224,7 @@ public sealed class Helper
 
     internal long Id(object ctx)
     {
-        Location location;
+        ILocation location;
         if (ctx is ParserRuleContext)
         {
             var token = ((ParserRuleContext)ctx).Start;
@@ -235,9 +235,9 @@ public sealed class Helper
             var token = (Token)ctx;
             location = source.NewLocation(token.Line, token.Column);
         }
-        else if (ctx is Location)
+        else if (ctx is ILocation)
         {
-            location = (Location)ctx;
+            location = (ILocation)ctx;
         }
         else
         {
@@ -251,7 +251,7 @@ public sealed class Helper
         return id;
     }
 
-    internal Location GetLocation(long id)
+    internal ILocation GetLocation(long id)
     {
         positions.TryGetValue(id, out var characterOffset);
         return source.OffsetLocation(characterOffset);

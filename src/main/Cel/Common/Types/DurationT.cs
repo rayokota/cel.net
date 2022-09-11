@@ -4,7 +4,6 @@ using Google.Protobuf.WellKnownTypes;
 using NodaTime;
 using NodaTime.Text;
 using Duration = Google.Protobuf.WellKnownTypes.Duration;
-using Type = Cel.Common.Types.Ref.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -27,7 +26,7 @@ namespace Cel.Common.Types;
 ///     Duration type that implements ref.Val and supports add, compare, negate, and subtract operators.
 ///     This type is also a receiver which means it can participate in dispatch to receiver functions.
 /// </summary>
-public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Subtractor
+public sealed class DurationT : BaseVal, IAdder, IComparer, INegater, IReceiver, ISubtractor
 {
     // Go's Duration represents the number of nanoseconds as an int64
     // 	minDuration Duration = -1 << 63
@@ -40,16 +39,16 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
     /// <summary>
     ///     DurationType singleton.
     /// </summary>
-    public static readonly Type DurationType = TypeT.NewTypeValue(TypeEnum.Duration, Trait.AdderType,
+    public static readonly IType DurationType = TypeT.NewTypeValue(TypeEnum.Duration, Trait.AdderType,
         Trait.ComparerType, Trait.NegatorType, Trait.ReceiverType, Trait.SubtractorType);
 
-    private static readonly IDictionary<string, Func<Period, Val>> durationZeroArgOverloads;
+    private static readonly IDictionary<string, Func<Period, IVal>> durationZeroArgOverloads;
 
     private readonly Period d;
 
     static DurationT()
     {
-        durationZeroArgOverloads = new Dictionary<string, Func<Period, Val>>();
+        durationZeroArgOverloads = new Dictionary<string, Func<Period, IVal>>();
         durationZeroArgOverloads[Overloads.TimeGetHours] = TimeGetHours;
         durationZeroArgOverloads[Overloads.TimeGetMinutes] = TimeGetMinutes;
         durationZeroArgOverloads[Overloads.TimeGetSeconds] = TimeGetSeconds;
@@ -64,7 +63,7 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
     /// <summary>
     ///     Add implements traits.Adder.Add.
     /// </summary>
-    public Val Add(Val other)
+    public IVal Add(IVal other)
     {
         switch (other.Type().TypeEnum().InnerEnumValue)
         {
@@ -94,7 +93,7 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
     /// <summary>
     ///     Compare implements traits.Comparer.Compare.
     /// </summary>
-    public Val Compare(Val other)
+    public IVal Compare(IVal other)
     {
         if (!(other is DurationT)) return Err.NoSuchOverload(this, "compare", other);
 
@@ -106,7 +105,7 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
     /// <summary>
     ///     Negate implements traits.Negater.Negate.
     /// </summary>
-    public Val Negate()
+    public IVal Negate()
     {
         try
         {
@@ -121,7 +120,7 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
     /// <summary>
     ///     Receive implements traits.Receiver.Receive.
     /// </summary>
-    public Val Receive(string function, string overload, params Val[] args)
+    public IVal Receive(string function, string overload, params IVal[] args)
     {
         if (args.Length == 0)
         {
@@ -135,7 +134,7 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
     /// <summary>
     ///     Subtract implements traits.Subtractor.Subtract.
     /// </summary>
-    public Val Subtract(Val other)
+    public IVal Subtract(IVal other)
     {
         if (!(other is DurationT)) return Err.NoSuchOverload(this, "subtract", other);
 
@@ -169,7 +168,7 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
     /// <summary>
     ///     Verifies that the range of this duration conforms to Go's constraints, see above code comment.
     /// </summary>
-    public Val RangeCheck()
+    public IVal RangeCheck()
     {
         if (d.Seconds < minDurationSeconds || d.Seconds > maxDurationSeconds) return Err.ErrDurationOutOfRange;
 
@@ -193,7 +192,7 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
             // CEL follows the proto3 to JSON conversion.
             return ToPbString();
 
-        if (typeDesc == typeof(Val) || typeDesc == typeof(DurationT)) return this;
+        if (typeDesc == typeof(IVal) || typeDesc == typeof(DurationT)) return this;
 
         if (typeDesc == typeof(Value))
         {
@@ -232,7 +231,7 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
     /// <summary>
     ///     ConvertToType implements ref.Val.ConvertToType.
     /// </summary>
-    public override Val ConvertToType(Type typeValue)
+    public override IVal ConvertToType(IType typeValue)
     {
         switch (typeValue.TypeEnum().InnerEnumValue)
         {
@@ -252,7 +251,7 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
     /// <summary>
     ///     Equal implements ref.Val.Equal.
     /// </summary>
-    public override Val Equal(Val other)
+    public override IVal Equal(IVal other)
     {
         if (!(other is DurationT)) return Err.NoSuchOverload(this, "equal", other);
 
@@ -262,7 +261,7 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
     /// <summary>
     ///     Type implements ref.Val.Type.
     /// </summary>
-    public override Type Type()
+    public override IType Type()
     {
         return DurationType;
     }
@@ -290,22 +289,22 @@ public sealed class DurationT : BaseVal, Adder, Comparer, Negater, Receiver, Sub
         return HashCode.Combine(base.GetHashCode(), d);
     }
 
-    public static Val TimeGetHours(Period duration)
+    public static IVal TimeGetHours(Period duration)
     {
         return IntT.IntOf((int)duration.ToDuration().TotalHours);
     }
 
-    public static Val TimeGetMinutes(Period duration)
+    public static IVal TimeGetMinutes(Period duration)
     {
         return IntT.IntOf((int)duration.ToDuration().TotalMinutes);
     }
 
-    public static Val TimeGetSeconds(Period duration)
+    public static IVal TimeGetSeconds(Period duration)
     {
         return IntT.IntOf((int)duration.ToDuration().TotalSeconds);
     }
 
-    public static Val TimeGetMilliseconds(Period duration)
+    public static IVal TimeGetMilliseconds(Period duration)
     {
         return IntT.IntOf((int)duration.ToDuration().TotalMilliseconds);
     }

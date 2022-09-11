@@ -22,29 +22,29 @@ namespace Cel;
 /// <summary>
 ///     prog is the internal implementation of the Program interface.
 /// </summary>
-public sealed class Prog : IProgram, Coster
+public sealed class Prog : IProgram, ICoster
 {
-    internal static readonly EvalState EmptyEvalState = EvalState.NewEvalState();
+    internal static readonly IEvalState EmptyEvalState = IEvalState.NewEvalState();
     internal readonly IList<InterpretableDecorator> decorators = new List<InterpretableDecorator>();
-    internal readonly Dispatcher dispatcher;
+    internal readonly IDispatcher dispatcher;
 
     internal readonly Env e;
     internal readonly ISet<EvalOption> evalOpts = new HashSet<EvalOption>();
-    internal readonly EvalState state;
-    internal AttributeFactory attrFactory;
-    internal Activation defaultVars;
-    internal Interpretable interpretable;
-    internal Interpreter.Interpreter interpreter;
+    internal readonly IEvalState state;
+    internal IAttributeFactory attrFactory;
+    internal IActivation defaultVars;
+    internal IInterpretable interpretable;
+    internal Interpreter.IInterpreter interpreter;
 
-    internal Prog(Env e, Dispatcher dispatcher)
+    internal Prog(Env e, IDispatcher dispatcher)
     {
         this.e = e;
         this.dispatcher = dispatcher;
-        state = EvalState.NewEvalState();
+        state = IEvalState.NewEvalState();
     }
 
-    internal Prog(Env e, ISet<EvalOption> evalOpts, Activation defaultVars, Dispatcher dispatcher,
-        Interpreter.Interpreter interpreter, EvalState state)
+    internal Prog(Env e, ISet<EvalOption> evalOpts, IActivation defaultVars, IDispatcher dispatcher,
+        Interpreter.IInterpreter interpreter, IEvalState state)
     {
         this.e = e;
         this.evalOpts.UnionWith(evalOpts);
@@ -65,16 +65,16 @@ public sealed class Prog : IProgram, Coster
     /// </summary>
     public EvalResult Eval(object input)
     {
-        Val v;
+        IVal v;
 
         var evalDetails = new EvalDetails(state);
 
         try
         {
             // Build a hierarchical activation if there are default vars set.
-            var vars = Activation.NewActivation(input);
+            var vars = IActivation.NewActivation(input);
 
-            if (defaultVars != null) vars = Activation.NewHierarchicalActivation(defaultVars, vars);
+            if (defaultVars != null) vars = IActivation.NewHierarchicalActivation(defaultVars, vars);
 
             v = interpretable.Eval(vars);
         }

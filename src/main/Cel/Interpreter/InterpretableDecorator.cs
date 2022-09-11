@@ -1,7 +1,6 @@
 ﻿using Cel.Common.Types;
 using Cel.Common.Types.Ref;
 using Cel.Common.Types.Traits;
-using Type = Cel.Common.Types.Ref.Type;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -24,11 +23,11 @@ namespace Cel.Interpreter;
 ///     InterpretableDecorator is a functional interface for decorating or replacing Interpretable
 ///     expression nodes at construction time.
 /// </summary>
-public delegate Interpretable InterpretableDecorator(Interpretable i);
+public delegate IInterpretable InterpretableDecorator(IInterpretable i);
 
 public interface IInterpretableDecorator
 {
-    Interpretable Decorate(Interpretable i);
+    IInterpretable Decorate(IInterpretable i);
 
     /// <summary>
     ///     evalObserver is a functional interface that accepts an expression id and an observed value.
@@ -45,11 +44,11 @@ public interface IInterpretableDecorator
                 // these instruction are already watching, return straight-away.
                 return i;
 
-            if (i is InterpretableAttribute)
-                return new EvalWatchAttr((InterpretableAttribute)i, observer);
+            if (i is IInterpretableAttribute)
+                return new EvalWatchAttr((IInterpretableAttribute)i, observer);
 
-            if (i is InterpretableConst)
-                return new EvalWatchConst((InterpretableConst)i, observer);
+            if (i is IInterpretableConst)
+                return new EvalWatchConst((IInterpretableConst)i, observer);
 
             return new EvalWatch(i, observer);
         };
@@ -82,9 +81,9 @@ public interface IInterpretableDecorator
                     expr.iterVar, expr.cond, expr.step, expr.result);
             }
 
-            if (i is InterpretableAttribute)
+            if (i is IInterpretableAttribute)
             {
-                var expr = (InterpretableAttribute)i;
+                var expr = (IInterpretableAttribute)i;
                 if (expr.Attr() is ConditionalAttribute)
                     return new EvalExhaustiveConditional(i.Id(), expr.Adapter(),
                         (ConditionalAttribute)expr.Attr());
@@ -111,9 +110,9 @@ public interface IInterpretableDecorator
 
             if (i is EvalMap) return MaybeBuildMapLiteral(i, (EvalMap)i);
 
-            if (i is InterpretableCall)
+            if (i is IInterpretableCall)
             {
-                var inst = (InterpretableCall)i;
+                var inst = (IInterpretableCall)i;
                 if (inst.OverloadID().Equals(Overloads.InList)) return MaybeOptimizeSetMembership(i, inst);
 
                 if (Overloads.IsTypeConversionFunction(inst.Function())) return MaybeOptimizeConstUnary(i, inst);
@@ -123,37 +122,37 @@ public interface IInterpretableDecorator
         };
     }
 
-    static Interpretable MaybeOptimizeConstUnary(Interpretable i, InterpretableCall call)
+    static IInterpretable MaybeOptimizeConstUnary(IInterpretable i, IInterpretableCall call)
     {
         var args = call.Args();
         if (args.Length != 1) return i;
 
-        if (!(args[0] is InterpretableConst)) return i;
+        if (!(args[0] is IInterpretableConst)) return i;
 
-        var val = call.Eval(Activation.EmptyActivation());
+        var val = call.Eval(IActivation.EmptyActivation());
         Err.ThrowErrorAsIllegalStateException(val);
-        return Interpretable.NewConstValue(call.Id(), val);
+        return IInterpretable.NewConstValue(call.Id(), val);
     }
 
-    static Interpretable MaybeBuildListLiteral(Interpretable i, EvalList l)
+    static IInterpretable MaybeBuildListLiteral(IInterpretable i, EvalList l)
     {
         foreach (var elem in l.elems)
-            if (!(elem is InterpretableConst))
+            if (!(elem is IInterpretableConst))
                 return i;
 
-        return Interpretable.NewConstValue(l.Id(), l.Eval(Activation.EmptyActivation()));
+        return IInterpretable.NewConstValue(l.Id(), l.Eval(IActivation.EmptyActivation()));
     }
 
-    static Interpretable MaybeBuildMapLiteral(Interpretable i, EvalMap mp)
+    static IInterpretable MaybeBuildMapLiteral(IInterpretable i, EvalMap mp)
     {
         for (var idx = 0; idx < mp.keys.Length; idx++)
         {
-            if (!(mp.keys[idx] is InterpretableConst)) return i;
+            if (!(mp.keys[idx] is IInterpretableConst)) return i;
 
-            if (!(mp.vals[idx] is InterpretableConst)) return i;
+            if (!(mp.vals[idx] is IInterpretableConst)) return i;
         }
 
-        return Interpretable.NewConstValue(mp.Id(), mp.Eval(Activation.EmptyActivation()));
+        return IInterpretable.NewConstValue(mp.Id(), mp.Eval(IActivation.EmptyActivation()));
     }
 
     /// <summary>
@@ -165,22 +164,22 @@ public interface IInterpretableDecorator
     ///             <li>the elements are all of primitive type.
     ///     </ul>
     /// </summary>
-    static Interpretable MaybeOptimizeSetMembership(Interpretable i, InterpretableCall inlist)
+    static IInterpretable MaybeOptimizeSetMembership(IInterpretable i, IInterpretableCall inlist)
     {
         var args = inlist.Args();
         var lhs = args[0];
         var rhs = args[1];
-        if (!(rhs is InterpretableConst)) return i;
+        if (!(rhs is IInterpretableConst)) return i;
 
-        var l = (InterpretableConst)rhs;
+        var l = (IInterpretableConst)rhs;
         // When the incoming binary call is flagged with as the InList overload, the value will
         // always be convertible to a `traits.Lister` type.
-        var list = (Lister)l.Value();
-        if (list.Size() == IntT.IntZero) return Interpretable.NewConstValue(inlist.Id(), BoolT.False);
+        var list = (ILister)l.Value();
+        if (list.Size() == IntT.IntZero) return IInterpretable.NewConstValue(inlist.Id(), BoolT.False);
 
         var it = list.Iterator();
-        Type typ = null;
-        ISet<Val> valueSet = new HashSet<Val>();
+        IType typ = null;
+        ISet<IVal> valueSet = new HashSet<IVal>();
         while (it.HasNext() == BoolT.True)
         {
             var elem = it.Next();
@@ -199,4 +198,4 @@ public interface IInterpretableDecorator
     }
 }
 
-public delegate void EvalObserver(long id, Val v);
+public delegate void EvalObserver(long id, IVal v);

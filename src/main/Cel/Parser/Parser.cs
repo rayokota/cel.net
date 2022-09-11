@@ -62,22 +62,22 @@ public sealed class Parser
         this.options = options;
     }
 
-    public static ParseResult ParseAllMacros(Source source)
+    public static ParseResult ParseAllMacros(ISource source)
     {
         return Parse(Options.NewBuilder().Macros(Macro.AllMacros).Build(), source);
     }
 
-    public static ParseResult ParseWithMacros(Source source, IList<Macro> macros)
+    public static ParseResult ParseWithMacros(ISource source, IList<Macro> macros)
     {
         return Parse(Options.NewBuilder().Macros(macros).Build(), source);
     }
 
-    public static ParseResult Parse(Options options, Source source)
+    public static ParseResult Parse(Options options, ISource source)
     {
         return new Parser(options).Parse(source);
     }
 
-    public ParseResult Parse(Source source)
+    public ParseResult Parse(ISource source)
     {
         ICharStream charStream = new StringCharStream(source.Content(), source.Description());
         var lexer = new CELLexer(charStream);
@@ -102,7 +102,7 @@ public sealed class Parser
         try
         {
             if (charStream.Size > options.ExpressionSizeCodePointLimit)
-                errors.ReportError(Location.NoLocation,
+                errors.ReportError(ILocation.NoLocation,
                     "expression code point size exceeds limit: size: %d, limit %d", charStream.Size,
                     options.ExpressionSizeCodePointLimit);
             else
@@ -110,7 +110,7 @@ public sealed class Parser
         }
         catch (Exception e) when (e is RecoveryLimitError || e is RecursionError)
         {
-            errors.ReportError(Location.NoLocation, "{0}", e.Message);
+            errors.ReportError(ILocation.NoLocation, "{0}", e.Message);
         }
 
         if (errors.HasErrors()) expr = null;
@@ -250,7 +250,7 @@ public sealed class Parser
         public void SyntaxError(TextWriter output, IRecognizer recognizer, Symbol offendingSymbol, int line,
             int charPositionInLine, string msg, RecognitionException e)
         {
-            errors.SyntaxError(Location.NewLocation(line, charPositionInLine), msg);
+            errors.SyntaxError(ILocation.NewLocation(line, charPositionInLine), msg);
         }
 
         public void ReportAmbiguity(Antlr4.Runtime.Parser recognizer, DFA dfa, int startIndex, int stopIndex,
@@ -279,10 +279,10 @@ public sealed class Parser
         internal Expr ReportError(object ctx, string format, params object[] args)
         {
             Expr err;
-            Location location;
-            if (ctx is Location)
+            ILocation location;
+            if (ctx is ILocation)
             {
-                location = (Location)ctx;
+                location = (ILocation)ctx;
             }
             else if (ctx is IToken || ctx is ParserRuleContext)
             {
@@ -291,7 +291,7 @@ public sealed class Parser
             }
             else
             {
-                location = Location.NoLocation;
+                location = ILocation.NoLocation;
             }
 
             err = helper.NewExpr(ctx);
@@ -369,10 +369,10 @@ public sealed class Parser
                 var txt = "<<nil>>";
                 if (tree != null) txt = string.Format("<<{0}>>", tree.GetType().FullName);
 
-                return ReportError(Location.NoLocation, "unknown parse element encountered: {0}", txt);
+                return ReportError(ILocation.NoLocation, "unknown parse element encountered: {0}", txt);
             }
 
-            return helper.NewExpr(Location.NoLocation);
+            return helper.NewExpr(ILocation.NoLocation);
         }
 
         internal object VisitStart(CELParser.StartContext ctx)

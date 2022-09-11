@@ -21,4 +21,4 @@ namespace Cel;
 /// <summary>
 ///     progFactory is a helper alias for marking a program creation factory function.
 /// </summary>
-internal delegate IProgram ProgFactory(EvalState evalState);
+internal delegate IProgram ProgFactory(IEvalState evalState);

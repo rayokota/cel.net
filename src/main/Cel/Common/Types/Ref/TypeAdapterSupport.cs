@@ -28,8 +28,8 @@ namespace Cel.Common.Types.Ref;
 /// </summary>
 public sealed class TypeAdapterSupport
 {
-    private static readonly IDictionary<System.Type, Func<TypeAdapter, object, Val>> NativeToValueExact =
-        new Dictionary<System.Type, Func<TypeAdapter, object, Val>>(ReferenceEqualityComparer.Instance);
+    private static readonly IDictionary<System.Type, Func<TypeAdapter, object, IVal>> NativeToValueExact =
+        new Dictionary<System.Type, Func<TypeAdapter, object, IVal>>(ReferenceEqualityComparer.Instance);
 
     static TypeAdapterSupport()
     {
@@ -60,7 +60,7 @@ public sealed class TypeAdapterSupport
             ListT.NewValArrayList(DefaultTypeAdapter.Instance.ToTypeAdapter(),
                 ((double[])value).Select(i => DoubleT.DoubleOf(i)).ToArray());
         NativeToValueExact[typeof(string[])] = (a, value) => ListT.NewStringArrayList((string[])value);
-        NativeToValueExact[typeof(Val[])] = (a, value) => ListT.NewValArrayList(a, (Val[])value);
+        NativeToValueExact[typeof(IVal[])] = (a, value) => ListT.NewValArrayList(a, (IVal[])value);
         NativeToValueExact[typeof(NullValue)] = (a, value) => NullT.NullValue;
         NativeToValueExact[typeof(ListValue)] = (a, value) => ListT.NewJSONList(a, (ListValue)value);
         NativeToValueExact[typeof(UInt32Value)] = (a, value) => UintT.UintOf(((UInt32Value)value).Value);
@@ -78,7 +78,7 @@ public sealed class TypeAdapterSupport
     {
     }
 
-    public static Val MaybeNativeToValue(TypeAdapter a, object value)
+    public static IVal MaybeNativeToValue(TypeAdapter a, object value)
     {
         if (value == null) return NullT.NullValue;
 

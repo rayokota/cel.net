@@ -68,7 +68,7 @@ internal class AttributePatternsTest
     {
         if (tst.disabled != null) return;
 
-        TypeRegistry reg = ProtoTypeRegistry.NewRegistry();
+        ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         for (var i = 0; i < tst.matches.Length; i++)
         {
             var m = tst.matches[i];
@@ -78,7 +78,7 @@ internal class AttributePatternsTest
             var fac = AttributePattern.NewPartialAttributeFactory(cont, reg.ToTypeAdapter(), reg);
             var attr = GenAttr(fac, m);
             var partVars =
-                Activation.NewPartialActivation(Activation.EmptyActivation(), tst.pattern);
+                IActivation.NewPartialActivation(IActivation.EmptyActivation(), tst.pattern);
             var val = attr.Resolve(partVars);
             Assert.That(val, Is.InstanceOf(typeof(UnknownT)));
         }
@@ -92,7 +92,7 @@ internal class AttributePatternsTest
             var fac = AttributePattern.NewPartialAttributeFactory(cont, reg.ToTypeAdapter(), reg);
             var attr = GenAttr(fac, m);
             var partVars =
-                Activation.NewPartialActivation(Activation.EmptyActivation(), tst.pattern);
+                IActivation.NewPartialActivation(IActivation.EmptyActivation(), tst.pattern);
             Assert.That(() => attr.Resolve(partVars), Throws.Exception.TypeOf(typeof(Err.ErrException)));
         }
     }
@@ -100,7 +100,7 @@ internal class AttributePatternsTest
     [Test]
     public virtual void CrossReference()
     {
-        TypeRegistry reg = ProtoTypeRegistry.NewRegistry();
+        ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var fac = AttributePattern.NewPartialAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
         var a = fac.AbsoluteAttribute(1, "a");
         var b = fac.AbsoluteAttribute(2, "b");
@@ -109,7 +109,7 @@ internal class AttributePatternsTest
         // Ensure that var a[b], the dynamic index into var 'a' is the unknown value
         // returned from attribute resolution.
         var partVars =
-            Activation.NewPartialActivation(TestUtil.BindingsOf("a", new[] { 1L, 2L }),
+            IActivation.NewPartialActivation(TestUtil.BindingsOf("a", new[] { 1L, 2L }),
                 AttributePattern.NewAttributePattern("b"));
         var val = a.Resolve(partVars);
         Assert.That(val, Is.EqualTo(UnknownT.UnknownOf(2)));
@@ -118,7 +118,7 @@ internal class AttributePatternsTest
         // returned from attribute resolution. Note, both 'a' and 'b' have unknown attribute
         // patterns specified. This changes the evaluation behavior slightly, but the end
         // result is the same.
-        partVars = Activation.NewPartialActivation(TestUtil.BindingsOf("a", new[] { 1L, 2L }),
+        partVars = IActivation.NewPartialActivation(TestUtil.BindingsOf("a", new[] { 1L, 2L }),
             AttributePattern.NewAttributePattern("a").QualInt(0), AttributePattern.NewAttributePattern("b"));
         val = a.Resolve(partVars);
         Assert.That(val, Is.EqualTo(UnknownT.UnknownOf(2)));
@@ -126,19 +126,19 @@ internal class AttributePatternsTest
         // Note, that only 'a[0].c' will result in an unknown result since both 'a' and 'b'
         // have values. However, since the attribute being pattern matched is just 'a.b',
         // the outcome will indicate that 'a[b]' is unknown.
-        partVars = Activation.NewPartialActivation(TestUtil.BindingsOf("a", new long[] { 1, 2 }, "b", 0),
+        partVars = IActivation.NewPartialActivation(TestUtil.BindingsOf("a", new long[] { 1, 2 }, "b", 0),
             AttributePattern.NewAttributePattern("a").QualInt(0).QualString("c"));
         val = a.Resolve(partVars);
         Assert.That(val, Is.EqualTo(UnknownT.UnknownOf(2)));
 
         // Test a positive case that returns a valid value even though the attribugte factory
         // is the partial attribute factory.
-        partVars = Activation.NewPartialActivation(TestUtil.BindingsOf("a", new long[] { 1, 2 }, "b", 0));
+        partVars = IActivation.NewPartialActivation(TestUtil.BindingsOf("a", new long[] { 1, 2 }, "b", 0));
         val = a.Resolve(partVars);
         Assert.That(val, Is.EqualTo(1L));
 
         // Ensure the unknown attribute id moves when the attribute becomes more specific.
-        partVars = Activation.NewPartialActivation(TestUtil.BindingsOf("a", new long[] { 1, 2 }, "b", 0),
+        partVars = IActivation.NewPartialActivation(TestUtil.BindingsOf("a", new long[] { 1, 2 }, "b", 0),
             AttributePattern.NewAttributePattern("a").QualInt(0).QualString("c"));
         // Qualify a[b] with 'c', a[b].c
         var c = fac.NewQualifier(null, 3, "c");
@@ -148,10 +148,10 @@ internal class AttributePatternsTest
         Assert.That(val, Is.EqualTo(UnknownT.UnknownOf(3)));
     }
 
-    internal static Attribute GenAttr(AttributeFactory fac, Attr a)
+    internal static IAttribute GenAttr(IAttributeFactory fac, Attr a)
     {
         var id = 1L;
-        Attribute attr;
+        IAttribute attr;
         if (a.@unchecked)
             attr = fac.MaybeAttribute(1, a.name);
         else

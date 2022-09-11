@@ -21,4 +21,4 @@ namespace Cel.Interpreter.Functions;
 /// <summary>
 ///     BinaryOp is a function that takes two values and produces an output.
 /// </summary>
-public delegate Val BinaryOp(Val lhs, Val rhs);
+public delegate IVal BinaryOp(IVal lhs, IVal rhs);

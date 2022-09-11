@@ -16,19 +16,18 @@
 
 using Cel.Common.Types.Ref;
 using Cel.Common.Types.Traits;
-using Type = Cel.Common.Types.Ref.Type;
 
 namespace Cel.Common.Types;
 
 /// <summary>
 ///     TypeValue is an instance of a Value that describes a value's type.
 /// </summary>
-public class TypeT : Type, Val
+public class TypeT : IType, IVal
 {
     /// <summary>
     ///     TypeType is the type of a TypeValue.
     /// </summary>
-    public static readonly Type TypeType = NewTypeValue(Ref.TypeEnum.Type);
+    public static readonly IType TypeType = NewTypeValue(Ref.TypeEnum.Type);
 
     private readonly ISet<Trait> traitMask;
 
@@ -66,7 +65,7 @@ public class TypeT : Type, Val
     /// <summary>
     ///     ConvertToType implements ref.Val.ConvertToType.
     /// </summary>
-    public virtual Val ConvertToType(Type typeVal)
+    public virtual IVal ConvertToType(IType typeVal)
     {
         switch (typeVal.TypeEnum().InnerEnumValue)
         {
@@ -82,7 +81,7 @@ public class TypeT : Type, Val
     /// <summary>
     ///     Equal implements ref.Val.Equal.
     /// </summary>
-    public virtual Val Equal(Val other)
+    public virtual IVal Equal(IVal other)
     {
         if (TypeType != other.Type()) return Err.NoSuchOverload(this, "equal", other);
 
@@ -106,7 +105,7 @@ public class TypeT : Type, Val
     /// <summary>
     ///     Type implements ref.Val.Type.
     /// </summary>
-    public virtual Type Type()
+    public virtual IType Type()
     {
         return TypeType;
     }
@@ -130,7 +129,7 @@ public class TypeT : Type, Val
     /// <summary>
     ///     NewTypeValue returns *TypeValue which is both a ref.Type and ref.Val.
     /// </summary>
-    internal static Type NewTypeValue(TypeEnum typeEnum, params Trait[] traits)
+    internal static IType NewTypeValue(TypeEnum typeEnum, params Trait[] traits)
     {
         return new TypeT(typeEnum, traits);
     }
@@ -139,7 +138,7 @@ public class TypeT : Type, Val
     ///     NewObjectTypeValue returns a *TypeValue based on the input name, which is annotated with the
     ///     traits relevant to all objects.
     /// </summary>
-    public static Type NewObjectTypeValue(string name)
+    public static IType NewObjectTypeValue(string name)
     {
         return new ObjectTypeT(name);
     }
@@ -158,7 +157,7 @@ public class TypeT : Type, Val
 
         if (o == null || GetType() != o.GetType()) return false;
 
-        var typeValue = (Type)o;
+        var typeValue = (IType)o;
         return typeEnum == typeValue.TypeEnum() && TypeName().Equals(typeValue.TypeName());
     }
 

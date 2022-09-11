@@ -50,7 +50,7 @@ public sealed class Issues
     /// <summary>
     ///     NewIssues returns an Issues struct from a common.Errors object.
     /// </summary>
-    public static Issues NoIssues(Source source)
+    public static Issues NoIssues(ISource source)
     {
         return new Issues(new Errors(source));
     }

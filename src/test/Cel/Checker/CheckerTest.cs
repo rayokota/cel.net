@@ -689,11 +689,11 @@ public class CheckerTest
     {
         if (tc.disabled != null) return;
 
-        var src = Source.NewTextSource(tc.i);
+        var src = ISource.NewTextSource(tc.i);
         var parsed = Parser.Parser.ParseAllMacros(src);
         Assert.That(parsed.Errors.GetErrors, Is.Empty);
 
-        TypeRegistry reg = ProtoTypeRegistry.NewRegistry(
+        ITypeRegistry reg = ProtoTypeRegistry.NewRegistry(
             new TestAllTypes(),
             new Google.Api.Expr.Test.V1.Proto3.TestAllTypes());
         var cont = Container.NewContainer(Container.Name(tc.container));

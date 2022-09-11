@@ -805,7 +805,7 @@ internal class ParserTest
     [TestCaseSource(nameof(TestCases))]
     public virtual void ParseTest(string num, string i, string p, string e, string l)
     {
-        var src = Source.NewTextSource(i);
+        var src = ISource.NewTextSource(i);
         var parseResult = Parser.ParseAllMacros(src);
 
         var actualErr = parseResult.Errors.ToDisplayString();
@@ -832,14 +832,14 @@ internal class ParserTest
 
         var p = new Parser(new Options.Builder().Macros(Macro.AllMacros).ExpressionSizeCodePointLimit(2)
             .Build());
-        var src = Source.NewTextSource("foo");
+        var src = ISource.NewTextSource("foo");
         var parseResult = p.Parse(src);
         Assert.That(parseResult.Errors.GetErrors,
-            Has.Exactly(1).EqualTo(new CelError(Location.NewLocation(-1, -1),
+            Has.Exactly(1).EqualTo(new CelError(ILocation.NewLocation(-1, -1),
                 "expression code point size exceeds limit: size: 3, limit 2")));
     }
 
-    internal class KindAndIdAdorner : Debug.Adorner
+    internal class KindAndIdAdorner : Debug.IAdorner
     {
         public virtual string GetMetadata(object elem)
         {
@@ -862,7 +862,7 @@ internal class ParserTest
         }
     }
 
-    internal class LocationAdorner : Debug.Adorner
+    internal class LocationAdorner : Debug.IAdorner
     {
         internal readonly SourceInfo sourceInfo;
 
@@ -885,7 +885,7 @@ internal class ParserTest
             return string.Format("^#{0:D}[{1:D},{2:D}]#", elemID, location.Line(), location.Column());
         }
 
-        public virtual Location GetLocation(long exprID)
+        public virtual ILocation GetLocation(long exprID)
         {
             var pos = -1;
             sourceInfo.Positions.TryGetValue(exprID, out pos);
@@ -901,7 +901,7 @@ internal class ParserTest
                 long column = pos;
                 if (line > 1) column = pos - sourceInfo.LineOffsets[line - 2];
 
-                return Location.NewLocation(line, (int)column);
+                return ILocation.NewLocation(line, (int)column);
             }
 
             return null;
