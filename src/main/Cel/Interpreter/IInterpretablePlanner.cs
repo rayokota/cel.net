@@ -541,7 +541,7 @@ public sealed class Planner : IInterpretablePlanner
     /// <summary>
     ///     planCreateObj generates an object construction Interpretable.
     /// </summary>
-    internal IInterpretable PlanCreateObj(Expr expr)
+    internal IInterpretable? PlanCreateObj(Expr expr)
     {
         var obj = expr.StructExpr;
         var typeName = ResolveTypeName(obj.MessageName);
@@ -634,7 +634,7 @@ public sealed class Planner : IInterpretablePlanner
     ///     resolveTypeName takes a qualified string constructed at parse time, applies the proto
     ///     namespace resolution rules to it in a scan over possible matching types in the TypeProvider.
     /// </summary>
-    internal string ResolveTypeName(string typeName)
+    internal string? ResolveTypeName(string typeName)
     {
         foreach (var qualifiedTypeName in container.ResolveCandidateNames(typeName))
             if (provider.FindType(qualifiedTypeName) != null)

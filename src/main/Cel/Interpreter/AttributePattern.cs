@@ -307,7 +307,7 @@ public sealed class AttributePattern
         ///         Unknown.
         ///     </para>
         /// </summary>
-        internal object MatchesUnknownPatterns(IPartialActivation vars, long attrID,
+        internal object? MatchesUnknownPatterns(IPartialActivation vars, long attrID,
             string[] variableNames, IList<IQualifier> qualifiers)
         {
             var patterns = vars.UnknownAttributePatterns();
@@ -447,7 +447,7 @@ public sealed class AttributePattern
         ///     matching unknown attribute patterns and returns types.Unknown if present. Otherwise, the
         ///     standard Resolve logic applies.
         /// </summary>
-        public object TryResolve(IActivation vars)
+        public object? TryResolve(IActivation vars)
         {
             var id = attr.Id();
             if (vars is IPartialActivation)

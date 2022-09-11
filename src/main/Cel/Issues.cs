@@ -58,7 +58,7 @@ public sealed class Issues
     /// <summary>
     ///     Err returns an error value if the issues list contains one or more errors.
     /// </summary>
-    public Exception Err()
+    public Exception? Err()
     {
         if (!errs.HasErrors()) return null;
 

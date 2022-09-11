@@ -200,7 +200,7 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
         return new ProtoTypeRegistry(new Dictionary<string, IType>(), Db.NewDb());
     }
 
-    private IVal NewValueSetFields(IDictionary<string, IVal> fields, PbTypeDescription td, Message builder)
+    private IVal? NewValueSetFields(IDictionary<string, IVal> fields, PbTypeDescription td, Message builder)
     {
         var fieldMap = td.FieldMap();
         foreach (var nv in fields)

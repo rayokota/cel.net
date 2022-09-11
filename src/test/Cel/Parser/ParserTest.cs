@@ -885,7 +885,7 @@ internal class ParserTest
             return string.Format("^#{0:D}[{1:D},{2:D}]#", elemID, location.Line(), location.Column());
         }
 
-        public virtual ILocation GetLocation(long exprID)
+        public virtual ILocation? GetLocation(long exprID)
         {
             var pos = -1;
             sourceInfo.Positions.TryGetValue(exprID, out pos);

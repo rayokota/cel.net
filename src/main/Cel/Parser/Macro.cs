@@ -214,7 +214,7 @@ public sealed class Macro
         return eh.Fold(v, target, AccumulatorName, init, condition, step, accuExpr);
     }
 
-    internal static string extractIdent(Expr e)
+    internal static string? extractIdent(Expr e)
     {
         if (e.ExprKindCase == Expr.ExprKindOneofCase.IdentExpr) return e.IdentExpr.Name;
 

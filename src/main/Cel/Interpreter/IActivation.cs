@@ -137,7 +137,7 @@ public sealed class MapActivation : IActivation
     /// <summary>
     ///     Parent implements the Activation interface method.
     /// </summary>
-    public IActivation Parent()
+    public IActivation? Parent()
     {
         return null;
     }

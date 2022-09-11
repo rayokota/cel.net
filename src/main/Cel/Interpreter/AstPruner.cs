@@ -189,7 +189,7 @@ public sealed class AstPruner
         return null;
     }
 
-    internal Expr MaybePruneAndOr(Expr node)
+    internal Expr? MaybePruneAndOr(Expr node)
     {
         if (!ExistsWithUnknownValue(node.Id)) return null;
 
@@ -203,7 +203,7 @@ public sealed class AstPruner
         return null;
     }
 
-    internal Expr MaybePruneConditional(Expr node)
+    internal Expr? MaybePruneConditional(Expr node)
     {
         if (!ExistsWithUnknownValue(node.Id)) return null;
 
@@ -216,7 +216,7 @@ public sealed class AstPruner
         return call.Args[2];
     }
 
-    internal Expr MaybePruneFunction(Expr node)
+    internal Expr? MaybePruneFunction(Expr node)
     {
         var call = node.CallExpr;
         if (call.Function.Equals(Operator.LogicalOr.id) || call.Function.Equals(Operator.LogicalAnd.id))

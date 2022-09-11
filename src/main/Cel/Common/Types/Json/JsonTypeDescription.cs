@@ -141,7 +141,7 @@ public sealed class JsonTypeDescription : ITypeDescription
         return fieldTypes.ContainsKey(property);
     }
 
-    public object FromObject(object value, string property)
+    public object? FromObject(object value, string property)
     {
         fieldTypes.TryGetValue(property, out var ft);
         if (ft == null) throw new ArgumentException(string.Format("No property named '{0}'", property));

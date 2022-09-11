@@ -452,7 +452,7 @@ public sealed class AbsoluteAttribute : IQualifier,
     ///         type, then the result is `nil`, `false`, `nil` per the interface requirement.
     ///     </para>
     /// </summary>
-    public object TryResolve(IActivation vars)
+    public object? TryResolve(IActivation vars)
     {
         foreach (var nm in namespaceNames)
         {
@@ -551,7 +551,7 @@ public sealed class ConditionalAttribute : IQualifier, IAttribute,
     /// <summary>
     ///     Resolve evaluates the condition, and then resolves the truthy or falsy branch accordingly.
     /// </summary>
-    public object Resolve(IActivation vars)
+    public object? Resolve(IActivation vars)
     {
         var val = expr.Eval(vars);
         if (val == null) throw Err.NoSuchAttributeException(this);
@@ -802,7 +802,7 @@ public sealed class RelativeAttribute : ICoster, IQualifier,
     /// <summary>
     ///     Resolve expression value and qualifier relative to the expression result.
     /// </summary>
-    public object Resolve(IActivation vars)
+    public object? Resolve(IActivation vars)
     {
         // First, evaluate the operand.
         var v = operand.Eval(vars);
