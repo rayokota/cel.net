@@ -22,7 +22,7 @@ namespace Cel;
 /// <summary>
 ///     prog is the internal implementation of the Program interface.
 /// </summary>
-public sealed class Prog : Program, Coster
+public sealed class Prog : IProgram, Coster
 {
     internal static readonly EvalState EmptyEvalState = EvalState.NewEvalState();
     internal readonly IList<InterpretableDecorator> decorators = new List<InterpretableDecorator>();
@@ -78,13 +78,13 @@ public sealed class Prog : Program, Coster
 
             v = interpretable.Eval(vars);
         }
-        catch (Err.ErrException e)
+        catch (Err.ErrException ex)
         {
-            v = e.Err;
+            v = ex.Err;
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            throw new Exception(string.Format("internal error: {0}", e.Message), e);
+            throw new Exception(string.Format("internal error: {0}", ex.Message), ex);
         }
 
         // The output of an internal Eval may have a value (`v`) that is a types.Err. This step
@@ -96,6 +96,6 @@ public sealed class Prog : Program, Coster
         //      throw new EvalException(v);
         //    }
 
-        return Program.NewEvalResult(v, evalDetails);
+        return IProgram.NewEvalResult(v, evalDetails);
     }
 }

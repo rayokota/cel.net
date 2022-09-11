@@ -18,7 +18,7 @@ using Cel.Interpreter;
 
 namespace Cel;
 
-internal sealed class ProgGen : Program, Coster
+internal sealed class ProgGen : IProgram, Coster
 {
     private readonly ProgFactory factory;
 

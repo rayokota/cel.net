@@ -21,7 +21,7 @@ namespace Cel;
 /// <summary>
 ///     Program is an evaluable view of an Ast.
 /// </summary>
-public interface Program
+public interface IProgram
 {
     static EvalResult NewEvalResult(Val val, EvalDetails evalDetails)
     {
@@ -55,8 +55,8 @@ public interface Program
 
 public sealed class EvalResult
 {
-    internal readonly EvalDetails evalDetails;
-    internal readonly Val val;
+    private readonly EvalDetails evalDetails;
+    private readonly Val val;
 
     internal EvalResult(Val val, EvalDetails evalDetails)
     {

@@ -27,7 +27,7 @@ namespace Cel;
 ///         configure these options outside the Library and within the Env.Program() call directly.
 ///     </para>
 /// </summary>
-public interface Library
+public interface ILibrary
 {
     /// <summary>
     ///     CompileOptions returns a collection of funcitional options for configuring the Parse / Check
@@ -45,7 +45,7 @@ public interface Library
     ///     Lib creates an EnvOption out of a Library, allowing libraries to be provided as functional
     ///     args, and to be linked to each other.
     /// </summary>
-    static EnvOption Lib(Library l)
+    static EnvOption Lib(ILibrary l)
     {
         return e =>
         {
@@ -76,7 +76,7 @@ public interface Library
     /// </summary>
 }
 
-public sealed class StdLibrary : Library
+public sealed class StdLibrary : ILibrary
 {
     /// <summary>
     ///     EnvOptions returns options for the standard CEL function declarations and macros.

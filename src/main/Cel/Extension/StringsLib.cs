@@ -176,7 +176,7 @@ namespace Cel.extension;
 ///         <pre>    {@code 'TacoCÆt Xii'.upperAscii() // returns 'TACOCÆT XII'}</pre>
 ///     </para>
 /// </summary>
-public class StringsLib : Library
+public class StringsLib : ILibrary
 {
     private const string CHAR_AT = "charAt";
     private const string INDEX_OF = "indexOf";
@@ -295,7 +295,7 @@ public class StringsLib : Library
 
     public static EnvOption Strings()
     {
-        return Library.Lib(new StringsLib());
+        return ILibrary.Lib(new StringsLib());
     }
 
     internal static string CharAt(string str, int index)

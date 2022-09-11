@@ -31,7 +31,7 @@ public sealed class Cel
     ///         If the program cannot be configured the prog will be nil, with a non-nil error response.
     ///     </para>
     /// </summary>
-    public static Program NewProgram(Env e, Ast ast, params ProgramOption[] opts)
+    public static IProgram NewProgram(Env e, Ast ast, params ProgramOption[] opts)
     {
         // Build the dispatcher, interpreter, and default program value.
         var disp = Dispatcher.NewDispatcher();
@@ -105,7 +105,7 @@ public sealed class Cel
     ///     initProgGen tests the factory object by calling it once and returns a factory-based Program if
     ///     the test is successful.
     /// </summary>
-    private static Program InitProgGen(ProgFactory factory)
+    private static IProgram InitProgGen(ProgFactory factory)
     {
         // Test the factory to make sure that configuration errors are spotted at config
         factory(EvalState.NewEvalState());
@@ -116,7 +116,7 @@ public sealed class Cel
     ///     initIterpretable creates a checked or unchecked interpretable depending on whether the Ast has
     ///     been run through the type-checker.
     /// </summary>
-    private static Program InitInterpretable(Prog p, Ast ast, IList<InterpretableDecorator> decorators)
+    private static IProgram InitInterpretable(Prog p, Ast ast, IList<InterpretableDecorator> decorators)
     {
         var decs = ((List<InterpretableDecorator>)decorators).ToArray();
 

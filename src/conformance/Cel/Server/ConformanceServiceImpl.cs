@@ -71,7 +71,7 @@ public class ConformanceServiceImpl : ConformanceServiceImplBase
     {
         // Build the environment.
         IList<EnvOption> checkOptions = new List<EnvOption>();
-        if (!request.NoStdEnv) checkOptions.Add(Library.StdLib());
+        if (!request.NoStdEnv) checkOptions.Add(ILibrary.StdLib());
 
         checkOptions.Add(IEnvOption.Container(request.Container));
         checkOptions.Add(IEnvOption.Declarations(request.TypeEnv));
@@ -97,7 +97,7 @@ public class ConformanceServiceImpl : ConformanceServiceImplBase
         var env = Env.NewEnv(IEnvOption.Container(request.Container),
             IEnvOption.Types(new TestAllTypesPb2(), new TestAllTypesPb3()));
 
-        global::Cel.Program prg;
+        global::Cel.IProgram prg;
         Ast ast;
 
         switch (request.ExprKindCase)

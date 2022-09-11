@@ -151,7 +151,7 @@ public class CELTest
     [Test]
     public virtual void CustomEnvError()
     {
-        var e = Env.NewCustomEnv(Library.StdLib(), Library.StdLib());
+        var e = Env.NewCustomEnv(ILibrary.StdLib(), ILibrary.StdLib());
         var xIss = e.Compile("a.b.c == true");
         Assert.That(xIss.HasIssues(), Is.True);
     }

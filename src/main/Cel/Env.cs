@@ -119,7 +119,7 @@ public sealed class Env
     public static Env NewEnv(params EnvOption[] opts)
     {
         var stdOpts = new List<EnvOption>(opts.Length + 1);
-        stdOpts.Add(Library.StdLib());
+        stdOpts.Add(ILibrary.StdLib());
         stdOpts.AddRange(opts);
         return NewCustomEnv(stdOpts.ToArray());
     }
@@ -355,7 +355,7 @@ public sealed class Env
     /// <summary>
     ///     Program generates an evaluable instance of the Ast within the environment (Env).
     /// </summary>
-    public Program Program(Ast ast, params ProgramOption[] opts)
+    public IProgram Program(Ast ast, params ProgramOption[] opts)
     {
         var optSet = progOpts;
         if (opts.Length > 0)

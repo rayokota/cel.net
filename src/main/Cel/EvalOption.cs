@@ -60,20 +60,20 @@ public sealed class EvalOption
     public static readonly EvalOption
         OptPartialEval = new("OptPartialEval", InnerEnum.OptPartialEval, 8);
 
-    private static readonly List<EvalOption> valueList = new();
+    private static readonly List<EvalOption> ValueList = new();
     private static int nextOrdinal;
 
-    public readonly InnerEnum innerEnumValue;
+    private readonly InnerEnum innerEnumValue;
 
     private readonly string nameValue;
     private readonly int ordinalValue;
 
     static EvalOption()
     {
-        valueList.Add(OptTrackState);
-        valueList.Add(OptExhaustiveEval);
-        valueList.Add(OptOptimize);
-        valueList.Add(OptPartialEval);
+        ValueList.Add(OptTrackState);
+        ValueList.Add(OptExhaustiveEval);
+        ValueList.Add(OptOptimize);
+        ValueList.Add(OptPartialEval);
     }
 
     internal EvalOption(string name, InnerEnum innerEnum, int mask)
@@ -87,12 +87,12 @@ public sealed class EvalOption
 
     public int Mask { get; }
 
-    public static EvalOption[] values()
+    public static EvalOption[] Values()
     {
-        return valueList.ToArray();
+        return ValueList.ToArray();
     }
 
-    public int ordinal()
+    public int Ordinal()
     {
         return ordinalValue;
     }
@@ -102,9 +102,9 @@ public sealed class EvalOption
         return nameValue;
     }
 
-    public static EvalOption valueOf(string name)
+    public static EvalOption ValueOf(string name)
     {
-        foreach (var enumInstance in valueList)
+        foreach (var enumInstance in ValueList)
             if (enumInstance.nameValue == name)
                 return enumInstance;
 
