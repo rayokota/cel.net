@@ -33,7 +33,7 @@ public sealed class Container
     ///         Note, ContainerOption implementations must be able to handle nil container inputs.
     ///     </para>
     /// </summary>
-    public delegate Container ContainerOption(Container c);
+    public delegate Container? ContainerOption(Container c);
 
     /// <summary>
     ///     DefaultContainer has an empty container name.
@@ -131,7 +131,7 @@ public sealed class Container
     /// </summary>
     public string[] ResolveCandidateNames(string name)
     {
-        string alias;
+        string? alias;
         if (name.StartsWith(".", StringComparison.Ordinal))
         {
             var qn = name.Substring(1);
@@ -247,7 +247,7 @@ public sealed class Container
     ///     abbreviation, the abbreviation wins as this will ensure that the meaning of a program is //
     ///     preserved between compilations even as the container evolves.
     /// </summary>
-    public static ContainerOption? Abbrevs(params string[] qualifiedNames)
+    public static ContainerOption Abbrevs(params string[] qualifiedNames)
     {
         return c =>
         {

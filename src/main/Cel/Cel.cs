@@ -249,7 +249,7 @@ public sealed class Cel
     /// <summary>
     ///     EstimateCost returns the heuristic cost interval for the program.
     /// </summary>
-    public static Cost EstimateCost(object p)
+    public static Cost EstimateCost(object? p)
     {
         if (p is ICoster) return ((ICoster)p).Cost();
 

@@ -43,7 +43,7 @@ public sealed class Prog : IProgram, ICoster
         state = IEvalState.NewEvalState();
     }
 
-    internal Prog(Env e, ISet<EvalOption> evalOpts, IActivation defaultVars, IDispatcher dispatcher,
+    internal Prog(Env e, ISet<EvalOption> evalOpts, IActivation? defaultVars, IDispatcher dispatcher,
         Interpreter.IInterpreter interpreter, IEvalState state)
     {
         this.e = e;
