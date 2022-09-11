@@ -123,9 +123,9 @@ public abstract class ListTest<CONSTRUCT>
     public class TestData
     {
         internal readonly string name;
-        internal CONSTRUCT[] input;
+        internal CONSTRUCT[]? input;
         internal TypeAdapter typeAdapter = DefaultTypeAdapter.Instance.ToTypeAdapter();
-        internal IVal[] validate;
+        internal IVal[]? validate;
 
         internal TestData(string name)
         {

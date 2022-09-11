@@ -24,7 +24,7 @@ public class ContainerTest
     [Test]
     public virtual void ResolveCandidateNames()
     {
-        var c = Container.NewContainer(Container.Name("a.b.c.M.N"));
+        var c = Container.NewContainer(Container.Name("a.b.c.M.N"))!;
         var names = c.ResolveCandidateNames("R.s");
         string[] want = { "a.b.c.M.N.R.s", "a.b.c.M.R.s", "a.b.c.R.s", "a.b.R.s", "a.R.s", "R.s" };
         Assert.That(names, Is.EquivalentTo(want));
@@ -33,7 +33,7 @@ public class ContainerTest
     [Test]
     public virtual void ResolveCandidateNamesFullyQualifiedName()
     {
-        var c = Container.NewContainer(Container.Name("a.b.c.M.N"));
+        var c = Container.NewContainer(Container.Name("a.b.c.M.N"))!;
         // The leading '.' indicates the name is already fully-qualified.
         var names = c.ResolveCandidateNames(".R.s");
         string[] want = { "R.s" };
@@ -51,11 +51,11 @@ public class ContainerTest
     [Test]
     public virtual void Abbrevs()
     {
-        var abbr = Container.DefaultContainer.Extend(Container.Abbrevs("my.alias.R"));
+        var abbr = Container.DefaultContainer.Extend(Container.Abbrevs("my.alias.R"))!;
         var names = abbr.ResolveCandidateNames("R");
         string[] want = { "my.alias.R" };
         Assert.That(names, Is.EquivalentTo(want));
-        var c = Container.NewContainer(Container.Name("a.b.c"), Container.Abbrevs("my.alias.R"));
+        var c = Container.NewContainer(Container.Name("a.b.c"), Container.Abbrevs("my.alias.R"))!;
         names = c.ResolveCandidateNames("R");
         want = new[] { "my.alias.R" };
         Assert.That(names, Is.EquivalentTo(want));
@@ -101,7 +101,7 @@ public class ContainerTest
     [Test]
     public virtual void ExtendAlias()
     {
-        var c = Container.DefaultContainer.Extend(Container.Alias("test.alias", "alias"));
+        var c = Container.DefaultContainer.Extend(Container.Alias("test.alias", "alias"))!;
         Assert.That(c.AliasSet(), Is.EquivalentTo(new Dictionary<string, string>
         {
             { "alias", "test.alias" }
@@ -115,7 +115,7 @@ public class ContainerTest
     [Test]
     public virtual void ExtendName()
     {
-        var c = Container.DefaultContainer.Extend(Container.Name(""));
+        var c = Container.DefaultContainer.Extend(Container.Name(""))!;
         Assert.That(c.Name(), Is.Empty);
         c = Container.DefaultContainer.Extend(Container.Name("hello.container"));
         Assert.That(c.Name(), Is.EqualTo("hello.container"));

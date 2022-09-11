@@ -176,7 +176,7 @@ internal class AttributesTest
     {
         var cont = Container.NewContainer(Container.Name("acme.ns"));
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
-        var attrs = IAttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
+        var attrs = IAttributeFactory.NewAttributeFactory(cont!, reg.ToTypeAdapter(), reg);
         var data = TestUtil.BindingsOf("a",
             TestUtil.MapOf(-1, TestUtil.MapOf("first", 1, "second", 2, "third", 3)), "b", 2L);
         var vars = IActivation.NewActivation(data);
@@ -231,7 +231,7 @@ internal class AttributesTest
     {
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var cont = Container.NewContainer(Container.Name("acme.ns"));
-        var attrs = IAttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
+        var attrs = IAttributeFactory.NewAttributeFactory(cont!, reg.ToTypeAdapter(), reg);
         var data = TestUtil.BindingsOf("a", TestUtil.MapOf("b", new[] { 2, 42 }), "acme.a.b",
             1, "acme.ns.a.b", "found");
         var vars = IActivation.NewActivation(data);
@@ -445,7 +445,7 @@ internal class AttributesTest
         // Show that program planning will now produce an error.
         var st = IEvalState.NewEvalState();
         var i = interp.NewInterpretable(checkResult.CheckedExpr, IInterpreter.Optimize(),
-            IInterpreter.TrackState(st));
+            IInterpreter.TrackState(st))!;
         var @in = IActivation.NewActivation(tc.@in);
         var @out = i.Eval(@in);
         Assert.That(@out, Is.EqualTo(tc.@out));

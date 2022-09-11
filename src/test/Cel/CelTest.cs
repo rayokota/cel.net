@@ -42,11 +42,11 @@ public class CELTest
         Assert.That(astIss.HasIssues(), Is.False);
         var parsed = Cel.AstToParsedExpr(astIss.Ast!);
         var ast2 = Cel.ParsedExprToAst(parsed);
-        Assert.That(ast2.Expr, Is.EqualTo(astIss.Ast.Expr));
+        Assert.That(ast2.Expr, Is.EqualTo(astIss.Ast!.Expr));
 
-        Assert.That(() => Cel.AstToCheckedExpr(astIss.Ast),
+        Assert.That(() => Cel.AstToCheckedExpr(astIss.Ast!),
             Throws.Exception.TypeOf(typeof(ArgumentException)));
-        var astIss2 = stdEnv.Check(astIss.Ast);
+        var astIss2 = stdEnv.Check(astIss.Ast!);
         Assert.That(astIss2.HasIssues(), Is.False);
         // Assert.That(astIss.hasIssues(), Is.False);
         var @checked = Cel.AstToCheckedExpr(astIss2.Ast!);
@@ -484,9 +484,9 @@ public class CELTest
         // Test to see whether 'v != false' was resolved to a value.
         // With short-circuiting it normally wouldn't be.
         var s = outDetails.EvalDetails.State;
-        var lhsVal = s.Value(astIss.Ast.Expr.CallExpr.Args[0].Id);
+        var lhsVal = s.Value(astIss.Ast!.Expr.CallExpr.Args[0].Id);
         Assert.That(lhsVal, Is.SameAs(BoolT.True));
-        var rhsVal = s.Value(astIss.Ast.Expr.CallExpr.Args[1].Id);
+        var rhsVal = s.Value(astIss.Ast!.Expr.CallExpr.Args[1].Id);
         Assert.That(rhsVal, Is.SameAs(BoolT.True));
     }
 
@@ -592,7 +592,7 @@ public class CELTest
         var lastInstruction = new AtomicReference<IInterpretable>();
         InterpretableDecorator optimizeArith = i =>
         {
-            lastInstruction.Set(i);
+            lastInstruction.Set(i!);
             // Only optimize the instruction if it is a call.
             if (!(i is IInterpretableCall)) return i;
 

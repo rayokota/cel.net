@@ -222,7 +222,7 @@ public sealed class Planner : IInterpretablePlanner
         // values.
         if (sel.TestOnly)
             // Return the test only eval expression.
-            return new EvalTestOnly(expr.Id, op, StringT.StringOf(sel.Field), fieldType);
+            return new EvalTestOnly(expr.Id, op!, StringT.StringOf(sel.Field), fieldType);
 
         // Build a qualifier.
         var qual = attrFactory.NewQualifier(opType, expr.Id, sel.Field);

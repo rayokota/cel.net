@@ -50,7 +50,7 @@ public interface IInterpretableDecorator
             if (i is IInterpretableConst)
                 return new EvalWatchConst((IInterpretableConst)i, observer);
 
-            return new EvalWatch(i, observer);
+            return new EvalWatch(i!, observer);
         };
     }
 

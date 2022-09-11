@@ -64,7 +64,7 @@ internal class PruneTest
         var attrs = AttributePattern.NewPartialAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
         var interp = IInterpreter.NewStandardInterpreter(Container.DefaultContainer, reg, reg.ToTypeAdapter(), attrs);
 
-        var interpretable = interp.NewUncheckedInterpretable(parseResult.Expr!, IInterpreter.ExhaustiveEval(state));
+        var interpretable = interp.NewUncheckedInterpretable(parseResult.Expr!, IInterpreter.ExhaustiveEval(state))!;
         interpretable.Eval(TestActivation(tc.@in));
         var newExpr = AstPruner.PruneAst(parseResult.Expr!, state);
         var actual = Unparser.Unparse(newExpr!, null);

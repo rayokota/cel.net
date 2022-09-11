@@ -204,9 +204,9 @@ public sealed class EvalTestOnly : IInterpretable, ICoster
     internal readonly StringT field;
     internal readonly FieldType? fieldType;
     internal readonly long id;
-    internal readonly IInterpretable? op;
+    internal readonly IInterpretable op;
 
-    internal EvalTestOnly(long id, IInterpretable? op, StringT field, FieldType? fieldType)
+    internal EvalTestOnly(long id, IInterpretable op, StringT field, FieldType? fieldType)
     {
         this.id = id;
         this.op = op;
@@ -1171,10 +1171,10 @@ public sealed class EvalSetMembership : AbstractEval, ICoster
 
 public sealed class EvalWatch : IInterpretable, ICoster
 {
-    internal readonly IInterpretable? i;
+    internal readonly IInterpretable i;
     internal readonly EvalObserver observer;
 
-    public EvalWatch(IInterpretable? i, EvalObserver observer)
+    public EvalWatch(IInterpretable i, EvalObserver observer)
     {
         this.i = i;
         this.observer = observer;

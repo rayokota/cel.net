@@ -751,7 +751,7 @@ internal class InterpreterTest
         var intr =
             global::Cel.Interpreter.IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
         var interpretable =
-            intr.NewUncheckedInterpretable(parsed.Expr!, global::Cel.Interpreter.IInterpreter.ExhaustiveEval(state));
+            intr.NewUncheckedInterpretable(parsed.Expr!, global::Cel.Interpreter.IInterpreter.ExhaustiveEval(state))!;
         var vars = IActivation.NewActivation(TestUtil.BindingsOf("a", BoolT.True, "b", DoubleT.DoubleOf(0.999),
             "c", ListT.NewStringArrayList(new[] { "hello" })));
         var result = interpretable.Eval(vars);
@@ -779,7 +779,7 @@ internal class InterpreterTest
         var interp =
             global::Cel.Interpreter.IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
         var i = interp.NewUncheckedInterpretable(parsed.Expr!,
-            global::Cel.Interpreter.IInterpreter.ExhaustiveEval(state));
+            global::Cel.Interpreter.IInterpreter.ExhaustiveEval(state))!;
         var vars = IActivation.NewActivation(TestUtil.BindingsOf("a", true, "b", "b"));
         var result = i.Eval(vars);
         var rhv = state.Value(3);
@@ -814,7 +814,7 @@ internal class InterpreterTest
         var attrs = IAttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
         var i =
             global::Cel.Interpreter.IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
-        var eval = i.NewInterpretable(checkResult.CheckedExpr);
+        var eval = i.NewInterpretable(checkResult.CheckedExpr)!;
         var one = 1;
         var two = 2L;
         var three = 3;
@@ -856,7 +856,7 @@ internal class InterpreterTest
         var attrs = AttributePattern.NewPartialAttributeFactory(cont, reg.ToTypeAdapter(), reg);
         var interp = global::Cel.Interpreter.IInterpreter.NewStandardInterpreter(cont, reg,
             reg.ToTypeAdapter(), attrs);
-        var i = interp.NewInterpretable(checkResult.CheckedExpr);
+        var i = interp.NewInterpretable(checkResult.CheckedExpr)!;
         IActivation vars = IActivation.NewPartialActivation(TestUtil.BindingsOf("a.b", TestUtil.MapOf("d", "hello")),
             AttributePattern.NewAttributePattern("a.b").QualString("c"));
         var result = i.Eval(vars);
@@ -953,7 +953,7 @@ internal class InterpreterTest
             // TODO 'err' below comes from "try-catch" of the preceding 'newInterpretable'
             //  Show how the error returned during program planning is the same as the runtime
             //  error which would be produced normally.
-            var i2 = interp.NewInterpretable(checkResult.CheckedExpr);
+            var i2 = interp.NewInterpretable(checkResult.CheckedExpr)!;
             var errVal = i2.Eval(IActivation.EmptyActivation());
             var errValStr = errVal.ToString();
             Assert.That(errValStr, Is.EqualTo(err.Message));
@@ -970,7 +970,7 @@ internal class InterpreterTest
         if (tc.@out != null)
         {
             Assert.That(i, Is.InstanceOf(typeof(IInterpretableConst)));
-            var ic = (IInterpretableConst)i;
+            var ic = (IInterpretableConst)i!;
             Assert.That(ic.Value(), Is.EqualTo(tc.@out));
         }
     }
@@ -997,7 +997,7 @@ internal class InterpreterTest
         if (tst.attrs != null) attrs = tst.attrs;
 
         // Configure the environment.
-        var env = CheckerEnv.NewStandardCheckerEnv(cont, reg);
+        var env = CheckerEnv.NewStandardCheckerEnv(cont!, reg);
         if (tst.env != null) env.Add(tst.env);
 
         // Configure the program input.
@@ -1015,7 +1015,7 @@ internal class InterpreterTest
             global::Cel.Interpreter.IInterpreter.NewInterpreter(disp, cont, reg, reg.ToTypeAdapter(), attrs);
 
         // Parse the expression.
-        var s = ISource.NewTextSource(tst.expr);
+        var s = ISource.NewTextSource(tst.expr!);
         var parsed = Parser.Parser.ParseAllMacros(s);
         Assert.That(parsed.HasErrors(), Is.False);
         IInterpretable prg;

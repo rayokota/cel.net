@@ -222,7 +222,7 @@ public sealed class Helper
         return expr;
     }
 
-    internal long Id(object ctx)
+    internal long Id(object? ctx)
     {
         ILocation location;
         if (ctx is ParserRuleContext)

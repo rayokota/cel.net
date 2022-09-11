@@ -814,7 +814,7 @@ internal class ParserTest
         // similar,
         // look into the char[] representation... unicode can be very surprising.
 
-        var actualWithKind = Debug.ToAdornedDebugString(parseResult.Expr, new KindAndIdAdorner());
+        var actualWithKind = Debug.ToAdornedDebugString(parseResult.Expr!, new KindAndIdAdorner());
         Assert.That(actualWithKind, Is.EqualTo(p));
 
         if (l.Length > 0)
