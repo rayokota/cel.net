@@ -74,7 +74,7 @@ public sealed class CelError : IComparable<CelError>
             Location.Line(), Location.Column() + 1, Message));
 
         var snippet = source.Snippet(Location.Line());
-        if (!ReferenceEquals(snippet, null))
+        if (snippet != null)
         {
             snippet = snippet.Replace('\t', ' ');
             result.Append("\n | ").Append(snippet);

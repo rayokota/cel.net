@@ -105,7 +105,7 @@ public sealed class FileDescription
     /// </summary>
     internal static string SanitizeProtoName(string name)
     {
-        if (!ReferenceEquals(name, null) && name.Length > 0 && name[0] == '.') return name.Substring(1);
+        if (name != null && name.Length > 0 && name[0] == '.') return name.Substring(1);
 
         return name;
     }

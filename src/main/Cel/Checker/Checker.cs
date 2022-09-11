@@ -202,7 +202,7 @@ public sealed class Checker
 
         // Before traversing down the tree, try to interpret as qualified name.
         var qname = Container.ToQualifiedName(e);
-        if (!ReferenceEquals(qname, null))
+        if (qname != null)
         {
             var ident = env.LookupIdent(qname);
             if (ident != null)

@@ -293,7 +293,7 @@ public sealed class Planner : IInterpretablePlanner
         // Otherwise, generate Interpretable calls specialized by argument count.
         // Try to find the specific function by overload id.
         Overload fnDef = null;
-        if (!ReferenceEquals(resolvedFunc.overloadId, null) && resolvedFunc.overloadId.Length == 0)
+        if (resolvedFunc.overloadId != null && resolvedFunc.overloadId.Length == 0)
             fnDef = disp.FindOverload(resolvedFunc.overloadId);
 
         // If the overload id couldn't resolve the function, try the simple function name.
@@ -545,7 +545,7 @@ public sealed class Planner : IInterpretablePlanner
     {
         var obj = expr.StructExpr;
         var typeName = ResolveTypeName(obj.MessageName);
-        if (ReferenceEquals(typeName, null))
+        if (typeName == null)
             throw new InvalidOperationException(string.Format("unknown type: {0}", obj.MessageName));
 
         IList<Expr.Types.CreateStruct.Types.Entry> entries = obj.Entries;

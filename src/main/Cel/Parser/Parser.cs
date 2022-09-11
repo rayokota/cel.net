@@ -797,7 +797,7 @@ public sealed class Parser
             var target = ExprVisit(ctx.member());
             var objID = helper.Id(ctx.op);
             var messageName = ExtractQualifiedName(target);
-            if (!ReferenceEquals(messageName, null))
+            if (messageName != null)
             {
                 var entries = VisitIFieldInitializerList(ctx.entries);
                 return helper.NewObject(objID, messageName, entries);

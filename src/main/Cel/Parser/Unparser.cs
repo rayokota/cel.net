@@ -145,7 +145,7 @@ public sealed class Unparser
 
         VisitMaybeNested(lhs, lhsParen);
         var unmangled = Operator.FindReverseBinaryOperator(fun);
-        if (ReferenceEquals(unmangled, null))
+        if (unmangled == null)
             throw new InvalidOperationException(string.Format("cannot unmangle operator: {0}", fun));
 
         str.Append(" ");
@@ -209,7 +209,7 @@ public sealed class Unparser
         var fun = expr.Function;
         IList<Expr> args = expr.Args;
         var unmangled = Operator.FindReverse(fun);
-        if (ReferenceEquals(unmangled, null))
+        if (unmangled == null)
             throw new InvalidOperationException(string.Format("cannot unmangle operator: {0}", fun));
 
         str.Append(unmangled);

@@ -144,7 +144,7 @@ public sealed class Container
         alias = FindAlias(name);
         if (alias != null) return new[] { alias };
 
-        if (ReferenceEquals(Name(), null) || Name().Length == 0) return new[] { name };
+        if (Name() == null || Name().Length == 0) return new[] { name };
 
         var nextCont = Name();
         IList<string> candidates = new List<string>();

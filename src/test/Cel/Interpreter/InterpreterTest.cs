@@ -985,7 +985,7 @@ internal class InterpreterTest
     {
         // Configure the package.
         var cont = Container.DefaultContainer;
-        if (!ReferenceEquals(tst.container, null)) cont = TestContainer(tst.container);
+        if (tst.container != null) cont = TestContainer(tst.container);
 
         if (tst.abbrevs != null)
             cont = Container.NewContainer(Container.Name(cont.Name()), Container.Abbrevs(tst.abbrevs));

@@ -174,7 +174,7 @@ public sealed class Macro
     internal static Expr makeMap(IExprHelper eh, Expr target, IList<Expr> args)
     {
         var v = extractIdent(args[0]);
-        if (ReferenceEquals(v, null)) throw new ErrorWithLocation(null, "argument is not an identifier");
+        if (v == null) throw new ErrorWithLocation(null, "argument is not an identifier");
 
         Expr fn;
         Expr filter;
