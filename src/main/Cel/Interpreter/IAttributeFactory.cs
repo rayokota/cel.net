@@ -556,7 +556,7 @@ public sealed class ConditionalAttribute : IQualifier, IAttribute,
         var val = expr.Eval(vars);
         if (val == null) throw Err.NoSuchAttributeException(this);
 
-        if (Err.IsError(val)) return null;
+        if (Err.IsError(val)) return UnknownT.UnknownType;
 
         if (val == BoolT.True) return truthy.Resolve(vars);
 
@@ -806,7 +806,7 @@ public sealed class RelativeAttribute : ICoster, IQualifier,
     {
         // First, evaluate the operand.
         var v = operand.Eval(vars);
-        if (Err.IsError(v)) throw Err.NoSuchAttributeException(this);
+        if (Err.IsError(v)) return UnknownT.UnknownType;
 
         if (UnknownT.IsUnknown(v)) return v;
 
