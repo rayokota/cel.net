@@ -83,7 +83,7 @@ public sealed class Err : BaseVal
         return ValOrErr(other, "no such overload: *.{0}({1})", function, otName);
     }
 
-    public static IVal NoSuchOverload(IVal val, string function, IType argA, IType argB)
+    public static IVal NoSuchOverload(IVal val, string function, IType? argA, IType? argB)
     {
         return NewErr("no such overload: {0}.{1}({2},{3},...)", val.Type().TypeName(), function, argA, argB);
     }
@@ -107,7 +107,7 @@ public sealed class Err : BaseVal
     ///     NewErr creates a new Err described by the format string and args. TODO: Audit the use of this
     ///     function and standardize the error messages and codes.
     /// </summary>
-    public static IVal NewErr(string format, params object[] args)
+    public static IVal NewErr(string format, params object?[] args)
     {
         return new Err(string.Format(format, args));
     }
@@ -136,7 +136,7 @@ public sealed class Err : BaseVal
     ///     ValOrErr either returns the existing error or create a new one. TODO: Audit the use of this
     ///     function and standardize the error messages and codes.
     /// </summary>
-    public static IVal ValOrErr(IVal? val, string format, params object[] args)
+    public static IVal ValOrErr(IVal? val, string format, params object?[] args)
     {
         if (val == null) return NewErr(format, args);
 

@@ -185,7 +185,7 @@ public sealed class Types
     /// <summary>
     ///     isDyn returns true if the input t is either type DYN or a well-known ANY message.
     /// </summary>
-    internal static bool IsDyn(Type t)
+    internal static bool IsDyn(Type? t)
     {
         // Note: object type values that are well-known and map to a DYN value in practice
         // are sanitized prior to being added to the environment.
@@ -203,7 +203,7 @@ public sealed class Types
     /// <summary>
     ///     isDynOrError returns true if the input is either an Error, DYN, or well-known ANY message.
     /// </summary>
-    internal static bool IsDynOrError(Type t)
+    internal static bool IsDynOrError(Type? t)
     {
         if (KindOf(t) == Kind.kindError) return true;
 
@@ -539,7 +539,7 @@ public sealed class Types
     ///     other type. This is a standard requirement for type unification, commonly referred to as the
     ///     "occurs check".
     /// </summary>
-    internal static bool NotReferencedIn(Mapping m, Type t, Type withinType)
+    internal static bool NotReferencedIn(Mapping m, Type t, Type? withinType)
     {
         if (t.Equals(withinType)) return false;
 

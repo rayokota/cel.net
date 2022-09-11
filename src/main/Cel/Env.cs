@@ -165,7 +165,7 @@ public sealed class Env
     ///         the mere presence of an Ast does not imply that it is valid for use.
     ///     </para>
     /// </summary>
-    public AstIssuesTuple Check(Ast ast)
+    public AstIssuesTuple Check(Ast? ast)
     {
         // Note, errors aren't currently possible on the Ast to ParsedExpr conversion.
         var pe = Cel.AstToParsedExpr(ast);
@@ -401,7 +401,7 @@ public sealed class Env
     ///         Ast format and then Program again.
     ///     </para>
     /// </summary>
-    public Ast ResidualAst(Ast a, EvalDetails details)
+    public Ast? ResidualAst(Ast a, EvalDetails details)
     {
         var pruned = AstPruner.PruneAst(a.Expr, details.State);
         var parsedExpr = new ParsedExpr();

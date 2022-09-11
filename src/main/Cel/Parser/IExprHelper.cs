@@ -107,7 +107,7 @@ public interface IExprHelper
     ///         used by built-in macros but this may change in the future.
     ///     </para>
     /// </summary>
-    Expr Fold(string iterVar, Expr iterRange, string accuVar, Expr accuInit, Expr condition, Expr step,
+    Expr Fold(string iterVar, Expr? iterRange, string accuVar, Expr accuInit, Expr condition, Expr step,
         Expr result);
 
     /// <summary>

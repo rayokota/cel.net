@@ -82,7 +82,7 @@ public sealed class AstPruner
         this.nextExprID = nextExprID;
     }
 
-    public static Expr PruneAst(Expr expr, IEvalState state)
+    public static Expr? PruneAst(Expr expr, IEvalState state)
     {
         var pruner = new AstPruner(expr, state, 1);
         var newExpr = pruner.Prune(expr);

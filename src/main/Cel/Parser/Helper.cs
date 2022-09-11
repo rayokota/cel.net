@@ -198,7 +198,7 @@ public sealed class Helper
         return entry;
     }
 
-    internal Expr NewComprehension(object ctx, string iterVar, Expr iterRange, string accuVar, Expr accuInit,
+    internal Expr NewComprehension(object ctx, string iterVar, Expr? iterRange, string accuVar, Expr accuInit,
         Expr condition, Expr step, Expr result)
     {
         var comprehension = new Expr.Types.Comprehension();

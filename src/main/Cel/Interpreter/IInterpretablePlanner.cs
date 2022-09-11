@@ -149,7 +149,7 @@ public sealed class Planner : IInterpretablePlanner
         return new EvalAttr(adapter, attrFactory.MaybeAttribute(expr.Id, ident.Name));
     }
 
-    internal IInterpretable PlanCheckedIdent(long id, Reference identRef)
+    internal IInterpretable? PlanCheckedIdent(long id, Reference identRef)
     {
         // Plan a constant reference if this is the case for this simple identifier.
         if (identRef.Value != null && !Equals(identRef.Value, new Reference().Value))
@@ -248,7 +248,7 @@ public sealed class Planner : IInterpretablePlanner
     ///     invocation patterns. Specifically, conditional operators &&, ||, ?:, and (in)equality
     ///     functions result in optimized Interpretable values.
     /// </summary>
-    internal IInterpretable PlanCall(Expr expr)
+    internal IInterpretable? PlanCall(Expr expr)
     {
         var call = expr.CallExpr;
         var resolvedFunc = ResolveFunction(expr);

@@ -320,7 +320,7 @@ public sealed class CheckerEnv
         var t = id.Type;
         if (!IsObjectWellKnownType(t)) return decl;
 
-        return Decls.NewIdent(decl.Name, GetObjectWellKnownType(t), id.Value);
+        return Decls.NewIdent(decl.Name, GetObjectWellKnownType(t)!, id.Value);
     }
 
     /// <summary>

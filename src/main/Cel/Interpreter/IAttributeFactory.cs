@@ -250,7 +250,7 @@ public interface IAttribute : IQualifier
     /// <summary>
     ///     Resolve returns the value of the Attribute given the current Activation.
     /// </summary>
-    object Resolve(IActivation a);
+    object? Resolve(IActivation a);
 }
 
 public interface INamespacedAttribute : IAttribute
@@ -436,7 +436,7 @@ public sealed class AbsoluteAttribute : IQualifier,
     ///     Resolve returns the resolved Attribute value given the Activation, or error if the Attribute
     ///     variable is not found, or if its Qualifiers cannot be applied successfully.
     /// </summary>
-    public object Resolve(IActivation vars)
+    public object? Resolve(IActivation vars)
     {
         var obj = TryResolve(vars);
         if (obj == null) throw Err.NoSuchAttributeException(this);
@@ -731,7 +731,7 @@ public sealed class MaybeAttribute : ICoster, IAttribute, IQualifier
     ///     Resolve follows the variable resolution rules to determine whether the attribute is a
     ///     variable or a field selection.
     /// </summary>
-    public object Resolve(IActivation vars)
+    public object? Resolve(IActivation vars)
     {
         foreach (var attr in attrs)
         {
@@ -893,7 +893,7 @@ public sealed class AttrQualifier : ICoster, IAttribute
         return attribute.AddQualifier(q);
     }
 
-    public object Resolve(IActivation a)
+    public object? Resolve(IActivation a)
     {
         return attribute.Resolve(a);
     }

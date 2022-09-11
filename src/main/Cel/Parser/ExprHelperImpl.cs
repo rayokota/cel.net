@@ -102,7 +102,7 @@ public sealed class ExprHelperImpl : IExprHelper
     }
 
     // Fold implements the ExprHelper interface method.
-    public Expr Fold(string iterVar, Expr iterRange, string accuVar, Expr accuInit, Expr condition, Expr step,
+    public Expr Fold(string iterVar, Expr? iterRange, string accuVar, Expr accuInit, Expr condition, Expr step,
         Expr result)
     {
         return parserHelper.NewComprehension(NextMacroID(), iterVar, iterRange, accuVar, accuInit, condition, step,
