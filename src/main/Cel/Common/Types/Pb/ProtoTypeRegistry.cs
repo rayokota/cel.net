@@ -353,7 +353,7 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
     ///         This method should be the inverse of ref.Val.ConvertToNative.
     ///     </para>
     /// </summary>
-    public IVal? NativeToValue(object? value)
+    public IVal NativeToValue(object? value)
     {
         IVal? val;
         if (value is Message)
