@@ -147,13 +147,13 @@ public abstract class ListT : BaseVal, ILister
 
         internal virtual IList ToArrayList()
         {
-            return new List<object> { ConvertToNative(typeof(Array)) };
+            return new List<object> { ConvertToNative(typeof(Array))! };
         }
 
         internal virtual object ToArray<T>(System.Type typeDesc)
         {
             var s = (int)size;
-            var compType = typeDesc.GetElementType();
+            var compType = typeDesc.GetElementType()!;
             if (compType == typeof(Enum))
                 // Note: cannot create `Enum` values of the right type here.
                 compType = typeof(object);

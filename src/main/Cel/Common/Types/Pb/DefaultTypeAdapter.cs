@@ -47,7 +47,7 @@ public sealed class DefaultTypeAdapter : ITypeAdapterProvider
     /// <summary>
     ///     NativeToValue implements the ref.TypeAdapter interface.
     /// </summary>
-    public IVal NativeToValue(object value)
+    public IVal NativeToValue(object? value)
     {
         var val = NativeToValue(db, ToTypeAdapter(), value);
         if (val != null) return val;
@@ -59,7 +59,7 @@ public sealed class DefaultTypeAdapter : ITypeAdapterProvider
     ///     nativeToValue returns the converted (ref.Val, true) of a conversion is found, otherwise (nil,
     ///     false)
     /// </summary>
-    public static IVal NativeToValue(Db db, TypeAdapter a, object value)
+    public static IVal NativeToValue(Db db, TypeAdapter a, object? value)
     {
         var v = TypeAdapterSupport.MaybeNativeToValue(a, value);
         if (v != null) return v;

@@ -78,7 +78,7 @@ public sealed class TypeAdapterSupport
     {
     }
 
-    public static IVal? MaybeNativeToValue(TypeAdapter a, object value)
+    public static IVal? MaybeNativeToValue(TypeAdapter a, object? value)
     {
         if (value == null) return NullT.NullValue;
 
