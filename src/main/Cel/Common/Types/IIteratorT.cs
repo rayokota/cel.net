@@ -65,13 +65,13 @@ internal class IteratorAdapter<T> : BaseVal, IIteratorT
     public IVal Next()
     {
         // call HasNext, it will call MoveNext if needed
-        if (!hasNext.Value)
+        if (!HasNext().BooleanValue())
             throw new InvalidOperationException();
 
         // we have to clear hasNext so next time it is called MoveNext is also called
         hasNext = null;
 
-        object val = iterator.Current;
+        object? val = iterator.Current;
         if (val is IVal) return (IVal)val;
 
         return adapter(val);

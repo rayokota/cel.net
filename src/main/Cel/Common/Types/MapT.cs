@@ -162,7 +162,7 @@ public abstract class MapT : BaseVal, IMapper, IContainer, IIndexer, IIterableT,
             {
                 var key = myIter.Next();
 
-                var val = Get(key);
+                var val = Get(key)!;
                 var oVal = o.Find(key);
                 if (oVal == null) return BoolT.False;
 

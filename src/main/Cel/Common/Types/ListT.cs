@@ -138,7 +138,7 @@ public abstract class ListT : BaseVal, ILister
             for (var i = 0; i < s; i++)
             {
                 var v = Get(IntT.IntOf(i));
-                var e = (Value)v.ConvertToNative(typeof(Value));
+                var e = (Value)v.ConvertToNative(typeof(Value))!;
                 list.Values.Add(e);
             }
 
