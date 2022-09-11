@@ -53,7 +53,7 @@ public sealed class Checker
     ///     of protocol buffers, and a registry for errors. Returns a CheckedExpr proto, which might not be
     ///     usable if there are errors in the error registry.
     /// </summary>
-    public static CheckResult Check(Parser.Parser.ParseResult parsedExpr, ISource source, CheckerEnv env)
+    public static CheckResult Check(Parser.Parser.ParseResult parsedExpr, ISource source, CheckerEnv? env)
     {
         var errors = new TypeErrors(source);
         var c = new Checker(env, errors, Mapping.NewMapping(), 0, parsedExpr.SourceInfo);
@@ -358,7 +358,7 @@ public sealed class Checker
         errors.UndeclaredReference(LocationByExpr(e), env.container.Name(), fnName);
     }
 
-    internal void ResolveOverloadOrError(ILocation loc, Expr e, Decl fn, Expr target, IList<Expr> args)
+    internal void ResolveOverloadOrError(ILocation loc, Expr e, Decl fn, Expr? target, IList<Expr> args)
     {
         // Attempt to resolve the overload.
         var resolution = ResolveOverload(loc, fn, target, args);
@@ -374,7 +374,7 @@ public sealed class Checker
         SetReference(e, resolution.reference);
     }
 
-    internal OverloadResolution ResolveOverload(ILocation loc, Decl fn, Expr target, IList<Expr> args)
+    internal OverloadResolution? ResolveOverload(ILocation loc, Decl fn, Expr target, IList<Expr> args)
     {
         IList<Type> argTypes = new List<Type>();
         if (target != null)
@@ -394,8 +394,8 @@ public sealed class Checker
             argTypes.Add(argType);
         }
 
-        Type resultType = null;
-        Reference checkedRef = null;
+        Type? resultType = null;
+        Reference? checkedRef = null;
         foreach (var overload in fn.Function.Overloads)
         {
             if ((target == null && overload.IsInstanceFunction) || (target != null && !overload.IsInstanceFunction))
@@ -455,7 +455,7 @@ public sealed class Checker
             e.ListExpr = create;
         }
 
-        Type elemType = null;
+        Type? elemType = null;
         for (var i = 0; i < create.Elements.Count; i++)
         {
             var el = create.Elements[i];
@@ -494,8 +494,8 @@ public sealed class Checker
             e.StructExpr = mapVal;
         }
 
-        Type keyType = null;
-        Type valueType = null;
+        Type? keyType = null;
+        Type? valueType = null;
         foreach (var ent in mapVal.Entries)
         {
             var key = ent.MapKey;
@@ -664,7 +664,7 @@ public sealed class Checker
     /// <summary>
     ///     Checks compatibility of joined types, and returns the most general common type.
     /// </summary>
-    internal Type JoinTypes(ILocation loc, Type previous, Type current)
+    internal Type JoinTypes(ILocation loc, Type? previous, Type current)
     {
         if (previous == null) return current;
 
@@ -712,7 +712,7 @@ public sealed class Checker
         return false;
     }
 
-    internal FieldType LookupFieldType(ILocation l, string messageType, string fieldName)
+    internal FieldType? LookupFieldType(ILocation l, string messageType, string fieldName)
     {
         if (env.provider.FindType(messageType) == null)
         {
@@ -738,7 +738,7 @@ public sealed class Checker
         types[e.Id] = t;
     }
 
-    internal Type GetType(Expr e)
+    internal Type? GetType(Expr e)
     {
         types.TryGetValue(e.Id, out var type);
         return type;
@@ -759,7 +759,7 @@ public sealed class Checker
         if (!IsAssignable(t, GetType(e))) errors.TypeMismatch(LocationByExpr(e), t, GetType(e));
     }
 
-    internal static OverloadResolution NewResolution(Reference checkedRef, Type t)
+    internal static OverloadResolution NewResolution(Reference? checkedRef, Type t)
     {
         return new OverloadResolution(checkedRef, t);
     }
@@ -795,7 +795,7 @@ public sealed class Checker
         return ILocation.NoLocation;
     }
 
-    internal static Reference NewIdentReference(string name, Constant value)
+    internal static Reference NewIdentReference(string name, Constant? value)
     {
         var refBuilder = new Reference();
         refBuilder.Name = name;
@@ -839,10 +839,10 @@ public sealed class Checker
 
     internal sealed class OverloadResolution
     {
-        internal readonly Reference reference;
+        internal readonly Reference? reference;
         internal readonly Type type;
 
-        public OverloadResolution(Reference reference, Type type)
+        public OverloadResolution(Reference? reference, Type type)
         {
             this.reference = reference;
             this.type = type;

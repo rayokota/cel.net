@@ -53,7 +53,7 @@ public sealed class Container
     /// <summary>
     ///     NewContainer creates a new Container with the fully-qualified name.
     /// </summary>
-    public static Container NewContainer(params ContainerOption[] opts)
+    public static Container? NewContainer(params ContainerOption[] opts)
     {
         var c = DefaultContainer;
         foreach (var opt in opts)
@@ -85,7 +85,7 @@ public sealed class Container
     ///     Extend creates a new Container with the existing settings and applies a series of
     ///     ContainerOptions to further configure the new container.
     /// </summary>
-    public Container Extend(params ContainerOption[] opts)
+    public Container? Extend(params ContainerOption[] opts)
     {
         // Copy the name and aliases of the existing container.
         IDictionary<string, string> aliasSet = new Dictionary<string, string>(AliasSet());
@@ -173,7 +173,7 @@ public sealed class Container
     ///         Note, the name must not have a leading dot.
     ///     </para>
     /// </summary>
-    internal string FindAlias(string name)
+    internal string? FindAlias(string name)
     {
         // If an alias exists for the name, ensure it is searched last.
         var simple = name;
@@ -195,7 +195,7 @@ public sealed class Container
     ///     ToQualifiedName converts an expression AST into a qualified name if possible, with a boolean +
     ///     'found' value that indicates if the conversion is successful.
     /// </summary>
-    public static string ToQualifiedName(Expr e)
+    public static string? ToQualifiedName(Expr e)
     {
         switch (e.ExprKindCase)
         {
@@ -247,7 +247,7 @@ public sealed class Container
     ///     abbreviation, the abbreviation wins as this will ensure that the meaning of a program is //
     ///     preserved between compilations even as the container evolves.
     /// </summary>
-    public static ContainerOption Abbrevs(params string[] qualifiedNames)
+    public static ContainerOption? Abbrevs(params string[] qualifiedNames)
     {
         return c =>
         {

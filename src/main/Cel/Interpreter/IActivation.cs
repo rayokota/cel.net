@@ -35,7 +35,7 @@ public interface IActivation
     ///     Parent returns the parent of the current activation, may be nil. If non-nil, the parent will be
     ///     searched during resolve calls.
     /// </summary>
-    IActivation Parent();
+    IActivation? Parent();
 
     /// <summary>
     ///     EmptyActivation returns a variable free activation.

@@ -469,7 +469,7 @@ public sealed class FieldDescription : Description
         return CheckedType().ToString();
     }
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (this == o) return true;
 

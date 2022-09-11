@@ -140,7 +140,7 @@ public sealed class UnwrapTestCase
     private static int nextOrdinal;
 
 
-    public readonly InnerEnum innerEnumValue;
+    private readonly InnerEnum innerEnumValue;
 
     private readonly Func<Message> message;
     private readonly string nameValue;

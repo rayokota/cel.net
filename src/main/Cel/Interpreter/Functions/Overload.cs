@@ -36,12 +36,12 @@ public sealed class Overload
     /// <summary>
     ///     Binary defines the overload with a BinaryOp implementation. May be nil.
     /// </summary>
-    public readonly BinaryOp binary;
+    public readonly BinaryOp? binary;
 
     /// <summary>
     ///     Function defines the overload with a FunctionOp implementation. May be nil.
     /// </summary>
-    public readonly FunctionOp function;
+    public readonly FunctionOp? function;
 
     /// <summary>
     ///     Operand trait used to dispatch the call. The zero-value indicates a global function overload or
@@ -57,7 +57,7 @@ public sealed class Overload
     /// <summary>
     ///     Unary defines the overload with a UnaryOp implementation. May be nil.
     /// </summary>
-    public readonly UnaryOp unary;
+    public readonly UnaryOp? unary;
 
     private Overload(string @operator, Trait operandTrait, UnaryOp unary, BinaryOp binary, FunctionOp function)
     {

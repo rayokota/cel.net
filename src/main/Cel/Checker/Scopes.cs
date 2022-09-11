@@ -25,10 +25,10 @@ namespace Cel.Checker;
 /// </summary>
 public sealed class Scopes
 {
-    private readonly Scopes parent;
+    private readonly Scopes? parent;
     private readonly Group scopes;
 
-    private Scopes(Scopes parent, Group scopes)
+    private Scopes(Scopes? parent, Group scopes)
     {
         this.parent = parent;
         this.scopes = scopes;
@@ -76,7 +76,7 @@ public sealed class Scopes
     ///     FindIdent finds the first ident Decl with a matching name in Scopes, or nil if one cannot be
     ///     found. Note: The search is performed from innermost to outermost.
     /// </summary>
-    public Decl FindIdent(string name)
+    public Decl? FindIdent(string name)
     {
         scopes.idents.TryGetValue(name, out var ident);
         if (ident != null) return ident;
@@ -91,7 +91,7 @@ public sealed class Scopes
     ///     or nil if one does not exist. Note: The search is only performed on the current scope and does
     ///     not search outer scopes.
     /// </summary>
-    public Decl FindIdentInScope(string name)
+    public Decl? FindIdentInScope(string name)
     {
         scopes.idents.TryGetValue(name, out var decl);
         return decl;
@@ -110,7 +110,7 @@ public sealed class Scopes
     ///     FindFunction finds the first function Decl with a matching name in Scopes. The search is
     ///     performed from innermost to outermost. Returns nil if no such function in Scopes.
     /// </summary>
-    public Decl FindFunction(string name)
+    public Decl? FindFunction(string name)
     {
         scopes.functions.TryGetValue(name, out var ident);
         if (ident != null) return ident;
@@ -120,7 +120,7 @@ public sealed class Scopes
         return null;
     }
 
-    public Decl UpdateFunction(string name, Decl ident)
+    public Decl? UpdateFunction(string name, Decl ident)
     {
         if (scopes.functions.ContainsKey(name))
         {

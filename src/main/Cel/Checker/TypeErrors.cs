@@ -119,7 +119,7 @@ public sealed class TypeErrors : Errors
         //    reportError(l, "unknown type{0}", info != null ? " for: " + info : "");
     }
 
-    internal static string FormatFunction(Type resultType, IList<Type> argTypes, bool isInstance)
+    internal static string FormatFunction(Type? resultType, IList<Type> argTypes, bool isInstance)
     {
         var result = new StringBuilder();
         FormatFunction(result, resultType, argTypes, isInstance);

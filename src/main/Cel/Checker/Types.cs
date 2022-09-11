@@ -467,7 +467,7 @@ public sealed class Types
     /// <summary>
     ///     isAssignable returns an updated type substitution mapping if t1 is assignable to t2.
     /// </summary>
-    internal static Mapping IsAssignable(Mapping m, Type t1, Type t2)
+    internal static Mapping? IsAssignable(Mapping m, Type t1, Type t2)
     {
         var mCopy = m.Copy();
         if (InternalIsAssignable(mCopy, t1, t2)) return mCopy;
@@ -478,7 +478,7 @@ public sealed class Types
     /// <summary>
     ///     isAssignableList returns an updated type substitution mapping if l1 is assignable to l2.
     /// </summary>
-    internal static Mapping IsAssignableList(Mapping m, IList<Type> l1, IList<Type> l2)
+    internal static Mapping? IsAssignableList(Mapping m, IList<Type> l1, IList<Type> l2)
     {
         var mCopy = m.Copy();
         if (InternalIsAssignableList(mCopy, l1, l2)) return mCopy;
@@ -581,7 +581,7 @@ public sealed class Types
     ///     substitute replaces all direct and indirect occurrences of bound type parameters. Unbound type
     ///     parameters are replaced by DYN if typeParamToDyn is true.
     /// </summary>
-    internal static Type Substitute(Mapping m, Type t, bool typeParamToDyn)
+    internal static Type Substitute(Mapping m, Type? t, bool typeParamToDyn)
     {
         var tSub = m.Find(t);
         if (tSub != null) return Substitute(m, tSub, typeParamToDyn);

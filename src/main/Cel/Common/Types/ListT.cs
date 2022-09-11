@@ -72,8 +72,8 @@ public abstract class ListT : BaseVal, ILister
 
     internal abstract class BaseListT : ListT
     {
-        protected internal readonly TypeAdapter adapter;
-        protected internal readonly long size;
+        internal readonly TypeAdapter adapter;
+        internal readonly long size;
 
         internal BaseListT(TypeAdapter adapter, long size)
         {

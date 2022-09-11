@@ -49,7 +49,7 @@ internal sealed class SourceLocation : ILocation
         this.column = column;
     }
 
-    public int CompareTo(ILocation o)
+    public int CompareTo(ILocation? o)
     {
         var r = line.CompareTo(o.Line());
         if (r == 0) r = column.CompareTo(o.Column());
@@ -67,7 +67,7 @@ internal sealed class SourceLocation : ILocation
         return column;
     }
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (this == o) return true;
 

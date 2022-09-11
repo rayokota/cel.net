@@ -112,7 +112,7 @@ public sealed class CheckerEnv
     ///     LookupIdent returns a Decl proto for typeName as an identifier in the Env. Returns nil if no
     ///     such identifier is found in the Env.
     /// </summary>
-    public Decl LookupIdent(string name)
+    public Decl? LookupIdent(string name)
     {
         foreach (var candidate in container.ResolveCandidateNames(name))
         {
@@ -150,7 +150,7 @@ public sealed class CheckerEnv
     ///     LookupFunction returns a Decl proto for typeName as a function in env. Returns nil if no such
     ///     function is found in env.
     /// </summary>
-    public Decl LookupFunction(string name)
+    public Decl? LookupFunction(string name)
     {
         foreach (var candidate in container.ResolveCandidateNames(name))
         {
@@ -337,7 +337,7 @@ public sealed class CheckerEnv
     /// <summary>
     ///     getObjectWellKnownType returns the built-in CEL type declaration for input type's message name.
     /// </summary>
-    internal static Type GetObjectWellKnownType(Type t)
+    internal static Type? GetObjectWellKnownType(Type t)
     {
         Checked.CheckedWellKnowns.TryGetValue(t.MessageType, out var type);
         return type;

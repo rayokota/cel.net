@@ -21,12 +21,12 @@ namespace Cel.Common.Types;
 
 public abstract class ObjectT : BaseVal, IFieldTester, IIndexer, ITypeAdapterProvider
 {
-    protected internal readonly TypeAdapter adapter;
-    protected internal readonly ITypeDescription typeDesc;
-    protected internal readonly IType typeValue;
-    protected internal readonly object value;
+    internal readonly TypeAdapter adapter;
+    internal readonly ITypeDescription typeDesc;
+    internal readonly IType typeValue;
+    internal readonly object value;
 
-    protected internal ObjectT(TypeAdapter adapter, object value, ITypeDescription typeDesc, IType typeValue)
+    internal ObjectT(TypeAdapter adapter, object value, ITypeDescription typeDesc, IType typeValue)
     {
         this.adapter = adapter;
         this.value = value;

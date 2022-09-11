@@ -208,7 +208,7 @@ public sealed class PbTypeDescription : Description, ITypeDescription
                reflectType + '}';
     }
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (this == o) return true;
 

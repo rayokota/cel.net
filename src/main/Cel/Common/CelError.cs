@@ -37,7 +37,7 @@ public sealed class CelError : IComparable<CelError>
 
     public string Message { get; }
 
-    public int CompareTo(CelError o)
+    public int CompareTo(CelError? o)
     {
         var r = Location.CompareTo(o.Location);
         if (r == 0) r = string.CompareOrdinal(Message, o.Message);
@@ -45,7 +45,7 @@ public sealed class CelError : IComparable<CelError>
         return r;
     }
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (this == o) return true;
 

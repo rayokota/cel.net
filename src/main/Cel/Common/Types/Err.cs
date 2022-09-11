@@ -63,13 +63,13 @@ public sealed class Err : BaseVal
     {
     }
 
-    private Err(string error, Exception cause)
+    private Err(string error, Exception? cause)
     {
         this.error = error;
         Cause = cause;
     }
 
-    public Exception Cause { get; }
+    public Exception? Cause { get; }
 
     public static IVal NoSuchOverload(IVal val, string function, IVal other)
     {

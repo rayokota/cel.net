@@ -270,7 +270,7 @@ public sealed class EvalTestOnly : IInterpretable, ICoster
 
 public abstract class AbstractEval : IInterpretable
 {
-    protected internal readonly long id;
+    internal readonly long id;
 
     internal AbstractEval(long id)
     {
@@ -295,8 +295,8 @@ public abstract class AbstractEval : IInterpretable
 
 public abstract class AbstractEvalLhsRhs : AbstractEval, ICoster
 {
-    protected internal readonly IInterpretable lhs;
-    protected internal readonly IInterpretable rhs;
+    internal readonly IInterpretable lhs;
+    internal readonly IInterpretable rhs;
 
     internal AbstractEvalLhsRhs(long id, IInterpretable lhs, IInterpretable rhs) : base(id)
     {
@@ -1299,9 +1299,9 @@ public sealed class EvalWatchAttr : ICoster, IInterpretableAttribute,
 public abstract class AbstractEvalWatch<T> : AbstractEval, ICoster,
     IQualifier where T : IQualifier
 {
-    protected internal readonly TypeAdapter adapter;
-    protected internal readonly T @delegate;
-    protected internal readonly EvalObserver observer;
+    internal readonly TypeAdapter adapter;
+    internal readonly T @delegate;
+    internal readonly EvalObserver observer;
 
     internal AbstractEvalWatch(T @delegate, EvalObserver observer,
         TypeAdapter adapter) : base(@delegate.Id())

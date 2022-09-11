@@ -39,7 +39,7 @@ public sealed class Types
     {
     }
 
-    public static IType GetTypeByName(string typeName)
+    public static IType? GetTypeByName(string typeName)
     {
         return null;
     }

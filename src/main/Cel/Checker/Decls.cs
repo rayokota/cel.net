@@ -119,7 +119,7 @@ public sealed class Decls
     ///         Deprecated: Use NewVar or NewConst instead.
     ///     </para>
     /// </summary>
-    public static Decl NewIdent(string name, Type t, Constant v)
+    public static Decl NewIdent(string name, Type t, Constant? v)
     {
         var ident = new Decl.Types.IdentDecl();
         ident.Type = t;
@@ -177,7 +177,7 @@ public sealed class Decls
     /// <summary>
     ///     NewMapType generates a new map with typed keys and values.
     /// </summary>
-    public static Type NewMapType(Type key, Type value)
+    public static Type NewMapType(Type key, Type? value)
     {
         var mapType = new Type.Types.MapType();
         mapType.KeyType = key;

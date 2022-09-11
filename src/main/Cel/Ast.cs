@@ -65,7 +65,7 @@ public sealed class Ast
     ///     ResultType returns the output type of the expression if the Ast has been type-checked, else
     ///     returns decls.Dyn as the parse step cannot infer the type.
     /// </summary>
-    public Type ResultType
+    public Type? ResultType
     {
         get
         {

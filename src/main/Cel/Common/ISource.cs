@@ -179,7 +179,7 @@ internal sealed class SourceImpl : ISource
         return ILocation.NewLocation(line, offset - lineOffset);
     }
 
-    public string Snippet(int line)
+    public string? Snippet(int line)
     {
         var charStart = findLineOffset(line);
         if (charStart < 0) return null;

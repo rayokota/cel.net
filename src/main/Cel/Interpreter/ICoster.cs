@@ -53,7 +53,7 @@ public sealed class Cost
         return Unknown;
     }
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (this == o) return true;
 

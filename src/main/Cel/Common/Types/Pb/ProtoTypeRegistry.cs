@@ -399,7 +399,7 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
         return "ProtoTypeRegistry{" + "revTypeMap.size=" + revTypeMap.Count + ", pbdb=" + pbdb + '}';
     }
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (this == o) return true;
 

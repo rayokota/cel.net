@@ -107,7 +107,7 @@ public sealed class Operator
     private readonly string nameValue;
     private readonly int ordinalValue;
     public readonly int precedence;
-    public readonly string reverse;
+    public readonly string? reverse;
 
     static Operator()
     {
@@ -171,7 +171,7 @@ public sealed class Operator
         innerEnumValue = innerEnum;
     }
 
-    internal Operator(string name, InnerEnum innerEnum, string id, int precedence, string reverse)
+    internal Operator(string name, InnerEnum innerEnum, string id, int precedence, string? reverse)
     {
         this.id = id;
         this.precedence = precedence;
@@ -182,28 +182,28 @@ public sealed class Operator
         innerEnumValue = innerEnum;
     }
 
-    public static Operator ById(string id)
+    public static Operator? ById(string id)
     {
         operatorsById.TryGetValue(id, out var op);
         return op;
     }
 
     // Find the internal function name for an operator, if the input text is one.
-    public static Operator Find(string text)
+    public static Operator? Find(string text)
     {
         operators.TryGetValue(text, out var op);
         return op;
     }
 
     // FindReverse returns the unmangled, text representation of the operator.
-    public static string FindReverse(string id)
+    public static string? FindReverse(string id)
     {
         var op = ById(id);
         return op != null ? op.reverse : null;
     }
 
     // FindReverseBinaryOperator returns the unmangled, text representation of a binary operator.
-    public static string FindReverseBinaryOperator(string id)
+    public static string? FindReverseBinaryOperator(string id)
     {
         var op = ById(id);
         if (op == null || op == LogicalNot || op == Negate) return null;

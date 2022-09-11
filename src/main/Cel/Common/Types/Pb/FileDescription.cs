@@ -44,7 +44,7 @@ public sealed class FileDescription
     /// </summary>
     public string[] TypeNames => types.Keys.ToArray();
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (this == o) return true;
 

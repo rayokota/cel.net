@@ -44,7 +44,7 @@ public abstract class BaseVal : IVal
         return Value().GetHashCode();
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         if (obj is IVal) return Equal((IVal)obj) == BoolT.True;
 

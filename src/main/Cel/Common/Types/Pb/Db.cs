@@ -218,7 +218,7 @@ public sealed class Db
         return "Db{" + "revFileDescriptorMap.size=" + revFileDescriptorMap.Count + ", files=" + files.Count + '}';
     }
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (this == o) return true;
 

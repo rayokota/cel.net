@@ -151,7 +151,7 @@ public class TypeT : IType, IVal
         return TypeName();
     }
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (this == o) return true;
 

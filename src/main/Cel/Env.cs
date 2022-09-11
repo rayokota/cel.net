@@ -47,9 +47,9 @@ public sealed class Env
     /// <summary>
     ///     Internal checker representation
     /// </summary>
-    private CheckerEnv chk;
+    private CheckerEnv? chk;
 
-    private Exception chkErr;
+    private Exception? chkErr;
     internal Container container;
     internal ITypeProvider provider;
 
@@ -441,16 +441,16 @@ public sealed class Env
 
     public sealed class AstIssuesTuple
     {
-        internal readonly Ast ast;
+        internal readonly Ast? ast;
         internal readonly Issues issues;
 
-        internal AstIssuesTuple(Ast ast, Issues issues)
+        internal AstIssuesTuple(Ast? ast, Issues issues)
         {
             this.ast = ast;
             this.issues = issues;
         }
 
-        public Ast Ast => ast;
+        public Ast? Ast => ast;
 
         public Issues Issues => issues;
 

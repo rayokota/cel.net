@@ -31,10 +31,10 @@ public sealed class Prog : IProgram, ICoster
     internal readonly Env e;
     internal readonly ISet<EvalOption> evalOpts = new HashSet<EvalOption>();
     internal readonly IEvalState state;
-    internal IAttributeFactory attrFactory;
-    internal IActivation defaultVars;
-    internal IInterpretable interpretable;
-    internal Interpreter.IInterpreter interpreter;
+    internal IAttributeFactory? attrFactory;
+    internal IActivation? defaultVars;
+    internal IInterpretable? interpretable;
+    internal Interpreter.IInterpreter? interpreter;
 
     internal Prog(Env e, IDispatcher dispatcher)
     {
