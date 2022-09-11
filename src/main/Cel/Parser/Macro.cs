@@ -177,7 +177,7 @@ public sealed class Macro
         if (v == null) throw new ErrorWithLocation(null, "argument is not an identifier");
 
         Expr fn;
-        Expr filter;
+        Expr? filter;
 
         if (args.Count == 3)
         {

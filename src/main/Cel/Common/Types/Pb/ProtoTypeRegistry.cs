@@ -212,7 +212,7 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
             // TODO resolve inefficiency for maps: first converted from a MapT to a native Java map and
             //  then to a protobuf struct. The intermediate step (the Java map) could be omitted.
 
-            var value = nv.Value.ConvertToNative(field.ReflectType());
+            var value = nv.Value.ConvertToNative(field.ReflectType())!;
             if (value.GetType().IsArray) value = new ArrayList((Array)value);
 
             var pbDesc = field.Descriptor();
@@ -355,7 +355,7 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
     /// </summary>
     public IVal NativeToValue(object value)
     {
-        IVal val;
+        IVal? val;
         if (value is Message)
         {
             var v = (Message)value;

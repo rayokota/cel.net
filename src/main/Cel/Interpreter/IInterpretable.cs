@@ -202,7 +202,7 @@ public interface IInterpretableCall : IInterpretable
 public sealed class EvalTestOnly : IInterpretable, ICoster
 {
     internal readonly StringT field;
-    internal readonly FieldType fieldType;
+    internal readonly FieldType? fieldType;
     internal readonly long id;
     internal readonly IInterpretable op;
 
@@ -790,12 +790,12 @@ public sealed class EvalVarArgs : AbstractEval, ICoster, IInterpretableCall
 {
     internal readonly IInterpretable[] args;
     internal readonly string function;
-    internal readonly FunctionOp impl;
+    internal readonly FunctionOp? impl;
     internal readonly string overload;
     internal readonly Trait trait;
 
     public EvalVarArgs(long id, string function, string overload, IInterpretable[] args, Trait trait,
-        FunctionOp impl) : base(id)
+        FunctionOp? impl) : base(id)
     {
         this.function = function;
         this.overload = overload;

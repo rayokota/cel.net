@@ -189,7 +189,7 @@ internal class AttributePatternsTest
         /// <summary>
         ///     quals contains a list of static qualifiers.
         /// </summary>
-        internal object[] quals;
+        internal object[]? quals;
 
         /// <summary>
         ///     unchecked indicates whether the attribute has not been type-checked and thus not gone // the

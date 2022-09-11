@@ -113,7 +113,7 @@ public sealed class PbObjectT : ObjectT
 
         // impossible cast
         throw new ArgumentException(
-            Err.NewTypeConversionError(value.GetType().FullName, typeDesc).ToString());
+            Err.NewTypeConversionError(value.GetType().FullName!, typeDesc).ToString());
     }
 
     private Message Message()
@@ -137,7 +137,7 @@ public sealed class PbObjectT : ObjectT
         catch (Exception e)
         {
             throw new Exception(string.Format("{0}: {1}",
-                Err.NewTypeConversionError(value.GetType().FullName, typeDesc), e));
+                Err.NewTypeConversionError(value.GetType().FullName!, typeDesc), e));
         }
     }
 }

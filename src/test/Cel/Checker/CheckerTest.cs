@@ -777,12 +777,12 @@ public class CheckerTest
         internal string i;
 
         // R contains the result output. */
-        internal string r;
+        internal string? r;
 
         /// <summary>
         ///     Type is the expected type of the expression
         /// </summary>
-        internal Type type;
+        internal Type? type;
 
         public override string ToString()
         {

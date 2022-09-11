@@ -199,7 +199,7 @@ public sealed class Planner : IInterpretablePlanner
         var op = Plan(sel.Operand);
 
         // Determine the field type if this is a proto message type.
-        FieldType fieldType = null;
+        FieldType? fieldType = null;
         typeMap.TryGetValue(sel.Operand.Id, out var opType);
         if (opType != null && opType.MessageType.Length > 0)
         {
@@ -292,7 +292,7 @@ public sealed class Planner : IInterpretablePlanner
 
         // Otherwise, generate Interpretable calls specialized by argument count.
         // Try to find the specific function by overload id.
-        Overload fnDef = null;
+        Overload? fnDef = null;
         if (resolvedFunc.overloadId != null && resolvedFunc.overloadId.Length == 0)
             fnDef = disp.FindOverload(resolvedFunc.overloadId);
 
@@ -326,10 +326,10 @@ public sealed class Planner : IInterpretablePlanner
     /// <summary>
     ///     planCallUnary generates a unary callable Interpretable.
     /// </summary>
-    internal IInterpretable PlanCallUnary(Expr expr, string function, string overload, Overload impl,
+    internal IInterpretable PlanCallUnary(Expr expr, string function, string overload, Overload? impl,
         IInterpretable[] args)
     {
-        UnaryOp fn = null;
+        UnaryOp? fn = null;
         var trait = Trait.None;
         if (impl != null)
         {
@@ -346,10 +346,10 @@ public sealed class Planner : IInterpretablePlanner
     /// <summary>
     ///     planCallBinary generates a binary callable Interpretable.
     /// </summary>
-    internal IInterpretable PlanCallBinary(Expr expr, string function, string overload, Overload impl,
+    internal IInterpretable PlanCallBinary(Expr expr, string function, string overload, Overload? impl,
         params IInterpretable[] args)
     {
-        BinaryOp fn = null;
+        BinaryOp? fn = null;
         var trait = Trait.None;
         if (impl != null)
         {
@@ -367,10 +367,10 @@ public sealed class Planner : IInterpretablePlanner
     /// <summary>
     ///     planCallVarArgs generates a variable argument callable Interpretable.
     /// </summary>
-    internal IInterpretable PlanCallVarArgs(Expr expr, string function, string overload, Overload impl,
+    internal IInterpretable PlanCallVarArgs(Expr expr, string function, string overload, Overload? impl,
         params IInterpretable[] args)
     {
-        FunctionOp fn = null;
+        FunctionOp? fn = null;
         var trait = Trait.None;
         if (impl != null)
         {
@@ -742,7 +742,7 @@ public sealed class Planner : IInterpretablePlanner
     ///     toQualifiedName converts an expression AST into a qualified name if possible, with a boolean
     ///     'found' value that indicates if the conversion is successful.
     /// </summary>
-    internal string ToQualifiedName(Expr operand)
+    internal string? ToQualifiedName(Expr operand)
     {
         // If the checker identified the expression as an attribute by the type-checker, then it can't
         // possibly be part of qualified name in a namespace.
@@ -762,9 +762,9 @@ public sealed class Planner : IInterpretablePlanner
     {
         internal readonly string fnName;
         internal readonly string overloadId;
-        internal readonly Expr target;
+        internal readonly Expr? target;
 
-        internal ResolvedFunction(Expr target, string fnName, string overloadId)
+        internal ResolvedFunction(Expr? target, string fnName, string overloadId)
         {
             this.target = target;
             this.fnName = fnName;

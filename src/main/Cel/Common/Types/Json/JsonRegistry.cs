@@ -164,7 +164,7 @@ public sealed class JsonRegistry : ITypeRegistry
     private JsonTypeDescription ComputeTypeDescription(Type type)
     {
         var typeDesc = new JsonTypeDescription(type, serializer, TypeQuery);
-        knownTypesByName[type.FullName] = typeDesc;
+        knownTypesByName[type.FullName!] = typeDesc;
 
         return typeDesc;
     }

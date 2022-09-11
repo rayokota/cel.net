@@ -487,7 +487,7 @@ internal class AttributesTest
     internal class TestDef
     {
         internal readonly string expr;
-        internal IList<Decl> env;
+        internal IList<Decl>? env;
         internal IDictionary<string, object> @in;
         internal IVal @out;
         internal IDictionary<object, object> state;

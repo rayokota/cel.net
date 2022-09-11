@@ -178,7 +178,7 @@ public interface IInterpretableDecorator
         if (list.Size() == IntT.IntZero) return IInterpretable.NewConstValue(inlist.Id(), BoolT.False);
 
         var it = list.Iterator();
-        IType typ = null;
+        IType? typ = null;
         ISet<IVal> valueSet = new HashSet<IVal>();
         while (it.HasNext() == BoolT.True)
         {

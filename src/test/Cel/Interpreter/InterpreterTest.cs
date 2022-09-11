@@ -940,7 +940,7 @@ internal class InterpreterTest
         }
         else
         {
-            Exception err = null;
+            Exception? err = null;
             try
             {
                 TypeConversionOptCheck(tc, checkResult, interp);
@@ -1055,11 +1055,11 @@ internal class InterpreterTest
     {
         internal readonly InterpreterTestCase name;
         internal string[] abbrevs;
-        internal IAttributeFactory attrs;
+        internal IAttributeFactory? attrs;
         internal string container;
         internal Cost cost;
-        internal string disabled;
-        internal Decl[] env;
+        internal string? disabled;
+        internal Decl[]? env;
         internal string err;
         internal Cost exhaustiveCost;
         internal string expr;
@@ -1068,7 +1068,7 @@ internal class InterpreterTest
         internal IDictionary<string, object> @in;
         internal Cost optimizedCost;
         internal object @out;
-        internal Message[] types;
+        internal Message[]? types;
         internal bool @unchecked;
 
         internal TestCase(InterpreterTestCase name)

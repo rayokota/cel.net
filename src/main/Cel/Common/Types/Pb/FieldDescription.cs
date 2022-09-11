@@ -89,8 +89,8 @@ public sealed class FieldDescription : Description
     /// </summary>
     public static FieldDescription NewFieldDescription(FieldDescriptor fieldDesc)
     {
-        Type reflectType = null;
-        Message zeroMsg = null;
+        Type? reflectType = null;
+        Message? zeroMsg = null;
         switch (fieldDesc.FieldType)
         {
             case FieldType.Enum:

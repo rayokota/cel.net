@@ -167,7 +167,7 @@ public sealed class PbTypeDescription : Description, ITypeDescription
                 var realTypeName = TypeNameFromUrl(realTypeUrl);
                 if (realTypeName.Length == 0 || realTypeName.Equals(typeName)) return Err.AnyWithEmptyType();
 
-                var realTypeDescriptor = db.DescribeType(realTypeName);
+                var realTypeDescriptor = db.DescribeType(realTypeName)!;
                 var realMsg = realTypeDescriptor.zeroMsg.Descriptor.Parser.ParseFrom(realValue);
                 return realTypeDescriptor.MaybeUnwrap(db, realMsg);
             }

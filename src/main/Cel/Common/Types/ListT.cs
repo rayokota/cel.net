@@ -217,8 +217,8 @@ public abstract class ListT : BaseVal, ILister
 
         public override IVal Contains(IVal value)
         {
-            IType firstType = null;
-            IType mixedType = null;
+            IType? firstType = null;
+            IType? mixedType = null;
             for (long i = 0; i < size; i++)
             {
                 var elem = Get(IntT.IntOf(i));

@@ -98,7 +98,7 @@ public sealed class Parser
         lexer.AddErrorListener(inner);
         parser.AddErrorListener(inner2);
 
-        Expr expr = null;
+        Expr? expr = null;
         try
         {
             if (charStream.Size > options.ExpressionSizeCodePointLimit)
@@ -306,7 +306,7 @@ public sealed class Parser
             return (Expr)r;
         }
 
-        public override object Visit(IParseTree tree)
+        public override object Visit(IParseTree? tree)
         {
             if (tree is RuleContext)
             {

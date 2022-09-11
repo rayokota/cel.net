@@ -103,9 +103,9 @@ public sealed class FileDescription
     /// <summary>
     ///     sanitizeProtoName strips the leading '.' from the proto message name.
     /// </summary>
-    internal static string? SanitizeProtoName(string? name)
+    internal static string SanitizeProtoName(string name)
     {
-        if (name != null && name.Length > 0 && name[0] == '.') return name.Substring(1);
+        if (name.Length > 0 && name[0] == '.') return name.Substring(1);
 
         return name;
     }
