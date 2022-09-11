@@ -226,7 +226,7 @@ public interface IQualifier
     ///     Qualify performs a qualification, e.g. field selection, on the input object and returns the
     ///     value or error that results.
     /// </summary>
-    object Qualify(IActivation vars, object obj);
+    object? Qualify(IActivation vars, object obj);
 }
 
 public interface IConstantQualifier : IQualifier
