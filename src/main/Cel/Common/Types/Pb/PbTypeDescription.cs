@@ -54,22 +54,22 @@ public sealed class PbTypeDescription : Description, ITypeDescription
         MessageToObjectExact[typeof(Duration)] =
             msg => AsDuration((Duration)msg);
         MessageToObjectExact[typeof(Timestamp)] = msg => AsTimestamp((Timestamp)msg);
-        zeroValueMap["google.protobuf.Any"] = (Message)Activator.CreateInstance(typeof(Any));
+        zeroValueMap["google.protobuf.Any"] = (Message)Activator.CreateInstance(typeof(Any))!;
         zeroValueMap["google.protobuf.Duration"] =
-            (Message)Activator.CreateInstance(typeof(Duration));
-        zeroValueMap["google.protobuf.ListValue"] = (Message)Activator.CreateInstance(typeof(ListValue));
-        zeroValueMap["google.protobuf.Struct"] = (Message)Activator.CreateInstance(typeof(Struct));
-        zeroValueMap["google.protobuf.Value"] = (Message)Activator.CreateInstance(typeof(Value));
-        zeroValueMap["google.protobuf.Timestamp"] = (Message)Activator.CreateInstance(typeof(Timestamp));
-        zeroValueMap["google.protobuf.BoolValue"] = (Message)Activator.CreateInstance(typeof(BoolValue));
-        zeroValueMap["google.protobuf.BytesValue"] = (Message)Activator.CreateInstance(typeof(BytesValue));
-        zeroValueMap["google.protobuf.DoubleValue"] = (Message)Activator.CreateInstance(typeof(DoubleValue));
-        zeroValueMap["google.protobuf.FloatValue"] = (Message)Activator.CreateInstance(typeof(FloatValue));
-        zeroValueMap["google.protobuf.Int32Value"] = (Message)Activator.CreateInstance(typeof(Int32Value));
-        zeroValueMap["google.protobuf.Int64Value"] = (Message)Activator.CreateInstance(typeof(Int64Value));
-        zeroValueMap["google.protobuf.StringValue"] = (Message)Activator.CreateInstance(typeof(StringValue));
-        zeroValueMap["google.protobuf.UInt32Value"] = (Message)Activator.CreateInstance(typeof(UInt32Value));
-        zeroValueMap["google.protobuf.UInt64Value"] = (Message)Activator.CreateInstance(typeof(UInt64Value));
+            (Message)Activator.CreateInstance(typeof(Duration))!;
+        zeroValueMap["google.protobuf.ListValue"] = (Message)Activator.CreateInstance(typeof(ListValue))!;
+        zeroValueMap["google.protobuf.Struct"] = (Message)Activator.CreateInstance(typeof(Struct))!;
+        zeroValueMap["google.protobuf.Value"] = (Message)Activator.CreateInstance(typeof(Value))!;
+        zeroValueMap["google.protobuf.Timestamp"] = (Message)Activator.CreateInstance(typeof(Timestamp))!;
+        zeroValueMap["google.protobuf.BoolValue"] = (Message)Activator.CreateInstance(typeof(BoolValue))!;
+        zeroValueMap["google.protobuf.BytesValue"] = (Message)Activator.CreateInstance(typeof(BytesValue))!;
+        zeroValueMap["google.protobuf.DoubleValue"] = (Message)Activator.CreateInstance(typeof(DoubleValue))!;
+        zeroValueMap["google.protobuf.FloatValue"] = (Message)Activator.CreateInstance(typeof(FloatValue))!;
+        zeroValueMap["google.protobuf.Int32Value"] = (Message)Activator.CreateInstance(typeof(Int32Value))!;
+        zeroValueMap["google.protobuf.Int64Value"] = (Message)Activator.CreateInstance(typeof(Int64Value))!;
+        zeroValueMap["google.protobuf.StringValue"] = (Message)Activator.CreateInstance(typeof(StringValue))!;
+        zeroValueMap["google.protobuf.UInt32Value"] = (Message)Activator.CreateInstance(typeof(UInt32Value))!;
+        zeroValueMap["google.protobuf.UInt64Value"] = (Message)Activator.CreateInstance(typeof(UInt64Value))!;
     }
 
     private PbTypeDescription(string typeName, Descriptor desc, IDictionary<string, FieldDescription> fieldMap,
@@ -112,7 +112,7 @@ public sealed class PbTypeDescription : Description, ITypeDescription
     /// </summary>
     public static PbTypeDescription NewTypeDescription(string typeName, Descriptor desc)
     {
-        var msgZero = (Message)Activator.CreateInstance(desc.ClrType);
+        var msgZero = (Message)Activator.CreateInstance(desc.ClrType)!;
         IDictionary<string, FieldDescription> fieldMap = new Dictionary<string, FieldDescription>();
         IList<FieldDescriptor> fields = desc.Fields.InDeclarationOrder();
         foreach (var f in fields) fieldMap[f.Name] = FieldDescription.NewFieldDescription(f);
@@ -191,7 +191,7 @@ public sealed class PbTypeDescription : Description, ITypeDescription
     /// </summary>
     public Message NewMessageBuilder()
     {
-        return (Message)Activator.CreateInstance(zeroMsg.Descriptor.ClrType);
+        return (Message)Activator.CreateInstance(zeroMsg.Descriptor.ClrType)!;
     }
 
     /// <summary>

@@ -835,7 +835,7 @@ public sealed class Parser
             return helper.NewReceiverCall(exprID, function, target, args);
         }
 
-        internal Expr? expandMacro(long exprID, string function, Expr target, IList<Expr> args)
+        internal Expr? expandMacro(long exprID, string function, Expr? target, IList<Expr> args)
         {
             var macro = outerInstance.options.GetMacro(Macro.MakeMacroKey(function, args.Count, target != null));
             if (macro == null)

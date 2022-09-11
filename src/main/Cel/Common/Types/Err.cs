@@ -71,7 +71,7 @@ public sealed class Err : BaseVal
 
     public Exception? Cause { get; }
 
-    public static IVal NoSuchOverload(IVal val, string function, IVal other)
+    public static IVal NoSuchOverload(IVal? val, string function, IVal other)
     {
         var otName = other != null ? (other is IType ? (IType)other : other.Type()).TypeName() : "*";
         if (val != null)

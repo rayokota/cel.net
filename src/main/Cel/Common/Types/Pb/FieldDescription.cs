@@ -100,7 +100,7 @@ public sealed class FieldDescription : Description
                 if (!fieldDesc.IsMap)
                 {
                     var type = fieldDesc.MessageType.ClrType;
-                    zeroMsg = (Message)Activator.CreateInstance(type);
+                    zeroMsg = (Message)Activator.CreateInstance(type)!;
                     reflectType = PbTypeDescription.ReflectTypeOf(zeroMsg);
                 }
 
@@ -116,7 +116,7 @@ public sealed class FieldDescription : Description
                             reflectType = typeof(Enum);
                             break;
                         case FieldType.Message:
-                            zeroMsg = (Message)Activator.CreateInstance(fieldDesc.MessageType.ClrType);
+                            zeroMsg = (Message)Activator.CreateInstance(fieldDesc.MessageType.ClrType)!;
                             reflectType = zeroMsg.GetType();
                             break;
                         case FieldType.Bool:
@@ -164,8 +164,8 @@ public sealed class FieldDescription : Description
             // TODO j.u.List or array???
             reflectType = Array.CreateInstance(reflectType, 0).GetType();
 
-        FieldDescription keyType = null;
-        FieldDescription valType = null;
+        FieldDescription? keyType = null;
+        FieldDescription? valType = null;
         if (fieldDesc.IsMap)
         {
             keyType = NewFieldDescription(fieldDesc.MessageType.FindFieldByNumber(1));

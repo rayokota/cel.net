@@ -130,7 +130,7 @@ public sealed class PbObjectT : ObjectT
     {
         try
         {
-            var builder = (Message)Activator.CreateInstance(typeDesc);
+            var builder = (Message)Activator.CreateInstance(typeDesc)!;
             builder.MergeFrom(Message().ToByteArray());
             return builder;
         }
