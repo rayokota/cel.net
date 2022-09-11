@@ -59,7 +59,7 @@ public sealed class Checker
         var c = new Checker(env, errors, Mapping.NewMapping(), 0, parsedExpr.SourceInfo);
 
         var e = parsedExpr.Expr;
-        c.Check(e);
+        c.Check(e!);
 
         // Walk over the final type map substituting any type parameters either by their bound value or
         // by DYN.
@@ -443,7 +443,7 @@ public sealed class Checker
             return null;
         }
 
-        return NewResolution(checkedRef, resultType);
+        return NewResolution(checkedRef!, resultType);
     }
 
     internal void CheckCreateList(Expr e)
@@ -591,7 +591,7 @@ public sealed class Checker
             var t = LookupFieldType(LocationByID(ent.Id), messageType.MessageType, field);
             if (t != null) fieldType = t.type;
 
-            if (!IsAssignable(fieldType, GetType(value)))
+            if (!IsAssignable(fieldType, GetType(value)!))
                 errors.FieldTypeMismatch(LocationByID(ent.Id), field, fieldType, GetType(value));
         }
     }
@@ -756,7 +756,7 @@ public sealed class Checker
 
     internal void AssertType(Expr e, Type t)
     {
-        if (!IsAssignable(t, GetType(e))) errors.TypeMismatch(LocationByExpr(e), t, GetType(e));
+        if (!IsAssignable(t, GetType(e)!)) errors.TypeMismatch(LocationByExpr(e), t, GetType(e));
     }
 
     internal static OverloadResolution NewResolution(Reference checkedRef, Type t)

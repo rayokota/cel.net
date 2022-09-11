@@ -165,7 +165,7 @@ public sealed class Env
     ///         the mere presence of an Ast does not imply that it is valid for use.
     ///     </para>
     /// </summary>
-    public AstIssuesTuple Check(Ast? ast)
+    public AstIssuesTuple Check(Ast ast)
     {
         // Note, errors aren't currently possible on the Ast to ParsedExpr conversion.
         var pe = Cel.AstToParsedExpr(ast);
@@ -243,7 +243,7 @@ public sealed class Env
     public AstIssuesTuple CompileSource(ISource src)
     {
         var aiParse = ParseSource(src);
-        var aiCheck = Check(aiParse.ast);
+        var aiCheck = Check(aiParse.ast!);
         var iss = aiParse.issues.Append(aiCheck.issues);
         return new AstIssuesTuple(aiCheck.ast, iss);
     }
@@ -349,7 +349,7 @@ public sealed class Env
 
         // Manually create the Ast to ensure that the text source information is propagated on
         // subsequent calls to Check.
-        return new AstIssuesTuple(new Ast(res.Expr, res.SourceInfo, src), Issues.NoIssues(src));
+        return new AstIssuesTuple(new Ast(res.Expr!, res.SourceInfo, src), Issues.NoIssues(src));
     }
 
     /// <summary>
@@ -412,7 +412,7 @@ public sealed class Env
 
         if (!a.Checked) return parsedIss.ast;
 
-        var checkedIss = Check(parsedIss.ast);
+        var checkedIss = Check(parsedIss.ast!);
         if (checkedIss.HasIssues()) throw checkedIss.Issues.Err()!;
 
         return checkedIss.ast;

@@ -581,7 +581,7 @@ public sealed class Types
     ///     substitute replaces all direct and indirect occurrences of bound type parameters. Unbound type
     ///     parameters are replaced by DYN if typeParamToDyn is true.
     /// </summary>
-    internal static Type Substitute(Mapping m, Type t, bool typeParamToDyn)
+    internal static Type Substitute(Mapping m, Type? t, bool typeParamToDyn)
     {
         var tSub = m.Find(t);
         if (tSub != null) return Substitute(m, tSub, typeParamToDyn);

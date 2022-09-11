@@ -30,5 +30,5 @@ public interface IMapper : IVal, IContainer, IIndexer, IIterableT, ISizer
     ///         the map, or is Err or Unknown the function returns (Unknown|Err, false).
     ///     </para>
     /// </summary>
-    IVal Find(IVal key);
+    IVal? Find(IVal key);
 }

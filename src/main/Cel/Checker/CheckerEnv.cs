@@ -281,7 +281,7 @@ public sealed class CheckerEnv
             foreach (var p in o.Params)
                 if (IsObjectWellKnownType(p))
                 {
-                    @params.Add(GetObjectWellKnownType(p));
+                    @params.Add(GetObjectWellKnownType(p)!);
                     sanitized = true;
                 }
                 else

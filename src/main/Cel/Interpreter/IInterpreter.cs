@@ -30,13 +30,13 @@ public interface IInterpreter
     ///     NewInterpretable creates an Interpretable from a checked expression and an optional list of
     ///     InterpretableDecorator values.
     /// </summary>
-    IInterpretable NewInterpretable(CheckedExpr @checked, params InterpretableDecorator[] decorators);
+    IInterpretable? NewInterpretable(CheckedExpr @checked, params InterpretableDecorator[] decorators);
 
     /// <summary>
     ///     NewUncheckedInterpretable returns an Interpretable from a parsed expression and an optional
     ///     list of InterpretableDecorator values.
     /// </summary>
-    IInterpretable NewUncheckedInterpretable(Expr expr, params InterpretableDecorator[] decorators);
+    IInterpretable? NewUncheckedInterpretable(Expr expr, params InterpretableDecorator[] decorators);
 
     /// <summary>
     ///     TrackState decorates each expression node with an observer which records the value associated
@@ -118,7 +118,7 @@ public sealed class ExprInterpreter : IInterpreter
     /// <summary>
     ///     NewIntepretable implements the Interpreter interface method.
     /// </summary>
-    public IInterpretable NewInterpretable(CheckedExpr @checked, params InterpretableDecorator[] decorators)
+    public IInterpretable? NewInterpretable(CheckedExpr @checked, params InterpretableDecorator[] decorators)
     {
         var p = IInterpretablePlanner.NewPlanner(dispatcher, provider, adapter, attrFactory,
             container, @checked, decorators);
@@ -128,7 +128,7 @@ public sealed class ExprInterpreter : IInterpreter
     /// <summary>
     ///     NewUncheckedIntepretable implements the Interpreter interface method.
     /// </summary>
-    public IInterpretable NewUncheckedInterpretable(Expr expr, params InterpretableDecorator[] decorators)
+    public IInterpretable? NewUncheckedInterpretable(Expr expr, params InterpretableDecorator[] decorators)
     {
         var p = IInterpretablePlanner.NewUncheckedPlanner(dispatcher, provider, adapter,
             attrFactory, container, decorators);

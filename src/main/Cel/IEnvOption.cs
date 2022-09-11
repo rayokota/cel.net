@@ -161,7 +161,7 @@ public interface IEnvOption
     {
         return e =>
         {
-            e.container = e.container.Extend(Common.Containers.Container.Name(name));
+            e.container = e.container.Extend(Common.Containers.Container.Name(name))!;
             return e;
         };
     }
@@ -234,7 +234,7 @@ public interface IEnvOption
     {
         return e =>
         {
-            e.container = e.container.Extend(Common.Containers.Container.Abbrevs(qualifiedNames));
+            e.container = e.container.Extend(Common.Containers.Container.Abbrevs(qualifiedNames))!;
             return e;
         };
     }

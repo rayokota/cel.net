@@ -32,7 +32,7 @@ public interface IEvalState
     ///     Value returns the observed value of the given expression id if found, and a nil false result if
     ///     not.
     /// </summary>
-    IVal Value(long id);
+    IVal? Value(long id);
 
     /// <summary>
     ///     SetValue sets the observed value of the expression id.

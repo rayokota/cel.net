@@ -163,7 +163,7 @@ public sealed class Planner : IInterpretablePlanner
         // Check to see whether the type map indicates this is a type name. All types should be
         // registered with the provider.
         typeMap.TryGetValue(id, out var cType);
-        if (cType.Type_ != null && !Equals(cType.Type_, new Type()))
+        if (cType != null && cType.Type_ != null && !Equals(cType.Type_, new Type()))
         {
             var cVal = provider.FindIdent(identRef.Name);
             if (cVal == null)
@@ -273,7 +273,7 @@ public sealed class Planner : IInterpretablePlanner
         for (var i = 0; i < call.Args.Count; i++)
         {
             var argExpr = call.Args[i];
-            var arg = Plan(argExpr);
+            var arg = Plan(argExpr)!;
             args[i + offset] = arg;
         }
 
