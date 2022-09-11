@@ -1171,10 +1171,10 @@ public sealed class EvalSetMembership : AbstractEval, ICoster
 
 public sealed class EvalWatch : IInterpretable, ICoster
 {
-    internal readonly IInterpretable i;
+    internal readonly IInterpretable? i;
     internal readonly EvalObserver observer;
 
-    public EvalWatch(IInterpretable i, EvalObserver observer)
+    public EvalWatch(IInterpretable? i, EvalObserver observer)
     {
         this.i = i;
         this.observer = observer;

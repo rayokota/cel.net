@@ -19,4 +19,4 @@ namespace Cel.Common.Types.Ref;
 /// <summary>
 ///     FieldGetter is used to get the field value from an input object, if set.
 /// </summary>
-public delegate object FieldGetter(object target);
+public delegate object? FieldGetter(object target);

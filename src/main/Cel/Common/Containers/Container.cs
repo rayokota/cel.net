@@ -33,7 +33,7 @@ public sealed class Container
     ///         Note, ContainerOption implementations must be able to handle nil container inputs.
     ///     </para>
     /// </summary>
-    public delegate Container? ContainerOption(Container c);
+    public delegate Container? ContainerOption(Container? c);
 
     /// <summary>
     ///     DefaultContainer has an empty container name.

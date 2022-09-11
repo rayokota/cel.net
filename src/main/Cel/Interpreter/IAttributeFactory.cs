@@ -272,7 +272,7 @@ public interface INamespacedAttribute : IAttribute
     ///     attribute cannot be resolved within the Activation, the result must be: `nil`, `false`,
     ///     `nil`.
     /// </summary>
-    object TryResolve(IActivation a);
+    object? TryResolve(IActivation a);
 }
 
 public sealed class AttrFactory : IAttributeFactory

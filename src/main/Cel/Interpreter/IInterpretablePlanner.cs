@@ -138,7 +138,7 @@ public sealed class Planner : IInterpretablePlanner
     /// <summary>
     ///     planIdent creates an Interpretable that resolves an identifier from an Activation.
     /// </summary>
-    internal IInterpretable PlanIdent(Expr expr)
+    internal IInterpretable? PlanIdent(Expr expr)
     {
         // Establish whether the identifier is in the reference map.
         refMap.TryGetValue(expr.Id, out var identRef);

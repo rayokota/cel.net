@@ -52,10 +52,10 @@ public sealed class JsonTypeDescription : ITypeDescription
             var props = ((JsonObjectContract)contract).Properties;
             foreach (var prop in props)
             {
-                var pw = prop.ValueProvider;
-                var n = prop.PropertyName;
+                var pw = prop.ValueProvider!;
+                var n = prop.PropertyName!;
 
-                var ft = new JsonFieldType(FindTypeForJsonType(prop.PropertyType, typeQuery),
+                var ft = new JsonFieldType(FindTypeForJsonType(prop.PropertyType!, typeQuery),
                     target => FromObject(target, n) != null, target => FromObject(target, n), pw);
                 fieldTypes[n] = ft;
             }
