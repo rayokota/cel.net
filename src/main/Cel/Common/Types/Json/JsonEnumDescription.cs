@@ -27,7 +27,7 @@ public sealed class JsonEnumDescription
 
     public JsonEnumDescription(System.Type type)
     {
-        name = type.FullName;
+        name = type.FullName!;
 
         enumValues = new List<Enum>();
         foreach (Enum e in Enum.GetValues(type)) enumValues.Add(e);

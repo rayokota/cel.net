@@ -40,7 +40,7 @@ public sealed class JsonTypeDescription : ITypeDescription
     public JsonTypeDescription(System.Type type, JsonSerializer ser, TypeQuery typeQuery)
     {
         this.type = type;
-        name = type.FullName;
+        name = type.FullName!;
         refType = TypeT.NewObjectTypeValue(name);
         pbType = new Type { MessageType = name };
 

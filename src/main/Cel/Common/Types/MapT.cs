@@ -38,7 +38,7 @@ public abstract class MapT : BaseVal, IMapper, IContainer, IIndexer, IIterableT,
     public abstract override IVal Equal(IVal other);
     public abstract override IVal ConvertToType(IType typeValue);
     public abstract override object? ConvertToNative(System.Type typeDesc);
-    public abstract IVal Find(IVal key);
+    public abstract IVal? Find(IVal key);
 
     public override IType Type()
     {

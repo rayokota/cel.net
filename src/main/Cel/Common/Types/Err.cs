@@ -274,7 +274,7 @@ public sealed class Err : BaseVal
     ///     IsError returns whether the input element ref.Type or ref.Val is equal to the ErrType
     ///     singleton.
     /// </summary>
-    public static bool IsError(IVal val)
+    public static bool IsError(IVal? val)
     {
         return val != null && val.Type() == ErrType;
     }

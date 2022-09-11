@@ -160,7 +160,7 @@ public abstract class ListT : BaseVal, ILister
 
             object array = Array.CreateInstance(compType, s);
 
-            Func<object, object> fixForTarget = x => x;
+            Func<object?, object?> fixForTarget = x => x;
 
             for (var i = 0; i < s; i++)
             {
