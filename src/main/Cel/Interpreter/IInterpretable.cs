@@ -634,12 +634,12 @@ public sealed class EvalUnary : AbstractEval, IInterpretableCall, ICoster
 {
     internal readonly IInterpretable arg;
     internal readonly string function;
-    internal readonly UnaryOp impl;
+    internal readonly UnaryOp? impl;
     internal readonly string overload;
     internal readonly Trait trait;
 
     internal EvalUnary(long id, string function, string overload, IInterpretable arg, Trait trait,
-        UnaryOp impl) : base(id)
+        UnaryOp? impl) : base(id)
     {
         this.function = function;
         this.overload = overload;
@@ -711,12 +711,12 @@ public sealed class EvalUnary : AbstractEval, IInterpretableCall, ICoster
 public sealed class EvalBinary : AbstractEvalLhsRhs, IInterpretableCall
 {
     internal readonly string function;
-    internal readonly BinaryOp impl;
+    internal readonly BinaryOp? impl;
     internal readonly string overload;
     internal readonly Trait trait;
 
     internal EvalBinary(long id, string function, string overload, IInterpretable lhs,
-        IInterpretable rhs, Trait trait, BinaryOp impl) : base(id, lhs, rhs)
+        IInterpretable rhs, Trait trait, BinaryOp? impl) : base(id, lhs, rhs)
     {
         this.function = function;
         this.overload = overload;
