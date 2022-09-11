@@ -95,11 +95,12 @@ public sealed class JsonTypeDescription : TypeDescription
 
         if (type == typeof(Duration) || type == typeof(Period)) return Checked.checkedDuration;
 
-        if (type == typeof(Timestamp) || type.IsAssignableFrom(typeof(Instant)) ||
-            type.IsAssignableFrom(typeof(ZonedDateTime)))
+        if (type == typeof(Timestamp) || type == typeof(Instant) ||
+            type == typeof(ZonedDateTime))
             return Checked.checkedTimestamp;
 
-        if (type.IsGenericType && type.GetGenericTypeDefinition().IsAssignableFrom(typeof(Dictionary<,>)))
+        if (type.IsGenericType && 
+            (type.GetGenericTypeDefinition() == typeof(Dictionary<,>) || type.GetGenericTypeDefinition() == typeof(IDictionary<,>)))  
         {
             var arguments = type.GetGenericArguments();
             var keyType = FindTypeForJsonType(arguments[0], typeQuery);
@@ -107,20 +108,21 @@ public sealed class JsonTypeDescription : TypeDescription
             return Decls.NewMapType(keyType, valueType);
         }
 
-        if (type.IsAssignableFrom(typeof(IDictionary)))
+        if (typeof(IDictionary).IsAssignableFrom(type))
         {
             var objType = FindTypeForJsonType(typeof(object), typeQuery);
             return Decls.NewMapType(objType, objType);
         }
 
-        if (type.IsGenericType && type.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>)))
+        if (type.IsGenericType && 
+            (type.GetGenericTypeDefinition() == typeof(List<>) || type.GetGenericTypeDefinition() == typeof(IList<>)))
         {
             var arguments = type.GetGenericArguments();
             var valueType = FindTypeForJsonType(arguments[0], typeQuery);
             return Decls.NewListType(valueType);
         }
 
-        if (type.IsAssignableFrom(typeof(IList)))
+        if (typeof(IList).IsAssignableFrom(type))
         {
             var objType = FindTypeForJsonType(typeof(object), typeQuery);
             return Decls.NewListType(objType);

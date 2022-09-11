@@ -461,12 +461,34 @@ public class CheckerTest
                     Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes"))))
                 .R("container.x~google.api.expr.test.v1.proto3.TestAllTypes^container.x")
                 .Type(Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes")),
+            // NOTE: original
+            /*
             new TestCase().I("list == .type([1]) && map == .type({1:2u})").R(
                 "_&&_(_==_(list~type(list(dyn))^list,\n" +
                 "           type([1~int]~list(int))~type(list(int))^type)\n" + "       ~bool^equals,\n" +
                 "      _==_(map~type(map(dyn, dyn))^map,\n" +
                 "            type({1~int : 2u~uint}~map(int, uint))~type(map(int, uint))^type)\n" +
                 "        ~bool^equals)\n" + "  ~bool^logical_and").Type(Decls.Bool),
+                */
+            new TestCase().I("list == .type([1]) && map == .type({1:2u})").R(
+            "_&&_(\n"
+            + "  _==_(\n"
+            + "    list~type(list({ \"typeParam\": \"A\" }))^list,\n"
+            + "    type(\n"
+            + "      [\n"
+            + "        1~int\n"
+            + "      ]~list(int)\n"
+            + "    )~type({ \"typeParam\": \"A\" })^type\n"
+            + "  )~bool^equals,\n"
+            + "  _==_(\n"
+            + "    map~type(map({ \"typeParam\": \"A\" }, { \"typeParam\": \"B\" }))^map,\n"
+            + "    type(\n"
+            + "      {\n"
+            + "        1~int:2u~uint\n"
+            + "      }~map(int, uint)\n"
+            + "    )~type({ \"typeParam\": \"A\" })^type\n"
+            + "  )~bool^equals\n"
+            + ")~bool^logical_and").Type(Decls.Bool),
             new TestCase().I("myfun(1, true, 3u) + 1.myfun(false, 3u).myfun(true, 42u)")
                 .Env(new Env().Functions(Decls.NewFunction("myfun",
                     Decls.NewInstanceOverload("myfun_instance", new List<Type> { Decls.Int, Decls.Bool, Decls.Uint },
@@ -508,15 +530,34 @@ public class CheckerTest
                                                       "\t\t\t\t3~int\n" + "\t\t\t  ]~list(int)\n" +
                                                       "\t\t\t)~dyn^to_dyn\n" + "\t\t  )~bool^in_list|in_map")
                 .Type(Decls.Bool),
+            // NOTE: original
+            /*
             new TestCase().I("type(null) == null_type").R("_==_(\n" + "    \t\t  type(\n" +
                                                           "    \t\t    null~null\n" +
                                                           "    \t\t  )~type(null)^type,\n" +
                                                           "    \t\t  null_type~type(null)^null_type\n" +
                                                           "    \t\t)~bool^equals").Type(Decls.Bool),
+                                                          */
+            new TestCase().I("type(null) == null_type").R("_==_(\n" + "  type(\n"
+            + "    null~null\n"
+            + "  )~type({ \"typeParam\": \"A\" })^type,\n"
+            + "  null_type~type(null)^null_type\n"
+            + ")~bool^equals").Type(Decls.Bool),
+            // NOTE: original
+            /*
             new TestCase().I("type(type) == type")
                 .R("_==_(\n" + "\t\t  type(\n" + "\t\t    type~type(type())^type\n" +
                    "\t\t  )~type(type(type()))^type,\n" + "\t\t  type~type(type())^type\n" + "\t\t)~bool^equals")
                 .Type(Decls.Bool),
+                */
+            new TestCase().I("type(type) == type").R(
+            "_==_(\n"
+            + "  type(\n"
+            + "    type~type(type)^type\n"
+            + "  )~type({ \"typeParam\": \"A\" })^type,\n"
+            + "  type~type(type)^type\n"
+            + ")~bool^equals").Type(Decls.Bool),
+            
             new TestCase().I("name in [1, 2u, 'string']")
                 .Env(new Env().Idents(Decls.NewVar("name", Decls.String)).Functions(Decls.NewFunction(Operator.In.id,
                     Decls.NewOverload(Overloads.InList,
@@ -570,9 +611,16 @@ public class CheckerTest
                                                         "\t\t\t[\n" + "\t\t\t\t1~int\n" + "\t\t\t]~list(int)\n" +
                                                         "\t\t)~list(dyn)^add_list")
                 .Type(Decls.NewListType(Decls.Dyn)),
+            // NOTE: original
+            /*
             new TestCase().I("[].map(x, [].map(y, x in y && y in x))").Error(
                 "ERROR: <input>:1:33: found no matching overload for '@in' applied to '(type_param: \"_var2\", type_param: \"_var0\")'\n" +
                 " | [].map(x, [].map(y, x in y && y in x))\n" + " | ................................^"),
+                */
+            new TestCase().I("[].map(x, [].map(y, x in y && y in x))").Error(
+            "ERROR: <input>:1:33: found no matching overload for '@in' applied to '({ \"typeParam\": \"_var2\" }, { \"typeParam\": \"_var0\" })'\n"
+            + " | [].map(x, [].map(y, x in y && y in x))\n"
+            + " | ................................^"),
             new TestCase().I("args.user[\"myextension\"].customAttributes.filter(x, x.name == \"hobbies\")").R(
                     "__comprehension__(\n" + "\t\t\t// Variable\n" + "\t\t\tx,\n" + "\t\t\t// Target\n" +
                     "\t\t\t_[_](\n" + "\t\t\targs~map(string, dyn)^args.user~dyn,\n" +
@@ -669,7 +717,8 @@ public class CheckerTest
         if (checkResult.HasErrors())
         {
             var errorString = checkResult.Errors.ToDisplayString();
-            if (!ReferenceEquals(tc.error, null))
+                bool b = errorString.Equals(tc.error);
+            if (!ReferenceEquals(tc.error, null)) 
                 Assert.That(errorString, Is.EqualTo(tc.error));
             else
                 Assert.Fail("Unexpected type-check errors: {0}", errorString);
@@ -689,6 +738,7 @@ public class CheckerTest
             var actualStr = Printer.Print(checkResult.CheckedExpr.Expr, checkResult.CheckedExpr);
             var actualCmp = Regex.Replace(actualStr, "[ \n\t]", "");
             var rCmp = Regex.Replace(tc.r, "[ \n\t]", "");
+            bool b = actualCmp.Equals(rCmp);
             Assert.That(actualCmp, Is.EqualTo(rCmp));
         }
     }

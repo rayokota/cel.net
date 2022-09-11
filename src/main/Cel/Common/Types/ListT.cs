@@ -91,8 +91,9 @@ public abstract class ListT : BaseVal, Lister
                 return array;
             }
 
-            var isGenericList = typeDesc.IsGenericType && typeDesc.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>));
-            if (isGenericList || typeDesc.IsAssignableFrom(typeof(IList)) || typeDesc == typeof(object)) return ToArrayList();
+            var isGenericList = typeDesc.IsGenericType && 
+            (typeDesc.GetGenericTypeDefinition() == typeof(List<>) || typeDesc.GetGenericTypeDefinition() == typeof(IList<>));
+            if (isGenericList || typeof(IList).IsAssignableFrom(typeDesc) || typeDesc == typeof(object)) return ToArrayList();
 
             if (typeDesc == typeof(ListValue)) return ToPbListValue();
 
