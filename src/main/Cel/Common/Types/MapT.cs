@@ -193,9 +193,10 @@ public abstract class MapT : BaseVal, IMapper, IContainer, IIndexer, IIterableT,
             return Types.BoolOf(map.ContainsKey(value));
         }
 
-        public override IVal? Get(IVal index)
+        public override IVal Get(IVal index)
         {
             map.TryGetValue(index, out var v);
+            if (v == null) return Err.NoSuchField(index.Value());
             return v;
         }
 
