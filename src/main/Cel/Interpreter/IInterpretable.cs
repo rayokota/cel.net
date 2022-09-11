@@ -174,7 +174,7 @@ public interface IInterpretableAttribute : IInterpretable, IQualifier,
     /// <summary>
     ///     Resolve returns the value of the Attribute given the current Activation.
     /// </summary>
-    object? Resolve(IActivation act);
+    object Resolve(IActivation act);
 }
 
 public interface IInterpretableCall : IInterpretable
@@ -1275,7 +1275,7 @@ public sealed class EvalWatchAttr : ICoster, IInterpretableAttribute,
         return attr.Qualify(vars, obj);
     }
 
-    public object? Resolve(IActivation act)
+    public object Resolve(IActivation act)
     {
         return attr.Resolve(act);
     }
@@ -1753,7 +1753,7 @@ public sealed class EvalAttr : AbstractEval, IInterpretableAttribute,
     /// <summary>
     ///     Resolve proxies to the Attribute's Resolve method.
     /// </summary>
-    public object? Resolve(IActivation ctx)
+    public object Resolve(IActivation ctx)
     {
         return attr.Resolve(ctx);
     }

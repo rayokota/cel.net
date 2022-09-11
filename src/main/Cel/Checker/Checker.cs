@@ -668,7 +668,7 @@ public sealed class Checker
     {
         if (previous == null) return current;
 
-        if (IsAssignable(previous, current)) return Types.MostGeneral(previous, current);
+        if (IsAssignable(previous, current!)) return Types.MostGeneral(previous, current);
 
         if (DynAggregateLiteralElementTypesEnabled()) return Decls.Dyn;
 
@@ -759,7 +759,7 @@ public sealed class Checker
         if (!IsAssignable(t, GetType(e))) errors.TypeMismatch(LocationByExpr(e), t, GetType(e));
     }
 
-    internal static OverloadResolution NewResolution(Reference? checkedRef, Type t)
+    internal static OverloadResolution NewResolution(Reference checkedRef, Type t)
     {
         return new OverloadResolution(checkedRef, t);
     }
@@ -839,10 +839,10 @@ public sealed class Checker
 
     internal sealed class OverloadResolution
     {
-        internal readonly Reference? reference;
+        internal readonly Reference reference;
         internal readonly Type type;
 
-        public OverloadResolution(Reference? reference, Type type)
+        public OverloadResolution(Reference reference, Type type)
         {
             this.reference = reference;
             this.type = type;

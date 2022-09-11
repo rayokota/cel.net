@@ -29,12 +29,12 @@ public sealed class Ast
     internal readonly IDictionary<long, Reference> refMap;
     internal readonly IDictionary<long, Type> typeMap;
 
-    public Ast(Expr? expr, SourceInfo info, ISource source) : this(expr, info, source,
+    public Ast(Expr expr, SourceInfo info, ISource source) : this(expr, info, source,
         new Dictionary<long, Reference>(), new Dictionary<long, Type>())
     {
     }
 
-    public Ast(Expr? expr, SourceInfo info, ISource source, IDictionary<long, Reference> refMap,
+    public Ast(Expr expr, SourceInfo info, ISource source, IDictionary<long, Reference> refMap,
         IDictionary<long, Type> typeMap)
     {
         Expr = expr;
@@ -47,7 +47,7 @@ public sealed class Ast
     /// <summary>
     ///     Expr returns the proto serializable instance of the parsed/checked expression.
     /// </summary>
-    public Expr? Expr { get; }
+    public Expr Expr { get; }
 
     /// <summary>
     ///     IsChecked returns whether the Ast value has been successfully type-checked.

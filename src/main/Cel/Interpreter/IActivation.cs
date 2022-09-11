@@ -1,4 +1,5 @@
-﻿using Cel.Common.Types.Ref;
+﻿using Cel.Common.Types;
+using Cel.Common.Types.Ref;
 
 /*
  * Copyright (C) 2022 Robert Yokota
@@ -29,7 +30,7 @@ public interface IActivation
     ///     ResolveName returns a value from the activation by qualified name, or false if the name could
     ///     not be found.
     /// </summary>
-    object ResolveName(string name);
+    object? ResolveName(string name);
 
     /// <summary>
     ///     Parent returns the parent of the current activation, may be nil. If non-nil, the parent will be
@@ -187,7 +188,7 @@ public sealed class HierarchicalActivation : IActivation
     /// <summary>
     ///     ResolveName implements the Activation interface method.
     /// </summary>
-    public object ResolveName(string name)
+    public object? ResolveName(string name)
     {
         var @object = child.ResolveName(name);
         if (@object != null) return @object;
@@ -226,7 +227,7 @@ public sealed class PartActivation : IPartialActivation
         return @delegate.Parent();
     }
 
-    public object ResolveName(string name)
+    public object? ResolveName(string name)
     {
         return @delegate.ResolveName(name);
     }
@@ -267,7 +268,7 @@ public sealed class VarActivation : IActivation
     /// <summary>
     ///     ResolveName implements the Activation interface method.
     /// </summary>
-    public object ResolveName(string name)
+    public object? ResolveName(string name)
     {
         if (name.Equals(this.name)) return val;
 
