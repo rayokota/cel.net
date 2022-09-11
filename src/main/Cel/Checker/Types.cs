@@ -185,7 +185,7 @@ public sealed class Types
     /// <summary>
     ///     isDyn returns true if the input t is either type DYN or a well-known ANY message.
     /// </summary>
-    internal static bool IsDyn(Type? t)
+    internal static bool IsDyn(Type t)
     {
         // Note: object type values that are well-known and map to a DYN value in practice
         // are sanitized prior to being added to the environment.
@@ -203,7 +203,7 @@ public sealed class Types
     /// <summary>
     ///     isDynOrError returns true if the input is either an Error, DYN, or well-known ANY message.
     /// </summary>
-    internal static bool IsDynOrError(Type? t)
+    internal static bool IsDynOrError(Type t)
     {
         if (KindOf(t) == Kind.kindError) return true;
 
@@ -214,7 +214,7 @@ public sealed class Types
     ///     isEqualOrLessSpecific checks whether one type is equal or less specific than the other one. A
     ///     type is less specific if it matches the other type using the DYN type.
     /// </summary>
-    internal static bool IsEqualOrLessSpecific(Type? t1, Type? t2)
+    internal static bool IsEqualOrLessSpecific(Type t1, Type t2)
     {
         var kind1 = KindOf(t1);
         var kind2 = KindOf(t2);
@@ -280,7 +280,7 @@ public sealed class Types
     /// <summary>
     ///     internalIsAssignable returns true if t1 is assignable to t2.
     /// </summary>
-    internal static bool InternalIsAssignable(Mapping m, Type t1, Type? t2)
+    internal static bool InternalIsAssignable(Mapping m, Type t1, Type t2)
     {
         // A type is always assignable to itself.
         // Early terminate the call to avoid cases of infinite recursion.
@@ -432,7 +432,7 @@ public sealed class Types
     /// <summary>
     ///     internalIsAssignableNull returns true if the type is nullable.
     /// </summary>
-    internal static bool InternalIsAssignableNull(Type t)
+    internal static bool InternalIsAssignableNull(Type? t)
     {
         switch (KindOf(t))
         {
@@ -467,7 +467,7 @@ public sealed class Types
     /// <summary>
     ///     isAssignable returns an updated type substitution mapping if t1 is assignable to t2.
     /// </summary>
-    internal static Mapping? IsAssignable(Mapping m, Type t1, Type? t2)
+    internal static Mapping? IsAssignable(Mapping m, Type t1, Type t2)
     {
         var mCopy = m.Copy();
         if (InternalIsAssignable(mCopy, t1, t2)) return mCopy;
@@ -527,7 +527,7 @@ public sealed class Types
     /// <summary>
     ///     mostGeneral returns the more general of two types which are known to unify.
     /// </summary>
-    internal static Type? MostGeneral(Type? t1, Type? t2)
+    internal static Type MostGeneral(Type t1, Type t2)
     {
         if (IsEqualOrLessSpecific(t1, t2)) return t1;
 
@@ -539,7 +539,7 @@ public sealed class Types
     ///     other type. This is a standard requirement for type unification, commonly referred to as the
     ///     "occurs check".
     /// </summary>
-    internal static bool NotReferencedIn(Mapping m, Type t, Type? withinType)
+    internal static bool NotReferencedIn(Mapping m, Type t, Type withinType)
     {
         if (t.Equals(withinType)) return false;
 
@@ -581,7 +581,7 @@ public sealed class Types
     ///     substitute replaces all direct and indirect occurrences of bound type parameters. Unbound type
     ///     parameters are replaced by DYN if typeParamToDyn is true.
     /// </summary>
-    internal static Type Substitute(Mapping m, Type? t, bool typeParamToDyn)
+    internal static Type Substitute(Mapping m, Type t, bool typeParamToDyn)
     {
         var tSub = m.Find(t);
         if (tSub != null) return Substitute(m, tSub, typeParamToDyn);

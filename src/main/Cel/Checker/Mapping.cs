@@ -42,7 +42,7 @@ public sealed class Mapping
         return new Mapping(new Dictionary<string, Type>(), new Dictionary<Type, string>());
     }
 
-    private string KeyForType(Type? t)
+    private string KeyForType(Type t)
     {
         // The lookup by `Type` called very often when a script's being checked, so this saves
         // quite a lot.
@@ -60,7 +60,7 @@ public sealed class Mapping
         mapping[KeyForType(from)] = to;
     }
 
-    internal Type? Find(Type? from)
+    internal Type? Find(Type from)
     {
         mapping.TryGetValue(KeyForType(from), out var type);
         return type;

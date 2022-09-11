@@ -688,7 +688,7 @@ public sealed class Checker
         return Decls.NewTypeParamType(string.Format("_var{0:D}", id));
     }
 
-    internal bool IsAssignable(Type t1, Type? t2)
+    internal bool IsAssignable(Type t1, Type t2)
     {
         var subs = Types.IsAssignable(mappings, t1, t2);
         if (subs != null)
