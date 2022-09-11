@@ -136,13 +136,13 @@ public sealed class Container
         {
             var qn = name.Substring(1);
             alias = FindAlias(qn);
-            if (!ReferenceEquals(alias, null)) return new[] { alias };
+            if (alias != null) return new[] { alias };
 
             return new[] { qn };
         }
 
         alias = FindAlias(name);
-        if (!ReferenceEquals(alias, null)) return new[] { alias };
+        if (alias != null) return new[] { alias };
 
         if (ReferenceEquals(Name(), null) || Name().Length == 0) return new[] { name };
 
@@ -186,7 +186,7 @@ public sealed class Container
         }
 
         AliasSet().TryGetValue(simple, out var alias);
-        if (ReferenceEquals(alias, null)) return null;
+        if (alias == null) return null;
 
         return alias + qualifier;
     }
@@ -206,7 +206,7 @@ public sealed class Container
                 if (sel.TestOnly) return null;
 
                 var qual = ToQualifiedName(sel.Operand);
-                if (!ReferenceEquals(qual, null)) return qual + "." + sel.Field;
+                if (qual != null) return qual + "." + sel.Field;
 
                 break;
         }
@@ -298,7 +298,7 @@ public sealed class Container
                     kind, qualifiedName));
 
             c.AliasSet().TryGetValue(alias, out var aliasRef);
-            if (!ReferenceEquals(aliasRef, null))
+            if (aliasRef != null)
                 throw new ArgumentException(string.Format(
                     "{0} collides with existing reference: name={1}, {2}={3}, existing={4}", kind, qualifiedName,
                     kind, alias, aliasRef));

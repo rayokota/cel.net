@@ -327,7 +327,7 @@ public sealed class Checker
         }
 
         var qualifiedPrefix = Container.ToQualifiedName(target);
-        if (!ReferenceEquals(qualifiedPrefix, null))
+        if (qualifiedPrefix != null)
         {
             var maybeQualifiedName = qualifiedPrefix + "." + fnName;
             fn = env.LookupFunction(maybeQualifiedName);

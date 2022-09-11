@@ -128,7 +128,7 @@ public sealed class Macro
     internal static Expr MakeQuantifier(QuantifierKind kind, IExprHelper eh, Expr target, IList<Expr> args)
     {
         var v = extractIdent(args[0]);
-        if (ReferenceEquals(v, null))
+        if (v == null)
         {
             var location = eh.OffsetLocation(args[0].Id);
             throw new ErrorWithLocation(location, "argument must be a simple name");
@@ -203,7 +203,7 @@ public sealed class Macro
     internal static Expr makeFilter(IExprHelper eh, Expr target, IList<Expr> args)
     {
         var v = extractIdent(args[0]);
-        if (ReferenceEquals(v, null)) throw new ErrorWithLocation(null, "argument is not an identifier");
+        if (v == null) throw new ErrorWithLocation(null, "argument is not an identifier");
 
         var filter = args[1];
         var accuExpr = eh.Ident(AccumulatorName);

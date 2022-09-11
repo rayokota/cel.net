@@ -718,22 +718,22 @@ public class CheckerTest
         {
             var errorString = checkResult.Errors.ToDisplayString();
             var b = errorString.Equals(tc.error);
-            if (!ReferenceEquals(tc.error, null))
+            if (tc.error != null)
                 Assert.That(errorString, Is.EqualTo(tc.error));
             else
                 Assert.Fail("Unexpected type-check errors: {0}", errorString);
         }
-        else if (!ReferenceEquals(tc.error, null))
+        else if (tc.error != null)
         {
             Assert.That(tc.error, Is.Null);
         }
 
         var actual = checkResult.CheckedExpr.TypeMap[parsed.Expr.Id];
-        if (ReferenceEquals(tc.error, null))
+        if (tc.error == null)
             if (actual == null || !actual.Equals(tc.type))
                 Assert.Fail("Type Error: '{0}' vs expected '{1}'", actual, tc.type);
 
-        if (!ReferenceEquals(tc.r, null))
+        if (tc.r != null)
         {
             var actualStr = Printer.Print(checkResult.CheckedExpr.Expr, checkResult.CheckedExpr);
             var actualCmp = Regex.Replace(actualStr, "[ \n\t]", "");

@@ -613,7 +613,7 @@ internal class InterpreterTest
         {
             Assert.That(got, Is.EqualTo(want));
         }
-        else if (!ReferenceEquals(tc.err, null))
+        else if (tc.err != null)
         {
             Assert.That(got, Is.InstanceOf(typeof(Err)));
         }
@@ -652,7 +652,7 @@ internal class InterpreterTest
             {
                 Assert.That(got, Is.EqualTo(want));
             }
-            else if (!ReferenceEquals(tc.err, null))
+            else if (tc.err != null)
             {
                 Assert.That(got, Is.InstanceOf(typeof(Err)));
             }
@@ -959,7 +959,7 @@ internal class InterpreterTest
             var errValStr = errVal.ToString();
             Assert.That(errValStr, Is.EqualTo(err.Message));
 
-            if (!ReferenceEquals(tc.err, null)) Assert.That(errValStr, Does.Contain(tc.err));
+            if (tc.err != null) Assert.That(errValStr, Does.Contain(tc.err));
         }
     }
 

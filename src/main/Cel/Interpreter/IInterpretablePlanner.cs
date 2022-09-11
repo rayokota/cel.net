@@ -704,7 +704,7 @@ public sealed class Planner : IInterpretablePlanner
         // Handle the situation where the function target actually indicates a qualified function
         // name.
         var qualifiedPrefix = ToQualifiedName(target);
-        if (!ReferenceEquals(qualifiedPrefix, null))
+        if (qualifiedPrefix != null)
         {
             var maybeQualifiedName = qualifiedPrefix + "." + fnName;
             foreach (var qualifiedName in container.ResolveCandidateNames(maybeQualifiedName))
