@@ -163,7 +163,7 @@ public sealed class Db
     ///     DescribeEnum takes a qualified enum name and returns an `EnumDescription` if it exists in the
     ///     `pb.Db`.
     /// </summary>
-    public EnumValueDescription DescribeEnum(string enumName)
+    public EnumValueDescription? DescribeEnum(string enumName)
     {
         enumName = FileDescription.SanitizeProtoName(enumName);
         revFileDescriptorMap.TryGetValue(enumName, out var fd);
@@ -173,7 +173,7 @@ public sealed class Db
     /// <summary>
     ///     DescribeType returns a `TypeDescription` for the `typeName` if it exists in the `pb.Db`.
     /// </summary>
-    public PbTypeDescription DescribeType(string typeName)
+    public PbTypeDescription? DescribeType(string typeName)
     {
         typeName = FileDescription.SanitizeProtoName(typeName);
         revFileDescriptorMap.TryGetValue(typeName, out var fd);

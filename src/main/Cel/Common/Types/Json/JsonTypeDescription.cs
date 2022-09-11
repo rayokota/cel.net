@@ -163,7 +163,7 @@ public sealed class JsonTypeDescription : ITypeDescription
         return pbType;
     }
 
-    public FieldType FieldType(string fieldName)
+    public FieldType? FieldType(string fieldName)
     {
         fieldTypes.TryGetValue(fieldName, out var ft);
         return ft;

@@ -97,7 +97,7 @@ public sealed class AstPruner
         return expr;
     }
 
-    internal Expr MaybeCreateLiteral(long id, IVal v)
+    internal Expr? MaybeCreateLiteral(long id, IVal v)
     {
         var constant = new Constant();
         var t = v.Type();
@@ -227,7 +227,7 @@ public sealed class AstPruner
         return null;
     }
 
-    internal Expr Prune(Expr node)
+    internal Expr? Prune(Expr? node)
     {
         if (node == null) return null;
 

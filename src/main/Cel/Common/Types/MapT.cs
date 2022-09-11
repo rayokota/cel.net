@@ -193,7 +193,7 @@ public abstract class MapT : BaseVal, IMapper, IContainer, IIndexer, IIterableT,
             return Types.BoolOf(map.ContainsKey(value));
         }
 
-        public override IVal Get(IVal index)
+        public override IVal? Get(IVal index)
         {
             map.TryGetValue(index, out var v);
             return v;
@@ -204,7 +204,7 @@ public abstract class MapT : BaseVal, IMapper, IContainer, IIndexer, IIterableT,
             return IntT.IntOf(map.Count);
         }
 
-        public override IVal Find(IVal key)
+        public override IVal? Find(IVal key)
         {
             map.TryGetValue(key, out var v);
             return v;

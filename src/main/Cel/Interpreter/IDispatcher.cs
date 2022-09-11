@@ -89,7 +89,7 @@ public sealed class DefaultDispatcher : IDispatcher
     /// <summary>
     ///     FindOverload implements the Dispatcher.FindOverload interface method.
     /// </summary>
-    public Overload FindOverload(string overload)
+    public Overload? FindOverload(string overload)
     {
         overloads.TryGetValue(overload, out var o);
         if (o != null) return o;

@@ -72,7 +72,7 @@ public sealed class EvalStateImpl : IEvalState
     /// <summary>
     ///     Value is an implementation of the EvalState interface method.
     /// </summary>
-    public IVal Value(long id)
+    public IVal? Value(long id)
     {
         values.TryGetValue(id, out var v);
         return v;

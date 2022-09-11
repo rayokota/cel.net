@@ -84,7 +84,7 @@ public sealed class FileDescription
     ///     GetEnumDescription returns an EnumDescription for a qualified enum value name declared within
     ///     the .proto file.
     /// </summary>
-    public EnumValueDescription GetEnumDescription(string enumName)
+    public EnumValueDescription? GetEnumDescription(string enumName)
     {
         enums.TryGetValue(SanitizeProtoName(enumName), out var ed);
         return ed;
@@ -94,7 +94,7 @@ public sealed class FileDescription
     ///     GetTypeDescription returns a TypeDescription for a qualified protobuf message type name
     ///     declared within the .proto file.
     /// </summary>
-    public PbTypeDescription GetTypeDescription(string typeName)
+    public PbTypeDescription? GetTypeDescription(string typeName)
     {
         types.TryGetValue(SanitizeProtoName(typeName), out var pd);
         return pd;

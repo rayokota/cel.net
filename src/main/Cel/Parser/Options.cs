@@ -35,7 +35,7 @@ public sealed class Options
 
     public int ExpressionSizeCodePointLimit { get; }
 
-    public Macro GetMacro(string name)
+    public Macro? GetMacro(string name)
     {
         macros.TryGetValue(name, out var macro);
         return macro;

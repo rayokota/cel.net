@@ -71,7 +71,7 @@ public sealed class JsonRegistry : ITypeRegistry
         return enumVal.OrdinalValue();
     }
 
-    public IVal FindIdent(string identName)
+    public IVal? FindIdent(string identName)
     {
         knownTypesByName.TryGetValue(identName, out var td);
         if (td != null) return td.Type();
@@ -81,14 +81,14 @@ public sealed class JsonRegistry : ITypeRegistry
         return null;
     }
 
-    public Google.Api.Expr.V1Alpha1.Type FindType(string typeName)
+    public Google.Api.Expr.V1Alpha1.Type? FindType(string typeName)
     {
         knownTypesByName.TryGetValue(typeName, out var td);
         if (td == null) return null;
         return td.PbType();
     }
 
-    public FieldType FindFieldType(string messageType, string fieldName)
+    public FieldType? FindFieldType(string messageType, string fieldName)
     {
         knownTypesByName.TryGetValue(messageType, out var td);
         if (td == null) return null;

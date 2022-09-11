@@ -131,7 +131,7 @@ public sealed class PbTypeDescription : Description, ITypeDescription
     /// <summary>
     ///     FieldByName returns (FieldDescription, true) if the field name is declared within the type.
     /// </summary>
-    public FieldDescription FieldByName(string name)
+    public FieldDescription? FieldByName(string name)
     {
         fieldMap.TryGetValue(name, out var fd);
         return fd;
@@ -451,8 +451,6 @@ public sealed class PbTypeDescription : Description, ITypeDescription
     /// </summary>
     internal static Message ZeroValueOf(Message msg)
     {
-        if (msg == null) return null;
-
         var typeName = msg.Descriptor.FullName;
         return zeroValueMap.TryGetValue(typeName, out var result) ? result : msg;
     }

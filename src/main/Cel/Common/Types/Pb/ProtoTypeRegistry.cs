@@ -74,7 +74,7 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
         return IntT.IntOf(enumVal.Value());
     }
 
-    public FieldType FindFieldType(string messageType, string fieldName)
+    public FieldType? FindFieldType(string messageType, string fieldName)
     {
         var msgType = pbdb.DescribeType(messageType);
         if (msgType == null) return null;
@@ -85,7 +85,7 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
         return new FieldType(field.CheckedType(), field.HasField, field.GetField);
     }
 
-    public IVal FindIdent(string identName)
+    public IVal? FindIdent(string identName)
     {
         revTypeMap.TryGetValue(identName, out var t);
         if (t != null) return t;
@@ -96,7 +96,7 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
         return null;
     }
 
-    public Google.Api.Expr.V1Alpha1.Type FindType(string typeName)
+    public Google.Api.Expr.V1Alpha1.Type? FindType(string typeName)
     {
         if (pbdb.DescribeType(typeName) == null) return null;
 

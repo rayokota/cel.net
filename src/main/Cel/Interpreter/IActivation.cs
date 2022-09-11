@@ -145,7 +145,7 @@ public sealed class MapActivation : IActivation
     /// <summary>
     ///     ResolveName implements the Activation interface method.
     /// </summary>
-    public object ResolveName(string name)
+    public object? ResolveName(string name)
     {
         bindings.TryGetValue(name, out var obj);
         if (obj == null) return null;
