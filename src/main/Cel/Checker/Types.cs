@@ -25,7 +25,7 @@ public sealed class Types
     /// <summary>
     ///     FormatCheckedType converts a type message into a string representation.
     /// </summary>
-    public static string FormatCheckedType(Type t)
+    public static string FormatCheckedType(Type? t)
     {
         // This is a very hot method.
 
@@ -280,7 +280,7 @@ public sealed class Types
     /// <summary>
     ///     internalIsAssignable returns true if t1 is assignable to t2.
     /// </summary>
-    internal static bool InternalIsAssignable(Mapping m, Type t1, Type t2)
+    internal static bool InternalIsAssignable(Mapping m, Type? t1, Type? t2)
     {
         // A type is always assignable to itself.
         // Early terminate the call to avoid cases of infinite recursion.
@@ -467,7 +467,7 @@ public sealed class Types
     /// <summary>
     ///     isAssignable returns an updated type substitution mapping if t1 is assignable to t2.
     /// </summary>
-    internal static Mapping? IsAssignable(Mapping m, Type t1, Type t2)
+    internal static Mapping? IsAssignable(Mapping m, Type? t1, Type? t2)
     {
         var mCopy = m.Copy();
         if (InternalIsAssignable(mCopy, t1, t2)) return mCopy;

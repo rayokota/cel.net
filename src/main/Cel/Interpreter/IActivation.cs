@@ -221,7 +221,7 @@ public sealed class PartActivation : IPartialActivation
         this.unknowns = unknowns;
     }
 
-    public IActivation Parent()
+    public IActivation? Parent()
     {
         return @delegate.Parent();
     }

@@ -158,10 +158,10 @@ public sealed class AttributePattern
     /// </summary>
     public sealed class AttributeQualifierPattern
     {
-        internal readonly object value;
+        internal readonly object? value;
         internal readonly bool wildcard;
 
-        internal AttributeQualifierPattern(bool wildcard, object value)
+        internal AttributeQualifierPattern(bool wildcard, object? value)
         {
             this.wildcard = wildcard;
             this.value = value;

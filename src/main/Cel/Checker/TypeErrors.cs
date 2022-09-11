@@ -108,7 +108,7 @@ public sealed class TypeErrors : Errors
             Types.FormatCheckedType(t));
     }
 
-    internal void TypeMismatch(ILocation l, Type expected, Type actual)
+    internal void TypeMismatch(ILocation l, Type? expected, Type? actual)
     {
         ReportError(l, "expected type '{0}' but found '{1}'", Types.FormatCheckedType(expected),
             Types.FormatCheckedType(actual));
@@ -126,7 +126,7 @@ public sealed class TypeErrors : Errors
         return result.ToString();
     }
 
-    internal static void FormatFunction(StringBuilder result, Type resultType, IList<Type> argTypes,
+    internal static void FormatFunction(StringBuilder result, Type? resultType, IList<Type> argTypes,
         bool isInstance)
     {
         if (isInstance)

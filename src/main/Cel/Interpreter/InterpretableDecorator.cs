@@ -23,7 +23,7 @@ namespace Cel.Interpreter;
 ///     InterpretableDecorator is a functional interface for decorating or replacing Interpretable
 ///     expression nodes at construction time.
 /// </summary>
-public delegate IInterpretable InterpretableDecorator(IInterpretable i);
+public delegate IInterpretable? InterpretableDecorator(IInterpretable? i);
 
 public interface IInterpretableDecorator
 {

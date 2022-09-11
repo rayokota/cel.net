@@ -59,7 +59,7 @@ public sealed class Overload
     /// </summary>
     public readonly UnaryOp? unary;
 
-    private Overload(string @operator, Trait operandTrait, UnaryOp unary, BinaryOp binary, FunctionOp function)
+    private Overload(string @operator, Trait operandTrait, UnaryOp? unary, BinaryOp? binary, FunctionOp? function)
     {
         this.@operator = @operator;
         this.operandTrait = operandTrait;
@@ -68,57 +68,57 @@ public sealed class Overload
         this.function = function;
     }
 
-    public static Overload Unary(Operator @operator, UnaryOp op)
+    public static Overload Unary(Operator @operator, UnaryOp? op)
     {
         return Unary(@operator.id, op);
     }
 
-    public static Overload Unary(string @operator, UnaryOp op)
+    public static Overload Unary(string @operator, UnaryOp? op)
     {
         return Unary(@operator, Trait.None, op);
     }
 
-    public static Overload Unary(Operator @operator, Trait trait, UnaryOp op)
+    public static Overload Unary(Operator @operator, Trait trait, UnaryOp? op)
     {
         return Unary(@operator.id, trait, op);
     }
 
-    public static Overload Unary(string @operator, Trait trait, UnaryOp op)
+    public static Overload Unary(string @operator, Trait trait, UnaryOp? op)
     {
         return new Overload(@operator, trait, op, null, null);
     }
 
-    public static Overload Binary(Operator @operator, BinaryOp op)
+    public static Overload Binary(Operator @operator, BinaryOp? op)
     {
         return Binary(@operator.id, op);
     }
 
-    public static Overload Binary(string @operator, BinaryOp op)
+    public static Overload Binary(string @operator, BinaryOp? op)
     {
         return Binary(@operator, Trait.None, op);
     }
 
-    public static Overload Binary(Operator @operator, Trait trait, BinaryOp op)
+    public static Overload Binary(Operator @operator, Trait trait, BinaryOp? op)
     {
         return Binary(@operator.id, trait, op);
     }
 
-    public static Overload Binary(string @operator, Trait trait, BinaryOp op)
+    public static Overload Binary(string @operator, Trait trait, BinaryOp? op)
     {
         return new Overload(@operator, trait, null, op, null);
     }
 
-    public static Overload Function(string @operator, FunctionOp op)
+    public static Overload Function(string @operator, FunctionOp? op)
     {
         return Function(@operator, Trait.None, op);
     }
 
-    public static Overload Function(string @operator, Trait trait, FunctionOp op)
+    public static Overload Function(string @operator, Trait trait, FunctionOp? op)
     {
         return new Overload(@operator, trait, null, null, op);
     }
 
-    public static Overload overload(string @operator, Trait trait, UnaryOp unary, BinaryOp binary,
+    public static Overload NewOverload(string @operator, Trait trait, UnaryOp? unary, BinaryOp? binary,
         FunctionOp function)
     {
         return new Overload(@operator, trait, unary, binary, function);

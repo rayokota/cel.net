@@ -266,14 +266,14 @@ public class StringsLib : ILibrary
             IList<ProgramOption> list = new List<ProgramOption>();
             var functions = IProgramOption.Functions(
                 Overload.Binary(CHAR_AT, Guards.CallInStrIntOutStr(CharAt)),
-                Overload.overload(INDEX_OF, Trait.None, null, Guards.CallInStrStrOutInt(IndexOf),
+                Overload.NewOverload(INDEX_OF, Trait.None, null, Guards.CallInStrStrOutInt(IndexOf),
                     Guards.CallInStrStrIntOutInt(IndexOfOffset)),
-                Overload.overload(JOIN, Trait.None, Guards.CallInStrArrayOutStr(Join),
+                Overload.NewOverload(JOIN, Trait.None, Guards.CallInStrArrayOutStr(Join),
                     Guards.CallInStrArrayStrOutStr(JoinSepartor), null),
-                Overload.overload(LAST_INDEX_OF, Trait.None, null,
+                Overload.NewOverload(LAST_INDEX_OF, Trait.None, null,
                     Guards.CallInStrStrOutInt(LastIndexOf),
                     Guards.CallInStrStrIntOutInt(LastIndexOfOffset)),
-                Overload.Unary(LOWER_ASCII, Guards.CallInStrOutStr(LowerASCII)), Overload.overload(
+                Overload.Unary(LOWER_ASCII, Guards.CallInStrOutStr(LowerASCII)), Overload.NewOverload(
                     REPLACE, Trait.None, null, null, values =>
                     {
                         if (values.Length == 3) return Guards.CallInStrStrStrOutStr(Replace).Invoke(values);
@@ -282,9 +282,9 @@ public class StringsLib : ILibrary
 
                         return Err.MaybeNoSuchOverloadErr(null);
                     }),
-                Overload.overload(SPLIT, Trait.None, null, Guards.CallInStrStrOutStrArr(Split),
+                Overload.NewOverload(SPLIT, Trait.None, null, Guards.CallInStrStrOutStrArr(Split),
                     Guards.CallInStrStrIntOutStrArr(SplitN)),
-                Overload.overload(SUBSTR, Trait.None, null, Guards.CallInStrIntOutStr(Substr),
+                Overload.NewOverload(SUBSTR, Trait.None, null, Guards.CallInStrIntOutStr(Substr),
                     Guards.CallInStrIntIntOutStr(SubstrRange)),
                 Overload.Unary(TRIM_SPACE, Guards.CallInStrOutStr(TrimSpace)),
                 Overload.Unary(UPPER_ASCII, Guards.CallInStrOutStr(UpperASCII)));

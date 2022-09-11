@@ -257,7 +257,7 @@ public sealed class Decls
     /// <summary>
     ///     NewTypeType creates a new type designating a type.
     /// </summary>
-    public static Type NewTypeType(Type nested)
+    public static Type NewTypeType(Type? nested)
     {
         if (nested == null)
             // must set the nested field for a valid oneof option

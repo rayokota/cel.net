@@ -71,7 +71,7 @@ public sealed class Err : BaseVal
 
     public Exception? Cause { get; }
 
-    public static IVal NoSuchOverload(IVal? val, string function, IVal other)
+    public static IVal NoSuchOverload(IVal? val, string function, IVal? other)
     {
         var otName = other != null ? (other is IType ? (IType)other : other.Type()).TypeName() : "*";
         if (val != null)
@@ -129,14 +129,14 @@ public sealed class Err : BaseVal
     /// </summary>
     public static IVal UnsupportedRefValConversionErr(object val)
     {
-        return NewErr("unsupported conversion to ref.Val: ({0}){1}", val.GetType().FullName, val);
+        return NewErr("unsupported conversion to ref.Val: ({0}){1}", val.GetType().FullName!, val);
     }
 
     /// <summary>
     ///     ValOrErr either returns the existing error or create a new one. TODO: Audit the use of this
     ///     function and standardize the error messages and codes.
     /// </summary>
-    public static IVal ValOrErr(IVal val, string format, params object[] args)
+    public static IVal ValOrErr(IVal? val, string format, params object[] args)
     {
         if (val == null) return NewErr(format, args);
 
