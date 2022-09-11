@@ -1091,7 +1091,7 @@ public sealed class EvalFold : AbstractEval, ICoster
     {
         var foldRange = iterRange.Eval(ctx);
         if (!foldRange.Type().HasTrait(Trait.IterableType))
-            return Err.ValOrErr(foldRange, "got '{0}', expected iterable type", foldRange.GetType().FullName);
+            return Err.ValOrErr(foldRange, "got '{0}', expected iterable type", foldRange.GetType().FullName!);
 
         // Configure the fold activation with the accumulator initial value.
         var accuCtx = new VarActivation();

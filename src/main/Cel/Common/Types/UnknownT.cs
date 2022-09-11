@@ -116,7 +116,7 @@ public sealed class UnknownT : BaseVal
     ///     IsUnknown returns whether the element ref.Type or ref.Val is equal to the UnknownType
     ///     singleton.
     /// </summary>
-    public static bool IsUnknown(object val)
+    public static bool IsUnknown(object? val)
     {
         return val != null && val.GetType() == typeof(UnknownT);
     }

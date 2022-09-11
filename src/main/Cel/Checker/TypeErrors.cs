@@ -90,7 +90,7 @@ public sealed class TypeErrors : Errors
         ReportError(l, "'{0}' is not a message type", Types.FormatCheckedType(t));
     }
 
-    internal void FieldTypeMismatch(ILocation l, string name, Type field, Type value)
+    internal void FieldTypeMismatch(ILocation l, string name, Type field, Type? value)
     {
         ReportError(l, "expected type of field '{0}' is '{1}' but provided type is '{2}'", name,
             Types.FormatCheckedType(field), Types.FormatCheckedType(value));

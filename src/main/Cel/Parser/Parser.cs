@@ -121,17 +121,17 @@ public sealed class Parser
     public sealed class ParseResult
     {
         internal readonly Errors errors;
-        internal readonly Expr expr;
+        internal readonly Expr? expr;
         internal readonly SourceInfo sourceInfo;
 
-        public ParseResult(Expr expr, Errors errors, SourceInfo sourceInfo)
+        public ParseResult(Expr? expr, Errors errors, SourceInfo sourceInfo)
         {
             this.expr = expr;
             this.errors = errors;
             this.sourceInfo = sourceInfo;
         }
 
-        public Expr Expr => expr;
+        public Expr? Expr => expr;
 
         public Errors Errors => errors;
 
@@ -190,7 +190,7 @@ public sealed class Parser
 
     internal sealed class RecoveryLimitError : RecognitionException
     {
-        public RecoveryLimitError(string message, IRecognizer recognizer, IIntStream input, ParserRuleContext ctx) :
+        public RecoveryLimitError(string message, IRecognizer recognizer, IIntStream? input, ParserRuleContext? ctx) :
             base(message, recognizer, input, ctx)
         {
         }

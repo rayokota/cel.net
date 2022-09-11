@@ -53,7 +53,7 @@ public sealed class Checker
     ///     of protocol buffers, and a registry for errors. Returns a CheckedExpr proto, which might not be
     ///     usable if there are errors in the error registry.
     /// </summary>
-    public static CheckResult Check(Parser.Parser.ParseResult parsedExpr, ISource source, CheckerEnv? env)
+    public static CheckResult Check(Parser.Parser.ParseResult parsedExpr, ISource source, CheckerEnv env)
     {
         var errors = new TypeErrors(source);
         var c = new Checker(env, errors, Mapping.NewMapping(), 0, parsedExpr.SourceInfo);
@@ -295,7 +295,7 @@ public sealed class Checker
         foreach (var arg in args) Check(arg);
 
         // Regular static call with simple name.
-        Decl fn;
+        Decl? fn;
         if (call.Target == null || Equals(call.Target, new Expr()))
         {
             // Check for the existence of the function.
@@ -374,7 +374,7 @@ public sealed class Checker
         SetReference(e, resolution.reference);
     }
 
-    internal OverloadResolution? ResolveOverload(ILocation loc, Decl fn, Expr target, IList<Expr> args)
+    internal OverloadResolution? ResolveOverload(ILocation loc, Decl fn, Expr? target, IList<Expr> args)
     {
         IList<Type> argTypes = new List<Type>();
         if (target != null)
@@ -570,7 +570,7 @@ public sealed class Checker
         }
 
         if (CheckerEnv.IsObjectWellKnownType(messageType))
-            SetType(e, CheckerEnv.GetObjectWellKnownType(messageType));
+            SetType(e, CheckerEnv.GetObjectWellKnownType(messageType)!);
         else
             SetType(e, messageType);
 
@@ -609,8 +609,8 @@ public sealed class Checker
         if (comp.AccuInit == null) comp.AccuInit = new Expr();
         Check(comp.IterRange);
         Check(comp.AccuInit);
-        var accuType = GetType(comp.AccuInit);
-        var rangeType = GetType(comp.IterRange);
+        var accuType = GetType(comp.AccuInit)!;
+        var rangeType = GetType(comp.IterRange)!;
         Type varType;
 
         switch (Types.KindOf(rangeType))
@@ -658,13 +658,13 @@ public sealed class Checker
         Check(comp.Result);
         // Exit the comprehension scope.
         env = env.ExitScope();
-        SetType(e, GetType(comp.Result));
+        SetType(e, GetType(comp.Result)!);
     }
 
     /// <summary>
     ///     Checks compatibility of joined types, and returns the most general common type.
     /// </summary>
-    internal Type JoinTypes(ILocation loc, Type? previous, Type current)
+    internal Type? JoinTypes(ILocation loc, Type? previous, Type? current)
     {
         if (previous == null) return current;
 

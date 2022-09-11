@@ -408,12 +408,12 @@ public sealed class Env
         parsedExpr.Expr = pruned;
         var expr = Cel.AstToString(Cel.ParsedExprToAst(parsedExpr));
         var parsedIss = Parse(expr);
-        if (parsedIss.HasIssues()) throw parsedIss.Issues.Err();
+        if (parsedIss.HasIssues()) throw parsedIss.Issues.Err()!;
 
         if (!a.Checked) return parsedIss.ast;
 
         var checkedIss = Check(parsedIss.ast);
-        if (checkedIss.HasIssues()) throw checkedIss.Issues.Err();
+        if (checkedIss.HasIssues()) throw checkedIss.Issues.Err()!;
 
         return checkedIss.ast;
     }
@@ -441,16 +441,16 @@ public sealed class Env
 
     public sealed class AstIssuesTuple
     {
-        internal readonly Ast ast;
+        internal readonly Ast? ast;
         internal readonly Issues issues;
 
-        internal AstIssuesTuple(Ast ast, Issues issues)
+        internal AstIssuesTuple(Ast? ast, Issues issues)
         {
             this.ast = ast;
             this.issues = issues;
         }
 
-        public Ast Ast => ast;
+        public Ast? Ast => ast;
 
         public Issues Issues => issues;
 

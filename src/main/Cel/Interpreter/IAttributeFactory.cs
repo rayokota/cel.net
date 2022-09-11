@@ -811,7 +811,7 @@ public sealed class RelativeAttribute : ICoster, IQualifier,
         if (UnknownT.IsUnknown(v)) return v;
 
         // Next, qualify it. Qualification handles unknowns as well, so there's no need to recheck.
-        object obj = v;
+        object? obj = v;
         foreach (var qual in qualifiers)
         {
             if (obj == null) throw Err.NoSuchAttributeException(this);

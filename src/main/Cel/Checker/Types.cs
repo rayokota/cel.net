@@ -214,7 +214,7 @@ public sealed class Types
     ///     isEqualOrLessSpecific checks whether one type is equal or less specific than the other one. A
     ///     type is less specific if it matches the other type using the DYN type.
     /// </summary>
-    internal static bool IsEqualOrLessSpecific(Type t1, Type t2)
+    internal static bool IsEqualOrLessSpecific(Type? t1, Type? t2)
     {
         var kind1 = KindOf(t1);
         var kind2 = KindOf(t2);
@@ -280,7 +280,7 @@ public sealed class Types
     /// <summary>
     ///     internalIsAssignable returns true if t1 is assignable to t2.
     /// </summary>
-    internal static bool InternalIsAssignable(Mapping m, Type? t1, Type? t2)
+    internal static bool InternalIsAssignable(Mapping m, Type t1, Type? t2)
     {
         // A type is always assignable to itself.
         // Early terminate the call to avoid cases of infinite recursion.
@@ -467,7 +467,7 @@ public sealed class Types
     /// <summary>
     ///     isAssignable returns an updated type substitution mapping if t1 is assignable to t2.
     /// </summary>
-    internal static Mapping? IsAssignable(Mapping m, Type? t1, Type? t2)
+    internal static Mapping? IsAssignable(Mapping m, Type t1, Type? t2)
     {
         var mCopy = m.Copy();
         if (InternalIsAssignable(mCopy, t1, t2)) return mCopy;
@@ -489,7 +489,7 @@ public sealed class Types
     /// <summary>
     ///     kindOf returns the kind of the type as defined in the checked.proto.
     /// </summary>
-    internal static Kind KindOf(Type t)
+    internal static Kind KindOf(Type? t)
     {
         if (t == null || t.TypeKindCase == TypeKindCase.None) return Kind.kindUnknown;
 
@@ -527,7 +527,7 @@ public sealed class Types
     /// <summary>
     ///     mostGeneral returns the more general of two types which are known to unify.
     /// </summary>
-    internal static Type MostGeneral(Type t1, Type t2)
+    internal static Type? MostGeneral(Type? t1, Type? t2)
     {
         if (IsEqualOrLessSpecific(t1, t2)) return t1;
 

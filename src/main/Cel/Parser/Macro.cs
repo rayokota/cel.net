@@ -110,22 +110,22 @@ public sealed class Macro
         return new Macro(function, true, true, 0, expander);
     }
 
-    internal static Expr MakeAll(IExprHelper eh, Expr target, IList<Expr> args)
+    internal static Expr MakeAll(IExprHelper eh, Expr? target, IList<Expr> args)
     {
         return MakeQuantifier(QuantifierKind.quantifierAll, eh, target, args);
     }
 
-    internal static Expr MakeExists(IExprHelper eh, Expr target, IList<Expr> args)
+    internal static Expr MakeExists(IExprHelper eh, Expr? target, IList<Expr> args)
     {
         return MakeQuantifier(QuantifierKind.quantifierExists, eh, target, args);
     }
 
-    internal static Expr MakeExistsOne(IExprHelper eh, Expr target, IList<Expr> args)
+    internal static Expr MakeExistsOne(IExprHelper eh, Expr? target, IList<Expr> args)
     {
         return MakeQuantifier(QuantifierKind.quantifierExistsOne, eh, target, args);
     }
 
-    internal static Expr MakeQuantifier(QuantifierKind kind, IExprHelper eh, Expr target, IList<Expr> args)
+    internal static Expr MakeQuantifier(QuantifierKind kind, IExprHelper eh, Expr? target, IList<Expr> args)
     {
         var v = extractIdent(args[0]);
         if (v == null)
@@ -171,7 +171,7 @@ public sealed class Macro
         return eh.Fold(v, target, AccumulatorName, init, condition, step, result);
     }
 
-    internal static Expr makeMap(IExprHelper eh, Expr target, IList<Expr> args)
+    internal static Expr makeMap(IExprHelper eh, Expr? target, IList<Expr> args)
     {
         var v = extractIdent(args[0]);
         if (v == null) throw new ErrorWithLocation(null, "argument is not an identifier");
@@ -200,7 +200,7 @@ public sealed class Macro
         return eh.Fold(v, target, AccumulatorName, init, condition, step, accuExpr);
     }
 
-    internal static Expr makeFilter(IExprHelper eh, Expr target, IList<Expr> args)
+    internal static Expr makeFilter(IExprHelper eh, Expr? target, IList<Expr> args)
     {
         var v = extractIdent(args[0]);
         if (v == null) throw new ErrorWithLocation(null, "argument is not an identifier");
@@ -221,7 +221,7 @@ public sealed class Macro
         return null;
     }
 
-    internal static Expr makeHas(IExprHelper eh, Expr target, IList<Expr> args)
+    internal static Expr makeHas(IExprHelper eh, Expr? target, IList<Expr> args)
     {
         if (args[0].ExprKindCase == Expr.ExprKindOneofCase.SelectExpr)
         {

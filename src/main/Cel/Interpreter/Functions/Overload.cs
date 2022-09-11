@@ -119,7 +119,7 @@ public sealed class Overload
     }
 
     public static Overload NewOverload(string @operator, Trait trait, UnaryOp? unary, BinaryOp? binary,
-        FunctionOp function)
+        FunctionOp? function)
     {
         return new Overload(@operator, trait, unary, binary, function);
     }

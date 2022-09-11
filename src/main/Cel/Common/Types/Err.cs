@@ -98,7 +98,7 @@ public sealed class Err : BaseVal
     ///     MaybeNoSuchOverloadErr returns the error or unknown if the input ref.Val is one of these types,
     ///     else a new no such overload error.
     /// </summary>
-    public static IVal MaybeNoSuchOverloadErr(IVal val)
+    public static IVal MaybeNoSuchOverloadErr(IVal? val)
     {
         return ValOrErr(val, "no such overload");
     }
