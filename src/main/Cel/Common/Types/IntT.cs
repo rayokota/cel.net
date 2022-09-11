@@ -348,7 +348,7 @@ public sealed class IntT : BaseVal, IAdder, IComparer, IDivider, IModder, IMulti
         return i;
     }
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (this == o) return true;
 

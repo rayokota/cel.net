@@ -106,7 +106,7 @@ public interface ISource
     /// <summary>
     ///     Snippet returns a line of content and whether the line was found.
     /// </summary>
-    string Snippet(int line);
+    string? Snippet(int line);
 }
 
 internal sealed class SourceImpl : ISource

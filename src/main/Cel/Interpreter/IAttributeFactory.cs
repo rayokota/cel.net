@@ -980,7 +980,7 @@ public sealed class StringQualifier : ICoster, IConstantQualifierEquator,
         return celValue;
     }
 
-    public bool QualifierValueEquals(object value)
+    public bool QualifierValueEquals(object? value)
     {
         if (value is string) return this.value.Equals(value);
 
@@ -1084,7 +1084,7 @@ public sealed class IntQualifier : ICoster, IConstantQualifierEquator
         return celValue;
     }
 
-    public bool QualifierValueEquals(object value)
+    public bool QualifierValueEquals(object? value)
     {
         if (value is ulong) return false;
 
@@ -1175,7 +1175,7 @@ public sealed class UintQualifier : ICoster, IConstantQualifierEquator
         return celValue;
     }
 
-    public bool QualifierValueEquals(object value)
+    public bool QualifierValueEquals(object? value)
     {
         if (value is ulong) return this.value == (ulong)value;
 
@@ -1255,7 +1255,7 @@ public sealed class BoolQualifier : ICoster, IConstantQualifierEquator
         return celValue;
     }
 
-    public bool QualifierValueEquals(object value)
+    public bool QualifierValueEquals(object? value)
     {
         if (value is bool) return this.value == ((bool?)value).Value;
 
@@ -1318,7 +1318,7 @@ public sealed class FieldQualifier : ICoster, IConstantQualifierEquator
         return StringT.StringOf(name);
     }
 
-    public bool QualifierValueEquals(object value)
+    public bool QualifierValueEquals(object? value)
     {
         if (value is string) return name.Equals(value);
 

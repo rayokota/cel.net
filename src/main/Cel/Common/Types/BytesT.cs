@@ -210,7 +210,7 @@ public sealed class BytesT : BaseVal, IAdder, IComparer, ISizer
         return "bytes{" + Debug.Debug.FormatLiteral(constant) + "}";
     }
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (this == o) return true;
 

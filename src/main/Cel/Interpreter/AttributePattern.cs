@@ -221,7 +221,7 @@ public sealed class AttributePattern
         ///     QualifierValueEquals returns true if the input value is equal to the value held in the
         ///     Qualifier.
         /// </summary>
-        bool QualifierValueEquals(object value);
+        bool QualifierValueEquals(object? value);
     }
 
     internal sealed class PartialAttributeFactory : IAttributeFactory

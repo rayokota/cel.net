@@ -131,7 +131,7 @@ public sealed class NullT : BaseVal
         return 0;
     }
 
-    public override bool Equals(object obj)
+    public override bool Equals(object? obj)
     {
         return obj.GetType() == typeof(NullT);
     }

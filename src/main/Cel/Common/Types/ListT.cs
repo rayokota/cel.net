@@ -390,7 +390,7 @@ public abstract class ListT : BaseVal, ILister
             return array[i];
         }
 
-        public override bool Equals(object o)
+        public override bool Equals(object? o)
         {
             if (this == o) return true;
 

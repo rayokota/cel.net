@@ -221,7 +221,7 @@ public sealed class DoubleT : BaseVal, IAdder, IComparer, IDivider, IMultiplier,
         return d;
     }
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (this == o) return true;
 

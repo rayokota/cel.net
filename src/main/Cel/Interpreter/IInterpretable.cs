@@ -1355,7 +1355,7 @@ public sealed class EvalWatchConstQualEquat :
     /// <summary>
     ///     QualifierValueEquals tests whether the incoming value is equal to the qualificying constant.
     /// </summary>
-    public bool QualifierValueEquals(object value)
+    public bool QualifierValueEquals(object? value)
     {
         return @delegate.QualifierValueEquals(value);
     }

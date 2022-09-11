@@ -79,7 +79,7 @@ public abstract class ObjectT : BaseVal, IFieldTester, IIndexer, ITypeAdapterPro
         return adapter(value);
     }
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (this == o) return true;
 

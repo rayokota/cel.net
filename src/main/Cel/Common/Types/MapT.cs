@@ -210,7 +210,7 @@ public abstract class MapT : BaseVal, IMapper, IContainer, IIndexer, IIterableT,
             return v;
         }
 
-        public override bool Equals(object o)
+        public override bool Equals(object? o)
         {
             if (this == o) return true;
 

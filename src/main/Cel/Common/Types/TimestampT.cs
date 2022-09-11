@@ -301,7 +301,7 @@ public sealed class TimestampT : BaseVal, IAdder, IComparer, IReceiver, ISubtrac
         return t;
     }
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (this == o) return true;
 

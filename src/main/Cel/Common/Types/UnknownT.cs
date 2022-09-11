@@ -97,7 +97,7 @@ public sealed class UnknownT : BaseVal
         return value;
     }
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (this == o) return true;
 

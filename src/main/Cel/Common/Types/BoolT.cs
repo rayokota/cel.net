@@ -144,7 +144,7 @@ public sealed class BoolT : BaseVal, IComparer, INegater
         return b;
     }
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (this == o) return true;
 

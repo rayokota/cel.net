@@ -274,7 +274,7 @@ public sealed class DurationT : BaseVal, IAdder, IComparer, INegater, IReceiver,
         return d;
     }
 
-    public override bool Equals(object o)
+    public override bool Equals(object? o)
     {
         if (this == o) return true;
 
