@@ -1270,7 +1270,7 @@ public sealed class EvalWatchAttr : ICoster, IInterpretableAttribute,
         return attr.Adapter();
     }
 
-    public object Qualify(IActivation vars, object obj)
+    public object? Qualify(IActivation vars, object obj)
     {
         return attr.Qualify(vars, obj);
     }
@@ -1745,7 +1745,7 @@ public sealed class EvalAttr : AbstractEval, IInterpretableAttribute,
     /// <summary>
     ///     Qualify proxies to the Attribute's Qualify method.
     /// </summary>
-    public object Qualify(IActivation ctx, object obj)
+    public object? Qualify(IActivation ctx, object obj)
     {
         return attr.Qualify(ctx, obj);
     }

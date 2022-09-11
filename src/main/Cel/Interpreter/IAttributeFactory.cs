@@ -498,7 +498,7 @@ public sealed class AbsoluteAttribute : IQualifier,
     /// <summary>
     ///     Qualify is an implementation of the Qualifier interface method.
     /// </summary>
-    public object Qualify(IActivation vars, object obj)
+    public object? Qualify(IActivation vars, object obj)
     {
         var val = Resolve(vars);
         if (UnknownT.IsUnknown(val)) return val;
@@ -591,7 +591,7 @@ public sealed class ConditionalAttribute : IQualifier, IAttribute,
     /// <summary>
     ///     Qualify is an implementation of the Qualifier interface method.
     /// </summary>
-    public object Qualify(IActivation vars, object obj)
+    public object? Qualify(IActivation vars, object obj)
     {
         var val = Resolve(vars);
         if (UnknownT.IsUnknown(val)) return val;
@@ -718,7 +718,7 @@ public sealed class MaybeAttribute : ICoster, IAttribute, IQualifier
     /// <summary>
     ///     Qualify is an implementation of the Qualifier interface method.
     /// </summary>
-    public object Qualify(IActivation vars, object obj)
+    public object? Qualify(IActivation vars, object obj)
     {
         var val = Resolve(vars);
         if (UnknownT.IsUnknown(val)) return val;
@@ -854,7 +854,7 @@ public sealed class RelativeAttribute : ICoster, IQualifier,
     /// <summary>
     ///     Qualify is an implementation of the Qualifier interface method.
     /// </summary>
-    public object Qualify(IActivation vars, object obj)
+    public object? Qualify(IActivation vars, object obj)
     {
         var val = Resolve(vars);
         if (UnknownT.IsUnknown(val)) return val;
@@ -898,7 +898,7 @@ public sealed class AttrQualifier : ICoster, IAttribute
         return attribute.Resolve(a);
     }
 
-    public object Qualify(IActivation vars, object obj)
+    public object? Qualify(IActivation vars, object obj)
     {
         return attribute.Qualify(vars, obj);
     }
@@ -944,7 +944,7 @@ public sealed class StringQualifier : ICoster, IConstantQualifierEquator,
     /// <summary>
     ///     Qualify implements the Qualifier interface method.
     /// </summary>
-    public object Qualify(IActivation vars, object obj)
+    public object? Qualify(IActivation vars, object obj)
     {
         var s = value;
         if (obj is IDictionary)
@@ -1028,7 +1028,7 @@ public sealed class IntQualifier : ICoster, IConstantQualifierEquator
     /// <summary>
     ///     Qualify implements the Qualifier interface method.
     /// </summary>
-    public object Qualify(IActivation vars, object obj)
+    public object? Qualify(IActivation vars, object obj)
     {
         var i = value;
         if (obj is IDictionary)
@@ -1137,7 +1137,7 @@ public sealed class UintQualifier : ICoster, IConstantQualifierEquator
     /// <summary>
     ///     Qualify implements the Qualifier interface method.
     /// </summary>
-    public object Qualify(IActivation vars, object obj)
+    public object? Qualify(IActivation vars, object obj)
     {
         var i = value;
         if (obj is IDictionary)
@@ -1223,7 +1223,7 @@ public sealed class BoolQualifier : ICoster, IConstantQualifierEquator
     /// <summary>
     ///     Qualify implements the Qualifier interface method.
     /// </summary>
-    public object Qualify(IActivation vars, object obj)
+    public object? Qualify(IActivation vars, object obj)
     {
         var b = value;
         if (obj is IDictionary)
@@ -1303,7 +1303,7 @@ public sealed class FieldQualifier : ICoster, IConstantQualifierEquator
     /// <summary>
     ///     Qualify implements the Qualifier interface method.
     /// </summary>
-    public object Qualify(IActivation vars, object obj)
+    public object? Qualify(IActivation vars, object obj)
     {
         if (obj is IVal) obj = ((IVal)obj).Value();
 

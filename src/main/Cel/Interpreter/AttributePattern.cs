@@ -463,7 +463,7 @@ public sealed class AttributePattern
         /// <summary>
         ///     Qualify is an implementation of the Qualifier interface method.
         /// </summary>
-        public object Qualify(IActivation vars, object obj)
+        public object? Qualify(IActivation vars, object obj)
         {
             var val = Resolve(vars);
             if (UnknownT.IsUnknown(val)) return val;
