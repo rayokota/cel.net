@@ -74,7 +74,7 @@ public abstract class ObjectT : BaseVal, IFieldTester, IIndexer, ITypeAdapterPro
         return value;
     }
 
-    public virtual IVal NativeToValue(object? value)
+    public virtual IVal? NativeToValue(object? value)
     {
         return adapter(value);
     }

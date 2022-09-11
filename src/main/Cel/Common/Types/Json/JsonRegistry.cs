@@ -105,7 +105,7 @@ public sealed class JsonRegistry : ITypeRegistry
         return new JsonRegistry();
     }
 
-    public IVal NativeToValue(object? value)
+    public IVal? NativeToValue(object? value)
     {
         if (value is IVal) return (IVal)value;
         var maybe = TypeAdapterSupport.MaybeNativeToValue(ToTypeAdapter(), value);
