@@ -29,7 +29,7 @@ namespace Cel.Checker;
 
 public class CheckerTest
 {
-    internal static readonly IDictionary<string, Env> testEnvs = new Dictionary<string, Env>
+    internal static readonly IDictionary<string, Env> TestEnvs = new Dictionary<string, Env>
     {
         {
             "default",
@@ -59,29 +59,29 @@ public class CheckerTest
             new TestCase().I("12.23").R("12.23~double").Type(Decls.Double),
             new TestCase().I("null").R("null~null").Type(Decls.Null),
             new TestCase().I("b\"ABC\"").R("b\"ABC\"~bytes").Type(Decls.Bytes),
-            new TestCase().I("is").R("is~string^is").Type(Decls.String).Env(testEnvs["default"]),
-            new TestCase().I("ii").R("ii~int^ii").Type(Decls.Int).Env(testEnvs["default"]),
-            new TestCase().I("iu").R("iu~uint^iu").Type(Decls.Uint).Env(testEnvs["default"]),
-            new TestCase().I("iz").R("iz~bool^iz").Type(Decls.Bool).Env(testEnvs["default"]),
-            new TestCase().I("id").R("id~double^id").Type(Decls.Double).Env(testEnvs["default"]),
-            new TestCase().I("ix").R("ix~null^ix").Type(Decls.Null).Env(testEnvs["default"]),
-            new TestCase().I("ib").R("ib~bytes^ib").Type(Decls.Bytes).Env(testEnvs["default"]),
-            new TestCase().I("id").R("id~double^id").Type(Decls.Double).Env(testEnvs["default"]),
+            new TestCase().I("is").R("is~string^is").Type(Decls.String).Env(TestEnvs["default"]),
+            new TestCase().I("ii").R("ii~int^ii").Type(Decls.Int).Env(TestEnvs["default"]),
+            new TestCase().I("iu").R("iu~uint^iu").Type(Decls.Uint).Env(TestEnvs["default"]),
+            new TestCase().I("iz").R("iz~bool^iz").Type(Decls.Bool).Env(TestEnvs["default"]),
+            new TestCase().I("id").R("id~double^id").Type(Decls.Double).Env(TestEnvs["default"]),
+            new TestCase().I("ix").R("ix~null^ix").Type(Decls.Null).Env(TestEnvs["default"]),
+            new TestCase().I("ib").R("ib~bytes^ib").Type(Decls.Bytes).Env(TestEnvs["default"]),
+            new TestCase().I("id").R("id~double^id").Type(Decls.Double).Env(TestEnvs["default"]),
             new TestCase().I("[]").R("[]~list(dyn)").Type(Decls.NewListType(Decls.Dyn)),
             new TestCase().I("[1]").R("[1~int]~list(int)").Type(Decls.NewListType(Decls.Int)),
             new TestCase().I("[1, \"A\"]").R("[1~int, \"A\"~string]~list(dyn)")
                 .Type(Decls.NewListType(Decls.Dyn)),
             new TestCase().I("foo").R("foo~!error!").Type(Decls.Error).Error(
                 "ERROR: <input>:1:1: undeclared reference to 'foo' (in container '')\n" + " | foo\n" + " | ^"),
-            new TestCase().I("fg_s()").R("fg_s()~string^fg_s_0").Type(Decls.String).Env(testEnvs["default"]),
+            new TestCase().I("fg_s()").R("fg_s()~string^fg_s_0").Type(Decls.String).Env(TestEnvs["default"]),
             new TestCase().I("is.fi_s_s()").R("is~string^is.fi_s_s()~string^fi_s_s_0").Type(Decls.String)
-                .Env(testEnvs["default"]),
+                .Env(TestEnvs["default"]),
             new TestCase().I("1 + 2").R("_+_(1~int, 2~int)~int^add_int64").Type(Decls.Int)
-                .Env(testEnvs["default"]),
+                .Env(TestEnvs["default"]),
             new TestCase().I("1 + ii").R("_+_(1~int, ii~int^ii)~int^add_int64").Type(Decls.Int)
-                .Env(testEnvs["default"]),
+                .Env(TestEnvs["default"]),
             new TestCase().I("[1] + [2]").R("_+_([1~int]~list(int), [2~int]~list(int))~list(int)^add_list")
-                .Type(Decls.NewListType(Decls.Int)).Env(testEnvs["default"]),
+                .Type(Decls.NewListType(Decls.Int)).Env(TestEnvs["default"]),
             new TestCase().I("[] + [1,2,3,] + [4]").Type(Decls.NewListType(Decls.Int)).R("_+_(\n" + "	_+_(\n" +
                 "		[]~list(int),\n" + "		[1~int, 2~int, 3~int]~list(int))~list(int)^add_list,\n" +
                 "		[4~int]~list(int))\n" + "~list(int)^add_list"),

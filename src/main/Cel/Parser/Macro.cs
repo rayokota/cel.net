@@ -31,11 +31,11 @@ public sealed class Macro
     /// </summary>
     public static readonly IList<Macro> AllMacros = new List<Macro>
     {
-        NewGlobalMacro(Operator.Has.id, 1, makeHas), NewReceiverMacro(Operator.All.id, 2, MakeAll),
+        NewGlobalMacro(Operator.Has.id, 1, MakeHas), NewReceiverMacro(Operator.All.id, 2, MakeAll),
         NewReceiverMacro(Operator.Exists.id, 2, MakeExists),
         NewReceiverMacro(Operator.ExistsOne.id, 2, MakeExistsOne),
-        NewReceiverMacro(Operator.Map.id, 2, makeMap), NewReceiverMacro(Operator.Map.id, 3, makeMap),
-        NewReceiverMacro(Operator.Filter.id, 2, makeFilter)
+        NewReceiverMacro(Operator.Map.id, 2, MakeMap), NewReceiverMacro(Operator.Map.id, 3, MakeMap),
+        NewReceiverMacro(Operator.Filter.id, 2, MakeFilter)
     };
 
     /// <summary>
@@ -127,7 +127,7 @@ public sealed class Macro
 
     internal static Expr MakeQuantifier(QuantifierKind kind, IExprHelper eh, Expr? target, IList<Expr> args)
     {
-        var v = extractIdent(args[0]);
+        var v = ExtractIdent(args[0]);
         if (v == null)
         {
             var location = eh.OffsetLocation(args[0].Id);
@@ -171,9 +171,9 @@ public sealed class Macro
         return eh.Fold(v, target, AccumulatorName, init, condition, step, result);
     }
 
-    internal static Expr makeMap(IExprHelper eh, Expr? target, IList<Expr> args)
+    internal static Expr MakeMap(IExprHelper eh, Expr? target, IList<Expr> args)
     {
-        var v = extractIdent(args[0]);
+        var v = ExtractIdent(args[0]);
         if (v == null) throw new ErrorWithLocation(null, "argument is not an identifier");
 
         Expr fn;
@@ -200,9 +200,9 @@ public sealed class Macro
         return eh.Fold(v, target, AccumulatorName, init, condition, step, accuExpr);
     }
 
-    internal static Expr makeFilter(IExprHelper eh, Expr? target, IList<Expr> args)
+    internal static Expr MakeFilter(IExprHelper eh, Expr? target, IList<Expr> args)
     {
-        var v = extractIdent(args[0]);
+        var v = ExtractIdent(args[0]);
         if (v == null) throw new ErrorWithLocation(null, "argument is not an identifier");
 
         var filter = args[1];
@@ -214,14 +214,14 @@ public sealed class Macro
         return eh.Fold(v, target, AccumulatorName, init, condition, step, accuExpr);
     }
 
-    internal static string? extractIdent(Expr e)
+    internal static string? ExtractIdent(Expr e)
     {
         if (e.ExprKindCase == Expr.ExprKindOneofCase.IdentExpr) return e.IdentExpr.Name;
 
         return null;
     }
 
-    internal static Expr makeHas(IExprHelper eh, Expr? target, IList<Expr> args)
+    internal static Expr MakeHas(IExprHelper eh, Expr? target, IList<Expr> args)
     {
         if (args[0].ExprKindCase == Expr.ExprKindOneofCase.SelectExpr)
         {

@@ -604,7 +604,7 @@ internal class InterpreterTest
     {
         if (tc.disabled != null) return;
 
-        var prg = program(tc);
+        var prg = NewProgram(tc);
         IVal want = BoolT.True;
         if (tc.@out != null) want = (IVal)tc.@out;
 
@@ -646,7 +646,7 @@ internal class InterpreterTest
             var mode = en.Key;
             var opt = en.Value;
 
-            prg = program(tc, opt);
+            prg = NewProgram(tc, opt);
             got = prg.interpretable.Eval(prg.activation);
             if (UnknownT.IsUnknown(want))
             {
@@ -700,7 +700,7 @@ internal class InterpreterTest
         var t = new TestAllTypesPb3();
         t.MapInt64NestedType.Add(mf1);
         var inst =
-            program(
+            NewProgram(
                 new TestCase(InterpreterTestCase.nested_proto_field_with_index)
                     .Expr("pb3.map_int64_nested_type[0].child.payload.single_int32")
                     .Types(new TestAllTypesPb3())
@@ -980,7 +980,7 @@ internal class InterpreterTest
         return Container.NewContainer(Container.Name(name))!;
     }
 
-    internal static Program program(TestCase tst, params InterpretableDecorator[] opts)
+    internal static Program NewProgram(TestCase tst, params InterpretableDecorator[] opts)
     {
         // Configure the package.
         var cont = Container.DefaultContainer;
