@@ -434,7 +434,7 @@ public sealed class AttributePattern
         ///     attributeMatcher TryResolve implementation rather than the embedded NamespacedAttribute
         ///     Resolve implementation.
         /// </summary>
-        public object Resolve(IActivation vars)
+        public object? Resolve(IActivation vars)
         {
             var obj = TryResolve(vars);
             if (obj == null) throw Err.NoSuchAttributeException(this);

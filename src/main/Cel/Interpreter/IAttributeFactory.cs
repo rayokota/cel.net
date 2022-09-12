@@ -250,7 +250,7 @@ public interface IAttribute : IQualifier
     /// <summary>
     ///     Resolve returns the value of the Attribute given the current Activation.
     /// </summary>
-    object Resolve(IActivation a);
+    object? Resolve(IActivation a);
 }
 
 public interface INamespacedAttribute : IAttribute
@@ -434,7 +434,7 @@ public sealed class AbsoluteAttribute : INamespacedAttribute, ICoster
     ///     Resolve returns the resolved Attribute value given the Activation, or error if the Attribute
     ///     variable is not found, or if its Qualifiers cannot be applied successfully.
     /// </summary>
-    public object Resolve(IActivation vars)
+    public object? Resolve(IActivation vars)
     {
         var obj = TryResolve(vars);
         if (obj == null) throw Err.NoSuchAttributeException(this);
@@ -548,7 +548,7 @@ public sealed class ConditionalAttribute : IAttribute, ICoster
     /// <summary>
     ///     Resolve evaluates the condition, and then resolves the truthy or falsy branch accordingly.
     /// </summary>
-    public object Resolve(IActivation vars)
+    public object? Resolve(IActivation vars)
     {
         var val = expr.Eval(vars);
         if (val == null) throw Err.NoSuchAttributeException(this);
@@ -728,7 +728,7 @@ public sealed class MaybeAttribute : ICoster, IAttribute
     ///     Resolve follows the variable resolution rules to determine whether the attribute is a
     ///     variable or a field selection.
     /// </summary>
-    public object Resolve(IActivation vars)
+    public object? Resolve(IActivation vars)
     {
         foreach (var attr in attrs)
         {
@@ -798,7 +798,7 @@ public sealed class RelativeAttribute : ICoster, IAttribute
     /// <summary>
     ///     Resolve expression value and qualifier relative to the expression result.
     /// </summary>
-    public object Resolve(IActivation vars)
+    public object? Resolve(IActivation vars)
     {
         // First, evaluate the operand.
         var v = operand.Eval(vars);
@@ -889,7 +889,7 @@ public sealed class AttrQualifier : ICoster, IAttribute
         return attribute.AddQualifier(q);
     }
 
-    public object Resolve(IActivation a)
+    public object? Resolve(IActivation a)
     {
         return attribute.Resolve(a);
     }
