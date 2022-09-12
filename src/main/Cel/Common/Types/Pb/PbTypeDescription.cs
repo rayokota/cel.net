@@ -34,7 +34,7 @@ public sealed class PbTypeDescription : Description, ITypeDescription
     private static readonly IDictionary<Type, Func<Message, object>> MessageToObjectExact =
         new Dictionary<Type, Func<Message, object>>(ReferenceEqualityComparer.Instance);
 
-    private static readonly IDictionary<string, Message> zeroValueMap = new Dictionary<string, Message>();
+    private static readonly IDictionary<string, Message> ZeroValueMap = new Dictionary<string, Message>();
     private readonly IDictionary<string, FieldDescription> fieldMap;
     private readonly string typeName;
     private Type reflectType;
@@ -54,22 +54,22 @@ public sealed class PbTypeDescription : Description, ITypeDescription
         MessageToObjectExact[typeof(Duration)] =
             msg => AsDuration((Duration)msg);
         MessageToObjectExact[typeof(Timestamp)] = msg => AsTimestamp((Timestamp)msg);
-        zeroValueMap["google.protobuf.Any"] = (Message)Activator.CreateInstance(typeof(Any))!;
-        zeroValueMap["google.protobuf.Duration"] =
+        ZeroValueMap["google.protobuf.Any"] = (Message)Activator.CreateInstance(typeof(Any))!;
+        ZeroValueMap["google.protobuf.Duration"] =
             (Message)Activator.CreateInstance(typeof(Duration))!;
-        zeroValueMap["google.protobuf.ListValue"] = (Message)Activator.CreateInstance(typeof(ListValue))!;
-        zeroValueMap["google.protobuf.Struct"] = (Message)Activator.CreateInstance(typeof(Struct))!;
-        zeroValueMap["google.protobuf.Value"] = (Message)Activator.CreateInstance(typeof(Value))!;
-        zeroValueMap["google.protobuf.Timestamp"] = (Message)Activator.CreateInstance(typeof(Timestamp))!;
-        zeroValueMap["google.protobuf.BoolValue"] = (Message)Activator.CreateInstance(typeof(BoolValue))!;
-        zeroValueMap["google.protobuf.BytesValue"] = (Message)Activator.CreateInstance(typeof(BytesValue))!;
-        zeroValueMap["google.protobuf.DoubleValue"] = (Message)Activator.CreateInstance(typeof(DoubleValue))!;
-        zeroValueMap["google.protobuf.FloatValue"] = (Message)Activator.CreateInstance(typeof(FloatValue))!;
-        zeroValueMap["google.protobuf.Int32Value"] = (Message)Activator.CreateInstance(typeof(Int32Value))!;
-        zeroValueMap["google.protobuf.Int64Value"] = (Message)Activator.CreateInstance(typeof(Int64Value))!;
-        zeroValueMap["google.protobuf.StringValue"] = (Message)Activator.CreateInstance(typeof(StringValue))!;
-        zeroValueMap["google.protobuf.UInt32Value"] = (Message)Activator.CreateInstance(typeof(UInt32Value))!;
-        zeroValueMap["google.protobuf.UInt64Value"] = (Message)Activator.CreateInstance(typeof(UInt64Value))!;
+        ZeroValueMap["google.protobuf.ListValue"] = (Message)Activator.CreateInstance(typeof(ListValue))!;
+        ZeroValueMap["google.protobuf.Struct"] = (Message)Activator.CreateInstance(typeof(Struct))!;
+        ZeroValueMap["google.protobuf.Value"] = (Message)Activator.CreateInstance(typeof(Value))!;
+        ZeroValueMap["google.protobuf.Timestamp"] = (Message)Activator.CreateInstance(typeof(Timestamp))!;
+        ZeroValueMap["google.protobuf.BoolValue"] = (Message)Activator.CreateInstance(typeof(BoolValue))!;
+        ZeroValueMap["google.protobuf.BytesValue"] = (Message)Activator.CreateInstance(typeof(BytesValue))!;
+        ZeroValueMap["google.protobuf.DoubleValue"] = (Message)Activator.CreateInstance(typeof(DoubleValue))!;
+        ZeroValueMap["google.protobuf.FloatValue"] = (Message)Activator.CreateInstance(typeof(FloatValue))!;
+        ZeroValueMap["google.protobuf.Int32Value"] = (Message)Activator.CreateInstance(typeof(Int32Value))!;
+        ZeroValueMap["google.protobuf.Int64Value"] = (Message)Activator.CreateInstance(typeof(Int64Value))!;
+        ZeroValueMap["google.protobuf.StringValue"] = (Message)Activator.CreateInstance(typeof(StringValue))!;
+        ZeroValueMap["google.protobuf.UInt32Value"] = (Message)Activator.CreateInstance(typeof(UInt32Value))!;
+        ZeroValueMap["google.protobuf.UInt64Value"] = (Message)Activator.CreateInstance(typeof(UInt64Value))!;
     }
 
     private PbTypeDescription(string typeName, Descriptor desc, IDictionary<string, FieldDescription> fieldMap,
@@ -453,6 +453,6 @@ public sealed class PbTypeDescription : Description, ITypeDescription
     internal static Message ZeroValueOf(Message msg)
     {
         var typeName = msg.Descriptor.FullName;
-        return zeroValueMap.TryGetValue(typeName, out var result) ? result : msg;
+        return ZeroValueMap.TryGetValue(typeName, out var result) ? result : msg;
     }
 }

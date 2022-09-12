@@ -93,12 +93,12 @@ public sealed class Operator
 
     public static readonly Operator OldIn = new("OldIn", InnerEnum.OldIn, "_in_", 5, "in");
 
-    private static readonly List<Operator> valueList = new();
+    private static readonly List<Operator> ValueList = new();
     private static int nextOrdinal;
 
-    private static readonly Dictionary<string, Operator> operators;
+    private static readonly Dictionary<string, Operator> Operators;
 
-    private static readonly Dictionary<string, Operator> operatorsById;
+    private static readonly Dictionary<string, Operator> OperatorsById;
     // precedence of the operator, where the higher value means higher.
 
     public readonly string id;
@@ -125,42 +125,42 @@ public sealed class Operator
             m.Add("*", Multiply);
             m.Add("!=", NotEquals);
             m.Add("-", Subtract);
-            operators = m;
+            Operators = m;
         }
 
-        valueList.Add(Conditional);
-        valueList.Add(LogicalAnd);
-        valueList.Add(LogicalOr);
-        valueList.Add(LogicalNot);
-        valueList.Add(Equals);
-        valueList.Add(NotEquals);
-        valueList.Add(Less);
-        valueList.Add(LessEquals);
-        valueList.Add(Greater);
-        valueList.Add(GreaterEquals);
-        valueList.Add(Add);
-        valueList.Add(Subtract);
-        valueList.Add(Multiply);
-        valueList.Add(Divide);
-        valueList.Add(Modulo);
-        valueList.Add(Negate);
-        valueList.Add(Index);
-        valueList.Add(Has);
-        valueList.Add(All);
-        valueList.Add(Exists);
-        valueList.Add(ExistsOne);
-        valueList.Add(Map);
-        valueList.Add(Filter);
-        valueList.Add(NotStrictlyFalse);
-        valueList.Add(In);
-        valueList.Add(OldNotStrictlyFalse);
-        valueList.Add(OldIn);
+        ValueList.Add(Conditional);
+        ValueList.Add(LogicalAnd);
+        ValueList.Add(LogicalOr);
+        ValueList.Add(LogicalNot);
+        ValueList.Add(Equals);
+        ValueList.Add(NotEquals);
+        ValueList.Add(Less);
+        ValueList.Add(LessEquals);
+        ValueList.Add(Greater);
+        ValueList.Add(GreaterEquals);
+        ValueList.Add(Add);
+        ValueList.Add(Subtract);
+        ValueList.Add(Multiply);
+        ValueList.Add(Divide);
+        ValueList.Add(Modulo);
+        ValueList.Add(Negate);
+        ValueList.Add(Index);
+        ValueList.Add(Has);
+        ValueList.Add(All);
+        ValueList.Add(Exists);
+        ValueList.Add(ExistsOne);
+        ValueList.Add(Map);
+        ValueList.Add(Filter);
+        ValueList.Add(NotStrictlyFalse);
+        ValueList.Add(In);
+        ValueList.Add(OldNotStrictlyFalse);
+        ValueList.Add(OldIn);
 
         {
             var m = new Dictionary<string, Operator>();
             foreach (var op in Values()) m.Add(op.id, op);
 
-            operatorsById = m;
+            OperatorsById = m;
         }
     }
 
@@ -184,14 +184,14 @@ public sealed class Operator
 
     public static Operator? ById(string id)
     {
-        operatorsById.TryGetValue(id, out var op);
+        OperatorsById.TryGetValue(id, out var op);
         return op;
     }
 
     // Find the internal function name for an operator, if the input text is one.
     public static Operator? Find(string text)
     {
-        operators.TryGetValue(text, out var op);
+        Operators.TryGetValue(text, out var op);
         return op;
     }
 
@@ -219,7 +219,7 @@ public sealed class Operator
 
     public static Operator[] Values()
     {
-        return valueList.ToArray();
+        return ValueList.ToArray();
     }
 
     public int Ordinal()
@@ -234,7 +234,7 @@ public sealed class Operator
 
     public static Operator ValueOf(string name)
     {
-        foreach (var enumInstance in valueList)
+        foreach (var enumInstance in ValueList)
             if (enumInstance.nameValue == name)
                 return enumInstance;
 

@@ -55,7 +55,7 @@ public sealed class UnwrapTestCase
         Proto3pb_TestAllTypes
     }
 
-    private static readonly List<UnwrapTestCase> valueList = new();
+    private static readonly List<UnwrapTestCase> ValueList = new();
 
     internal static readonly BoolValue trueBool;
     internal static readonly BoolValue falseBool;
@@ -148,26 +148,26 @@ public sealed class UnwrapTestCase
 
     static UnwrapTestCase()
     {
-        valueList.Add(MsgDesc_zero);
-        valueList.Add(Structpb_NewBoolValue_true);
-        valueList.Add(Structpb_NewBoolValue_false);
-        valueList.Add(Structpb_NewNullValue);
-        valueList.Add(Structpb_Value);
-        valueList.Add(Structpb_NewNumberValue);
-        valueList.Add(Structpb_NewStringValue);
-        valueList.Add(Wrapperspb_Bool_false);
-        valueList.Add(Wrapperspb_Bool_true);
-        valueList.Add(Wrapperspb_Bytes);
-        valueList.Add(Wrapperspb_Double);
-        valueList.Add(Wrapperspb_Float);
-        valueList.Add(Wrapperspb_Int32);
-        valueList.Add(Wrapperspb_Int64);
-        valueList.Add(Wrapperspb_String);
-        valueList.Add(Wrapperspb_UInt32);
-        valueList.Add(Wrapperspb_UInt64);
-        valueList.Add(Timestamp);
-        valueList.Add(Duration);
-        valueList.Add(Proto3pb_TestAllTypes);
+        ValueList.Add(MsgDesc_zero);
+        ValueList.Add(Structpb_NewBoolValue_true);
+        ValueList.Add(Structpb_NewBoolValue_false);
+        ValueList.Add(Structpb_NewNullValue);
+        ValueList.Add(Structpb_Value);
+        ValueList.Add(Structpb_NewNumberValue);
+        ValueList.Add(Structpb_NewStringValue);
+        ValueList.Add(Wrapperspb_Bool_false);
+        ValueList.Add(Wrapperspb_Bool_true);
+        ValueList.Add(Wrapperspb_Bytes);
+        ValueList.Add(Wrapperspb_Double);
+        ValueList.Add(Wrapperspb_Float);
+        ValueList.Add(Wrapperspb_Int32);
+        ValueList.Add(Wrapperspb_Int64);
+        ValueList.Add(Wrapperspb_String);
+        ValueList.Add(Wrapperspb_UInt32);
+        ValueList.Add(Wrapperspb_UInt64);
+        ValueList.Add(Timestamp);
+        ValueList.Add(Duration);
+        ValueList.Add(Proto3pb_TestAllTypes);
 
         trueBool = new BoolValue();
         trueBool.Value = true;
@@ -222,7 +222,7 @@ public sealed class UnwrapTestCase
 
     public static UnwrapTestCase[] Values()
     {
-        return valueList.ToArray();
+        return ValueList.ToArray();
     }
 
     public int Ordinal()
@@ -237,7 +237,7 @@ public sealed class UnwrapTestCase
 
     public static UnwrapTestCase valueOf(string name)
     {
-        foreach (var enumInstance in valueList)
+        foreach (var enumInstance in ValueList)
             if (enumInstance.nameValue == name)
                 return enumInstance;
 

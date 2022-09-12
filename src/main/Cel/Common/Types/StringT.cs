@@ -35,16 +35,16 @@ public sealed class StringT : BaseVal, IAdder, IComparer, IMatcher, IReceiver, I
 
     public static readonly UTF8Encoding Utf8 = new(false, true);
 
-    private static readonly IDictionary<string, Func<string, IVal, IVal>> stringOneArgOverloads;
+    private static readonly IDictionary<string, Func<string, IVal, IVal>> StringOneArgOverloads;
 
     private readonly string s;
 
     static StringT()
     {
-        stringOneArgOverloads = new Dictionary<string, Func<string, IVal, IVal>>();
-        stringOneArgOverloads[Overloads.Contains] = StringContains;
-        stringOneArgOverloads[Overloads.EndsWith] = StringEndsWith;
-        stringOneArgOverloads[Overloads.StartsWith] = StringStartsWith;
+        StringOneArgOverloads = new Dictionary<string, Func<string, IVal, IVal>>();
+        StringOneArgOverloads[Overloads.Contains] = StringContains;
+        StringOneArgOverloads[Overloads.EndsWith] = StringEndsWith;
+        StringOneArgOverloads[Overloads.StartsWith] = StringStartsWith;
     }
 
     private StringT(string s)
@@ -97,7 +97,7 @@ public sealed class StringT : BaseVal, IAdder, IComparer, IMatcher, IReceiver, I
     {
         if (args.Length == 1)
         {
-            stringOneArgOverloads.TryGetValue(function, out var f);
+            StringOneArgOverloads.TryGetValue(function, out var f);
             if (f != null) return f(s, args[0]);
         }
 

@@ -19,20 +19,20 @@ namespace Cel.Common.Types;
 
 public sealed class Types
 {
-    private static readonly IDictionary<string, IType> typeNameToTypeValue = new Dictionary<string, IType>();
+    private static readonly IDictionary<string, IType> TypeNameToTypeValue = new Dictionary<string, IType>();
 
     static Types()
     {
-        typeNameToTypeValue[BoolT.BoolType.TypeName()] = BoolT.BoolType;
-        typeNameToTypeValue[BytesT.BytesType.TypeName()] = BytesT.BytesType;
-        typeNameToTypeValue[DoubleT.DoubleType.TypeName()] = DoubleT.DoubleType;
-        typeNameToTypeValue[NullT.NullType.TypeName()] = NullT.NullType;
-        typeNameToTypeValue[IntT.IntType.TypeName()] = IntT.IntType;
-        typeNameToTypeValue[ListT.ListType.TypeName()] = ListT.ListType;
-        typeNameToTypeValue[MapT.MapType.TypeName()] = MapT.MapType;
-        typeNameToTypeValue[StringT.StringType.TypeName()] = StringT.StringType;
-        typeNameToTypeValue[TypeT.TypeType.TypeName()] = TypeT.TypeType;
-        typeNameToTypeValue[UintT.UintType.TypeName()] = UintT.UintType;
+        TypeNameToTypeValue[BoolT.BoolType.TypeName()] = BoolT.BoolType;
+        TypeNameToTypeValue[BytesT.BytesType.TypeName()] = BytesT.BytesType;
+        TypeNameToTypeValue[DoubleT.DoubleType.TypeName()] = DoubleT.DoubleType;
+        TypeNameToTypeValue[NullT.NullType.TypeName()] = NullT.NullType;
+        TypeNameToTypeValue[IntT.IntType.TypeName()] = IntT.IntType;
+        TypeNameToTypeValue[ListT.ListType.TypeName()] = ListT.ListType;
+        TypeNameToTypeValue[MapT.MapType.TypeName()] = MapT.MapType;
+        TypeNameToTypeValue[StringT.StringType.TypeName()] = StringT.StringType;
+        TypeNameToTypeValue[TypeT.TypeType.TypeName()] = TypeT.TypeType;
+        TypeNameToTypeValue[UintT.UintType.TypeName()] = UintT.UintType;
     }
 
     private Types()

@@ -29,7 +29,7 @@ namespace Cel.Parser;
 
 public sealed class Parser
 {
-    private static readonly ISet<string> reservedIds = new HashSet<string>
+    private static readonly ISet<string> ReservedIds = new HashSet<string>
     {
         "as", "break", "const", "continue", "else", "false", "for", "function", "if", "import", "in", "let", "loop",
         "package", "namespace", "null", "return", "true", "var", "void", "while"
@@ -683,7 +683,7 @@ public sealed class Parser
 
             // Handle reserved identifiers.
             var id = ctx.id.Text;
-            if (reservedIds.Contains(id)) return ReportError(ctx, "reserved identifier: {0}", id);
+            if (ReservedIds.Contains(id)) return ReportError(ctx, "reserved identifier: {0}", id);
 
             identName += id;
             if (ctx.op != null)

@@ -191,7 +191,7 @@ public class StringsLib : ILibrary
 
     // whitespace characters definition from
     // https://en.wikipedia.org/wiki/Whitespace_character#Unicode
-    private static readonly ISet<char> UNICODE_WHITE_SPACES = new HashSet<char>
+    private static readonly ISet<char> UnicodeWhiteSpaces = new HashSet<char>
     {
         (char)0x0009, (char)0x000A, (char)0x000B, (char)0x000C, (char)0x000D, (char)0x0020, (char)0x0085,
         (char)0x00A0, (char)0x1680, (char)0x2000, (char)0x2001, (char)0x2002, (char)0x2003, (char)0x2004,
@@ -550,7 +550,7 @@ public class StringsLib : ILibrary
     private static bool IsWhiteSpace(char ch)
     {
         // cel-go 'trim' extension function uses strings.TrimSpace()
-        return UNICODE_WHITE_SPACES.Contains(ch);
+        return UnicodeWhiteSpaces.Contains(ch);
     }
 
     internal static string UpperASCII(string str)

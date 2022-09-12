@@ -53,7 +53,7 @@ public sealed class TypeEnum
     public static readonly TypeEnum Uint = new(InnerEnum.Uint, "uint");
     public static readonly TypeEnum Unknown = new(InnerEnum.Unknown, "unknown");
 
-    private static readonly List<TypeEnum> valueList = new();
+    private static readonly List<TypeEnum> ValueList = new();
     private static int nextOrdinal;
 
     public readonly InnerEnum InnerEnumValue;
@@ -62,21 +62,21 @@ public sealed class TypeEnum
 
     static TypeEnum()
     {
-        valueList.Add(Bool);
-        valueList.Add(Bytes);
-        valueList.Add(Double);
-        valueList.Add(Duration);
-        valueList.Add(Err);
-        valueList.Add(Int);
-        valueList.Add(List);
-        valueList.Add(Map);
-        valueList.Add(Null);
-        valueList.Add(Object);
-        valueList.Add(String);
-        valueList.Add(Timestamp);
-        valueList.Add(Type);
-        valueList.Add(Uint);
-        valueList.Add(Unknown);
+        ValueList.Add(Bool);
+        ValueList.Add(Bytes);
+        ValueList.Add(Double);
+        ValueList.Add(Duration);
+        ValueList.Add(Err);
+        ValueList.Add(Int);
+        ValueList.Add(List);
+        ValueList.Add(Map);
+        ValueList.Add(Null);
+        ValueList.Add(Object);
+        ValueList.Add(String);
+        ValueList.Add(Timestamp);
+        ValueList.Add(Type);
+        ValueList.Add(Uint);
+        ValueList.Add(Unknown);
     }
 
     internal TypeEnum(InnerEnum innerEnum, string name)
@@ -90,7 +90,7 @@ public sealed class TypeEnum
 
     public static TypeEnum[] Values()
     {
-        return valueList.ToArray();
+        return ValueList.ToArray();
     }
 
     public int Ordinal()
@@ -105,7 +105,7 @@ public sealed class TypeEnum
 
     public static TypeEnum ValueOf(string name)
     {
-        foreach (var enumInstance in valueList)
+        foreach (var enumInstance in ValueList)
             if (enumInstance.Name == name)
                 return enumInstance;
 

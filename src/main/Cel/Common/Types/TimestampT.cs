@@ -46,36 +46,36 @@ public sealed class TimestampT : BaseVal, IAdder, IComparer, IReceiver, ISubtrac
 
     public static readonly DateTimeZone ZoneIdZ = DateTimeZone.Utc;
 
-    private static readonly IDictionary<string, Func<ZonedDateTime, IVal>> timestampZeroArgOverloads;
-    private static readonly IDictionary<string, Func<ZonedDateTime, IVal, IVal>> timestampOneArgOverloads;
+    private static readonly IDictionary<string, Func<ZonedDateTime, IVal>> TimestampZeroArgOverloads;
+    private static readonly IDictionary<string, Func<ZonedDateTime, IVal, IVal>> TimestampOneArgOverloads;
 
     private readonly ZonedDateTime t;
 
     static TimestampT()
     {
-        timestampZeroArgOverloads = new Dictionary<string, Func<ZonedDateTime, IVal>>();
-        timestampZeroArgOverloads[Overloads.TimeGetFullYear] = TimestampGetFullYear;
-        timestampZeroArgOverloads[Overloads.TimeGetMonth] = TimestampGetMonth;
-        timestampZeroArgOverloads[Overloads.TimeGetDayOfYear] = TimestampGetDayOfYear;
-        timestampZeroArgOverloads[Overloads.TimeGetDate] = TimestampGetDayOfMonthOneBased;
-        timestampZeroArgOverloads[Overloads.TimeGetDayOfMonth] = TimestampGetDayOfMonthZeroBased;
-        timestampZeroArgOverloads[Overloads.TimeGetDayOfWeek] = TimestampGetDayOfWeek;
-        timestampZeroArgOverloads[Overloads.TimeGetHours] = TimestampGetHours;
-        timestampZeroArgOverloads[Overloads.TimeGetMinutes] = TimestampGetMinutes;
-        timestampZeroArgOverloads[Overloads.TimeGetSeconds] = TimestampGetSeconds;
-        timestampZeroArgOverloads[Overloads.TimeGetMilliseconds] = TimestampGetMilliseconds;
+        TimestampZeroArgOverloads = new Dictionary<string, Func<ZonedDateTime, IVal>>();
+        TimestampZeroArgOverloads[Overloads.TimeGetFullYear] = TimestampGetFullYear;
+        TimestampZeroArgOverloads[Overloads.TimeGetMonth] = TimestampGetMonth;
+        TimestampZeroArgOverloads[Overloads.TimeGetDayOfYear] = TimestampGetDayOfYear;
+        TimestampZeroArgOverloads[Overloads.TimeGetDate] = TimestampGetDayOfMonthOneBased;
+        TimestampZeroArgOverloads[Overloads.TimeGetDayOfMonth] = TimestampGetDayOfMonthZeroBased;
+        TimestampZeroArgOverloads[Overloads.TimeGetDayOfWeek] = TimestampGetDayOfWeek;
+        TimestampZeroArgOverloads[Overloads.TimeGetHours] = TimestampGetHours;
+        TimestampZeroArgOverloads[Overloads.TimeGetMinutes] = TimestampGetMinutes;
+        TimestampZeroArgOverloads[Overloads.TimeGetSeconds] = TimestampGetSeconds;
+        TimestampZeroArgOverloads[Overloads.TimeGetMilliseconds] = TimestampGetMilliseconds;
 
-        timestampOneArgOverloads = new Dictionary<string, Func<ZonedDateTime, IVal, IVal>>();
-        timestampOneArgOverloads[Overloads.TimeGetFullYear] = TimestampGetFullYearWithTz;
-        timestampOneArgOverloads[Overloads.TimeGetMonth] = TimestampGetMonthWithTz;
-        timestampOneArgOverloads[Overloads.TimeGetDayOfYear] = TimestampGetDayOfYearWithTz;
-        timestampOneArgOverloads[Overloads.TimeGetDate] = TimestampGetDayOfMonthOneBasedWithTz;
-        timestampOneArgOverloads[Overloads.TimeGetDayOfMonth] = TimestampGetDayOfMonthZeroBasedWithTz;
-        timestampOneArgOverloads[Overloads.TimeGetDayOfWeek] = TimestampGetDayOfWeekWithTz;
-        timestampOneArgOverloads[Overloads.TimeGetHours] = TimestampGetHoursWithTz;
-        timestampOneArgOverloads[Overloads.TimeGetMinutes] = TimestampGetMinutesWithTz;
-        timestampOneArgOverloads[Overloads.TimeGetSeconds] = TimestampGetSecondsWithTz;
-        timestampOneArgOverloads[Overloads.TimeGetMilliseconds] = TimestampGetMillisecondsWithTz;
+        TimestampOneArgOverloads = new Dictionary<string, Func<ZonedDateTime, IVal, IVal>>();
+        TimestampOneArgOverloads[Overloads.TimeGetFullYear] = TimestampGetFullYearWithTz;
+        TimestampOneArgOverloads[Overloads.TimeGetMonth] = TimestampGetMonthWithTz;
+        TimestampOneArgOverloads[Overloads.TimeGetDayOfYear] = TimestampGetDayOfYearWithTz;
+        TimestampOneArgOverloads[Overloads.TimeGetDate] = TimestampGetDayOfMonthOneBasedWithTz;
+        TimestampOneArgOverloads[Overloads.TimeGetDayOfMonth] = TimestampGetDayOfMonthZeroBasedWithTz;
+        TimestampOneArgOverloads[Overloads.TimeGetDayOfWeek] = TimestampGetDayOfWeekWithTz;
+        TimestampOneArgOverloads[Overloads.TimeGetHours] = TimestampGetHoursWithTz;
+        TimestampOneArgOverloads[Overloads.TimeGetMinutes] = TimestampGetMinutesWithTz;
+        TimestampOneArgOverloads[Overloads.TimeGetSeconds] = TimestampGetSecondsWithTz;
+        TimestampOneArgOverloads[Overloads.TimeGetMilliseconds] = TimestampGetMillisecondsWithTz;
     }
 
     private TimestampT(ZonedDateTime t)
@@ -118,12 +118,12 @@ public sealed class TimestampT : BaseVal, IAdder, IComparer, IReceiver, ISubtrac
         switch (args.Length)
         {
             case 0:
-                timestampZeroArgOverloads.TryGetValue(function, out var f0);
+                TimestampZeroArgOverloads.TryGetValue(function, out var f0);
                 if (f0 != null) return f0(t);
 
                 break;
             case 1:
-                timestampOneArgOverloads.TryGetValue(function, out var f1);
+                TimestampOneArgOverloads.TryGetValue(function, out var f1);
                 if (f1 != null) return f1(t, args[0]);
 
                 break;

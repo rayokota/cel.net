@@ -32,7 +32,7 @@ public sealed class DoubleT : BaseVal, IAdder, IComparer, IDivider, IMultiplier,
     public static readonly IType DoubleType = TypeT.NewTypeValue(TypeEnum.Double, Trait.AdderType,
         Trait.ComparerType, Trait.DividerType, Trait.MultiplierType, Trait.NegatorType, Trait.SubtractorType);
 
-    private static readonly BigInteger MAX_UINT64 = BigInteger.Subtract(BigInteger.One << 64, BigInteger.One);
+    private static readonly BigInteger MaxUint64 = BigInteger.Subtract(BigInteger.One << 64, BigInteger.One);
 
     private readonly double d;
 
@@ -170,7 +170,7 @@ public sealed class DoubleT : BaseVal, IAdder, IComparer, IDivider, IMultiplier,
             case TypeEnum.InnerEnum.Uint:
                 // hack to support uint64
                 var bi = (BigInteger)d;
-                if (d < 0 || bi.CompareTo(MAX_UINT64) > 0) return Err.RangeError(d, "int");
+                if (d < 0 || bi.CompareTo(MaxUint64) > 0) return Err.RangeError(d, "int");
 
                 return UintT.UintOf((ulong)bi);
             case TypeEnum.InnerEnum.Double:

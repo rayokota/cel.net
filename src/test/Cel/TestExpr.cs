@@ -33,8 +33,8 @@ public class TestExpr
     public static readonly TestExpr Empty = new(new Expr(), new SourceInfo());
 
 
-    private static readonly SourceInfo info1 = new();
-    private static readonly SourceInfo info2 = new();
+    private static readonly SourceInfo Info1 = new();
+    private static readonly SourceInfo Info2 = new();
 
     /// <summary>
     ///     Exists generates "[1, 1u, 1.0].exists(x, type(x) == uint)".
@@ -50,7 +50,7 @@ public class TestExpr
                 ExprCall(15, Operator.Equals.id, ExprCall(16, "type", ExprIdent(17, "x")),
                     ExprIdent(18, "uint"))),
             ExprIdent(19, "__result__")),
-        info1);
+        Info1);
 
     /// <summary>
     ///     ExistsWithInput generates "elems.exists(x, type(x) == uint)".
@@ -60,7 +60,7 @@ public class TestExpr
             ExprCall(4, Operator.LogicalNot.id, ExprIdent(5, "__result__")),
             ExprCall(6, Operator.Equals.id, ExprCall(7, "type", ExprIdent(8, "x")), ExprIdent(9, "uint")),
             ExprIdent(10, "__result__")),
-        info2);
+        Info2);
 
     /// <summary>
     ///     DynMap generates a map literal:
@@ -159,10 +159,10 @@ public class TestExpr
         var map = TestUtil.MapOf(0L, 12, 1L, 0, 2L, 1, 3L, 4, 4L, 8, 5L, 0, 6L, 18, 7L, 18, 8L,
             18, 9L, 18, 10L, 18, 11L, 20, 12L, 20, 13L, 28, 14L, 28, 15L, 28, 16L, 28, 17L, 28, 18L, 28, 19L,
             28);
-        foreach (var entry in map) info1.Positions[(long)entry.Key] = (int)entry.Value;
+        foreach (var entry in map) Info1.Positions[(long)entry.Key] = (int)entry.Value;
         var map2 = TestUtil.MapOf(0L, 12, 1L, 0, 2L, 1, 3L, 4, 4L, 8, 5L, 0, 6L, 18, 7L, 18, 8L,
             18, 9L, 18, 10L, 18);
-        foreach (var entry in map) info2.Positions[(long)entry.Key] = (int)entry.Value;
+        foreach (var entry in map) Info2.Positions[(long)entry.Key] = (int)entry.Value;
     }
 
     public TestExpr(Expr expr, SourceInfo sourceInfo)

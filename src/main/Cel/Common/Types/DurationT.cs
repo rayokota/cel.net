@@ -43,17 +43,17 @@ public sealed class DurationT : BaseVal, IAdder, IComparer, INegater, IReceiver,
     public static readonly IType DurationType = TypeT.NewTypeValue(TypeEnum.Duration, Trait.AdderType,
         Trait.ComparerType, Trait.NegatorType, Trait.ReceiverType, Trait.SubtractorType);
 
-    private static readonly IDictionary<string, Func<Period, IVal>> durationZeroArgOverloads;
+    private static readonly IDictionary<string, Func<Period, IVal>> DurationZeroArgOverloads;
 
     private readonly Period d;
 
     static DurationT()
     {
-        durationZeroArgOverloads = new Dictionary<string, Func<Period, IVal>>();
-        durationZeroArgOverloads[Overloads.TimeGetHours] = TimeGetHours;
-        durationZeroArgOverloads[Overloads.TimeGetMinutes] = TimeGetMinutes;
-        durationZeroArgOverloads[Overloads.TimeGetSeconds] = TimeGetSeconds;
-        durationZeroArgOverloads[Overloads.TimeGetMilliseconds] = TimeGetMilliseconds;
+        DurationZeroArgOverloads = new Dictionary<string, Func<Period, IVal>>();
+        DurationZeroArgOverloads[Overloads.TimeGetHours] = TimeGetHours;
+        DurationZeroArgOverloads[Overloads.TimeGetMinutes] = TimeGetMinutes;
+        DurationZeroArgOverloads[Overloads.TimeGetSeconds] = TimeGetSeconds;
+        DurationZeroArgOverloads[Overloads.TimeGetMilliseconds] = TimeGetMilliseconds;
     }
 
     private DurationT(Period d)
@@ -125,7 +125,7 @@ public sealed class DurationT : BaseVal, IAdder, IComparer, INegater, IReceiver,
     {
         if (args.Length == 0)
         {
-            durationZeroArgOverloads.TryGetValue(function, out var f);
+            DurationZeroArgOverloads.TryGetValue(function, out var f);
             if (f != null) return f(d);
         }
 
