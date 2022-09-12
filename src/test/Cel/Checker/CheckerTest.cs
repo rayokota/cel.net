@@ -467,27 +467,6 @@ public class CheckerTest
                 "      _==_(map~type(map(dyn, dyn))^map,\n" +
                 "            type({1~int : 2u~uint}~map(int, uint))~type(map(int, uint))^type)\n" +
                 "        ~bool^equals)\n" + "  ~bool^logical_and").Type(Decls.Bool),
-            /*
-            new TestCase().I("list == .type([1]) && map == .type({1:2u})").R(
-                "_&&_(\n"
-                + "  _==_(\n"
-                + "    list~type(list({ \"typeParam\": \"A\" }))^list,\n"
-                + "    type(\n"
-                + "      [\n"
-                + "        1~int\n"
-                + "      ]~list(int)\n"
-                + "    )~type({ \"typeParam\": \"A\" })^type\n"
-                + "  )~bool^equals,\n"
-                + "  _==_(\n"
-                + "    map~type(map({ \"typeParam\": \"A\" }, { \"typeParam\": \"B\" }))^map,\n"
-                + "    type(\n"
-                + "      {\n"
-                + "        1~int:2u~uint\n"
-                + "      }~map(int, uint)\n"
-                + "    )~type({ \"typeParam\": \"A\" })^type\n"
-                + "  )~bool^equals\n"
-                + ")~bool^logical_and").Type(Decls.Bool),
-                */
             new TestCase().I("myfun(1, true, 3u) + 1.myfun(false, 3u).myfun(true, 42u)")
                 .Env(new Env().Functions(Decls.NewFunction("myfun",
                     Decls.NewInstanceOverload("myfun_instance", new List<Type> { Decls.Int, Decls.Bool, Decls.Uint },
@@ -534,27 +513,20 @@ public class CheckerTest
                                                           "    \t\t  )~type(null)^type,\n" +
                                                           "    \t\t  null_type~type(null)^null_type\n" +
                                                           "    \t\t)~bool^equals").Type(Decls.Bool),
+            // NOTE: original
             /*
-            new TestCase().I("type(null) == null_type").R("_==_(\n" + "  type(\n"
-                                                                    + "    null~null\n"
-                                                                    + "  )~type({ \"typeParam\": \"A\" })^type,\n"
-                                                                    + "  null_type~type(null)^null_type\n"
-                                                                    + ")~bool^equals").Type(Decls.Bool),
-                                                                    
             new TestCase().I("type(type) == type")
                 .R("_==_(\n" + "\t\t  type(\n" + "\t\t    type~type(type())^type\n" +
                    "\t\t  )~type(type(type()))^type,\n" + "\t\t  type~type(type())^type\n" + "\t\t)~bool^equals")
                 .Type(Decls.Bool),
-                /*
-            new TestCase().I("type(type) == type").R(
-                "_==_(\n"
-                + "  type(\n"
-                + "    type~type(type)^type\n"
-                + "  )~type({ \"typeParam\": \"A\" })^type,\n"
-                + "  type~type(type)^type\n"
-                + ")~bool^equals").Type(Decls.Bool),
                 */
-
+            new TestCase().I("type(type) == type")
+                .R("_==_(\n"
+                   + "  type(\n"
+                   + "    type~type(type)^type\n"
+                   + "  )~type(type(type))^type,\n"
+                   + "  type~type(type)^type\n"
+                   + ")~bool^equals").Type(Decls.Bool),
             new TestCase().I("name in [1, 2u, 'string']")
                 .Env(new Env().Idents(Decls.NewVar("name", Decls.String)).Functions(Decls.NewFunction(Operator.In.id,
                     Decls.NewOverload(Overloads.InList,
@@ -608,7 +580,8 @@ public class CheckerTest
                                                         "\t\t\t[\n" + "\t\t\t\t1~int\n" + "\t\t\t]~list(int)\n" +
                                                         "\t\t)~list(dyn)^add_list")
                 .Type(Decls.NewListType(Decls.Dyn)),
-            /* NOTE: original
+            // NOTE: original
+            /*
             new TestCase().I("[].map(x, [].map(y, x in y && y in x))").Error(
                 "ERROR: <input>:1:33: found no matching overload for '@in' applied to '(type_param: \"_var2\", type_param: \"_var0\")'\n" +
                 " | [].map(x, [].map(y, x in y && y in x))\n" + " | ................................^"),
@@ -713,7 +686,6 @@ public class CheckerTest
         if (checkResult.HasErrors())
         {
             var errorString = checkResult.Errors.ToDisplayString();
-            var b = errorString.Equals(tc.error);
             if (tc.error != null)
                 Assert.That(errorString, Is.EqualTo(tc.error));
             else
@@ -734,7 +706,6 @@ public class CheckerTest
             var actualStr = Printer.Print(checkResult.CheckedExpr.Expr, checkResult.CheckedExpr);
             var actualCmp = Regex.Replace(actualStr, "[ \n\t]", "");
             var rCmp = Regex.Replace(tc.r, "[ \n\t]", "");
-            var b = actualCmp.Equals(rCmp);
             Assert.That(actualCmp, Is.EqualTo(rCmp));
         }
     }

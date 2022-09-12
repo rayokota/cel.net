@@ -27,26 +27,6 @@ using Google.Protobuf.WellKnownTypes;
  */
 namespace Cel.Parser;
 
-/*
-	using CommonTokenStream = Antlr4.Runtime.CommonTokenStream;
-
-	//using ANTLRErrorListener = Antlr4.Runtime.IAntlrErrorListener;
-	using DefaultErrorStrategy = Cel.shaded.org.antlr.v4.runtime.DefaultErrorStrategy;
-	using IntStream = Cel.shaded.org.antlr.v4.runtime.IntStream;
-	using ParserRuleContext = Cel.shaded.org.antlr.v4.runtime.ParserRuleContext;
-	using RecognitionException = Cel.shaded.org.antlr.v4.runtime.RecognitionException;
-	using Recognizer = Cel.shaded.org.antlr.v4.runtime.Recognizer;
-	using RuleContext = Cel.shaded.org.antlr.v4.runtime.RuleContext;
-	using Token = Antlr4.Runtime.IToken;
-	using ATNConfigSet = Cel.shaded.org.antlr.v4.runtime.atn.ATNConfigSet;
-	using DFA = Cel.shaded.org.antlr.v4.runtime.dfa.DFA;
-	using AbstractParseTreeVisitor = Cel.shaded.org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
-	using ErrorNode = Cel.shaded.org.antlr.v4.runtime.tree.ErrorNode;
-	using ParseTree = Cel.shaded.org.antlr.v4.runtime.tree.ParseTree;
-	using ParseTreeListener = Cel.shaded.org.antlr.v4.runtime.tree.ParseTreeListener;
-	using TerminalNode = Cel.shaded.org.antlr.v4.runtime.tree.TerminalNode;
-	*/
-
 public sealed class Parser
 {
     private static readonly ISet<string> reservedIds = new HashSet<string>

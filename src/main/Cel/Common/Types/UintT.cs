@@ -190,22 +190,13 @@ public sealed class UintT : BaseVal, IAdder, IComparer, IDivider, IModder, IMult
         }
 
         if (typeDesc == typeof(UInt64Value)) return i;
-        /*
-            var value = new UInt64Value();
-            value.Value = i;
-            return value;
-            */
+        
         if (typeDesc == typeof(UInt32Value))
         {
             if (i > uint.MaxValue)
                 Err.ThrowErrorAsIllegalStateException(Err.RangeError(i, "uint"));
 
             return Convert.ToUInt32(i);
-            /*
-            var value = new UInt32Value();
-            value.Value = Convert.ToUInt32(i);
-            return value;
-            */
         }
 
         if (typeDesc == typeof(IVal) || typeDesc == typeof(UintT)) return this;

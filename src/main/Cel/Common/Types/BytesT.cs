@@ -130,11 +130,7 @@ public sealed class BytesT : BaseVal, IAdder, IComparer, ISizer
         }
 
         if (typeDesc == typeof(BytesValue)) return ByteString.CopyFrom(b);
-        /*
-            var value = new BytesValue();
-            value.Value = ByteString.CopyFrom(b);
-            return value;
-            */
+        
         if (typeDesc == typeof(MemoryStream)) return new MemoryStream(b);
 
         if (typeDesc == typeof(IVal) || typeDesc == typeof(BytesT)) return this;

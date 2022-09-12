@@ -70,6 +70,7 @@ public class PbTypeDescriptionTest
             new MaybeUnwrapTestCase("any(true)").In(AnyMsg(UnwrapTestCase.trueBool)).Out(true),
             new MaybeUnwrapTestCase("any(value(number(4.5)))")
                 .In(AnyMsg(UnwrapTestCase.numValue)).Out(1.5),
+            // TODO remove
             /*
             (new MaybeUnwrapTestCase("dyn(any(value(number(4.5)))"))
             .In(DynMsg(AnyMsg(Value.newBuilder().setNumberValue(4.5).build()))).Out(4.5),

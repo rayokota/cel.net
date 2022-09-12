@@ -47,13 +47,13 @@ public class TimestampTest
         var i4 = Instant.FromUnixTimeMilliseconds(TimestampT.minUnixTime);
         var min1 = i4.PlusNanoseconds(1).InZone(TimestampT.ZoneIdZ);
 
-        // TODO ?
+        // TODO remove
         /*
         Assert.That(TimestampT.TimestampOf(max999).Add(DurationT.DurationOf(Period.FromNanoseconds(1))),
             Is.SameAs(Err.ErrDurationOverflow));
         Assert.That(TimestampT.TimestampOf(min0).Add(DurationT.DurationOf(Period.FromNanoseconds(-1))),
             Is.SameAs(Err.ErrDurationOverflow));
-            */
+        */
 
         Assert.That(
             TimestampT.TimestampOf(max999).Add(DurationT.DurationOf(Period.FromNanoseconds(-1)))
@@ -261,6 +261,7 @@ public class TimestampTest
                 "Australia/Sydney"));
         testCases.Add(
             new ParseTestCase("2009-02-13T23:31:30Z", new[] { 2009, 2, 13, 23, 31, 30 }).WithTZ("+11:00"));
+        // TODO remove
         // time-zones unknown to ZoneId
         /*
         testCases.Add(

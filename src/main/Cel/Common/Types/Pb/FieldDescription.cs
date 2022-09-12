@@ -500,6 +500,7 @@ public sealed class FieldDescription : Description
 
         var v = desc.Accessor.GetValue(message);
 
+        // TODO remove
         /*
         if (!desc.IsMap)
         {

@@ -137,6 +137,7 @@ public sealed class Debug
                             break;
                         default:
                             sb.Append(ch);
+                            // TODO remove
                             /*
                               if (Char.IsLetter(ch))
                               {

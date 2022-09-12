@@ -163,7 +163,7 @@ internal class InterpreterTest
                     new TestAllTypesPb2())
                 .In("x", v1)
                 .Out(t1),
-            // TODO
+            // TODO remove
             /*
             (new TestCase(InterpreterTestCase.select_pb3_unset)).Expr("TestAllTypes{}.single_struct")
             .Container("google.api.expr.test.v1.proto3")
@@ -191,7 +191,7 @@ internal class InterpreterTest
                     t2).Out(IntT.IntOf(2)),
             new TestCase(InterpreterTestCase.eq_list_elem_mixed_types_error).Expr("[1] == [1.0]").Unchecked()
                 .Err("no such overload: int._==_(double)"),
-            // TODO
+            // TODO remove
             /*
             (new TestCase(InterpreterTestCase.parse_nest_message_literal))
             .Container("google.api.expr.test.v1.proto3")

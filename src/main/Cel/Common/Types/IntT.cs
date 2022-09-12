@@ -239,22 +239,13 @@ public sealed class IntT : BaseVal, IAdder, IComparer, IDivider, IModder, IMulti
         }
 
         if (typeDesc == typeof(Int64Value)) return i;
-        /*
-            var value = new Int64Value();
-            value.Value = i;
-            return value;
-            */
+        
         if (typeDesc == typeof(Int32Value))
         {
             if (i < int.MinValue || i > int.MaxValue)
                 Err.ThrowErrorAsIllegalStateException(Err.RangeError(i, "int"));
 
             return Convert.ToInt32(i);
-            /*
-            var value = new Int32Value();
-            value.Value = Convert.ToInt32(i);
-            return value;
-            */
         }
 
         if (typeDesc == typeof(IVal) || typeDesc == typeof(IntT)) return this;
