@@ -33,7 +33,7 @@ public sealed class StringT : BaseVal, IAdder, IComparer, IMatcher, IReceiver, I
     public static readonly IType StringType = TypeT.NewTypeValue(TypeEnum.String, Trait.AdderType,
         Trait.ComparerType, Trait.MatcherType, Trait.ReceiverType, Trait.SizerType);
 
-    public static readonly UTF8Encoding UTF8 = new(false, true);
+    public static readonly UTF8Encoding Utf8 = new(false, true);
 
     private static readonly IDictionary<string, Func<string, IVal, IVal>> stringOneArgOverloads;
 
@@ -124,7 +124,7 @@ public sealed class StringT : BaseVal, IAdder, IComparer, IMatcher, IReceiver, I
     {
         if (typeDesc == typeof(string) || typeDesc == typeof(object)) return s;
 
-        if (typeDesc == typeof(byte[])) return UTF8.GetBytes(s);
+        if (typeDesc == typeof(byte[])) return Utf8.GetBytes(s);
 
         if (typeDesc == typeof(Any))
         {
@@ -174,7 +174,7 @@ public sealed class StringT : BaseVal, IAdder, IComparer, IMatcher, IReceiver, I
 
                     break;
                 case TypeEnum.InnerEnum.Bytes:
-                    return BytesT.BytesOf(UTF8.GetBytes(s));
+                    return BytesT.BytesOf(Utf8.GetBytes(s));
                 case TypeEnum.InnerEnum.Duration:
                     return DurationT.DurationOf(s).RangeCheck();
                 case TypeEnum.InnerEnum.Timestamp:

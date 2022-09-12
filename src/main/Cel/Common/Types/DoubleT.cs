@@ -179,7 +179,7 @@ public sealed class DoubleT : BaseVal, IAdder, IComparer, IDivider, IMultiplier,
             case TypeEnum.InnerEnum.Uint:
                 // hack to support uint64
                 var dec = new decimal(d);
-                var bi = (BigInteger)d;
+                var bi = (BigInteger)dec;
                 if (d < 0 || bi.CompareTo(MAX_UINT64) > 0) return Err.RangeError(d, "int");
 
                 return UintT.UintOf((ulong)bi);

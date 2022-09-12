@@ -668,7 +668,7 @@ public sealed class Checker
     {
         if (previous == null) return current;
 
-        if (IsAssignable(previous, current!)) return Types.MostGeneral(previous, current);
+        if (IsAssignable(previous, current!)) return Types.MostGeneral(previous, current!);
 
         if (DynAggregateLiteralElementTypesEnabled()) return Decls.Dyn;
 

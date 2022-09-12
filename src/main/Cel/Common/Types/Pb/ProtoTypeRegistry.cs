@@ -325,7 +325,6 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
 
     private object findEnum(EnumDescriptor enumType, int value)
     {
-        var enumValue = enumType.FindValueByNumber(value);
         return Enum.ToObject(enumType.ClrType, value);
     }
 

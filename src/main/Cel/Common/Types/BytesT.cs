@@ -99,7 +99,7 @@ public sealed class BytesT : BaseVal, IAdder, IComparer, ISizer
 
     public static BytesT BytesOf(string s)
     {
-        var encoding = StringT.UTF8;
+        var encoding = StringT.Utf8;
         return new BytesT(encoding.GetBytes(s));
     }
 
