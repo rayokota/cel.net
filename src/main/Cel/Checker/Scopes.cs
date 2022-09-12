@@ -143,7 +143,7 @@ public sealed class Scopes
     ///     Group is a set of Decls that is pushed on or popped off a Scopes as a unit. Contains separate
     ///     namespaces for idenifier and function Decls. (Should be named "Scope" perhaps?)
     /// </summary>
-    public sealed class Group
+    internal sealed class Group
     {
         internal readonly IDictionary<string, Decl> functions;
         internal readonly IDictionary<string, Decl> idents;
