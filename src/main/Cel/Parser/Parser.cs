@@ -364,7 +364,7 @@ public sealed class Parser
             var opID = helper.Id(ctx.op);
             var ifTrue = ExprVisit(ctx.e1);
             var ifFalse = ExprVisit(ctx.e2);
-            return globalCallOrMacro(opID, Operator.Conditional.id, result, ifTrue, ifFalse);
+            return globalCallOrMacro(opID, Operator.Conditional.Id, result, ifTrue, ifFalse);
         }
 
         internal Expr VisitConditionalAnd(CELParser.ConditionalAndContext ctx)
@@ -372,7 +372,7 @@ public sealed class Parser
             var result = ExprVisit(ctx.e);
             if (ctx._ops == null || ctx._ops.Count == 0) return result;
 
-            var b = helper.NewBalancer(Operator.LogicalAnd.id, result);
+            var b = helper.NewBalancer(Operator.LogicalAnd.Id, result);
             IList<CELParser.RelationContext> rest = ctx._e1;
             for (var i = 0; i < ctx._ops.Count; i++)
             {
@@ -392,7 +392,7 @@ public sealed class Parser
             var result = ExprVisit(ctx.e);
             if (ctx._ops == null || ctx._ops.Count == 0) return result;
 
-            var b = helper.NewBalancer(Operator.LogicalOr.id, result);
+            var b = helper.NewBalancer(Operator.LogicalOr.Id, result);
             IList<CELParser.ConditionalAndContext> rest = ctx._e1;
             for (var i = 0; i < ctx._ops.Count; i++)
             {
@@ -420,7 +420,7 @@ public sealed class Parser
                 var lhs = ExprVisit(ctx.relation(0));
                 var opID = helper.Id(ctx.op);
                 var rhs = ExprVisit(ctx.relation(1));
-                return globalCallOrMacro(opID, op.id, lhs, rhs);
+                return globalCallOrMacro(opID, op.Id, lhs, rhs);
             }
 
             return ReportError(ctx, "operator not found");
@@ -439,7 +439,7 @@ public sealed class Parser
                 var lhs = ExprVisit(ctx.calc(0));
                 var opID = helper.Id(ctx.op);
                 var rhs = ExprVisit(ctx.calc(1));
-                return globalCallOrMacro(opID, op.id, lhs, rhs);
+                return globalCallOrMacro(opID, op.Id, lhs, rhs);
             }
 
             return ReportError(ctx, "operator not found");
@@ -451,7 +451,7 @@ public sealed class Parser
 
             var opID = helper.Id(ctx._ops[0]);
             var target = ExprVisit(ctx.member());
-            return globalCallOrMacro(opID, Operator.LogicalNot.id, target);
+            return globalCallOrMacro(opID, Operator.LogicalNot.Id, target);
         }
 
         internal Expr VisitMemberExpr(CELParser.MemberExprContext ctx)
@@ -746,7 +746,7 @@ public sealed class Parser
 
             var opID = helper.Id(ctx._ops[0]);
             var target = ExprVisit(ctx.member());
-            return globalCallOrMacro(opID, Operator.Negate.id, target);
+            return globalCallOrMacro(opID, Operator.Negate.Id, target);
         }
 
         internal Expr VisitIndex(CELParser.IndexContext ctx)
@@ -754,7 +754,7 @@ public sealed class Parser
             var target = ExprVisit(ctx.member());
             var opID = helper.Id(ctx.op);
             var index = ExprVisit(ctx.index);
-            return globalCallOrMacro(opID, Operator.Index.id, target, index);
+            return globalCallOrMacro(opID, Operator.Index.Id, target, index);
         }
 
         internal Expr VisitUnary(CELParser.UnaryContext ctx)

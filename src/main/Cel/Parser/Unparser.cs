@@ -91,7 +91,7 @@ public sealed class Unparser
     {
         var op = Operator.ById(expr.Function);
         if (op != null)
-            switch (op.innerEnumValue)
+            switch (op.InnerEnumValue)
             {
                 // ternary operator
                 case Operator.InnerEnum.Conditional:
@@ -141,7 +141,7 @@ public sealed class Unparser
         // add parens if the current operator is lower precedence than the rhs expr operator,
         // or the same precedence and the operator is left recursive.
         var rhsParen = IsComplexOperatorWithRespectTo(fun, rhs);
-        if (!rhsParen && IsLeftRecursive(fun)) rhsParen = IsSamePrecedence(Operator.Precedence(fun), rhs);
+        if (!rhsParen && IsLeftRecursive(fun)) rhsParen = IsSamePrecedence(Operator.PrecedenceById(fun), rhs);
 
         VisitMaybeNested(lhs, lhsParen);
         var unmangled = Operator.FindReverseBinaryOperator(fun);
@@ -158,15 +158,15 @@ public sealed class Unparser
     {
         IList<Expr> args = expr.Args;
         // add parens if operand is a conditional itself.
-        var nested = IsSamePrecedence(Operator.Conditional.precedence, args[0]) || IsComplexOperator(args[0]);
+        var nested = IsSamePrecedence(Operator.Conditional.Precedence, args[0]) || IsComplexOperator(args[0]);
         VisitMaybeNested(args[0], nested);
         str.Append(" ? ");
         // add parens if operand is a conditional itself.
-        nested = IsSamePrecedence(Operator.Conditional.precedence, args[1]) || IsComplexOperator(args[1]);
+        nested = IsSamePrecedence(Operator.Conditional.Precedence, args[1]) || IsComplexOperator(args[1]);
         VisitMaybeNested(args[1], nested);
         str.Append(" : ");
         // add parens if operand is a conditional itself.
-        nested = IsSamePrecedence(Operator.Conditional.precedence, args[2]) || IsComplexOperator(args[2]);
+        nested = IsSamePrecedence(Operator.Conditional.Precedence, args[2]) || IsComplexOperator(args[2]);
 
         VisitMaybeNested(args[2], nested);
     }
@@ -338,7 +338,7 @@ public sealed class Unparser
         if (expr.ExprKindCase != ExprKindCase.CallExpr) return false;
 
         var other = expr.CallExpr.Function;
-        return opPrecedence == Operator.Precedence(other);
+        return opPrecedence == Operator.PrecedenceById(other);
     }
 
     /// <summary>
@@ -353,7 +353,7 @@ public sealed class Unparser
         if (expr.ExprKindCase != ExprKindCase.CallExpr) return false;
 
         var other = expr.CallExpr.Function;
-        return Operator.Precedence(op) < Operator.Precedence(other);
+        return Operator.PrecedenceById(op) < Operator.PrecedenceById(other);
     }
 
     /// <summary>
@@ -385,6 +385,6 @@ public sealed class Unparser
         if (!IsComplexOperator(expr)) return false;
 
         var isBinaryOp = Operator.FindReverseBinaryOperator(expr.CallExpr.Function) != null;
-        return isBinaryOp || IsSamePrecedence(Operator.Conditional.precedence, expr);
+        return isBinaryOp || IsSamePrecedence(Operator.Conditional.Precedence, expr);
     }
 }

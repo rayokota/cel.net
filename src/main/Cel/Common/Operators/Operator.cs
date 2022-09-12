@@ -101,12 +101,8 @@ public sealed class Operator
     private static readonly Dictionary<string, Operator> OperatorsById;
     // precedence of the operator, where the higher value means higher.
 
-    public readonly string id;
-
-    public readonly InnerEnum innerEnumValue;
     private readonly string nameValue;
     private readonly int ordinalValue;
-    public readonly int precedence;
     private readonly string? reverse;
 
     static Operator()
@@ -158,7 +154,7 @@ public sealed class Operator
 
         {
             var m = new Dictionary<string, Operator>();
-            foreach (var op in Values()) m.Add(op.id, op);
+            foreach (var op in Values()) m.Add(op.Id, op);
 
             OperatorsById = m;
         }
@@ -168,18 +164,18 @@ public sealed class Operator
     {
         nameValue = name;
         ordinalValue = nextOrdinal++;
-        innerEnumValue = innerEnum;
+        InnerEnumValue = innerEnum;
     }
 
     internal Operator(string name, InnerEnum innerEnum, string id, int precedence, string? reverse)
     {
-        this.id = id;
-        this.precedence = precedence;
+        this.Id = id;
+        this.Precedence = precedence;
         this.reverse = reverse;
 
         nameValue = name;
         ordinalValue = nextOrdinal++;
-        innerEnumValue = innerEnum;
+        InnerEnumValue = innerEnum;
     }
 
     public static Operator? ById(string id)
@@ -211,10 +207,10 @@ public sealed class Operator
         return op.reverse;
     }
 
-    public static int Precedence(string id)
+    public static int PrecedenceById(string id)
     {
         var op = ById(id);
-        return op != null ? op.precedence : 0;
+        return op != null ? op.Precedence : 0;
     }
 
     public static Operator[] Values()
@@ -222,11 +218,17 @@ public sealed class Operator
         return ValueList.ToArray();
     }
 
+    public string Id { get; }
+    
+    public InnerEnum InnerEnumValue { get; }
+    
+    public int Precedence { get; }
+
     public int Ordinal()
     {
         return ordinalValue;
     }
-
+    
     public override string ToString()
     {
         return nameValue;

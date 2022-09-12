@@ -31,11 +31,11 @@ public sealed class Macro
     /// </summary>
     public static readonly IList<Macro> AllMacros = new List<Macro>
     {
-        NewGlobalMacro(Operator.Has.id, 1, MakeHas), NewReceiverMacro(Operator.All.id, 2, MakeAll),
-        NewReceiverMacro(Operator.Exists.id, 2, MakeExists),
-        NewReceiverMacro(Operator.ExistsOne.id, 2, MakeExistsOne),
-        NewReceiverMacro(Operator.Map.id, 2, MakeMap), NewReceiverMacro(Operator.Map.id, 3, MakeMap),
-        NewReceiverMacro(Operator.Filter.id, 2, MakeFilter)
+        NewGlobalMacro(Operator.Has.Id, 1, MakeHas), NewReceiverMacro(Operator.All.Id, 2, MakeAll),
+        NewReceiverMacro(Operator.Exists.Id, 2, MakeExists),
+        NewReceiverMacro(Operator.ExistsOne.Id, 2, MakeExistsOne),
+        NewReceiverMacro(Operator.Map.Id, 2, MakeMap), NewReceiverMacro(Operator.Map.Id, 3, MakeMap),
+        NewReceiverMacro(Operator.Filter.Id, 2, MakeFilter)
     };
 
     /// <summary>
@@ -144,15 +144,15 @@ public sealed class Macro
         {
             case QuantifierKind.quantifierAll:
                 init = eh.LiteralBool(true);
-                condition = eh.GlobalCall(Operator.NotStrictlyFalse.id, accuIdent());
-                step = eh.GlobalCall(Operator.LogicalAnd.id, accuIdent(), args[1]);
+                condition = eh.GlobalCall(Operator.NotStrictlyFalse.Id, accuIdent());
+                step = eh.GlobalCall(Operator.LogicalAnd.Id, accuIdent(), args[1]);
                 result = accuIdent();
                 break;
             case QuantifierKind.quantifierExists:
                 init = eh.LiteralBool(false);
-                condition = eh.GlobalCall(Operator.NotStrictlyFalse.id,
-                    eh.GlobalCall(Operator.LogicalNot.id, accuIdent()));
-                step = eh.GlobalCall(Operator.LogicalOr.id, accuIdent(), args[1]);
+                condition = eh.GlobalCall(Operator.NotStrictlyFalse.Id,
+                    eh.GlobalCall(Operator.LogicalNot.Id, accuIdent()));
+                step = eh.GlobalCall(Operator.LogicalOr.Id, accuIdent(), args[1]);
                 result = accuIdent();
                 break;
             case QuantifierKind.quantifierExistsOne:
@@ -160,9 +160,9 @@ public sealed class Macro
                 var oneExpr = eh.LiteralInt(1);
                 init = zeroExpr;
                 condition = eh.LiteralBool(true);
-                step = eh.GlobalCall(Operator.Conditional.id, args[1],
-                    eh.GlobalCall(Operator.Add.id, accuIdent(), oneExpr), accuIdent());
-                result = eh.GlobalCall(Operator.Equals.id, accuIdent(), oneExpr);
+                step = eh.GlobalCall(Operator.Conditional.Id, args[1],
+                    eh.GlobalCall(Operator.Add.Id, accuIdent(), oneExpr), accuIdent());
+                result = eh.GlobalCall(Operator.Equals.Id, accuIdent(), oneExpr);
                 break;
             default:
                 throw new ErrorWithLocation(null, string.Format("unrecognized quantifier '{0}'", kind));
@@ -193,9 +193,9 @@ public sealed class Macro
         var accuExpr = eh.Ident(AccumulatorName);
         var init = eh.NewList();
         var condition = eh.LiteralBool(true);
-        var step = eh.GlobalCall(Operator.Add.id, accuExpr, eh.NewList(fn));
+        var step = eh.GlobalCall(Operator.Add.Id, accuExpr, eh.NewList(fn));
 
-        if (filter != null) step = eh.GlobalCall(Operator.Conditional.id, filter, step, accuExpr);
+        if (filter != null) step = eh.GlobalCall(Operator.Conditional.Id, filter, step, accuExpr);
 
         return eh.Fold(v, target, AccumulatorName, init, condition, step, accuExpr);
     }
@@ -209,8 +209,8 @@ public sealed class Macro
         var accuExpr = eh.Ident(AccumulatorName);
         var init = eh.NewList();
         var condition = eh.LiteralBool(true);
-        var step = eh.GlobalCall(Operator.Add.id, accuExpr, eh.NewList(args[0]));
-        step = eh.GlobalCall(Operator.Conditional.id, filter, step, accuExpr);
+        var step = eh.GlobalCall(Operator.Add.Id, accuExpr, eh.NewList(args[0]));
+        step = eh.GlobalCall(Operator.Conditional.Id, filter, step, accuExpr);
         return eh.Fold(v, target, AccumulatorName, init, condition, step, accuExpr);
     }
 

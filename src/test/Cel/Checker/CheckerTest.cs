@@ -528,7 +528,7 @@ public class CheckerTest
                    + "  type~type(type)^type\n"
                    + ")~bool^equals").Type(Decls.Bool),
             new TestCase().I("name in [1, 2u, 'string']")
-                .Env(new Env().Idents(Decls.NewVar("name", Decls.String)).Functions(Decls.NewFunction(Operator.In.id,
+                .Env(new Env().Idents(Decls.NewVar("name", Decls.String)).Functions(Decls.NewFunction(Operator.In.Id,
                     Decls.NewOverload(Overloads.InList,
                         new List<Type> { Decls.String, Decls.NewListType(Decls.String) }, Decls.Bool))))
                 .HomogeneousAggregateLiterals().DisableStdEnv()
@@ -537,7 +537,7 @@ public class CheckerTest
                     "ERROR: <input>:1:13: expected type 'int' but found 'uint'\n" + " | name in [1, 2u, 'string']\n" +
                     " | ............^"),
             new TestCase().I("name in [1, 2, 3]")
-                .Env(new Env().Idents(Decls.NewVar("name", Decls.String)).Functions(Decls.NewFunction(Operator.In.id,
+                .Env(new Env().Idents(Decls.NewVar("name", Decls.String)).Functions(Decls.NewFunction(Operator.In.Id,
                     Decls.NewOverload(Overloads.InList,
                         new List<Type> { Decls.String, Decls.NewListType(Decls.String) }, Decls.Bool))))
                 .HomogeneousAggregateLiterals().DisableStdEnv()
@@ -546,7 +546,7 @@ public class CheckerTest
                 .Error("ERROR: <input>:1:6: found no matching overload for '@in' applied to '(string, list(int))'\n" +
                        " | name in [1, 2, 3]\n" + " | .....^"),
             new TestCase().I("name in [\"1\", \"2\", \"3\"]")
-                .Env(new Env().Idents(Decls.NewVar("name", Decls.String)).Functions(Decls.NewFunction(Operator.In.id,
+                .Env(new Env().Idents(Decls.NewVar("name", Decls.String)).Functions(Decls.NewFunction(Operator.In.Id,
                     Decls.NewOverload(Overloads.InList,
                         new List<Type> { Decls.String, Decls.NewListType(Decls.String) }, Decls.Bool))))
                 .HomogeneousAggregateLiterals().DisableStdEnv().R("@in(\n" + "\t\t\tname~string^name,\n" + "\t\t\t[\n" +

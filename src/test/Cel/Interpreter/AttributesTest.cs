@@ -48,8 +48,8 @@ internal class AttributesTest
         attr.AddQualifier(qualFalse);
         var @out = attr.Resolve(vars);
         Assert.That(@out, Is.EqualTo("success"));
-        Assert.That(Cost.EstimateCost(attr).min, Is.EqualTo(1L));
-        Assert.That(Cost.EstimateCost(attr).max, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(attr).Min, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(attr).Max, Is.EqualTo(1L));
     }
 
     [Test]
@@ -63,8 +63,8 @@ internal class AttributesTest
         var @out = attr.Resolve(IActivation.EmptyActivation());
         Assert.That(@out, Is.SameAs(IntT.IntType));
         Assert.That(@out, Is.SameAs(IntT.IntType));
-        Assert.That(Cost.EstimateCost(attr).min, Is.EqualTo(1L));
-        Assert.That(Cost.EstimateCost(attr).max, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(attr).Min, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(attr).Max, Is.EqualTo(1L));
     }
 
     [Test]
@@ -91,8 +91,8 @@ internal class AttributesTest
         attr.AddQualifier(attrs.AbsoluteAttribute(4, "b"));
         var @out = attr.Resolve(vars);
         Assert.That(@out, Is.EqualTo(IntT.IntOf(42)));
-        Assert.That(Cost.EstimateCost(attr).min, Is.EqualTo(1L));
-        Assert.That(Cost.EstimateCost(attr).max, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(attr).Min, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(attr).Max, Is.EqualTo(1L));
     }
 
     [Test]
@@ -128,8 +128,8 @@ internal class AttributesTest
         attr.AddQualifier(attrs.MaybeAttribute(4, "b"));
         var @out = attr.Resolve(vars);
         Assert.That(@out, Is.EqualTo(IntT.IntOf(42)));
-        Assert.That(Cost.EstimateCost(attr).min, Is.EqualTo(1L));
-        Assert.That(Cost.EstimateCost(attr).max, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(attr).Min, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(attr).Max, Is.EqualTo(1L));
     }
 
     [Test]
@@ -167,8 +167,8 @@ internal class AttributesTest
         attr.AddQualifier(condAttr);
         var @out = attr.Resolve(vars);
         Assert.That(@out, Is.EqualTo(IntT.IntOf(42)));
-        Assert.That(Cost.EstimateCost(attr).min, Is.EqualTo(1L));
-        Assert.That(Cost.EstimateCost(attr).max, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(attr).Min, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(attr).Max, Is.EqualTo(1L));
     }
 
     [Test]
@@ -222,8 +222,8 @@ internal class AttributesTest
 
         var @out = attr.Resolve(vars);
         Assert.That(@out, Is.EqualTo(IntT.IntOf(2)));
-        Assert.That(Cost.EstimateCost(attr).min, Is.EqualTo(1L));
-        Assert.That(Cost.EstimateCost(attr).max, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(attr).Min, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(attr).Max, Is.EqualTo(1L));
     }
 
     [Test]
@@ -242,8 +242,8 @@ internal class AttributesTest
         attr.AddQualifier(qualB);
         var @out = attr.Resolve(vars);
         Assert.That(@out, Is.EqualTo("found"));
-        Assert.That(Cost.EstimateCost(attr).min, Is.EqualTo(1L));
-        Assert.That(Cost.EstimateCost(attr).max, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(attr).Min, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(attr).Max, Is.EqualTo(1L));
     }
 
     [Test]
@@ -267,8 +267,8 @@ internal class AttributesTest
         cond.AddQualifier(qual1);
         var @out = cond.Resolve(vars);
         Assert.That(@out, Is.EqualTo(42));
-        Assert.That(Cost.EstimateCost(fv).min, Is.EqualTo(1L));
-        Assert.That(Cost.EstimateCost(fv).max, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(fv).Min, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(fv).Max, Is.EqualTo(1L));
         // Note: migrated to JMH
     }
 
@@ -293,8 +293,8 @@ internal class AttributesTest
         cond.AddQualifier(qual1);
         var @out = cond.Resolve(vars);
         Assert.That(@out, Is.EqualTo(42));
-        Assert.That(Cost.EstimateCost(fv).min, Is.EqualTo(1L));
-        Assert.That(Cost.EstimateCost(fv).max, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(fv).Min, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(fv).Max, Is.EqualTo(1L));
         // Note: migrated to JMH
     }
 
@@ -310,16 +310,16 @@ internal class AttributesTest
         var cond =
             attrs.ConditionalAttribute(1, IInterpretable.NewConstValue(0, Err.NewErr("test error")), tv, fv);
         var @out = cond.Resolve(IActivation.EmptyActivation());
-        Assert.That(Cost.EstimateCost(fv).min, Is.EqualTo(1L));
-        Assert.That(Cost.EstimateCost(fv).max, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(fv).Min, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(fv).Max, Is.EqualTo(1L));
 
         // unk ? a : b
         var condUnk =
             attrs.ConditionalAttribute(1, IInterpretable.NewConstValue(0, UnknownT.UnknownOf(1)), tv, fv);
         @out = condUnk.Resolve(IActivation.EmptyActivation());
         Assert.That(@out, Is.InstanceOf(typeof(UnknownT)));
-        Assert.That(Cost.EstimateCost(fv).min, Is.EqualTo(1L));
-        Assert.That(Cost.EstimateCost(fv).max, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(fv).Min, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(fv).Max, Is.EqualTo(1L));
     }
 
     [Test]
@@ -360,8 +360,8 @@ internal class AttributesTest
         attr.AddQualifier(qualBB);
         var @out = attr.Resolve(vars);
         Assert.That(@out, Is.EqualTo(123));
-        Assert.That(Cost.EstimateCost(attr).min, Is.EqualTo(1L));
-        Assert.That(Cost.EstimateCost(attr).max, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(attr).Min, Is.EqualTo(1L));
+        Assert.That(Cost.EstimateCost(attr).Max, Is.EqualTo(1L));
     }
 
     [Test]

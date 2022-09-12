@@ -78,11 +78,11 @@ public sealed class DefaultDispatcher : IDispatcher
         foreach (var o in overloads)
         {
             // add the overload unless an overload of the same name has already been provided.
-            if (this.overloads.ContainsKey(o.@operator))
-                throw new ArgumentException(string.Format("overload already exists '{0}'", o.@operator));
+            if (this.overloads.ContainsKey(o.Operator))
+                throw new ArgumentException(string.Format("overload already exists '{0}'", o.Operator));
 
             // index the overload by function name.
-            this.overloads[o.@operator] = o;
+            this.overloads[o.Operator] = o;
         }
     }
 

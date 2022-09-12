@@ -44,10 +44,10 @@ public class TestExpr
             ExprList(8, ExprLiteral(2, 0L), ExprLiteral(3, 1L), ExprLiteral(4, 2L), ExprLiteral(5, 3L),
                 ExprLiteral(6, 4L), ExprLiteral(7, (ulong)5)), "__result__", ExprLiteral(9, false),
             ExprCall(12,
-                Operator.NotStrictlyFalse.id,
-                ExprCall(10, Operator.LogicalNot.id, ExprIdent(11, "__result__"))),
-            ExprCall(13, Operator.LogicalOr.id, ExprIdent(14, "__result__"),
-                ExprCall(15, Operator.Equals.id, ExprCall(16, "type", ExprIdent(17, "x")),
+                Operator.NotStrictlyFalse.Id,
+                ExprCall(10, Operator.LogicalNot.Id, ExprIdent(11, "__result__"))),
+            ExprCall(13, Operator.LogicalOr.Id, ExprIdent(14, "__result__"),
+                ExprCall(15, Operator.Equals.Id, ExprCall(16, "type", ExprIdent(17, "x")),
                     ExprIdent(18, "uint"))),
             ExprIdent(19, "__result__")),
         Info1);
@@ -57,8 +57,8 @@ public class TestExpr
     /// </summary>
     public static readonly TestExpr ExistsWithInput = new(
         ExprComprehension(1, "x", ExprIdent(2, "elems"), "__result__", ExprLiteral(3, false),
-            ExprCall(4, Operator.LogicalNot.id, ExprIdent(5, "__result__")),
-            ExprCall(6, Operator.Equals.id, ExprCall(7, "type", ExprIdent(8, "x")), ExprIdent(9, "uint")),
+            ExprCall(4, Operator.LogicalNot.Id, ExprIdent(5, "__result__")),
+            ExprCall(6, Operator.Equals.Id, ExprCall(7, "type", ExprIdent(8, "x")), ExprIdent(9, "uint")),
             ExprIdent(10, "__result__")),
         Info2);
 
@@ -84,7 +84,7 @@ public class TestExpr
     /// </summary>
     public static readonly TestExpr LogicalAnd =
         new(
-            ExprCall(2, Operator.LogicalAnd.id, ExprIdent(1, "a"),
+            ExprCall(2, Operator.LogicalAnd.Id, ExprIdent(1, "a"),
                 ExprSelect(8, ExprMap(5, ExprEntry(4, ExprLiteral(6, "c"), ExprLiteral(7, true))), "c")),
             new SourceInfo());
 
@@ -93,7 +93,7 @@ public class TestExpr
     /// </summary>
     public static readonly TestExpr LogicalOr =
         new(
-            ExprCall(2, Operator.LogicalOr.id,
+            ExprCall(2, Operator.LogicalOr.Id,
                 ExprSelect(8, ExprMap(5, ExprEntry(4, ExprLiteral(6, "c"), ExprLiteral(7, false))), "c"),
                 ExprIdent(1, "a")),
             new SourceInfo());
@@ -103,8 +103,8 @@ public class TestExpr
     /// </summary>
     public static readonly TestExpr LogicalOrEquals =
         new(
-            ExprCall(5, Operator.LogicalOr.id, ExprIdent(1, "a"),
-                ExprCall(4, Operator.Equals.id, ExprIdent(2, "b"), ExprLiteral(3, "b"))),
+            ExprCall(5, Operator.LogicalOr.Id, ExprIdent(1, "a"),
+                ExprCall(4, Operator.Equals.Id, ExprIdent(2, "b"), ExprLiteral(3, "b"))),
             new SourceInfo());
 
     /// <summary>
@@ -113,7 +113,7 @@ public class TestExpr
     /// </summary>
     public static readonly TestExpr LogicalAndMissingType =
         new(
-            ExprCall(2, Operator.LogicalAnd.id, ExprIdent(1, "a"),
+            ExprCall(2, Operator.LogicalAnd.Id, ExprIdent(1, "a"),
                 ExprSelect(7, ExprType(5, "TestProto", ExprField(4, "c", ExprLiteral(6, true))), "c")),
             new SourceInfo());
 
@@ -127,9 +127,9 @@ public class TestExpr
     /// 
     /// </summary>
     public static readonly TestExpr Conditional = new(
-        ExprCall(9, Operator.Conditional.id, ExprIdent(1, "a"),
-            ExprCall(3, Operator.Less.id, ExprIdent(2, "b"), ExprLiteral(4, 1.0)),
-            ExprCall(6, Operator.Equals.id, ExprIdent(5, "c"), ExprList(8, ExprLiteral(7, "hello")))),
+        ExprCall(9, Operator.Conditional.Id, ExprIdent(1, "a"),
+            ExprCall(3, Operator.Less.Id, ExprIdent(2, "b"), ExprLiteral(4, 1.0)),
+            ExprCall(6, Operator.Equals.Id, ExprIdent(5, "c"), ExprList(8, ExprLiteral(7, "hello")))),
         new SourceInfo());
 
     /// <summary>
@@ -142,14 +142,14 @@ public class TestExpr
     ///     Equality generates "a == 42".
     /// </summary>
     public static readonly TestExpr Equality =
-        new(ExprCall(2, Operator.Equals.id, ExprIdent(1, "a"), ExprLiteral(3, 42L)),
+        new(ExprCall(2, Operator.Equals.Id, ExprIdent(1, "a"), ExprLiteral(3, 42L)),
             new SourceInfo());
 
     /// <summary>
     ///     TypeEquality generates "type(a) == uint".
     /// </summary>
     public static readonly TestExpr TypeEquality =
-        new(ExprCall(4, Operator.Equals.id, ExprCall(1, "type", ExprIdent(2, "a")), ExprIdent(3, "uint")),
+        new(ExprCall(4, Operator.Equals.Id, ExprCall(1, "type", ExprIdent(2, "a")), ExprIdent(3, "uint")),
             new SourceInfo());
 
     internal readonly Expr expr;

@@ -56,8 +56,6 @@ public sealed class TypeEnum
     private static readonly List<TypeEnum> ValueList = new();
     private static int nextOrdinal;
 
-    public readonly InnerEnum InnerEnumValue;
-
     private readonly int ordinalValue;
 
     static TypeEnum()
@@ -88,6 +86,8 @@ public sealed class TypeEnum
 
     public string Name { get; }
 
+    public InnerEnum InnerEnumValue { get; }
+    
     public static TypeEnum[] Values()
     {
         return ValueList.ToArray();

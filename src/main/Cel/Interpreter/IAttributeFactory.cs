@@ -396,8 +396,8 @@ public sealed class AbsoluteAttribute : INamespacedAttribute, ICoster
         foreach (var q in qualifiers)
         {
             var qc = Interpreter.Cost.EstimateCost(q);
-            min += qc.min;
-            max += qc.max;
+            min += qc.Min;
+            max += qc.Max;
         }
 
         min++; // For object retrieval.
@@ -594,7 +594,7 @@ public sealed class ConditionalAttribute : IAttribute, ICoster
         var t = Interpreter.Cost.EstimateCost(truthy);
         var f = Interpreter.Cost.EstimateCost(falsy);
         var e = Interpreter.Cost.EstimateCost(expr);
-        return ICoster.CostOf(e.min + Math.Min(t.min, f.min), e.max + Math.Max(t.max, f.max));
+        return ICoster.CostOf(e.Min + Math.Min(t.Min, f.Min), e.Max + Math.Max(t.Max, f.Max));
     }
 
     /// <summary>
@@ -752,8 +752,8 @@ public sealed class MaybeAttribute : ICoster, IAttribute
         foreach (var a in attrs)
         {
             var ac = Interpreter.Cost.EstimateCost(a);
-            min = Math.Min(min, ac.min);
-            max = Math.Max(max, ac.max);
+            min = Math.Min(min, ac.Min);
+            max = Math.Max(max, ac.Max);
         }
 
         return ICoster.CostOf(min, max);
@@ -847,13 +847,13 @@ public sealed class RelativeAttribute : ICoster, IAttribute
     public Cost Cost()
     {
         var c = Interpreter.Cost.EstimateCost(operand);
-        var min = c.min;
-        var max = c.max;
+        var min = c.Min;
+        var max = c.Max;
         foreach (var qual in qualifiers)
         {
             var q = Interpreter.Cost.EstimateCost(qual);
-            min += q.min;
-            max += q.max;
+            min += q.Min;
+            max += q.Max;
         }
 
         return ICoster.CostOf(min, max);
@@ -1302,7 +1302,7 @@ public sealed class FieldQualifier : ICoster, IConstantQualifierEquator
     {
         if (obj is IVal) obj = ((IVal)obj).Value();
 
-        return fieldType.getFrom(obj);
+        return fieldType.GetFrom(obj);
     }
 
     /// <summary>

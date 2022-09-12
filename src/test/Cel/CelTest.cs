@@ -178,7 +178,7 @@ public class CELTest
     {
         var e = Env.NewCustomEnv(
             IEnvOption.Declarations(Decls.NewVar("name", Decls.String),
-                Decls.NewFunction(Operator.In.id,
+                Decls.NewFunction(Operator.In.Id,
                     Decls.NewOverload(Overloads.InList,
                         new List<Type> { Decls.String, Decls.NewListType(Decls.String) }, Decls.Bool),
                     Decls.NewOverload(Overloads.InMap,
@@ -201,7 +201,7 @@ public class CELTest
         Assert.That(xIss.HasIssues(), Is.True);
         // })
 
-        var funcs = IProgramOption.Functions(Overload.Binary(Operator.In.id, (lhs, rhs) =>
+        var funcs = IProgramOption.Functions(Overload.Binary(Operator.In.Id, (lhs, rhs) =>
         {
             if (rhs.Type().HasTrait(Trait.ContainerType)) return ((IContainer)rhs).Contains(lhs);
 
@@ -443,10 +443,10 @@ public class CELTest
             var accuIdent = eh.Ident("__result__");
             var init = eh.LiteralString("");
             var condition = eh.LiteralBool(true);
-            var step = eh.GlobalCall(Operator.Conditional.id,
-                eh.GlobalCall(Operator.Greater.id, eh.ReceiverCall("size", accuIdent, new List<Expr>()),
+            var step = eh.GlobalCall(Operator.Conditional.Id,
+                eh.GlobalCall(Operator.Greater.Id, eh.ReceiverCall("size", accuIdent, new List<Expr>()),
                     eh.LiteralInt(0)),
-                eh.GlobalCall(Operator.Add.id, eh.GlobalCall(Operator.Add.id, accuIdent, delim), iterIdent),
+                eh.GlobalCall(Operator.Add.Id, eh.GlobalCall(Operator.Add.Id, accuIdent, delim), iterIdent),
                 iterIdent);
             return eh.Fold("__iter__", target, "__result__", init, condition, step, accuIdent);
         });

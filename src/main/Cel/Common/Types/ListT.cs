@@ -208,7 +208,7 @@ public abstract class ListT : BaseVal, ILister
                 var e2 = o.Get(idx);
                 if (Err.IsError(e2)) return e2;
 
-                if (e1.Type() != e2.Type()) return Err.NoSuchOverload(e1, Operator.Equals.id, e2);
+                if (e1.Type() != e2.Type()) return Err.NoSuchOverload(e1, Operator.Equals.Id, e2);
 
                 if (e1.Equal(e2) != BoolT.True) return BoolT.False;
             }
@@ -231,7 +231,7 @@ public abstract class ListT : BaseVal, ILister
                 if (value.Equal(elem) == BoolT.True) return BoolT.True;
             }
 
-            if (mixedType != null) return Err.NoSuchOverload(value, Operator.In.id, firstType, mixedType);
+            if (mixedType != null) return Err.NoSuchOverload(value, Operator.In.Id, firstType, mixedType);
 
             return BoolT.False;
         }

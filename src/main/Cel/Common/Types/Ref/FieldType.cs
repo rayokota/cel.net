@@ -26,22 +26,22 @@ public class FieldType
     /// <summary>
     ///     GetFrom retrieves the field value on the input object, if set.
     /// </summary>
-    public readonly FieldGetter getFrom;
+    public readonly FieldGetter GetFrom;
 
     /// <summary>
     ///     IsSet indicates whether the field is set on an input object.
     /// </summary>
-    public readonly FieldTester isSet;
+    public readonly FieldTester IsSet;
 
     /// <summary>
     ///     Type of the field.
     /// </summary>
-    public readonly Type type;
+    public readonly Type Type;
 
     public FieldType(Type type, FieldTester isSet, FieldGetter getFrom)
     {
-        this.type = type;
-        this.isSet = isSet;
-        this.getFrom = getFrom;
+        this.Type = type;
+        this.IsSet = isSet;
+        this.GetFrom = getFrom;
     }
 }

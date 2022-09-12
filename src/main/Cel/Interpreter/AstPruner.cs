@@ -219,10 +219,10 @@ public sealed class AstPruner
     internal Expr? MaybePruneFunction(Expr node)
     {
         var call = node.CallExpr;
-        if (call.Function.Equals(Operator.LogicalOr.id) || call.Function.Equals(Operator.LogicalAnd.id))
+        if (call.Function.Equals(Operator.LogicalOr.Id) || call.Function.Equals(Operator.LogicalAnd.Id))
             return MaybePruneAndOr(node);
 
-        if (call.Function.Equals(Operator.Conditional.id)) return MaybePruneConditional(node);
+        if (call.Function.Equals(Operator.Conditional.Id)) return MaybePruneConditional(node);
 
         return null;
     }

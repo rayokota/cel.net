@@ -34,13 +34,11 @@ public sealed class Cost
     public static readonly Cost Unknown = ICoster.CostOf(0, long.MaxValue);
     public static readonly Cost None = ICoster.CostOf(0, 0);
     public static readonly Cost OneOne = ICoster.CostOf(1, 1);
-    public readonly long max;
-    public readonly long min;
 
     internal Cost(long min, long max)
     {
-        this.min = min;
-        this.max = max;
+        Min = min;
+        Max = max;
     }
 
     /// <summary>
@@ -52,6 +50,10 @@ public sealed class Cost
 
         return Unknown;
     }
+    
+    public long Max { get;  }
+    
+    public long Min { get;  }
 
     public override bool Equals(object? o)
     {
@@ -60,26 +62,26 @@ public sealed class Cost
         if (o == null || GetType() != o.GetType()) return false;
 
         var cost = (Cost)o;
-        return min == cost.min && max == cost.max;
+        return Min == cost.Min && Max == cost.Max;
     }
 
     public override int GetHashCode()
     {
-        return HashCode.Combine(min, max);
+        return HashCode.Combine(Min, Max);
     }
 
     public override string ToString()
     {
-        return "Cost{" + "min=" + min + ", max=" + max + '}';
+        return "Cost{" + "min=" + Min + ", max=" + Max + '}';
     }
 
     public Cost Add(Cost c)
     {
-        return new Cost(min + c.min, max + c.max);
+        return new Cost(Min + c.Min, Max + c.Max);
     }
 
     public Cost Multiply(long multiplier)
     {
-        return new Cost(min * multiplier, max * multiplier);
+        return new Cost(Min * multiplier, Max * multiplier);
     }
 }

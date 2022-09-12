@@ -119,7 +119,7 @@ internal class JsonTypeDescriptionTest
         var ft = (JsonFieldType)reg.FindFieldType(typeof(CollectionsObject).FullName, prop);
         Assert.That(ft, Is.Not.Null);
 
-        Assert.That(ft.type.ListType.ElemType, Is.SameAs(valueType));
+        Assert.That(ft.Type.ListType.ElemType, Is.SameAs(valueType));
     }
 
     private void CheckMapType(JsonRegistry reg, string prop, System.Type keyClass,
@@ -128,8 +128,8 @@ internal class JsonTypeDescriptionTest
         var ft = (JsonFieldType)reg.FindFieldType(typeof(CollectionsObject).FullName, prop);
         Assert.That(ft, Is.Not.Null);
 
-        Assert.That(ft.type.MapType.KeyType, Is.SameAs(keyType));
-        Assert.That(ft.type.MapType.ValueType, Is.SameAs(valueType));
+        Assert.That(ft.Type.MapType.KeyType, Is.SameAs(keyType));
+        Assert.That(ft.Type.MapType.ValueType, Is.SameAs(valueType));
     }
 
     [Test]

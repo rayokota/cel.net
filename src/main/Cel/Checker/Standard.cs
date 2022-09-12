@@ -49,25 +49,25 @@ internal sealed class Standard
 
         // Booleans
         // TODO: allow the conditional to return a heterogenous type.
-        idents.Add(Decls.NewFunction(Operator.Conditional.id,
+        idents.Add(Decls.NewFunction(Operator.Conditional.Id,
             Decls.NewParameterizedOverload(Overloads.Conditional, new List<Type> { Decls.Bool, paramA, paramA },
                 paramA, typeParamAList)));
 
-        idents.Add(Decls.NewFunction(Operator.LogicalAnd.id,
+        idents.Add(Decls.NewFunction(Operator.LogicalAnd.Id,
             Decls.NewOverload(Overloads.LogicalAnd, new List<Type> { Decls.Bool, Decls.Bool }, Decls.Bool)));
 
-        idents.Add(Decls.NewFunction(Operator.LogicalOr.id,
+        idents.Add(Decls.NewFunction(Operator.LogicalOr.Id,
             Decls.NewOverload(Overloads.LogicalOr, new List<Type> { Decls.Bool, Decls.Bool }, Decls.Bool)));
 
-        idents.Add(Decls.NewFunction(Operator.LogicalNot.id,
+        idents.Add(Decls.NewFunction(Operator.LogicalNot.Id,
             Decls.NewOverload(Overloads.LogicalNot, new List<Type> { Decls.Bool }, Decls.Bool)));
 
-        idents.Add(Decls.NewFunction(Operator.NotStrictlyFalse.id,
+        idents.Add(Decls.NewFunction(Operator.NotStrictlyFalse.Id,
             Decls.NewOverload(Overloads.NotStrictlyFalse, new List<Type> { Decls.Bool }, Decls.Bool)));
 
         // Relations.
 
-        idents.Add(Decls.NewFunction(Operator.Less.id,
+        idents.Add(Decls.NewFunction(Operator.Less.Id,
             Decls.NewOverload(Overloads.LessBool, new List<Type> { Decls.Bool, Decls.Bool }, Decls.Bool),
             Decls.NewOverload(Overloads.LessInt64, new List<Type> { Decls.Int, Decls.Int }, Decls.Bool),
             Decls.NewOverload(Overloads.LessUint64, new List<Type> { Decls.Uint, Decls.Uint }, Decls.Bool),
@@ -79,7 +79,7 @@ internal sealed class Standard
             Decls.NewOverload(Overloads.LessDuration, new List<Type> { Decls.Duration, Decls.Duration },
                 Decls.Bool)));
 
-        idents.Add(Decls.NewFunction(Operator.LessEquals.id,
+        idents.Add(Decls.NewFunction(Operator.LessEquals.Id,
             Decls.NewOverload(Overloads.LessEqualsBool, new List<Type> { Decls.Bool, Decls.Bool }, Decls.Bool),
             Decls.NewOverload(Overloads.LessEqualsInt64, new List<Type> { Decls.Int, Decls.Int }, Decls.Bool),
             Decls.NewOverload(Overloads.LessEqualsUint64, new List<Type> { Decls.Uint, Decls.Uint }, Decls.Bool),
@@ -93,7 +93,7 @@ internal sealed class Standard
             Decls.NewOverload(Overloads.LessEqualsDuration, new List<Type> { Decls.Duration, Decls.Duration },
                 Decls.Bool)));
 
-        idents.Add(Decls.NewFunction(Operator.Greater.id,
+        idents.Add(Decls.NewFunction(Operator.Greater.Id,
             Decls.NewOverload(Overloads.GreaterBool, new List<Type> { Decls.Bool, Decls.Bool }, Decls.Bool),
             Decls.NewOverload(Overloads.GreaterInt64, new List<Type> { Decls.Int, Decls.Int }, Decls.Bool),
             Decls.NewOverload(Overloads.GreaterUint64, new List<Type> { Decls.Uint, Decls.Uint }, Decls.Bool),
@@ -105,7 +105,7 @@ internal sealed class Standard
             Decls.NewOverload(Overloads.GreaterDuration, new List<Type> { Decls.Duration, Decls.Duration },
                 Decls.Bool)));
 
-        idents.Add(Decls.NewFunction(Operator.GreaterEquals.id,
+        idents.Add(Decls.NewFunction(Operator.GreaterEquals.Id,
             Decls.NewOverload(Overloads.GreaterEqualsBool, new List<Type> { Decls.Bool, Decls.Bool }, Decls.Bool),
             Decls.NewOverload(Overloads.GreaterEqualsInt64, new List<Type> { Decls.Int, Decls.Int }, Decls.Bool),
             Decls.NewOverload(Overloads.GreaterEqualsUint64, new List<Type> { Decls.Uint, Decls.Uint }, Decls.Bool),
@@ -120,17 +120,17 @@ internal sealed class Standard
             Decls.NewOverload(Overloads.GreaterEqualsDuration, new List<Type> { Decls.Duration, Decls.Duration },
                 Decls.Bool)));
 
-        idents.Add(Decls.NewFunction(Operator.Equals.id,
+        idents.Add(Decls.NewFunction(Operator.Equals.Id,
             Decls.NewParameterizedOverload(Overloads.Equals, new List<Type> { paramA, paramA }, Decls.Bool,
                 typeParamAList)));
 
-        idents.Add(Decls.NewFunction(Operator.NotEquals.id,
+        idents.Add(Decls.NewFunction(Operator.NotEquals.Id,
             Decls.NewParameterizedOverload(Overloads.NotEquals, new List<Type> { paramA, paramA }, Decls.Bool,
                 typeParamAList)));
 
         // Algebra.
 
-        idents.Add(Decls.NewFunction(Operator.Subtract.id,
+        idents.Add(Decls.NewFunction(Operator.Subtract.Id,
             Decls.NewOverload(Overloads.SubtractInt64, new List<Type> { Decls.Int, Decls.Int }, Decls.Int),
             Decls.NewOverload(Overloads.SubtractUint64, new List<Type> { Decls.Uint, Decls.Uint }, Decls.Uint),
             Decls.NewOverload(Overloads.SubtractDouble, new List<Type> { Decls.Double, Decls.Double },
@@ -142,23 +142,23 @@ internal sealed class Standard
             Decls.NewOverload(Overloads.SubtractDurationDuration, new List<Type> { Decls.Duration, Decls.Duration },
                 Decls.Duration)));
 
-        idents.Add(Decls.NewFunction(Operator.Multiply.id,
+        idents.Add(Decls.NewFunction(Operator.Multiply.Id,
             Decls.NewOverload(Overloads.MultiplyInt64, new List<Type> { Decls.Int, Decls.Int }, Decls.Int),
             Decls.NewOverload(Overloads.MultiplyUint64, new List<Type> { Decls.Uint, Decls.Uint }, Decls.Uint),
             Decls.NewOverload(Overloads.MultiplyDouble, new List<Type> { Decls.Double, Decls.Double },
                 Decls.Double)));
 
-        idents.Add(Decls.NewFunction(Operator.Divide.id,
+        idents.Add(Decls.NewFunction(Operator.Divide.Id,
             Decls.NewOverload(Overloads.DivideInt64, new List<Type> { Decls.Int, Decls.Int }, Decls.Int),
             Decls.NewOverload(Overloads.DivideUint64, new List<Type> { Decls.Uint, Decls.Uint }, Decls.Uint),
             Decls.NewOverload(Overloads.DivideDouble, new List<Type> { Decls.Double, Decls.Double },
                 Decls.Double)));
 
-        idents.Add(Decls.NewFunction(Operator.Modulo.id,
+        idents.Add(Decls.NewFunction(Operator.Modulo.Id,
             Decls.NewOverload(Overloads.ModuloInt64, new List<Type> { Decls.Int, Decls.Int }, Decls.Int),
             Decls.NewOverload(Overloads.ModuloUint64, new List<Type> { Decls.Uint, Decls.Uint }, Decls.Uint)));
 
-        idents.Add(Decls.NewFunction(Operator.Add.id,
+        idents.Add(Decls.NewFunction(Operator.Add.Id,
             Decls.NewOverload(Overloads.AddInt64, new List<Type> { Decls.Int, Decls.Int }, Decls.Int),
             Decls.NewOverload(Overloads.AddUint64, new List<Type> { Decls.Uint, Decls.Uint }, Decls.Uint),
             Decls.NewOverload(Overloads.AddDouble, new List<Type> { Decls.Double, Decls.Double }, Decls.Double),
@@ -173,13 +173,13 @@ internal sealed class Standard
             Decls.NewOverload(Overloads.AddDurationDuration, new List<Type> { Decls.Duration, Decls.Duration },
                 Decls.Duration)));
 
-        idents.Add(Decls.NewFunction(Operator.Negate.id,
+        idents.Add(Decls.NewFunction(Operator.Negate.Id,
             Decls.NewOverload(Overloads.NegateInt64, new List<Type> { Decls.Int }, Decls.Int),
             Decls.NewOverload(Overloads.NegateDouble, new List<Type> { Decls.Double }, Decls.Double)));
 
         // Index.
 
-        idents.Add(Decls.NewFunction(Operator.Index.id,
+        idents.Add(Decls.NewFunction(Operator.Index.Id,
             Decls.NewParameterizedOverload(Overloads.IndexList, new List<Type> { listOfA, Decls.Int }, paramA,
                 typeParamAList),
             Decls.NewParameterizedOverload(Overloads.IndexMap, new List<Type> { mapOfAB, paramA }, paramB,
@@ -203,7 +203,7 @@ internal sealed class Standard
             Decls.NewParameterizedOverload(Overloads.SizeMap, new List<Type> { mapOfAB }, Decls.Int,
                 typeParamABList)));
 
-        idents.Add(Decls.NewFunction(Operator.In.id,
+        idents.Add(Decls.NewFunction(Operator.In.Id,
             Decls.NewParameterizedOverload(Overloads.InList, new List<Type> { paramA, listOfA }, Decls.Bool,
                 typeParamAList),
             Decls.NewParameterizedOverload(Overloads.InMap, new List<Type> { paramA, mapOfAB }, Decls.Bool,

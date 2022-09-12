@@ -249,7 +249,7 @@ public sealed class Checker
                 // Objects yield their field type declaration as the selection result type, but only if
                 // the field is defined.
                 var fieldType = LookupFieldType(LocationByExpr(e), targetType.MessageType, sel.Field);
-                if (fieldType != null) resultType = fieldType.type;
+                if (fieldType != null) resultType = fieldType.Type;
 
                 break;
             case Types.Kind.kindTypeParam:
@@ -589,7 +589,7 @@ public sealed class Checker
 
             var fieldType = Decls.Error;
             var t = LookupFieldType(LocationByID(ent.Id), messageType.MessageType, field);
-            if (t != null) fieldType = t.type;
+            if (t != null) fieldType = t.Type;
 
             if (!IsAssignable(fieldType, GetType(value)!))
                 errors.FieldTypeMismatch(LocationByID(ent.Id), field, fieldType, GetType(value));

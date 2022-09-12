@@ -171,7 +171,7 @@ public abstract class MapT : BaseVal, IMapper, IContainer, IIndexer, IIterableT,
 
                 if (Err.IsError(oVal)) return val;
 
-                if (val.Type() != oVal.Type()) return Err.NoSuchOverload(val, Operator.Equals.id, oVal);
+                if (val.Type() != oVal.Type()) return Err.NoSuchOverload(val, Operator.Equals.Id, oVal);
 
                 var eq = val.Equal(oVal);
                 if (eq is Err) return eq;

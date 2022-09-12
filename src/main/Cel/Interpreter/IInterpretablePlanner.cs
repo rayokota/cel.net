@@ -277,17 +277,17 @@ public sealed class Planner : IInterpretablePlanner
         }
 
         // Generate specialized Interpretable operators by function name if possible.
-        if (resolvedFunc.fnName.Equals(Operator.LogicalAnd.id)) return PlanCallLogicalAnd(expr, args);
+        if (resolvedFunc.fnName.Equals(Operator.LogicalAnd.Id)) return PlanCallLogicalAnd(expr, args);
 
-        if (resolvedFunc.fnName.Equals(Operator.LogicalOr.id)) return PlanCallLogicalOr(expr, args);
+        if (resolvedFunc.fnName.Equals(Operator.LogicalOr.Id)) return PlanCallLogicalOr(expr, args);
 
-        if (resolvedFunc.fnName.Equals(Operator.Conditional.id)) return PlanCallConditional(expr, args);
+        if (resolvedFunc.fnName.Equals(Operator.Conditional.Id)) return PlanCallConditional(expr, args);
 
-        if (resolvedFunc.fnName.Equals(Operator.Equals.id)) return PlanCallEqual(expr, args);
+        if (resolvedFunc.fnName.Equals(Operator.Equals.Id)) return PlanCallEqual(expr, args);
 
-        if (resolvedFunc.fnName.Equals(Operator.NotEquals.id)) return PlanCallNotEqual(expr, args);
+        if (resolvedFunc.fnName.Equals(Operator.NotEquals.Id)) return PlanCallNotEqual(expr, args);
 
-        if (resolvedFunc.fnName.Equals(Operator.Index.id)) return PlanCallIndex(expr, args);
+        if (resolvedFunc.fnName.Equals(Operator.Index.Id)) return PlanCallIndex(expr, args);
 
         // Otherwise, generate Interpretable calls specialized by argument count.
         // Try to find the specific function by overload id.
@@ -316,10 +316,10 @@ public sealed class Planner : IInterpretablePlanner
     /// </summary>
     internal IInterpretable PlanCallZero(Expr expr, string function, string overload, Overload? impl)
     {
-        if (impl == null || impl.function == null)
+        if (impl == null || impl.FunctionOp == null)
             throw new ArgumentException(string.Format("no such overload: {0}()", function));
 
-        return new EvalZeroArity(expr.Id, function, overload, impl.function);
+        return new EvalZeroArity(expr.Id, function, overload, impl.FunctionOp);
     }
 
     /// <summary>
@@ -332,11 +332,11 @@ public sealed class Planner : IInterpretablePlanner
         var trait = Trait.None;
         if (impl != null)
         {
-            if (impl.unary == null)
+            if (impl.UnaryOp == null)
                 throw new InvalidOperationException(string.Format("no such overload: {0}(arg)", function));
 
-            fn = impl.unary;
-            trait = impl.operandTrait;
+            fn = impl.UnaryOp;
+            trait = impl.OperandTrait;
         }
 
         return new EvalUnary(expr.Id, function, overload, args[0], trait, fn);
@@ -352,12 +352,12 @@ public sealed class Planner : IInterpretablePlanner
         var trait = Trait.None;
         if (impl != null)
         {
-            if (impl.binary == null)
+            if (impl.BinaryOp == null)
                 throw new InvalidOperationException(string.Format("no such overload: {0}(lhs, rhs)",
                     function));
 
-            fn = impl.binary;
-            trait = impl.operandTrait;
+            fn = impl.BinaryOp;
+            trait = impl.OperandTrait;
         }
 
         return new EvalBinary(expr.Id, function, overload, args[0], args[1], trait, fn);
@@ -373,11 +373,11 @@ public sealed class Planner : IInterpretablePlanner
         var trait = Trait.None;
         if (impl != null)
         {
-            if (impl.function == null)
+            if (impl.FunctionOp == null)
                 throw new InvalidOperationException(string.Format("no such overload: {0}(...)", function));
 
-            fn = impl.function;
-            trait = impl.operandTrait;
+            fn = impl.FunctionOp;
+            trait = impl.OperandTrait;
         }
 
         return new EvalVarArgs(expr.Id, function, overload, args, trait, fn);

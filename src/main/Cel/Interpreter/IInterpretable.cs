@@ -63,7 +63,7 @@ public interface IInterpretable
     {
         var l = Cost.EstimateCost(lhs);
         var r = Cost.EstimateCost(rhs);
-        return ICoster.CostOf(l.min, l.max + r.max + 1);
+        return ICoster.CostOf(l.Min, l.Max + r.Max + 1);
     }
 
     static Cost SumOfCost(IInterpretable[] interps)
@@ -73,8 +73,8 @@ public interface IInterpretable
         foreach (var interp in interps)
         {
             var t = Cost.EstimateCost(interp);
-            min += t.min;
-            max += t.max;
+            min += t.Min;
+            max += t.Max;
         }
 
         return ICoster.CostOf(min, max);
@@ -248,7 +248,7 @@ public sealed class EvalTestOnly : IInterpretable, ICoster
                     opVal = refVal.Value();
                 }
 
-                if (fieldType.isSet(opVal)) return BoolT.True;
+                if (fieldType.IsSet(opVal)) return BoolT.True;
 
                 return BoolT.False;
             }
@@ -383,7 +383,7 @@ public sealed class EvalOr : AbstractEvalLhsRhs
         // If the left-hand side is non-boolean return it as the error.
         if (Err.IsError(lVal)) return lVal;
 
-        return Err.NoSuchOverload(lVal, Operator.LogicalOr.id, rVal);
+        return Err.NoSuchOverload(lVal, Operator.LogicalOr.Id, rVal);
     }
 
     /// <summary>
@@ -433,7 +433,7 @@ public sealed class EvalAnd : AbstractEvalLhsRhs
         // If the left-hand side is non-boolean return it as the error.
         if (Err.IsError(lVal)) return lVal;
 
-        return Err.NoSuchOverload(lVal, Operator.LogicalAnd.id, rVal);
+        return Err.NoSuchOverload(lVal, Operator.LogicalAnd.Id, rVal);
     }
 
     /// <summary>
@@ -472,7 +472,7 @@ public sealed class EvalEq : AbstractEvalLhsRhs, IInterpretableCall
     /// </summary>
     public string Function()
     {
-        return Operator.Equals.id;
+        return Operator.Equals.Id;
     }
 
     /// <summary>
@@ -527,7 +527,7 @@ public sealed class EvalNe : AbstractEvalLhsRhs, IInterpretableCall
                 return ((INegater)eqVal).Negate();
         }
 
-        return Err.NoSuchOverload(lVal, Operator.NotEquals.id, rVal);
+        return Err.NoSuchOverload(lVal, Operator.NotEquals.Id, rVal);
     }
 
     /// <summary>
@@ -535,7 +535,7 @@ public sealed class EvalNe : AbstractEvalLhsRhs, IInterpretableCall
     /// </summary>
     public string Function()
     {
-        return Operator.NotEquals.id;
+        return Operator.NotEquals.Id;
     }
 
     /// <summary>
@@ -1079,8 +1079,8 @@ public sealed class EvalFold : AbstractEval, ICoster
 
         // The cond and step costs are multiplied by size(iterRange). The minimum possible cost incurs
         // when the evaluation result can be determined by the first iteration.
-        return i.Add(a).Add(r).Add(ICoster.CostOf(c.min, c.max * rangeCnt))
-            .Add(ICoster.CostOf(s.min, s.max * rangeCnt));
+        return i.Add(a).Add(r).Add(ICoster.CostOf(c.Min, c.Max * rangeCnt))
+            .Add(ICoster.CostOf(s.Min, s.Max * rangeCnt));
     }
 
     /// <summary>
@@ -1156,7 +1156,7 @@ public sealed class EvalSetMembership : AbstractEval, ICoster
     public override IVal Eval(IActivation ctx)
     {
         var val = arg.Eval(ctx);
-        if (!val.Type().TypeName().Equals(argTypeName)) return Err.NoSuchOverload(null, Operator.In.id, val);
+        if (!val.Type().TypeName().Equals(argTypeName)) return Err.NoSuchOverload(null, Operator.In.Id, val);
 
         return valueSet.Contains(val) ? BoolT.True : BoolT.False;
     }
@@ -1480,7 +1480,7 @@ public sealed class EvalExhaustiveOr : AbstractEvalLhsRhs
         // If the left-hand side is non-boolean return it as the error.
         if (Err.IsError(lVal)) return lVal;
 
-        return Err.NoSuchOverload(lVal, Operator.LogicalOr.id, rVal);
+        return Err.NoSuchOverload(lVal, Operator.LogicalOr.Id, rVal);
     }
 
     /// <summary>
@@ -1521,7 +1521,7 @@ public sealed class EvalExhaustiveAnd : AbstractEvalLhsRhs
 
         if (Err.IsError(lVal)) return lVal;
 
-        return Err.NoSuchOverload(lVal, Operator.LogicalAnd.id, rVal);
+        return Err.NoSuchOverload(lVal, Operator.LogicalAnd.Id, rVal);
     }
 
     /// <summary>
@@ -1571,7 +1571,7 @@ public sealed class EvalExhaustiveConditional : AbstractEval, ICoster
             return adapter(tVal);
         if (cVal == BoolT.False)
             return adapter(fVal);
-        return Err.NoSuchOverload(null, Operator.Conditional.id, cVal);
+        return Err.NoSuchOverload(null, Operator.Conditional.Id, cVal);
     }
 
     public override string ToString()
