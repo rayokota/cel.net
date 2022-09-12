@@ -195,10 +195,10 @@ public sealed class Debug
     /// </summary>
     public sealed class DebugWriter
     {
-        internal readonly IAdorner adorner;
-        internal readonly StringBuilder buffer;
-        internal int indent;
-        internal bool lineStart;
+        private readonly IAdorner adorner;
+        private readonly StringBuilder buffer;
+        private int indent;
+        private bool lineStart;
 
         public DebugWriter(IAdorner a)
         {

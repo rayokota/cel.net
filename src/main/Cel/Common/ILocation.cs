@@ -18,7 +18,7 @@ namespace Cel.Common;
 
 public interface ILocation : IComparable<ILocation>
 {
-    public static ILocation NoLocation = NewLocation(-1, -1);
+    public static readonly ILocation NoLocation = NewLocation(-1, -1);
 
     // NewLocation creates a new location.
     public static ILocation NewLocation(int line, int column)

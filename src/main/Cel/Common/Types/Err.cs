@@ -304,8 +304,8 @@ public sealed class Err : BaseVal
 
     public sealed class ErrException : ArgumentException
     {
-        internal readonly object[] args;
-        internal readonly string format;
+        private readonly object[] args;
+        private readonly string format;
 
         public ErrException(string format, params object[] args) : base(string.Format(format, args))
         {

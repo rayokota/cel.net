@@ -59,7 +59,7 @@ public interface IEvalState
 
 public sealed class EvalStateImpl : IEvalState
 {
-    internal readonly IDictionary<long, IVal> values = new Dictionary<long, IVal>();
+    private readonly IDictionary<long, IVal> values = new Dictionary<long, IVal>();
 
     /// <summary>
     ///     IDs implements the EvalState interface method.

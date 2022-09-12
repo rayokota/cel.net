@@ -158,8 +158,8 @@ public sealed class AttributePattern
     /// </summary>
     public sealed class AttributeQualifierPattern
     {
-        internal readonly object? value;
-        internal readonly bool wildcard;
+        private readonly object? value;
+        private readonly bool wildcard;
 
         internal AttributeQualifierPattern(bool wildcard, object? value)
         {
@@ -226,10 +226,10 @@ public sealed class AttributePattern
 
     internal sealed class PartialAttributeFactory : IAttributeFactory
     {
-        internal readonly TypeAdapter adapter;
-        internal readonly Container container;
-        internal readonly IAttributeFactory fac;
-        internal readonly ITypeProvider provider;
+        private readonly TypeAdapter adapter;
+        private readonly Container container;
+        private readonly IAttributeFactory fac;
+        private readonly ITypeProvider provider;
 
         internal PartialAttributeFactory(IAttributeFactory fac, Container container, TypeAdapter adapter,
             ITypeProvider provider)
@@ -383,9 +383,9 @@ public sealed class AttributePattern
     /// </summary>
     internal sealed class AttributeMatcher : INamespacedAttribute
     {
-        internal readonly INamespacedAttribute attr;
-        internal readonly PartialAttributeFactory fac;
-        internal readonly IList<IQualifier> qualifiers;
+        private readonly INamespacedAttribute attr;
+        private readonly PartialAttributeFactory fac;
+        private readonly IList<IQualifier> qualifiers;
 
         internal AttributeMatcher(PartialAttributeFactory fac, INamespacedAttribute attr,
             IList<IQualifier> qualifiers)

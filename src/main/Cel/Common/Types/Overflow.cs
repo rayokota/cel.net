@@ -19,7 +19,7 @@ namespace Cel.Common.Types;
 
 public sealed class Overflow
 {
-    public static readonly OverflowException overflowException = new();
+    public static readonly OverflowException OverflowErrorException = new();
 
     /// <summary>
     ///     addInt64Checked performs addition with overflow detection of two int64, returning the result of
@@ -28,7 +28,7 @@ public sealed class Overflow
     /// </summary>
     public static long AddInt64Checked(long x, long y)
     {
-        if ((y > 0 && x > long.MaxValue - y) || (y < 0 && x < long.MinValue - y)) throw overflowException;
+        if ((y > 0 && x > long.MaxValue - y) || (y < 0 && x < long.MinValue - y)) throw OverflowErrorException;
 
         return x + y;
     }
@@ -40,7 +40,7 @@ public sealed class Overflow
     /// </summary>
     public static long SubtractInt64Checked(long x, long y)
     {
-        if ((y < 0 && x > long.MaxValue + y) || (y > 0 && x < long.MinValue + y)) throw overflowException;
+        if ((y < 0 && x > long.MaxValue + y) || (y > 0 && x < long.MinValue + y)) throw OverflowErrorException;
 
         return x - y;
     }
@@ -53,7 +53,7 @@ public sealed class Overflow
     public static long NegateInt64Checked(long x)
     {
         // In twos complement, negating MinInt64 would result in a valid of MaxInt64+1.
-        if (x == long.MinValue) throw overflowException;
+        if (x == long.MinValue) throw OverflowErrorException;
 
         return -x;
     }
@@ -71,7 +71,7 @@ public sealed class Overflow
         if ((x == -1 && y == long.MinValue) || (y == -1 && x == long.MinValue) ||
             (x > 0 && y > 0 && x > long.MaxValue / y) || (x > 0 && y < 0 && y < long.MinValue / x) ||
             (x < 0 && y > 0 && x < long.MinValue / y) || (x < 0 && y < 0 && y < long.MaxValue / x))
-            throw overflowException;
+            throw OverflowErrorException;
 
         return x * y;
     }
@@ -84,7 +84,7 @@ public sealed class Overflow
     public static long DivideInt64Checked(long x, long y)
     {
         // In twos complement, negating MinInt64 would result in a valid of MaxInt64+1.
-        if (x == long.MinValue && y == -1) throw overflowException;
+        if (x == long.MinValue && y == -1) throw OverflowErrorException;
 
         return x / y;
     }
@@ -97,7 +97,7 @@ public sealed class Overflow
     public static long ModuloInt64Checked(long x, long y)
     {
         // In twos complement, negating MinInt64 would result in a valid of MaxInt64+1.
-        if (x == long.MinValue && y == -1) throw overflowException;
+        if (x == long.MinValue && y == -1) throw OverflowErrorException;
 
         return x % y;
     }
@@ -109,7 +109,7 @@ public sealed class Overflow
     /// </summary>
     public static ulong AddUint64Checked(ulong x, ulong y)
     {
-        if (y > 0 && x > ulong.MaxValue - y) throw overflowException;
+        if (y > 0 && x > ulong.MaxValue - y) throw OverflowErrorException;
 
         return x + y;
     }
@@ -121,7 +121,7 @@ public sealed class Overflow
     /// </summary>
     public static ulong SubtractUint64Checked(ulong x, ulong y)
     {
-        if (y > x) throw overflowException;
+        if (y > x) throw OverflowErrorException;
 
         return x - y;
     }
@@ -133,7 +133,7 @@ public sealed class Overflow
     /// </summary>
     public static ulong MultiplyUint64Checked(ulong x, ulong y)
     {
-        if (y != 0 && x > ulong.MaxValue / y) throw overflowException;
+        if (y != 0 && x > ulong.MaxValue / y) throw OverflowErrorException;
 
         return x * y;
     }
@@ -151,7 +151,7 @@ public sealed class Overflow
         }
         catch (ArithmeticException)
         {
-            throw overflowException;
+            throw OverflowErrorException;
         }
     }
 
@@ -168,7 +168,7 @@ public sealed class Overflow
         }
         catch (ArithmeticException)
         {
-            throw overflowException;
+            throw OverflowErrorException;
         }
     }
 
@@ -186,7 +186,7 @@ public sealed class Overflow
         }
         catch (ArithmeticException)
         {
-            throw overflowException;
+            throw OverflowErrorException;
         }
     }
 
@@ -203,7 +203,7 @@ public sealed class Overflow
         }
         catch (ArithmeticException)
         {
-            throw overflowException;
+            throw OverflowErrorException;
         }
     }
 
@@ -224,7 +224,7 @@ public sealed class Overflow
         }
         catch (ArithmeticException)
         {
-            throw overflowException;
+            throw OverflowErrorException;
         }
     }
 
@@ -241,18 +241,18 @@ public sealed class Overflow
         }
         catch (ArithmeticException)
         {
-            throw overflowException;
+            throw OverflowErrorException;
         }
     }
 
     /// <summary>
     ///     Checks whether the given timestamp overflowed in the bounds of "Go", that is less than {@link
-    ///     TimestampT#minUnixTime} or greater than <seealso cref="TimestampT.maxUnixTime" />.
+    ///     TimestampT#minUnixTime} or greater than <seealso cref="TimestampT.MaxUnixTime" />.
     /// </summary>
     public static ZonedDateTime CheckTimeOverflow(ZonedDateTime x)
     {
         var s = x.ToInstant().ToUnixTimeSeconds();
-        if (s < TimestampT.minUnixTime || s > TimestampT.maxUnixTime) throw overflowException;
+        if (s < TimestampT.MinUnixTime || s > TimestampT.MaxUnixTime) throw OverflowErrorException;
 
         return x;
     }

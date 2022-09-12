@@ -107,7 +107,7 @@ public sealed class Operator
     private readonly string nameValue;
     private readonly int ordinalValue;
     public readonly int precedence;
-    public readonly string? reverse;
+    private readonly string? reverse;
 
     static Operator()
     {

@@ -21,27 +21,27 @@ namespace Cel.Common.Types.Pb;
 public sealed class Checked
 {
     // common types
-    public static readonly Type checkedDyn;
+    public static readonly Type CheckedDyn;
 
     // Wrapper and primitive types.
-    public static readonly Type checkedBool = CheckedPrimitive(Type.Types.PrimitiveType.Bool);
-    public static readonly Type checkedBytes = CheckedPrimitive(Type.Types.PrimitiveType.Bytes);
-    public static readonly Type checkedDouble = CheckedPrimitive(Type.Types.PrimitiveType.Double);
-    public static readonly Type checkedInt = CheckedPrimitive(Type.Types.PrimitiveType.Int64);
-    public static readonly Type checkedString = CheckedPrimitive(Type.Types.PrimitiveType.String);
+    public static readonly Type CheckedBool = CheckedPrimitive(Type.Types.PrimitiveType.Bool);
+    public static readonly Type CheckedBytes = CheckedPrimitive(Type.Types.PrimitiveType.Bytes);
+    public static readonly Type CheckedDouble = CheckedPrimitive(Type.Types.PrimitiveType.Double);
+    public static readonly Type CheckedInt = CheckedPrimitive(Type.Types.PrimitiveType.Int64);
+    public static readonly Type CheckedString = CheckedPrimitive(Type.Types.PrimitiveType.String);
 
-    public static readonly Type checkedUint = CheckedPrimitive(Type.Types.PrimitiveType.Uint64);
+    public static readonly Type CheckedUint = CheckedPrimitive(Type.Types.PrimitiveType.Uint64);
 
     // Well-known type equivalents.
-    public static readonly Type checkedAny = CheckedWellKnown(Type.Types.WellKnownType.Any);
-    public static readonly Type checkedDuration = CheckedWellKnown(Type.Types.WellKnownType.Duration);
+    public static readonly Type CheckedAny = CheckedWellKnown(Type.Types.WellKnownType.Any);
+    public static readonly Type CheckedDuration = CheckedWellKnown(Type.Types.WellKnownType.Duration);
 
-    public static readonly Type checkedTimestamp = CheckedWellKnown(Type.Types.WellKnownType.Timestamp);
+    public static readonly Type CheckedTimestamp = CheckedWellKnown(Type.Types.WellKnownType.Timestamp);
 
     // Json-based type equivalents.
-    public static readonly Type checkedNull;
-    public static readonly Type checkedListDyn;
-    public static readonly Type checkedMapStringDyn;
+    public static readonly Type CheckedNull;
+    public static readonly Type CheckedListDyn;
+    public static readonly Type CheckedMapStringDyn;
 
     /// <summary>
     ///     CheckedPrimitives map from proto field descriptor type to expr.Type.
@@ -58,59 +58,59 @@ public sealed class Checked
     {
         var type = new Type();
         type.Dyn = new Empty();
-        checkedDyn = type;
+        CheckedDyn = type;
 
         type = new Type();
         type.Null = NullValue.NullValue;
-        checkedNull = type;
+        CheckedNull = type;
 
         type = new Type();
         var list = new Type.Types.ListType();
-        list.ElemType = checkedDyn;
+        list.ElemType = CheckedDyn;
         type.ListType = list;
-        checkedListDyn = type;
+        CheckedListDyn = type;
 
         type = new Type();
         var map = new Type.Types.MapType();
-        map.KeyType = checkedString;
-        map.ValueType = checkedDyn;
+        map.KeyType = CheckedString;
+        map.ValueType = CheckedDyn;
         type.MapType = map;
-        checkedMapStringDyn = type;
+        CheckedMapStringDyn = type;
 
-        CheckedPrimitives[Field.Types.Kind.TypeBool] = checkedBool;
-        CheckedPrimitives[Field.Types.Kind.TypeBytes] = checkedBytes;
-        CheckedPrimitives[Field.Types.Kind.TypeDouble] = checkedDouble;
-        CheckedPrimitives[Field.Types.Kind.TypeFloat] = checkedDouble;
-        CheckedPrimitives[Field.Types.Kind.TypeInt32] = checkedInt;
-        CheckedPrimitives[Field.Types.Kind.TypeInt64] = checkedInt;
-        CheckedPrimitives[Field.Types.Kind.TypeSint32] = checkedInt;
-        CheckedPrimitives[Field.Types.Kind.TypeSint64] = checkedInt;
-        CheckedPrimitives[Field.Types.Kind.TypeUint32] = checkedUint;
-        CheckedPrimitives[Field.Types.Kind.TypeUint64] = checkedUint;
-        CheckedPrimitives[Field.Types.Kind.TypeFixed32] = checkedUint;
-        CheckedPrimitives[Field.Types.Kind.TypeFixed64] = checkedUint;
-        CheckedPrimitives[Field.Types.Kind.TypeSfixed32] = checkedInt;
-        CheckedPrimitives[Field.Types.Kind.TypeSfixed64] = checkedInt;
-        CheckedPrimitives[Field.Types.Kind.TypeString] = checkedString;
+        CheckedPrimitives[Field.Types.Kind.TypeBool] = CheckedBool;
+        CheckedPrimitives[Field.Types.Kind.TypeBytes] = CheckedBytes;
+        CheckedPrimitives[Field.Types.Kind.TypeDouble] = CheckedDouble;
+        CheckedPrimitives[Field.Types.Kind.TypeFloat] = CheckedDouble;
+        CheckedPrimitives[Field.Types.Kind.TypeInt32] = CheckedInt;
+        CheckedPrimitives[Field.Types.Kind.TypeInt64] = CheckedInt;
+        CheckedPrimitives[Field.Types.Kind.TypeSint32] = CheckedInt;
+        CheckedPrimitives[Field.Types.Kind.TypeSint64] = CheckedInt;
+        CheckedPrimitives[Field.Types.Kind.TypeUint32] = CheckedUint;
+        CheckedPrimitives[Field.Types.Kind.TypeUint64] = CheckedUint;
+        CheckedPrimitives[Field.Types.Kind.TypeFixed32] = CheckedUint;
+        CheckedPrimitives[Field.Types.Kind.TypeFixed64] = CheckedUint;
+        CheckedPrimitives[Field.Types.Kind.TypeSfixed32] = CheckedInt;
+        CheckedPrimitives[Field.Types.Kind.TypeSfixed64] = CheckedInt;
+        CheckedPrimitives[Field.Types.Kind.TypeString] = CheckedString;
         // Wrapper types.
-        CheckedWellKnowns["google.protobuf.BoolValue"] = CheckedWrap(checkedBool);
-        CheckedWellKnowns["google.protobuf.BytesValue"] = CheckedWrap(checkedBytes);
-        CheckedWellKnowns["google.protobuf.DoubleValue"] = CheckedWrap(checkedDouble);
-        CheckedWellKnowns["google.protobuf.FloatValue"] = CheckedWrap(checkedDouble);
-        CheckedWellKnowns["google.protobuf.Int64Value"] = CheckedWrap(checkedInt);
-        CheckedWellKnowns["google.protobuf.Int32Value"] = CheckedWrap(checkedInt);
-        CheckedWellKnowns["google.protobuf.UInt64Value"] = CheckedWrap(checkedUint);
-        CheckedWellKnowns["google.protobuf.UInt32Value"] = CheckedWrap(checkedUint);
-        CheckedWellKnowns["google.protobuf.StringValue"] = CheckedWrap(checkedString);
+        CheckedWellKnowns["google.protobuf.BoolValue"] = CheckedWrap(CheckedBool);
+        CheckedWellKnowns["google.protobuf.BytesValue"] = CheckedWrap(CheckedBytes);
+        CheckedWellKnowns["google.protobuf.DoubleValue"] = CheckedWrap(CheckedDouble);
+        CheckedWellKnowns["google.protobuf.FloatValue"] = CheckedWrap(CheckedDouble);
+        CheckedWellKnowns["google.protobuf.Int64Value"] = CheckedWrap(CheckedInt);
+        CheckedWellKnowns["google.protobuf.Int32Value"] = CheckedWrap(CheckedInt);
+        CheckedWellKnowns["google.protobuf.UInt64Value"] = CheckedWrap(CheckedUint);
+        CheckedWellKnowns["google.protobuf.UInt32Value"] = CheckedWrap(CheckedUint);
+        CheckedWellKnowns["google.protobuf.StringValue"] = CheckedWrap(CheckedString);
         // Well-known types.
-        CheckedWellKnowns["google.protobuf.Any"] = checkedAny;
-        CheckedWellKnowns["google.protobuf.Duration"] = checkedDuration;
-        CheckedWellKnowns["google.protobuf.Timestamp"] = checkedTimestamp;
+        CheckedWellKnowns["google.protobuf.Any"] = CheckedAny;
+        CheckedWellKnowns["google.protobuf.Duration"] = CheckedDuration;
+        CheckedWellKnowns["google.protobuf.Timestamp"] = CheckedTimestamp;
         // Json types.
-        CheckedWellKnowns["google.protobuf.ListValue"] = checkedListDyn;
-        CheckedWellKnowns["google.protobuf.NullValue"] = checkedNull;
-        CheckedWellKnowns["google.protobuf.Struct"] = checkedMapStringDyn;
-        CheckedWellKnowns["google.protobuf.Value"] = checkedDyn;
+        CheckedWellKnowns["google.protobuf.ListValue"] = CheckedListDyn;
+        CheckedWellKnowns["google.protobuf.NullValue"] = CheckedNull;
+        CheckedWellKnowns["google.protobuf.Struct"] = CheckedMapStringDyn;
+        CheckedWellKnowns["google.protobuf.Value"] = CheckedDyn;
     }
 
 

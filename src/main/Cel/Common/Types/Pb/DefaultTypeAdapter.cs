@@ -30,7 +30,7 @@ public sealed class DefaultTypeAdapter : ITypeAdapterProvider
     /// <summary>
     ///     DefaultTypeAdapter adapts canonical CEL types from their equivalent Go values.
     /// </summary>
-    public static readonly DefaultTypeAdapter Instance = new(Db.defaultDb);
+    public static readonly DefaultTypeAdapter Instance = new(Db.DefaultDb);
 
     private readonly Db db;
 

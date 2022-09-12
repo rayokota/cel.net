@@ -35,7 +35,7 @@ public sealed class Db
     /// <summary>
     ///     DefaultDb used at evaluation time or unless overridden at check time.
     /// </summary>
-    public static readonly Db defaultDb = new(new Dictionary<string, FileDescription>(),
+    public static readonly Db DefaultDb = new(new Dictionary<string, FileDescription>(),
         new List<FileDescription>());
 
     /// <summary>
@@ -53,12 +53,12 @@ public sealed class Db
         // The following subset of message types is enough to ensure that all well-known types can
         // resolved in the runtime, since describing the value results in describing the whole file
         // where the message is declared.
-        defaultDb.RegisterMessage(new Any());
-        defaultDb.RegisterMessage(new Duration());
-        defaultDb.RegisterMessage(new Empty());
-        defaultDb.RegisterMessage(new Timestamp());
-        defaultDb.RegisterMessage(new Value());
-        defaultDb.RegisterMessage(new BoolValue());
+        DefaultDb.RegisterMessage(new Any());
+        DefaultDb.RegisterMessage(new Duration());
+        DefaultDb.RegisterMessage(new Empty());
+        DefaultDb.RegisterMessage(new Timestamp());
+        DefaultDb.RegisterMessage(new Value());
+        DefaultDb.RegisterMessage(new BoolValue());
     }
 
     private Db(IDictionary<string, FileDescription> revFileDescriptorMap, IList<FileDescription> files)
@@ -77,7 +77,7 @@ public sealed class Db
         // copy; however, the type graph for a field is idempotently computed, and is guaranteed to
         // only be initialized once thanks to atomic values within the TypeDescription objects, so it
         // is safe to share these values across instances.
-        return defaultDb.Copy();
+        return DefaultDb.Copy();
     }
 
     /// <summary>

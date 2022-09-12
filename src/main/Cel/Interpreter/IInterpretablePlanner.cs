@@ -66,14 +66,14 @@ public interface IInterpretablePlanner
 
 public sealed class Planner : IInterpretablePlanner
 {
-    internal readonly TypeAdapter adapter;
-    internal readonly IAttributeFactory attrFactory;
-    internal readonly Container container;
-    internal readonly InterpretableDecorator[] decorators;
-    internal readonly IDispatcher disp;
-    internal readonly ITypeProvider provider;
-    internal readonly IDictionary<long, Reference> refMap;
-    internal readonly IDictionary<long, Type> typeMap;
+    private readonly TypeAdapter adapter;
+    private readonly IAttributeFactory attrFactory;
+    private readonly Container container;
+    private readonly InterpretableDecorator[] decorators;
+    private readonly IDispatcher disp;
+    private readonly ITypeProvider provider;
+    private readonly IDictionary<long, Reference> refMap;
+    private readonly IDictionary<long, Type> typeMap;
 
     internal Planner(IDispatcher disp, ITypeProvider provider, TypeAdapter adapter,
         IAttributeFactory attrFactory, Container container, IDictionary<long, Reference> refMap,

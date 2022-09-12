@@ -200,10 +200,10 @@ public interface IInterpretableCall : IInterpretable
 
 public sealed class EvalTestOnly : IInterpretable, ICoster
 {
-    internal readonly StringT field;
-    internal readonly FieldType? fieldType;
-    internal readonly long id;
-    internal readonly IInterpretable op;
+    private readonly StringT field;
+    private readonly FieldType? fieldType;
+    private readonly long id;
+    private readonly IInterpretable op;
 
     internal EvalTestOnly(long id, IInterpretable op, StringT field, FieldType? fieldType)
     {
@@ -314,7 +314,7 @@ public abstract class AbstractEvalLhsRhs : AbstractEval, ICoster
 
 public sealed class EvalConst : AbstractEval, IInterpretableConst, ICoster
 {
-    internal readonly IVal val;
+    private readonly IVal val;
 
     internal EvalConst(long id, IVal val) : base(id)
     {
@@ -571,9 +571,9 @@ public sealed class EvalNe : AbstractEvalLhsRhs, IInterpretableCall
 public sealed class EvalZeroArity : AbstractEval, IInterpretableCall,
     ICoster
 {
-    internal readonly string function;
-    internal readonly FunctionOp impl;
-    internal readonly string overload;
+    private readonly string function;
+    private readonly FunctionOp impl;
+    private readonly string overload;
 
     internal EvalZeroArity(long id, string function, string overload, FunctionOp impl) : base(id)
     {
@@ -631,11 +631,11 @@ public sealed class EvalZeroArity : AbstractEval, IInterpretableCall,
 
 public sealed class EvalUnary : AbstractEval, IInterpretableCall, ICoster
 {
-    internal readonly IInterpretable arg;
-    internal readonly string function;
-    internal readonly UnaryOp? impl;
-    internal readonly string overload;
-    internal readonly Trait trait;
+    private readonly IInterpretable arg;
+    private readonly string function;
+    private readonly UnaryOp? impl;
+    private readonly string overload;
+    private readonly Trait trait;
 
     internal EvalUnary(long id, string function, string overload, IInterpretable arg, Trait trait,
         UnaryOp? impl) : base(id)
@@ -709,10 +709,10 @@ public sealed class EvalUnary : AbstractEval, IInterpretableCall, ICoster
 
 public sealed class EvalBinary : AbstractEvalLhsRhs, IInterpretableCall
 {
-    internal readonly string function;
-    internal readonly BinaryOp? impl;
-    internal readonly string overload;
-    internal readonly Trait trait;
+    private readonly string function;
+    private readonly BinaryOp? impl;
+    private readonly string overload;
+    private readonly Trait trait;
 
     internal EvalBinary(long id, string function, string overload, IInterpretable lhs,
         IInterpretable rhs, Trait trait, BinaryOp? impl) : base(id, lhs, rhs)
@@ -787,11 +787,11 @@ public sealed class EvalBinary : AbstractEvalLhsRhs, IInterpretableCall
 
 public sealed class EvalVarArgs : AbstractEval, ICoster, IInterpretableCall
 {
-    internal readonly IInterpretable[] args;
-    internal readonly string function;
-    internal readonly FunctionOp? impl;
-    internal readonly string overload;
-    internal readonly Trait trait;
+    private readonly IInterpretable[] args;
+    private readonly string function;
+    private readonly FunctionOp? impl;
+    private readonly string overload;
+    private readonly Trait trait;
 
     public EvalVarArgs(long id, string function, string overload, IInterpretable[] args, Trait trait,
         FunctionOp? impl) : base(id)
@@ -878,7 +878,7 @@ public sealed class EvalVarArgs : AbstractEval, ICoster, IInterpretableCall
 
 public sealed class EvalList : AbstractEval, ICoster
 {
-    internal readonly TypeAdapter adapter;
+    private readonly TypeAdapter adapter;
     internal readonly IInterpretable[] elems;
 
     internal EvalList(long id, IInterpretable[] elems, TypeAdapter adapter) : base(id)
@@ -923,7 +923,7 @@ public sealed class EvalList : AbstractEval, ICoster
 
 public sealed class EvalMap : AbstractEval, ICoster
 {
-    internal readonly TypeAdapter adapter;
+    private readonly TypeAdapter adapter;
     internal readonly IInterpretable[] keys;
     internal readonly IInterpretable[] vals;
 
@@ -977,10 +977,10 @@ public sealed class EvalMap : AbstractEval, ICoster
 
 public sealed class EvalObj : AbstractEval, ICoster
 {
-    internal readonly string[] fields;
-    internal readonly ITypeProvider provider;
-    internal readonly string typeName;
-    internal readonly IInterpretable[] vals;
+    private readonly string[] fields;
+    private readonly ITypeProvider provider;
+    private readonly string typeName;
+    private readonly IInterpretable[] vals;
 
     internal EvalObj(long id, string typeName, string[] fields, IInterpretable[] vals,
         ITypeProvider provider) : base(id)
@@ -1128,10 +1128,10 @@ public sealed class EvalFold : AbstractEval, ICoster
 
 public sealed class EvalSetMembership : AbstractEval, ICoster
 {
-    internal readonly IInterpretable arg;
-    internal readonly string argTypeName;
-    internal readonly IInterpretable inst;
-    internal readonly ISet<IVal> valueSet;
+    private readonly IInterpretable arg;
+    private readonly string argTypeName;
+    private readonly IInterpretable inst;
+    private readonly ISet<IVal> valueSet;
 
     internal EvalSetMembership(IInterpretable inst, IInterpretable arg, string argTypeName,
         ISet<IVal> valueSet) : base(inst.Id())
@@ -1170,8 +1170,8 @@ public sealed class EvalSetMembership : AbstractEval, ICoster
 
 public sealed class EvalWatch : IInterpretable, ICoster
 {
-    internal readonly IInterpretable i;
-    internal readonly EvalObserver observer;
+    private readonly IInterpretable i;
+    private readonly EvalObserver observer;
 
     public EvalWatch(IInterpretable i, EvalObserver observer)
     {
@@ -1210,8 +1210,8 @@ public sealed class EvalWatch : IInterpretable, ICoster
 
 public sealed class EvalWatchAttr : ICoster, IInterpretableAttribute
 {
-    internal readonly IInterpretableAttribute attr;
-    internal readonly EvalObserver observer;
+    private readonly IInterpretableAttribute attr;
+    private readonly EvalObserver observer;
 
     public EvalWatchAttr(IInterpretableAttribute attr,
         EvalObserver observer)
@@ -1297,9 +1297,9 @@ public sealed class EvalWatchAttr : ICoster, IInterpretableAttribute
 public abstract class AbstractEvalWatch<T> : AbstractEval, ICoster,
     IQualifier where T : IQualifier
 {
-    internal readonly TypeAdapter adapter;
+    private readonly TypeAdapter adapter;
     internal readonly T @delegate;
-    internal readonly EvalObserver observer;
+    private readonly EvalObserver observer;
 
     internal AbstractEvalWatch(T @delegate, EvalObserver observer,
         TypeAdapter adapter) : base(@delegate.Id())
@@ -1413,8 +1413,8 @@ public sealed class EvalWatchQual : AbstractEvalWatch<IQualifier>
 
 public sealed class EvalWatchConst : IInterpretableConst, ICoster
 {
-    internal readonly IInterpretableConst c;
-    internal readonly EvalObserver observer;
+    private readonly IInterpretableConst c;
+    private readonly EvalObserver observer;
 
     internal EvalWatchConst(IInterpretableConst c,
         EvalObserver observer)
@@ -1541,8 +1541,8 @@ public sealed class EvalExhaustiveAnd : AbstractEvalLhsRhs
 public sealed class EvalExhaustiveConditional : AbstractEval, ICoster
 {
     // TODO combine with EvalConditional
-    internal readonly TypeAdapter adapter;
-    internal readonly ConditionalAttribute attr;
+    private readonly TypeAdapter adapter;
+    private readonly ConditionalAttribute attr;
 
     internal EvalExhaustiveConditional(long id, TypeAdapter adapter,
         ConditionalAttribute attr) : base(id)
@@ -1582,15 +1582,15 @@ public sealed class EvalExhaustiveConditional : AbstractEval, ICoster
 
 public sealed class EvalExhaustiveFold : AbstractEval, ICoster
 {
-    internal readonly IInterpretable accu;
+    private readonly IInterpretable accu;
 
     // TODO combine with EvalFold
-    internal readonly string accuVar;
-    internal readonly IInterpretable cond;
-    internal readonly IInterpretable iterRange;
-    internal readonly string iterVar;
-    internal readonly IInterpretable result;
-    internal readonly IInterpretable step;
+    private readonly string accuVar;
+    private readonly IInterpretable cond;
+    private readonly IInterpretable iterRange;
+    private readonly string iterVar;
+    private readonly IInterpretable result;
+    private readonly IInterpretable step;
 
     internal EvalExhaustiveFold(long id, IInterpretable accu, string accuVar, IInterpretable iterRange,
         string iterVar, IInterpretable cond, IInterpretable step, IInterpretable result) : base(id)
@@ -1679,8 +1679,8 @@ public sealed class EvalExhaustiveFold : AbstractEval, ICoster
 
 public sealed class EvalAttr : AbstractEval, IInterpretableAttribute, ICoster
 {
-    internal readonly TypeAdapter adapter;
-    internal IAttribute attr;
+    private readonly TypeAdapter adapter;
+    private IAttribute attr;
 
     internal EvalAttr(TypeAdapter adapter, IAttribute attr) : base(attr.Id())
     {

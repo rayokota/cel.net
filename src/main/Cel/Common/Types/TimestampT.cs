@@ -31,12 +31,12 @@ public sealed class TimestampT : BaseVal, IAdder, IComparer, IReceiver, ISubtrac
     /// <summary>
     ///     Number of seconds between `0001-01-01T00:00:00Z` and the Unix epoch.
     /// </summary>
-    public const long minUnixTime = -62135596800L;
+    public const long MinUnixTime = -62135596800L;
 
     /// <summary>
     ///     Number of seconds between `9999-12-31T23:59:59.999999999Z` and the Unix epoch.
     /// </summary>
-    public const long maxUnixTime = 253402300799L;
+    public const long MaxUnixTime = 253402300799L;
 
     /// <summary>
     ///     TimestampType singleton.
@@ -202,7 +202,7 @@ public sealed class TimestampT : BaseVal, IAdder, IComparer, IReceiver, ISubtrac
     public IVal RangeCheck()
     {
         long unitTime = t.Second;
-        if (unitTime < minUnixTime || unitTime > maxUnixTime) return Err.ErrTimestampOutOfRange;
+        if (unitTime < MinUnixTime || unitTime > MaxUnixTime) return Err.ErrTimestampOutOfRange;
 
         return this;
     }

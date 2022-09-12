@@ -99,11 +99,11 @@ public interface IInterpreter
 
 public sealed class ExprInterpreter : IInterpreter
 {
-    internal readonly TypeAdapter adapter;
-    internal readonly IAttributeFactory attrFactory;
-    internal readonly Container container;
-    internal readonly IDispatcher dispatcher;
-    internal readonly ITypeProvider provider;
+    private readonly TypeAdapter adapter;
+    private readonly IAttributeFactory attrFactory;
+    private readonly Container container;
+    private readonly IDispatcher dispatcher;
+    private readonly ITypeProvider provider;
 
     internal ExprInterpreter(IDispatcher dispatcher, Container container, ITypeProvider provider,
         TypeAdapter adapter, IAttributeFactory attrFactory)

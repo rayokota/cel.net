@@ -127,7 +127,7 @@ public interface IActivation
 
 public sealed class MapActivation : IActivation
 {
-    internal readonly IDictionary<string, object> bindings;
+    private readonly IDictionary<string, object> bindings;
 
     internal MapActivation(IDictionary<string, object> bindings)
     {
@@ -167,8 +167,8 @@ public sealed class MapActivation : IActivation
 
 public sealed class HierarchicalActivation : IActivation
 {
-    internal readonly IActivation child;
-    internal readonly IActivation parent;
+    private readonly IActivation child;
+    private readonly IActivation parent;
 
     internal HierarchicalActivation(IActivation parent, IActivation child)
     {
@@ -212,8 +212,8 @@ public interface IPartialActivation : IActivation
 
 public sealed class PartActivation : IPartialActivation
 {
-    internal readonly IActivation @delegate;
-    internal readonly AttributePattern[] unknowns;
+    private readonly IActivation @delegate;
+    private readonly AttributePattern[] unknowns;
 
     internal PartActivation(IActivation @delegate, AttributePattern[] unknowns)
     {

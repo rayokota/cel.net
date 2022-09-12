@@ -245,7 +245,7 @@ public abstract class ListT : BaseVal, ILister
         {
             private readonly BaseListT outerInstance;
 
-            internal long index;
+            private long index;
 
             public ArrayListIteratorT(BaseListT outerInstance)
             {
@@ -293,7 +293,7 @@ public abstract class ListT : BaseVal, ILister
 
     internal sealed class GenericListT : BaseListT
     {
-        internal readonly Array array;
+        private readonly Array array;
 
         internal GenericListT(TypeAdapter adapter, Array array) : base(adapter, array.Length)
         {
@@ -339,7 +339,7 @@ public abstract class ListT : BaseVal, ILister
 
     internal sealed class ValListT : BaseListT
     {
-        internal readonly IVal[] array;
+        private readonly IVal[] array;
 
         internal ValListT(TypeAdapter adapter, IVal[] array) : base(adapter, array.Length)
         {

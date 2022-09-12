@@ -78,39 +78,39 @@ internal class JsonTypeDescriptionTest
 
         // verify the map-type-fields
 
-        CheckMapType(reg, "stringBooleanMap", typeof(string), Checked.checkedString, typeof(bool),
-            Checked.checkedBool);
-        CheckMapType(reg, "byteShortMap", typeof(byte), Checked.checkedInt, typeof(short), Checked.checkedInt);
-        CheckMapType(reg, "intLongMap", typeof(int), Checked.checkedInt, typeof(long), Checked.checkedInt);
-        CheckMapType(reg, "ulongTimestampMap", typeof(ulong), Checked.checkedUint, typeof(Timestamp),
-            Checked.checkedTimestamp);
-        CheckMapType(reg, "ulongZonedDateTimeMap", typeof(ulong), Checked.checkedUint, typeof(ZonedDateTime),
-            Checked.checkedTimestamp);
-        CheckMapType(reg, "stringProtoDurationMap", typeof(string), Checked.checkedString, typeof(Duration),
-            Checked.checkedDuration);
-        CheckMapType(reg, "stringPeriodMap", typeof(string), Checked.checkedString,
-            typeof(Period), Checked.checkedDuration);
-        CheckMapType(reg, "stringBytesMap", typeof(string), Checked.checkedString, typeof(ByteString),
-            Checked.checkedBytes);
-        CheckMapType(reg, "floatDoubleMap", typeof(float), Checked.checkedDouble, typeof(double),
-            Checked.checkedDouble);
+        CheckMapType(reg, "stringBooleanMap", typeof(string), Checked.CheckedString, typeof(bool),
+            Checked.CheckedBool);
+        CheckMapType(reg, "byteShortMap", typeof(byte), Checked.CheckedInt, typeof(short), Checked.CheckedInt);
+        CheckMapType(reg, "intLongMap", typeof(int), Checked.CheckedInt, typeof(long), Checked.CheckedInt);
+        CheckMapType(reg, "ulongTimestampMap", typeof(ulong), Checked.CheckedUint, typeof(Timestamp),
+            Checked.CheckedTimestamp);
+        CheckMapType(reg, "ulongZonedDateTimeMap", typeof(ulong), Checked.CheckedUint, typeof(ZonedDateTime),
+            Checked.CheckedTimestamp);
+        CheckMapType(reg, "stringProtoDurationMap", typeof(string), Checked.CheckedString, typeof(Duration),
+            Checked.CheckedDuration);
+        CheckMapType(reg, "stringPeriodMap", typeof(string), Checked.CheckedString,
+            typeof(Period), Checked.CheckedDuration);
+        CheckMapType(reg, "stringBytesMap", typeof(string), Checked.CheckedString, typeof(ByteString),
+            Checked.CheckedBytes);
+        CheckMapType(reg, "floatDoubleMap", typeof(float), Checked.CheckedDouble, typeof(double),
+            Checked.CheckedDouble);
 
         // verify the list-type-fields
 
-        CheckListType(reg, "stringList", typeof(string), Checked.checkedString);
-        CheckListType(reg, "booleanList", typeof(bool), Checked.checkedBool);
-        CheckListType(reg, "byteList", typeof(byte), Checked.checkedInt);
-        CheckListType(reg, "shortList", typeof(short), Checked.checkedInt);
-        CheckListType(reg, "intList", typeof(int), Checked.checkedInt);
-        CheckListType(reg, "longList", typeof(long), Checked.checkedInt);
-        CheckListType(reg, "ulongList", typeof(ulong), Checked.checkedUint);
-        CheckListType(reg, "timestampList", typeof(Timestamp), Checked.checkedTimestamp);
-        CheckListType(reg, "zonedDateTimeList", typeof(ZonedDateTime), Checked.checkedTimestamp);
-        CheckListType(reg, "durationList", typeof(Duration), Checked.checkedDuration);
-        CheckListType(reg, "periodList", typeof(Period), Checked.checkedDuration);
-        CheckListType(reg, "bytesList", typeof(ByteString), Checked.checkedBytes);
-        CheckListType(reg, "floatList", typeof(float), Checked.checkedDouble);
-        CheckListType(reg, "doubleList", typeof(double), Checked.checkedDouble);
+        CheckListType(reg, "stringList", typeof(string), Checked.CheckedString);
+        CheckListType(reg, "booleanList", typeof(bool), Checked.CheckedBool);
+        CheckListType(reg, "byteList", typeof(byte), Checked.CheckedInt);
+        CheckListType(reg, "shortList", typeof(short), Checked.CheckedInt);
+        CheckListType(reg, "intList", typeof(int), Checked.CheckedInt);
+        CheckListType(reg, "longList", typeof(long), Checked.CheckedInt);
+        CheckListType(reg, "ulongList", typeof(ulong), Checked.CheckedUint);
+        CheckListType(reg, "timestampList", typeof(Timestamp), Checked.CheckedTimestamp);
+        CheckListType(reg, "zonedDateTimeList", typeof(ZonedDateTime), Checked.CheckedTimestamp);
+        CheckListType(reg, "durationList", typeof(Duration), Checked.CheckedDuration);
+        CheckListType(reg, "periodList", typeof(Period), Checked.CheckedDuration);
+        CheckListType(reg, "bytesList", typeof(ByteString), Checked.CheckedBytes);
+        CheckListType(reg, "floatList", typeof(float), Checked.CheckedDouble);
+        CheckListType(reg, "doubleList", typeof(double), Checked.CheckedDouble);
     }
 
     private void CheckListType(JsonRegistry reg, string prop, System.Type valueClass,
@@ -163,7 +163,7 @@ internal class JsonTypeDescriptionTest
         Assert.That(collectionsVal, Is.InstanceOf(typeof(ObjectT)));
         var obj = (ObjectT)collectionsVal;
 
-        foreach (var field in CollectionsObject.ALL_PROPERTIES)
+        foreach (var field in CollectionsObject.AllProperties)
         {
             Assert.That(obj.IsSet(StringT.StringOf(field)), Is.SameAs(BoolT.False));
             Assert.That(obj.Get(StringT.StringOf(field)), Is.SameAs(NullT.NullValue));
@@ -268,7 +268,7 @@ internal class JsonTypeDescriptionTest
 
         // briefly verify all fields
 
-        foreach (var field in CollectionsObject.ALL_PROPERTIES)
+        foreach (var field in CollectionsObject.AllProperties)
         {
             Assert.That(obj.IsSet(StringT.StringOf(field)), Is.SameAs(BoolT.True));
             Assert.That(obj.Get(StringT.StringOf(field)), Is.Not.Null);

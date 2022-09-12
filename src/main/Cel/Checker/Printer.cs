@@ -33,7 +33,7 @@ public sealed class Printer
 
     internal sealed class SemanticAdorner : Debug.IAdorner
     {
-        internal readonly CheckedExpr checks;
+        private readonly CheckedExpr checks;
 
         internal SemanticAdorner(CheckedExpr checks)
         {

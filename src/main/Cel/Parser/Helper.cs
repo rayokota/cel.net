@@ -265,10 +265,10 @@ public sealed class Helper
 
     internal sealed class Balancer
     {
-        internal readonly string function;
-        internal readonly IList<long> ops;
+        private readonly string function;
+        private readonly IList<long> ops;
         private readonly Helper outerInstance;
-        internal readonly IList<Expr> terms;
+        private readonly IList<Expr> terms;
 
         public Balancer(Helper outerInstance, string function, Expr term)
         {

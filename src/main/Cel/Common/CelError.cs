@@ -20,9 +20,9 @@ namespace Cel.Common;
 
 public sealed class CelError : IComparable<CelError>
 {
-    private const char dot = '.';
+    private const char Dot = '.';
 
-    private const char ind = '^';
+    private const char Ind = '^';
 
     // private static final char wideDot = '\uFF0E'; // result of Go's width.Widen(".")
     // private static final char wideInd = '\uFF3E'; // result of Go's width.Widen("^")
@@ -86,9 +86,9 @@ public sealed class CelError : IComparable<CelError>
             // sophisticated way, maybe use jline's WCWidth, but that one is also quite rudimentary wrt
             // code-blocks (e.g. doesn't know about emojis).
             result.Append("\n | ");
-            for (var i = 0; i < Location.Column(); i++) result.Append(dot);
+            for (var i = 0; i < Location.Column(); i++) result.Append(Dot);
 
-            result.Append(ind);
+            result.Append(Ind);
         }
 
         return result.ToString();

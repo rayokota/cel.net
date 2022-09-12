@@ -85,13 +85,13 @@ public class IntTest
     public virtual void IntConvertToNativeJson()
     {
         // Value can be represented accurately as a JSON number.
-        var val = (Value)IntT.IntOf(IntT.MaxIntJSON).ConvertToNative(typeof(Value));
+        var val = (Value)IntT.IntOf(IntT.MaxIntJson).ConvertToNative(typeof(Value));
         var v = new Value();
         v.NumberValue = 9007199254740991.0;
         Assert.That(val, Is.EqualTo(v));
 
         // Value converts to a JSON decimal string.
-        val = (Value)IntT.IntOf(IntT.MaxIntJSON + 1).ConvertToNative(typeof(Value));
+        val = (Value)IntT.IntOf(IntT.MaxIntJson + 1).ConvertToNative(typeof(Value));
         v = new Value();
         v.StringValue = "9007199254740992";
         Assert.That(val, Is.EqualTo(v));

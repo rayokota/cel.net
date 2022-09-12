@@ -23,7 +23,7 @@ public abstract class ObjectT : BaseVal, IFieldTester, IIndexer, ITypeAdapterPro
 {
     internal readonly TypeAdapter adapter;
     internal readonly ITypeDescription typeDesc;
-    internal readonly IType typeValue;
+    private readonly IType typeValue;
     internal readonly object value;
 
     internal ObjectT(TypeAdapter adapter, object value, ITypeDescription typeDesc, IType typeValue)

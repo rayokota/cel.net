@@ -68,13 +68,13 @@ public class UintTest
     public virtual void UintConvertToNativeJson()
     {
         // Value can be represented accurately as a JSON number.
-        var val = (Value)UintT.UintOf((ulong)IntT.MaxIntJSON).ConvertToNative(typeof(Value));
+        var val = (Value)UintT.UintOf((ulong)IntT.MaxIntJson).ConvertToNative(typeof(Value));
         var val2 = new Value();
         val2.NumberValue = 9007199254740991.0d;
         Assert.That(val, Is.EqualTo(val2));
 
         // Value converts to a JSON decimal string
-        val = (Value)IntT.IntOf(IntT.MaxIntJSON + 1).ConvertToNative(typeof(Value));
+        val = (Value)IntT.IntOf(IntT.MaxIntJson + 1).ConvertToNative(typeof(Value));
         val2 = new Value();
         val2.StringValue = "9007199254740992";
         Assert.That(val, Is.EqualTo(val2));

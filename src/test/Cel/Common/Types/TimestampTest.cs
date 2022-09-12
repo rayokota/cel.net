@@ -23,9 +23,9 @@ namespace Cel.Common.Types;
 
 public class TimestampTest
 {
-    internal const int numTimeZones = 5;
-    internal const int numOffsets = 5;
-    internal const int numDateTimes = 10;
+    internal const int NumTimeZones = 5;
+    internal const int NumOffsets = 5;
+    internal const int NumDateTimes = 10;
 
     [Test]
     public virtual void TimestampAdd()
@@ -38,13 +38,13 @@ public class TimestampTest
         Assert.That(expected.Compare(val), Is.SameAs(IntT.IntZero));
         Assert.That(ts.Add(expected), Is.InstanceOf(typeof(Err)));
 
-        var i1 = Instant.FromUnixTimeMilliseconds(TimestampT.maxUnixTime);
+        var i1 = Instant.FromUnixTimeMilliseconds(TimestampT.MaxUnixTime);
         var max999 = i1.PlusNanoseconds(999999999).InZone(TimestampT.ZoneIdZ);
-        var i2 = Instant.FromUnixTimeMilliseconds(TimestampT.maxUnixTime);
+        var i2 = Instant.FromUnixTimeMilliseconds(TimestampT.MaxUnixTime);
         var max998 = i2.PlusNanoseconds(999999998).InZone(TimestampT.ZoneIdZ);
-        var i3 = Instant.FromUnixTimeMilliseconds(TimestampT.minUnixTime);
+        var i3 = Instant.FromUnixTimeMilliseconds(TimestampT.MinUnixTime);
         var min0 = i3.PlusNanoseconds(0).InZone(TimestampT.ZoneIdZ);
-        var i4 = Instant.FromUnixTimeMilliseconds(TimestampT.minUnixTime);
+        var i4 = Instant.FromUnixTimeMilliseconds(TimestampT.MinUnixTime);
         var min1 = i4.PlusNanoseconds(1).InZone(TimestampT.ZoneIdZ);
 
         // TODO remove
@@ -254,7 +254,7 @@ public class TimestampTest
     {
         var rand = new Random();
 
-        IList<ParseTestCase> testCases = new List<ParseTestCase>(numDateTimes * numTimeZones);
+        IList<ParseTestCase> testCases = new List<ParseTestCase>(NumDateTimes * NumTimeZones);
 
         testCases.Add(
             new ParseTestCase("2009-02-13T23:31:30Z", new[] { 2009, 2, 13, 23, 31, 30 }).WithTZ(
@@ -274,7 +274,7 @@ public class TimestampTest
         IList<DateTimeZone> availableTimeZones =
             DateTimeZoneProviders.Tzdb.GetAllZones().ToList();
 
-        for (var j = 0; j < numDateTimes; j++)
+        for (var j = 0; j < NumDateTimes; j++)
         {
             var year = rand.Next(1970, 2200);
             var month = rand.Next(1, 13);
@@ -288,7 +288,7 @@ public class TimestampTest
 
             var noTzTestCase = new ParseTestCase(dateTime, tuple);
 
-            for (var i = 0; i < numTimeZones; i++)
+            for (var i = 0; i < NumTimeZones; i++)
             {
                 var index = rand.Next(0, availableTimeZones.Count);
                 var tz = availableTimeZones[index];
@@ -296,7 +296,7 @@ public class TimestampTest
                 testCases.Add(noTzTestCase.WithTZ(tz.Id));
             }
 
-            for (var i = 0; i < numOffsets; i++)
+            for (var i = 0; i < NumOffsets; i++)
             {
                 var offsetHours = rand.Next(-18, 19);
                 var id = string.Format("{0:+#;-#;+0}:{1:D2}", offsetHours, 0);

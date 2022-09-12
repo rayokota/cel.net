@@ -77,26 +77,26 @@ public sealed class JsonTypeDescription : ITypeDescription
         var underlyingType = Nullable.GetUnderlyingType(type);
         if (underlyingType != null) type = underlyingType;
 
-        if (type == typeof(bool)) return Checked.checkedBool;
+        if (type == typeof(bool)) return Checked.CheckedBool;
 
         if (type == typeof(long) || type == typeof(int) ||
             type == typeof(short) || type == typeof(sbyte) ||
             type == typeof(byte))
-            return Checked.checkedInt;
+            return Checked.CheckedInt;
 
-        if (type == typeof(uint) || type == typeof(ulong)) return Checked.checkedUint;
+        if (type == typeof(uint) || type == typeof(ulong)) return Checked.CheckedUint;
 
-        if (type == typeof(byte[]) || type == typeof(ByteString)) return Checked.checkedBytes;
+        if (type == typeof(byte[]) || type == typeof(ByteString)) return Checked.CheckedBytes;
 
-        if (type == typeof(double) || type == typeof(float)) return Checked.checkedDouble;
+        if (type == typeof(double) || type == typeof(float)) return Checked.CheckedDouble;
 
-        if (type == typeof(string)) return Checked.checkedString;
+        if (type == typeof(string)) return Checked.CheckedString;
 
-        if (type == typeof(Duration) || type == typeof(Period)) return Checked.checkedDuration;
+        if (type == typeof(Duration) || type == typeof(Period)) return Checked.CheckedDuration;
 
         if (type == typeof(Timestamp) || type == typeof(Instant) ||
             type == typeof(ZonedDateTime))
-            return Checked.checkedTimestamp;
+            return Checked.CheckedTimestamp;
 
         if (type.IsGenericType &&
             (type.GetGenericTypeDefinition() == typeof(Dictionary<,>) ||

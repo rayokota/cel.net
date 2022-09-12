@@ -435,30 +435,30 @@ public sealed class FieldDescription : Description
 
                 return Checked.CheckedMessageType(msgType);
             case FieldType.Enum:
-                return Checked.checkedInt;
+                return Checked.CheckedInt;
             case FieldType.Bool:
-                return Checked.checkedBool;
+                return Checked.CheckedBool;
             case FieldType.Bytes:
-                return Checked.checkedBytes;
+                return Checked.CheckedBytes;
             case FieldType.Double:
             case FieldType.Float:
-                return Checked.checkedDouble;
+                return Checked.CheckedDouble;
             case FieldType.Int32:
             case FieldType.SInt32:
             case FieldType.SFixed32:
-                return Checked.checkedInt;
+                return Checked.CheckedInt;
             case FieldType.UInt32:
             case FieldType.Fixed32:
-                return Checked.checkedUint;
+                return Checked.CheckedUint;
             case FieldType.Int64:
             case FieldType.SInt64:
             case FieldType.SFixed64:
-                return Checked.checkedInt;
+                return Checked.CheckedInt;
             case FieldType.UInt64:
             case FieldType.Fixed64:
-                return Checked.checkedUint;
+                return Checked.CheckedUint;
             case FieldType.String:
-                return Checked.checkedString;
+                return Checked.CheckedString;
         }
 
         throw new NotSupportedException("Unknown type " + desc.FieldType);

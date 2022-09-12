@@ -74,8 +74,8 @@ public abstract class MapT : BaseVal, IMapper, IContainer, IIndexer, IIterableT,
 
     internal sealed class ValMapT : MapT
     {
-        internal readonly TypeAdapter adapter;
-        internal readonly IDictionary<IVal, IVal> map;
+        private readonly TypeAdapter adapter;
+        private readonly IDictionary<IVal, IVal> map;
 
         internal ValMapT(TypeAdapter adapter, IDictionary<IVal, IVal> map)
         {

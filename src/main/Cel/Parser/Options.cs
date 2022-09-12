@@ -48,13 +48,13 @@ public sealed class Options
 
     public sealed class Builder
     {
-        internal readonly IDictionary<string, Macro> macros = new Dictionary<string, Macro>();
+        private readonly IDictionary<string, Macro> macros = new Dictionary<string, Macro>();
 
-        internal int errorRecoveryLimit = 30;
+        private int errorRecoveryLimit = 30;
 
-        internal int expressionSizeCodePointLimit = 100_000;
+        private int expressionSizeCodePointLimit = 100_000;
 
-        internal int maxRecursionDepth = 250;
+        private int maxRecursionDepth = 250;
 
         public Builder MaxRecursionDepth(int maxRecursionDepth)
         {

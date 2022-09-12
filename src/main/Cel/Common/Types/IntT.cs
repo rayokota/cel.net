@@ -44,12 +44,12 @@ public sealed class IntT : BaseVal, IAdder, IComparer, IDivider, IModder, IMulti
     /// <summary>
     ///     maxIntJSON is defined as the Number.MAX_SAFE_INTEGER value per EcmaScript 6.
     /// </summary>
-    public static readonly long MaxIntJSON = (1L << 53) - 1;
+    public static readonly long MaxIntJson = (1L << 53) - 1;
 
     /// <summary>
     ///     minIntJSON is defined as the Number.MIN_SAFE_INTEGER value per EcmaScript 6.
     /// </summary>
-    public static readonly long MinIntJSON = -MaxIntJSON;
+    public static readonly long MinIntJson = -MaxIntJson;
 
     private readonly long i;
 
@@ -61,7 +61,7 @@ public sealed class IntT : BaseVal, IAdder, IComparer, IDivider, IModder, IMulti
     /// <summary>
     ///     isJSONSafe indicates whether the int is safely representable as a floating point value in JSON.
     /// </summary>
-    public bool JSONSafe => i >= MinIntJSON && i <= MaxIntJSON;
+    public bool JSONSafe => i >= MinIntJson && i <= MaxIntJson;
 
     /// <summary>
     ///     Add implements traits.Adder.Add.
@@ -266,7 +266,7 @@ public sealed class IntT : BaseVal, IAdder, IComparer, IDivider, IModder, IMulti
             // the string values must be explicitly converted to int() within a CEL expression;
             // however, it is best to simply stay within the JSON number range when building JSON
             // objects in CEL.
-            if (i >= MinIntJSON && i <= MaxIntJSON)
+            if (i >= MinIntJson && i <= MaxIntJson)
             {
                 var value = new Value();
                 value.NumberValue = i;
@@ -304,7 +304,7 @@ public sealed class IntT : BaseVal, IAdder, IComparer, IDivider, IModder, IMulti
             case TypeEnum.InnerEnum.Timestamp:
                 // The maximum positive value that can be passed to time.Unix is math.MaxInt64 minus the
                 // number of seconds between year 1 and year 1970. See comments on unixToInternal.
-                if (i < TimestampT.minUnixTime || i > TimestampT.maxUnixTime) return Err.ErrTimestampOverflow;
+                if (i < TimestampT.MinUnixTime || i > TimestampT.MaxUnixTime) return Err.ErrTimestampOverflow;
 
                 return TimestampT.TimestampOf(Instant.FromUnixTimeSeconds(i).InZone(TimestampT.ZoneIdZ));
             case TypeEnum.InnerEnum.Type:

@@ -277,9 +277,9 @@ public interface INamespacedAttribute : IAttribute
 
 public sealed class AttrFactory : IAttributeFactory
 {
-    internal readonly TypeAdapter adapter;
-    internal readonly Container container;
-    internal readonly ITypeProvider provider;
+    private readonly TypeAdapter adapter;
+    private readonly Container container;
+    private readonly ITypeProvider provider;
 
     internal AttrFactory(Container container, TypeAdapter adapter, ITypeProvider provider)
     {
@@ -360,19 +360,19 @@ public sealed class AttrFactory : IAttributeFactory
 
 public sealed class AbsoluteAttribute : INamespacedAttribute, ICoster
 {
-    internal readonly TypeAdapter adapter;
-    internal readonly IAttributeFactory fac;
-    internal readonly long id;
+    private readonly TypeAdapter adapter;
+    private readonly IAttributeFactory fac;
+    private readonly long id;
 
     /// <summary>
     ///     namespaceNames represent the names the variable could have based on declared container
     ///     (package) of the expression.
     /// </summary>
-    internal readonly string[] namespaceNames;
+    private readonly string[] namespaceNames;
 
-    internal readonly ITypeProvider provider;
+    private readonly ITypeProvider provider;
 
-    internal readonly IList<IQualifier> qualifiers;
+    private readonly IList<IQualifier> qualifiers;
 
     internal AbsoluteAttribute(long id, string[] namespaceNames,
         IList<IQualifier> qualifiers, TypeAdapter adapter, ITypeProvider provider,
@@ -516,11 +516,11 @@ public sealed class AbsoluteAttribute : INamespacedAttribute, ICoster
 
 public sealed class ConditionalAttribute : IAttribute, ICoster
 {
-    internal readonly TypeAdapter adapter;
+    private readonly TypeAdapter adapter;
     internal readonly IInterpretable expr;
-    internal readonly IAttributeFactory fac;
+    private readonly IAttributeFactory fac;
     internal readonly IAttribute falsy;
-    internal readonly long id;
+    private readonly long id;
     internal readonly IAttribute truthy;
 
     internal ConditionalAttribute(long id, IInterpretable expr, IAttribute truthy,
@@ -608,11 +608,11 @@ public sealed class ConditionalAttribute : IAttribute, ICoster
 
 public sealed class MaybeAttribute : ICoster, IAttribute
 {
-    internal readonly TypeAdapter adapter;
-    internal readonly IList<INamespacedAttribute> attrs;
-    internal readonly IAttributeFactory fac;
-    internal readonly long id;
-    internal readonly ITypeProvider provider;
+    private readonly TypeAdapter adapter;
+    private readonly IList<INamespacedAttribute> attrs;
+    private readonly IAttributeFactory fac;
+    private readonly long id;
+    private readonly ITypeProvider provider;
 
     internal MaybeAttribute(long id, IList<INamespacedAttribute> attrs,
         TypeAdapter adapter, ITypeProvider provider, IAttributeFactory fac)
@@ -770,11 +770,11 @@ public sealed class MaybeAttribute : ICoster, IAttribute
 
 public sealed class RelativeAttribute : ICoster, IAttribute
 {
-    internal readonly TypeAdapter adapter;
-    internal readonly IAttributeFactory fac;
-    internal readonly long id;
-    internal readonly IInterpretable operand;
-    internal readonly IList<IQualifier> qualifiers;
+    private readonly TypeAdapter adapter;
+    private readonly IAttributeFactory fac;
+    private readonly long id;
+    private readonly IInterpretable operand;
+    private readonly IList<IQualifier> qualifiers;
 
     internal RelativeAttribute(long id, IInterpretable operand,
         IList<IQualifier> qualifiers, TypeAdapter adapter, IAttributeFactory fac)
@@ -870,8 +870,8 @@ public sealed class RelativeAttribute : ICoster, IAttribute
 
 public sealed class AttrQualifier : ICoster, IAttribute
 {
-    internal readonly IAttribute attribute;
-    internal readonly long id;
+    private readonly IAttribute attribute;
+    private readonly long id;
 
     internal AttrQualifier(long id, IAttribute attribute)
     {
@@ -915,10 +915,10 @@ public sealed class AttrQualifier : ICoster, IAttribute
 
 public sealed class StringQualifier : ICoster, IConstantQualifierEquator
 {
-    internal readonly TypeAdapter adapter;
-    internal readonly IVal celValue;
-    internal readonly long id;
-    internal readonly string value;
+    private readonly TypeAdapter adapter;
+    private readonly IVal celValue;
+    private readonly long id;
+    private readonly string value;
 
     internal StringQualifier(long id, string value, IVal celValue, TypeAdapter adapter)
     {
@@ -999,10 +999,10 @@ public sealed class StringQualifier : ICoster, IConstantQualifierEquator
 
 public sealed class IntQualifier : ICoster, IConstantQualifierEquator
 {
-    internal readonly TypeAdapter adapter;
-    internal readonly IVal celValue;
-    internal readonly long id;
-    internal readonly long value;
+    private readonly TypeAdapter adapter;
+    private readonly IVal celValue;
+    private readonly long id;
+    private readonly long value;
 
     internal IntQualifier(long id, long value, IVal celValue, TypeAdapter adapter)
     {
@@ -1108,10 +1108,10 @@ public sealed class IntQualifier : ICoster, IConstantQualifierEquator
 
 public sealed class UintQualifier : ICoster, IConstantQualifierEquator
 {
-    internal readonly TypeAdapter adapter;
-    internal readonly IVal celValue;
-    internal readonly long id;
-    internal readonly ulong value;
+    private readonly TypeAdapter adapter;
+    private readonly IVal celValue;
+    private readonly long id;
+    private readonly ulong value;
 
     internal UintQualifier(long id, ulong value, IVal celValue, TypeAdapter adapter)
     {
@@ -1194,10 +1194,10 @@ public sealed class UintQualifier : ICoster, IConstantQualifierEquator
 
 public sealed class BoolQualifier : ICoster, IConstantQualifierEquator
 {
-    internal readonly TypeAdapter adapter;
-    internal readonly IVal celValue;
-    internal readonly long id;
-    internal readonly bool value;
+    private readonly TypeAdapter adapter;
+    private readonly IVal celValue;
+    private readonly long id;
+    private readonly bool value;
 
     internal BoolQualifier(long id, bool value, IVal celValue, TypeAdapter adapter)
     {
@@ -1274,10 +1274,10 @@ public sealed class BoolQualifier : ICoster, IConstantQualifierEquator
 
 public sealed class FieldQualifier : ICoster, IConstantQualifierEquator
 {
-    internal readonly TypeAdapter adapter;
-    internal readonly FieldType fieldType;
-    internal readonly long id;
-    internal readonly string name;
+    private readonly TypeAdapter adapter;
+    private readonly FieldType fieldType;
+    private readonly long id;
+    private readonly string name;
 
     internal FieldQualifier(long id, string name, FieldType fieldType, TypeAdapter adapter)
     {

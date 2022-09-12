@@ -22,7 +22,7 @@ namespace Cel.Common.Types.Json.Types;
 
 public class CollectionsObject
 {
-    public static readonly IList<string> ALL_PROPERTIES = new List<string>
+    public static readonly IList<string> AllProperties = new List<string>
     {
         "stringBooleanMap", "byteShortMap", "intLongMap", "ulongTimestampMap", "ulongZonedDateTimeMap",
         "stringProtoDurationMap", "stringPeriodMap", "stringBytesMap", "floatDoubleMap", "stringList", "booleanList",

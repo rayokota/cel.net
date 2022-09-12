@@ -21,8 +21,8 @@ namespace Cel.Parser;
 
 public sealed class ExprHelperImpl : IExprHelper
 {
-    internal readonly long id;
-    internal readonly Helper parserHelper;
+    private readonly long id;
+    private readonly Helper parserHelper;
 
     public ExprHelperImpl(Helper parserHelper, long id)
     {

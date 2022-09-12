@@ -100,9 +100,9 @@ public sealed class Parser
 
     public sealed class ParseResult
     {
-        internal readonly Errors errors;
-        internal readonly Expr? expr;
-        internal readonly SourceInfo sourceInfo;
+        private readonly Errors errors;
+        private readonly Expr? expr;
+        private readonly SourceInfo sourceInfo;
 
         public ParseResult(Expr? expr, Errors errors, SourceInfo sourceInfo)
         {
@@ -125,8 +125,8 @@ public sealed class Parser
 
     internal sealed class RecursionListener : IParseTreeListener
     {
-        internal readonly int maxDepth;
-        internal int depth;
+        private readonly int maxDepth;
+        private int depth;
 
         internal RecursionListener(int maxDepth)
         {
@@ -178,8 +178,8 @@ public sealed class Parser
 
     internal sealed class RecoveryLimitErrorStrategy : DefaultErrorStrategy
     {
-        internal readonly int maxAttempts;
-        internal int attempts;
+        private readonly int maxAttempts;
+        private int attempts;
 
         internal RecoveryLimitErrorStrategy(int maxAttempts)
         {
@@ -214,10 +214,10 @@ public sealed class Parser
 
     internal sealed class InnerParser<Symbol> : AbstractParseTreeVisitor<object>, IAntlrErrorListener<Symbol>
     {
-        internal readonly Errors errors;
+        private readonly Errors errors;
 
 
-        internal readonly Helper helper;
+        private readonly Helper helper;
         private readonly Parser outerInstance;
 
         internal InnerParser(Parser outerInstance, Helper helper, Errors errors)

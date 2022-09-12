@@ -813,8 +813,8 @@ public sealed class Checker
 
     public sealed class CheckResult
     {
-        internal readonly TypeErrors errors;
-        internal readonly CheckedExpr expr;
+        private readonly TypeErrors errors;
+        private readonly CheckedExpr expr;
 
         internal CheckResult(CheckedExpr expr, TypeErrors errors)
         {

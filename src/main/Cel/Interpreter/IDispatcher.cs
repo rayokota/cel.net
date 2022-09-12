@@ -61,8 +61,8 @@ public interface IDispatcher
 
 public sealed class DefaultDispatcher : IDispatcher
 {
-    internal readonly IDictionary<string, Overload> overloads;
-    internal readonly IDispatcher? parent;
+    private readonly IDictionary<string, Overload> overloads;
+    private readonly IDispatcher? parent;
 
     internal DefaultDispatcher(IDispatcher? parent, IDictionary<string, Overload> overloads)
     {

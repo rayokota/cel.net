@@ -34,8 +34,8 @@ public sealed class DurationT : BaseVal, IAdder, IComparer, INegater, IReceiver,
     //	maxDuration Duration = 1<<63 - 1
     // This equates to:
     //  minDuration in seconds:
-    public const long minDurationSeconds = -9223372036L;
-    public const long maxDurationSeconds = 9223372035L;
+    public const long MinDurationSeconds = -9223372036L;
+    public const long MaxDurationSeconds = 9223372035L;
 
     /// <summary>
     ///     DurationType singleton.
@@ -171,7 +171,7 @@ public sealed class DurationT : BaseVal, IAdder, IComparer, INegater, IReceiver,
     /// </summary>
     public IVal RangeCheck()
     {
-        if (d.Seconds < minDurationSeconds || d.Seconds > maxDurationSeconds) return Err.ErrDurationOutOfRange;
+        if (d.Seconds < MinDurationSeconds || d.Seconds > MaxDurationSeconds) return Err.ErrDurationOutOfRange;
 
         return this;
     }

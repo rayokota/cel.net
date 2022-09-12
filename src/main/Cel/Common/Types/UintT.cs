@@ -47,7 +47,7 @@ public sealed class UintT : BaseVal, IAdder, IComparer, IDivider, IModder, IMult
     ///     isJSONSafe indicates whether the uint is safely representable as a floating point value in
     ///     JSON.
     /// </summary>
-    public bool JSONSafe => i >= 0 && IntValue() <= IntT.MaxIntJSON;
+    public bool JSONSafe => i >= 0 && IntValue() <= IntT.MaxIntJson;
 
     /// <summary>
     ///     Add implements traits.Adder.Add.
@@ -203,7 +203,7 @@ public sealed class UintT : BaseVal, IAdder, IComparer, IDivider, IModder, IMult
 
         if (typeDesc == typeof(Value))
         {
-            if (IntValue() <= IntT.MaxIntJSON)
+            if (IntValue() <= IntT.MaxIntJson)
             {
                 // JSON can accurately represent 32-bit uints as floating point values.
                 var value = new Value();

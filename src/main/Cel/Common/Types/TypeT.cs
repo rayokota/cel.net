@@ -168,7 +168,7 @@ public class TypeT : IType, IVal
 
     internal sealed class ObjectTypeT : TypeT
     {
-        internal readonly string typeName;
+        private readonly string typeName;
 
         internal ObjectTypeT(string typeName) : base(Ref.TypeEnum.Object, Trait.FieldTesterType, Trait.IndexerType)
         {

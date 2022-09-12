@@ -869,7 +869,7 @@ internal class InterpreterTest
     internal static ConvTestCase[] TypeConversionOptTests()
     {
         var ts1 = new Timestamp();
-        ts1.Seconds = TimestampT.maxUnixTime;
+        ts1.Seconds = TimestampT.MaxUnixTime;
 
         var d1 = new Duration();
         d1.Seconds = 12;
