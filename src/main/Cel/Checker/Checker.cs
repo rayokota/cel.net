@@ -813,27 +813,24 @@ public sealed class Checker
 
     public sealed class CheckResult
     {
-        private readonly TypeErrors errors;
-        private readonly CheckedExpr expr;
-
         internal CheckResult(CheckedExpr expr, TypeErrors errors)
         {
-            this.expr = expr;
-            this.errors = errors;
+            this.CheckedExpr = expr;
+            this.Errors = errors;
         }
 
-        public CheckedExpr CheckedExpr => expr;
+        public CheckedExpr CheckedExpr { get; }
 
-        public TypeErrors Errors => errors;
+        public TypeErrors Errors { get; }
 
         public bool HasErrors()
         {
-            return errors.HasErrors();
+            return Errors.HasErrors();
         }
 
         public override string ToString()
         {
-            return "CheckResult{" + "expr=" + expr + ", errors=" + errors + '}';
+            return "CheckResult{" + "expr=" + CheckedExpr + ", errors=" + Errors + '}';
         }
     }
 

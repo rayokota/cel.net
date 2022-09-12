@@ -190,7 +190,7 @@ public sealed class UintT : BaseVal, IAdder, IComparer, IDivider, IModder, IMult
         }
 
         if (typeDesc == typeof(UInt64Value)) return i;
-        
+
         if (typeDesc == typeof(UInt32Value))
         {
             if (i > uint.MaxValue)

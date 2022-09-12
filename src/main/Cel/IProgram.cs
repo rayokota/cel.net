@@ -57,8 +57,8 @@ public sealed class EvalResult
 {
     internal EvalResult(IVal val, EvalDetails evalDetails)
     {
-        this.Val = val;
-        this.EvalDetails = evalDetails;
+        Val = val;
+        EvalDetails = evalDetails;
     }
 
     public IVal Val { get; }

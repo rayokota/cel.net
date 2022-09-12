@@ -134,7 +134,7 @@ public sealed class StringT : BaseVal, IAdder, IComparer, IMatcher, IReceiver, I
         }
 
         if (typeDesc == typeof(StringValue)) return s;
-        
+
         if (typeDesc == typeof(IVal) || typeDesc == typeof(StringT)) return this;
 
         if (typeDesc == typeof(Value))

@@ -100,26 +100,22 @@ public sealed class Parser
 
     public sealed class ParseResult
     {
-        private readonly Errors errors;
-        private readonly Expr? expr;
-        private readonly SourceInfo sourceInfo;
-
         public ParseResult(Expr? expr, Errors errors, SourceInfo sourceInfo)
         {
-            this.expr = expr;
-            this.errors = errors;
-            this.sourceInfo = sourceInfo;
+            this.Expr = expr;
+            this.Errors = errors;
+            this.SourceInfo = sourceInfo;
         }
 
-        public Expr? Expr => expr;
+        public Expr? Expr { get; }
 
-        public Errors Errors => errors;
+        public Errors Errors { get; }
 
-        public SourceInfo SourceInfo => sourceInfo;
+        public SourceInfo SourceInfo { get; }
 
         public bool HasErrors()
         {
-            return errors.HasErrors();
+            return Errors.HasErrors();
         }
     }
 

@@ -565,19 +565,6 @@ public sealed class ConditionalAttribute : IAttribute, ICoster
     }
 
     /// <summary>
-    ///     Cost provides the heuristic cost of a ternary operation {@code &lt;expr&gt; ? &lt;t&gt; :
-    ///     &lt;f&gt;}. The cost is computed as {@code cost(expr)} plus the min/max costs of evaluating
-    ///     either `t` or `f`.
-    /// </summary>
-    public Cost Cost()
-    {
-        var t = Interpreter.Cost.EstimateCost(truthy);
-        var f = Interpreter.Cost.EstimateCost(falsy);
-        var e = Interpreter.Cost.EstimateCost(expr);
-        return ICoster.CostOf(e.min + Math.Min(t.min, f.min), e.max + Math.Max(t.max, f.max));
-    }
-
-    /// <summary>
     ///     ID is an implementation of the Attribute interface method.
     /// </summary>
     public long Id()
@@ -595,6 +582,19 @@ public sealed class ConditionalAttribute : IAttribute, ICoster
 
         var qual = fac.NewQualifier(null, id, val);
         return qual.Qualify(vars, obj);
+    }
+
+    /// <summary>
+    ///     Cost provides the heuristic cost of a ternary operation {@code &lt;expr&gt; ? &lt;t&gt; :
+    ///     &lt;f&gt;}. The cost is computed as {@code cost(expr)} plus the min/max costs of evaluating
+    ///     either `t` or `f`.
+    /// </summary>
+    public Cost Cost()
+    {
+        var t = Interpreter.Cost.EstimateCost(truthy);
+        var f = Interpreter.Cost.EstimateCost(falsy);
+        var e = Interpreter.Cost.EstimateCost(expr);
+        return ICoster.CostOf(e.min + Math.Min(t.min, f.min), e.max + Math.Max(t.max, f.max));
     }
 
     /// <summary>
@@ -822,24 +822,6 @@ public sealed class RelativeAttribute : ICoster, IAttribute
     }
 
     /// <summary>
-    ///     Cost implements the Coster interface method.
-    /// </summary>
-    public Cost Cost()
-    {
-        var c = Interpreter.Cost.EstimateCost(operand);
-        var min = c.min;
-        var max = c.max;
-        foreach (var qual in qualifiers)
-        {
-            var q = Interpreter.Cost.EstimateCost(qual);
-            min += q.min;
-            max += q.max;
-        }
-
-        return ICoster.CostOf(min, max);
-    }
-
-    /// <summary>
     ///     ID is an implementation of the Attribute interface method.
     /// </summary>
     public long Id()
@@ -857,6 +839,24 @@ public sealed class RelativeAttribute : ICoster, IAttribute
 
         var qual = fac.NewQualifier(null, id, val);
         return qual.Qualify(vars, obj);
+    }
+
+    /// <summary>
+    ///     Cost implements the Coster interface method.
+    /// </summary>
+    public Cost Cost()
+    {
+        var c = Interpreter.Cost.EstimateCost(operand);
+        var min = c.min;
+        var max = c.max;
+        foreach (var qual in qualifiers)
+        {
+            var q = Interpreter.Cost.EstimateCost(qual);
+            min += q.min;
+            max += q.max;
+        }
+
+        return ICoster.CostOf(min, max);
     }
 
     /// <summary>

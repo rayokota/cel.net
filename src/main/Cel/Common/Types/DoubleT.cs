@@ -129,9 +129,9 @@ public sealed class DoubleT : BaseVal, IAdder, IComparer, IDivider, IMultiplier,
         }
 
         if (typeDesc == typeof(DoubleValue)) return d;
-        
+
         if (typeDesc == typeof(FloatValue)) return (float)d;
-        
+
         if (typeDesc == typeof(IVal) || typeDesc == typeof(DoubleT)) return this;
 
         if (typeDesc == typeof(Value))

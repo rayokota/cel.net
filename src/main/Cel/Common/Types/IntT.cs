@@ -239,7 +239,7 @@ public sealed class IntT : BaseVal, IAdder, IComparer, IDivider, IModder, IMulti
         }
 
         if (typeDesc == typeof(Int64Value)) return i;
-        
+
         if (typeDesc == typeof(Int32Value))
         {
             if (i < int.MinValue || i > int.MaxValue)

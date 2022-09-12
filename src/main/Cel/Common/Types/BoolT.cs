@@ -83,7 +83,7 @@ public sealed class BoolT : BaseVal, IComparer, INegater
         }
 
         if (typeDesc == typeof(BoolValue)) return b;
-        
+
         if (typeDesc == typeof(IVal) || typeDesc == typeof(BoolT)) return this;
 
         if (typeDesc == typeof(Value))
