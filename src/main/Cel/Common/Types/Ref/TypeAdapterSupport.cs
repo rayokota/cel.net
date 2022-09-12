@@ -63,10 +63,10 @@ public sealed class TypeAdapterSupport
         NativeToValueExact[typeof(string[])] = (a, value) => ListT.NewStringArrayList((string[])value);
         NativeToValueExact[typeof(IVal[])] = (a, value) => ListT.NewValArrayList(a, (IVal[])value);
         NativeToValueExact[typeof(NullValue)] = (a, value) => NullT.NullValue;
-        NativeToValueExact[typeof(ListValue)] = (a, value) => ListT.NewJSONList(a, (ListValue)value);
+        NativeToValueExact[typeof(ListValue)] = (a, value) => ListT.NewJsonList(a, (ListValue)value);
         NativeToValueExact[typeof(UInt32Value)] = (a, value) => UintT.UintOf(((UInt32Value)value).Value);
         NativeToValueExact[typeof(UInt64Value)] = (a, value) => UintT.UintOf(((UInt64Value)value).Value);
-        NativeToValueExact[typeof(Struct)] = (a, value) => MapT.NewJSONStruct(a, (Struct)value);
+        NativeToValueExact[typeof(Struct)] = (a, value) => MapT.NewJsonStruct(a, (Struct)value);
         NativeToValueExact[typeof(EnumValue)] = (a, value) => IntT.IntOf(((EnumValue)value).Number);
         NativeToValueExact[typeof(EnumValueDescriptor)] = (a, value) =>
         {

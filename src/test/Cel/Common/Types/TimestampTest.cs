@@ -76,7 +76,7 @@ public class TimestampTest
     }
 
     [Test]
-    public virtual void TimestampConvertToNativeJSON()
+    public virtual void TimestampConvertToNativeJson()
     {
         var ts = TimestampT.TimestampOf(Instant.FromUnixTimeSeconds(7506).InZone(TimestampT.ZoneIdZ));
 

@@ -61,7 +61,7 @@ public sealed class IntT : BaseVal, IAdder, IComparer, IDivider, IModder, IMulti
     /// <summary>
     ///     isJSONSafe indicates whether the int is safely representable as a floating point value in JSON.
     /// </summary>
-    public bool JSONSafe => i >= MinIntJson && i <= MaxIntJson;
+    public bool JsonSafe => i >= MinIntJson && i <= MaxIntJson;
 
     /// <summary>
     ///     Add implements traits.Adder.Add.

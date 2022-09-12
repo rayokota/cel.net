@@ -66,7 +66,7 @@ public abstract class MapT : BaseVal, IMapper, IContainer, IIndexer, IIterableT,
     ///         The `adapter` argument provides type adaptation capabilities from proto to CEL.
     ///     </para>
     /// </summary>
-    public static IVal NewJSONStruct(TypeAdapter adapter, Struct value)
+    public static IVal NewJsonStruct(TypeAdapter adapter, Struct value)
     {
         IDictionary fields = value.Fields;
         return NewMaybeWrappedMap(adapter, fields);

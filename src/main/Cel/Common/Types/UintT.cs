@@ -47,7 +47,7 @@ public sealed class UintT : BaseVal, IAdder, IComparer, IDivider, IModder, IMult
     ///     isJSONSafe indicates whether the uint is safely representable as a floating point value in
     ///     JSON.
     /// </summary>
-    public bool JSONSafe => i >= 0 && IntValue() <= IntT.MaxIntJson;
+    public bool JsonSafe => i >= 0 && IntValue() <= IntT.MaxIntJson;
 
     /// <summary>
     ///     Add implements traits.Adder.Add.

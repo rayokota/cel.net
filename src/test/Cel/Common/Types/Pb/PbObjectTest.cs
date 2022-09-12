@@ -77,7 +77,7 @@ public class PbObjectTest
         Assert.That(unpackedAny, Is.EqualTo(objVal.Value()));
     }
 
-    public virtual void ProtoObjectConvertToNativeJSON()
+    public virtual void ProtoObjectConvertToNativeJson()
     {
         // TODO this is the rest of the above test, the missing JSON part
         //    // JSON

@@ -65,7 +65,7 @@ public abstract class ListT : BaseVal, ILister
     /// <summary>
     ///     NewJSONList returns a traits.Lister based on structpb.ListValue instance.
     /// </summary>
-    public static IVal NewJSONList(TypeAdapter adapter, ListValue l)
+    public static IVal NewJsonList(TypeAdapter adapter, ListValue l)
     {
         IList<Value> vals = l.Values;
         return NewGenericArrayList(adapter, vals.ToArray());
