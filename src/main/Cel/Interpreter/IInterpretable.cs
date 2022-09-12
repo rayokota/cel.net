@@ -168,7 +168,7 @@ public interface IInterpretableAttribute : IInterpretable, IAttribute
     ///     Qualify replicates the Attribute.Qualify method to permit extension and interception of
     ///     object qualification.
     /// </summary>
-    object Qualify(IActivation vars, object obj);
+    object? Qualify(IActivation vars, object obj);
 
     /// <summary>
     ///     Resolve returns the value of the Attribute given the current Activation.
@@ -1268,7 +1268,7 @@ public sealed class EvalWatchAttr : ICoster, IInterpretableAttribute
         return attr.Adapter();
     }
 
-    public object Qualify(IActivation vars, object obj)
+    public object? Qualify(IActivation vars, object obj)
     {
         return attr.Qualify(vars, obj);
     }
@@ -1320,7 +1320,7 @@ public abstract class AbstractEvalWatch<T> : AbstractEval, ICoster,
     /// <summary>
     ///     Qualify observes the qualification of a object via a value computed at runtime.
     /// </summary>
-    public virtual object Qualify(IActivation vars, object obj)
+    public virtual object? Qualify(IActivation vars, object obj)
     {
         var @out = @delegate.Qualify(vars, obj);
         IVal val;
@@ -1742,7 +1742,7 @@ public sealed class EvalAttr : AbstractEval, IInterpretableAttribute, ICoster
     /// <summary>
     ///     Qualify proxies to the Attribute's Qualify method.
     /// </summary>
-    public object Qualify(IActivation ctx, object obj)
+    public object? Qualify(IActivation ctx, object obj)
     {
         return attr.Qualify(ctx, obj);
     }

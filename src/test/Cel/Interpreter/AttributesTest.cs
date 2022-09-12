@@ -589,7 +589,7 @@ internal class AttributesTest
             return id;
         }
 
-        public virtual object Qualify(IActivation vars, object obj)
+        public virtual object? Qualify(IActivation vars, object obj)
         {
             return ((TestAllTypes.Types.NestedMessage)obj).Bb;
         }
