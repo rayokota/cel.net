@@ -143,5 +143,5 @@ public interface IExprHelper
     /// <summary>
     ///     OffsetLocation returns the Location of the expression identifier.
     /// </summary>
-    ILocation OffsetLocation(long exprID);
+    ILocation OffsetLocation(long exprId);
 }

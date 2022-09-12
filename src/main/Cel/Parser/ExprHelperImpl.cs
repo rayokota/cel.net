@@ -145,9 +145,9 @@ public sealed class ExprHelperImpl : IExprHelper
     }
 
     // OffsetLocation implements the ExprHelper interface method.
-    public ILocation OffsetLocation(long exprID)
+    public ILocation OffsetLocation(long exprId)
     {
-        return parserHelper.GetLocation(exprID);
+        return parserHelper.GetLocation(exprId);
     }
 
     internal long NextMacroID()

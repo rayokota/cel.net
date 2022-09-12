@@ -204,7 +204,7 @@ public sealed class Planner : IInterpretablePlanner
         if (opType != null && opType.MessageType.Length > 0)
         {
             var ft = provider.FindFieldType(opType.MessageType, sel.Field);
-            if (ft != null && ft.isSet != null && ft.getFrom != null) fieldType = ft;
+            if (ft != null) fieldType = ft;
         }
 
         // If the Select was marked TestOnly, this is a presence test.
@@ -226,7 +226,6 @@ public sealed class Planner : IInterpretablePlanner
 
         // Build a qualifier.
         var qual = attrFactory.NewQualifier(opType, expr.Id, sel.Field);
-        if (qual == null) return null;
 
         // Lastly, create a field selection Interpretable.
         if (op is IInterpretableAttribute)
@@ -293,7 +292,7 @@ public sealed class Planner : IInterpretablePlanner
         // Otherwise, generate Interpretable calls specialized by argument count.
         // Try to find the specific function by overload id.
         Overload? fnDef = null;
-        if (resolvedFunc.overloadId != null && resolvedFunc.overloadId.Length == 0)
+        if (resolvedFunc.overloadId.Length == 0)
             fnDef = disp.FindOverload(resolvedFunc.overloadId);
 
         // If the overload id couldn't resolve the function, try the simple function name.
@@ -315,7 +314,7 @@ public sealed class Planner : IInterpretablePlanner
     /// <summary>
     ///     planCallZero generates a zero-arity callable Interpretable.
     /// </summary>
-    internal IInterpretable PlanCallZero(Expr expr, string function, string overload, Overload impl)
+    internal IInterpretable PlanCallZero(Expr expr, string function, string overload, Overload? impl)
     {
         if (impl == null || impl.function == null)
             throw new ArgumentException(string.Format("no such overload: {0}()", function));
@@ -468,7 +467,6 @@ public sealed class Planner : IInterpretablePlanner
         {
             var indConst = (IInterpretableConst)ind;
             var qual = attrFactory.NewQualifier(opType, expr.Id, indConst.Value());
-            if (qual == null) return null;
 
             opAttr.AddQualifier(qual);
             return opAttr;
@@ -478,7 +476,6 @@ public sealed class Planner : IInterpretablePlanner
         {
             var indAttr = (IInterpretableAttribute)ind;
             var qual = attrFactory.NewQualifier(opType, expr.Id, indAttr);
-            if (qual == null) return null;
 
             opAttr.AddQualifier(qual);
             return opAttr;
@@ -591,10 +588,9 @@ public sealed class Planner : IInterpretablePlanner
     /// <summary>
     ///     planConst generates a constant valued Interpretable.
     /// </summary>
-    internal IInterpretable? PlanConst(Expr expr)
+    internal IInterpretable PlanConst(Expr expr)
     {
         var val = ConstValue(expr.ConstExpr);
-        if (val == null) return null;
 
         return IInterpretable.NewConstValue(expr.Id, val);
     }

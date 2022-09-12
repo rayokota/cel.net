@@ -141,8 +141,7 @@ public interface IInterpretableConst : IInterpretable
     IVal Value();
 }
 
-public interface IInterpretableAttribute : IInterpretable, IQualifier,
-    IAttribute
+public interface IInterpretableAttribute : IInterpretable, IAttribute
 {
     /// <summary>
     ///     Attr returns the Attribute value.
@@ -169,7 +168,7 @@ public interface IInterpretableAttribute : IInterpretable, IQualifier,
     ///     Qualify replicates the Attribute.Qualify method to permit extension and interception of
     ///     object qualification.
     /// </summary>
-    object? Qualify(IActivation vars, object obj);
+    object Qualify(IActivation vars, object obj);
 
     /// <summary>
     ///     Resolve returns the value of the Attribute given the current Activation.
@@ -1209,8 +1208,7 @@ public sealed class EvalWatch : IInterpretable, ICoster
     }
 }
 
-public sealed class EvalWatchAttr : ICoster, IInterpretableAttribute,
-    IAttribute
+public sealed class EvalWatchAttr : ICoster, IInterpretableAttribute
 {
     internal readonly IInterpretableAttribute attr;
     internal readonly EvalObserver observer;
@@ -1270,7 +1268,7 @@ public sealed class EvalWatchAttr : ICoster, IInterpretableAttribute,
         return attr.Adapter();
     }
 
-    public object? Qualify(IActivation vars, object obj)
+    public object Qualify(IActivation vars, object obj)
     {
         return attr.Qualify(vars, obj);
     }
@@ -1322,7 +1320,7 @@ public abstract class AbstractEvalWatch<T> : AbstractEval, ICoster,
     /// <summary>
     ///     Qualify observes the qualification of a object via a value computed at runtime.
     /// </summary>
-    public virtual object? Qualify(IActivation vars, object obj)
+    public virtual object Qualify(IActivation vars, object obj)
     {
         var @out = @delegate.Qualify(vars, obj);
         IVal val;
@@ -1372,7 +1370,7 @@ public sealed class EvalWatchConstQualEquat :
 }
 
 public sealed class EvalWatchConstQual :
-    AbstractEvalWatch<IConstantQualifier>, IConstantQualifier, ICoster
+    AbstractEvalWatch<IConstantQualifier>, IConstantQualifier
 {
     internal EvalWatchConstQual(IConstantQualifier @delegate,
         EvalObserver observer, TypeAdapter adapter) : base(@delegate, observer, adapter)
@@ -1679,8 +1677,7 @@ public sealed class EvalExhaustiveFold : AbstractEval, ICoster
     }
 }
 
-public sealed class EvalAttr : AbstractEval, IInterpretableAttribute,
-    ICoster, IQualifier, IAttribute
+public sealed class EvalAttr : AbstractEval, IInterpretableAttribute, ICoster
 {
     internal readonly TypeAdapter adapter;
     internal IAttribute attr;
@@ -1745,7 +1742,7 @@ public sealed class EvalAttr : AbstractEval, IInterpretableAttribute,
     /// <summary>
     ///     Qualify proxies to the Attribute's Qualify method.
     /// </summary>
-    public object? Qualify(IActivation ctx, object obj)
+    public object Qualify(IActivation ctx, object obj)
     {
         return attr.Qualify(ctx, obj);
     }
