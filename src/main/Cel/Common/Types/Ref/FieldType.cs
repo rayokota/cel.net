@@ -40,8 +40,8 @@ public class FieldType
 
     public FieldType(Type type, FieldTester isSet, FieldGetter getFrom)
     {
-        this.Type = type;
-        this.IsSet = isSet;
-        this.GetFrom = getFrom;
+        Type = type;
+        IsSet = isSet;
+        GetFrom = getFrom;
     }
 }

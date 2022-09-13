@@ -87,7 +87,7 @@ public sealed class TypeEnum
     public string Name { get; }
 
     public InnerEnum InnerEnumValue { get; }
-    
+
     public static TypeEnum[] Values()
     {
         return ValueList.ToArray();

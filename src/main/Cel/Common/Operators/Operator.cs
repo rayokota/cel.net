@@ -169,14 +169,20 @@ public sealed class Operator
 
     internal Operator(string name, InnerEnum innerEnum, string id, int precedence, string? reverse)
     {
-        this.Id = id;
-        this.Precedence = precedence;
+        Id = id;
+        Precedence = precedence;
         this.reverse = reverse;
 
         nameValue = name;
         ordinalValue = nextOrdinal++;
         InnerEnumValue = innerEnum;
     }
+
+    public string Id { get; }
+
+    public InnerEnum InnerEnumValue { get; }
+
+    public int Precedence { get; }
 
     public static Operator? ById(string id)
     {
@@ -218,17 +224,11 @@ public sealed class Operator
         return ValueList.ToArray();
     }
 
-    public string Id { get; }
-    
-    public InnerEnum InnerEnumValue { get; }
-    
-    public int Precedence { get; }
-
     public int Ordinal()
     {
         return ordinalValue;
     }
-    
+
     public override string ToString()
     {
         return nameValue;

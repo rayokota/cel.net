@@ -61,11 +61,11 @@ public sealed class Overload
 
     private Overload(string @operator, Trait operandTrait, UnaryOp? unary, BinaryOp? binary, FunctionOp? function)
     {
-        this.Operator = @operator;
-        this.OperandTrait = operandTrait;
-        this.UnaryOp = unary;
-        this.BinaryOp = binary;
-        this.FunctionOp = function;
+        Operator = @operator;
+        OperandTrait = operandTrait;
+        UnaryOp = unary;
+        BinaryOp = binary;
+        FunctionOp = function;
     }
 
     public static Overload Unary(Operator @operator, UnaryOp? op)
@@ -153,7 +153,8 @@ public sealed class Overload
                 return Err.NoSuchOverload(null, Common.Operators.Operator.LogicalNot.Id, v);
             }),
             Unary(Common.Operators.Operator.NotStrictlyFalse, NotStrictlyFalse),
-            Unary(Common.Operators.Operator.OldNotStrictlyFalse, NotStrictlyFalse), Binary(Common.Operators.Operator.Less,
+            Unary(Common.Operators.Operator.OldNotStrictlyFalse, NotStrictlyFalse), Binary(
+                Common.Operators.Operator.Less,
                 Trait.ComparerType, (lhs, rhs) =>
                 {
                     var cmp = ((IComparer)lhs).Compare(rhs);
@@ -191,8 +192,10 @@ public sealed class Overload
                 return cmp;
             }),
             Binary(Common.Operators.Operator.Add, Trait.AdderType, (lhs, rhs) => ((IAdder)lhs).Add(rhs)),
-            Binary(Common.Operators.Operator.Subtract, Trait.SubtractorType, (lhs, rhs) => ((ISubtractor)lhs).Subtract(rhs)),
-            Binary(Common.Operators.Operator.Multiply, Trait.MultiplierType, (lhs, rhs) => ((IMultiplier)lhs).Multiply(rhs)),
+            Binary(Common.Operators.Operator.Subtract, Trait.SubtractorType,
+                (lhs, rhs) => ((ISubtractor)lhs).Subtract(rhs)),
+            Binary(Common.Operators.Operator.Multiply, Trait.MultiplierType,
+                (lhs, rhs) => ((IMultiplier)lhs).Multiply(rhs)),
             Binary(Common.Operators.Operator.Divide, Trait.DividerType, (lhs, rhs) => ((IDivider)lhs).Divide(rhs)),
             Binary(Common.Operators.Operator.Modulo, Trait.ModderType, (lhs, rhs) => ((IModder)lhs).Modulo(rhs)), Unary(
                 Common.Operators.Operator.Negate, Trait.NegatorType, v =>

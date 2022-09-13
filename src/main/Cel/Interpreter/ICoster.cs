@@ -41,6 +41,10 @@ public sealed class Cost
         Max = max;
     }
 
+    public long Max { get; }
+
+    public long Min { get; }
+
     /// <summary>
     ///     estimateCost returns the heuristic cost interval for the program.
     /// </summary>
@@ -50,10 +54,6 @@ public sealed class Cost
 
         return Unknown;
     }
-    
-    public long Max { get;  }
-    
-    public long Min { get;  }
 
     public override bool Equals(object? o)
     {

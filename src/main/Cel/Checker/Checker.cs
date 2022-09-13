@@ -815,8 +815,8 @@ public sealed class Checker
     {
         internal CheckResult(CheckedExpr expr, TypeErrors errors)
         {
-            this.CheckedExpr = expr;
-            this.Errors = errors;
+            CheckedExpr = expr;
+            Errors = errors;
         }
 
         public CheckedExpr CheckedExpr { get; }

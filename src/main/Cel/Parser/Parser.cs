@@ -102,9 +102,9 @@ public sealed class Parser
     {
         public ParseResult(Expr? expr, Errors errors, SourceInfo sourceInfo)
         {
-            this.Expr = expr;
-            this.Errors = errors;
-            this.SourceInfo = sourceInfo;
+            Expr = expr;
+            Errors = errors;
+            SourceInfo = sourceInfo;
         }
 
         public Expr? Expr { get; }
