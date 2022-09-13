@@ -376,11 +376,16 @@ public sealed class Env
     ///         <ul>
     ///             <li>
     ///                 Optimizing constant expression evaluations away.
-    ///                 <li>
-    ///                     Indexing and pruning expressions based on known input arguments.
-    ///                     <li>
-    ///                         Surfacing additional requirements that are needed in order to complete an evaluation.
-    ///                         <li>Sharing the evaluation of an expression across multiple machines/nodes.
+    ///             </li>
+    ///             <li>
+    ///                 Indexing and pruning expressions based on known input arguments.
+    ///             </li>
+    ///             <li>
+    ///                 Surfacing additional requirements that are needed in order to complete an evaluation.
+    ///             </li>
+    ///             <li>
+    ///                 Sharing the evaluation of an expression across multiple machines/nodes.
+    ///             </li>
     ///         </ul>
     ///     </para>
     ///     <para>

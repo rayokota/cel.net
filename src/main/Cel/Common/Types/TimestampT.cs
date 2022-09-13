@@ -445,11 +445,14 @@ public sealed class TimestampT : BaseVal, IAdder, IComparer, IReceiver, ISubtrac
     ///                 numerical representation {@code ( '+' | '-' ) digit ( digit ) ( ':' digit ( digit ) ( ':'
     ///                 digit ( digit ) ) )}, which is more flexible than {@link ZoneOffset#of(String)
     ///                 ZoneOffset.of(String)}, or a
-    ///                 <li>
-    ///                     zone ID, as returned by <seealso cref="ZoneId.of(String) ZoneId.of(String)" />, or a
-    ///                     <li>
-    ///                         time zone, as returned by {@link TimeZone#getTimeZone(String)
-    ///                         TimeZone.getTimeZone(String).toZoneId()}.
+    ///             </li>
+    ///             <li>
+    ///                 zone ID, as returned by <seealso cref="ZoneId.of(String) ZoneId.of(String)" />, or a
+    ///             </li>
+    ///             <li>
+    ///                 time zone, as returned by {@link TimeZone#getTimeZone(String)
+    ///                 TimeZone.getTimeZone(String).toZoneId()}.
+    ///             </li>
     ///         </ul>
     ///     </para>
     /// </summary>

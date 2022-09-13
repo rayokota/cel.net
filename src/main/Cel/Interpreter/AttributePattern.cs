@@ -33,7 +33,10 @@ namespace Cel.Interpreter;
 ///         <ul>
 ///             <li>
 ///                 valid map key type: string, int, uint, bool
-///                 <li>wildcard (*)
+///             </li>
+///             <li>
+///                 wildcard (*)
+///             </li>
 ///         </ul>
 ///     </para>
 ///     <para>
@@ -41,9 +44,13 @@ namespace Cel.Interpreter;
 ///         <ol>
 ///             <li>
 ///                 ns.myvar["complex-value"]
-///                 <li>
-///                     ns.myvar["complex-value"][0]
-///                     <li>ns.myvar["complex-value"].*.name
+///             </li>
+///             <li>
+///                 ns.myvar["complex-value"][0]
+///             </li>
+///             <li>
+///                 ns.myvar["complex-value"].*.name
+///             </li>
 ///         </ol>
 ///     </para>
 ///     <para>
@@ -292,11 +299,16 @@ public sealed class AttributePattern
         ///         <ul>
         ///             <li>
         ///                 `AttributePattern("a")`
-        ///                 <li>
-        ///                     `AttributePattern("a").Wildcard()`
-        ///                     <li>
-        ///                         `AttributePattern("a").QualString("b")`
-        ///                         <li>`AttributePattern("a").QualString("b").QualInt(0)`
+        ///             </li>
+        ///             <li>
+        ///                 `AttributePattern("a").Wildcard()`
+        ///             </li>
+        ///             <li>
+        ///                 `AttributePattern("a").QualString("b")`
+        ///             </li>
+        ///             <li>
+        ///                 `AttributePattern("a").QualString("b").QualInt(0)`
+        ///             </li>
         ///         </ul>
         ///     </para>
         ///     <para>

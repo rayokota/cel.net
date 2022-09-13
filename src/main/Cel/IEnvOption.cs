@@ -200,11 +200,16 @@ public interface IEnvOption
     ///         <ul>
     ///             <li>
     ///                 Qualified names must be dot-delimited, e.g. `package.subpkg.name`.
-    ///                 <li>
-    ///                     The last element in the qualified name is the abbreviation.
-    ///                     <li>
-    ///                         Abbreviations must not collide with each other.
-    ///                         <li>The abbreviation must not collide with unqualified names in use.
+    ///             </li>
+    ///             <li>
+    ///                 The last element in the qualified name is the abbreviation.
+    ///             </li>
+    ///             <li>
+    ///                 Abbreviations must not collide with each other.
+    ///             </li>
+    ///             <li>
+    ///                 The abbreviation must not collide with unqualified names in use.
+    ///             </li>
     ///         </ul>
     ///     </para>
     ///     <para>
@@ -212,16 +217,21 @@ public interface IEnvOption
     ///         <ul>
     ///             <li>
     ///                 Abbreviations must expand to a fully-qualified name.
-    ///                 <li>
-    ///                     Expanded abbreviations do not participate in namespace resolution.
-    ///                     <li>
-    ///                         Abbreviation expansion is done instead of the container search for a matching identifier.
-    ///                         <li>
-    ///                             Containers follow C++ namespace resolution rules with searches from the most qualified
-    ///                             name to the least qualified name.
-    ///                             <li>
-    ///                                 Container references within the CEL program may be relative, and are resolved to fully
-    ///                                 qualified names at either type-check time or program plan time, whichever comes first.
+    ///             </li>
+    ///             <li>
+    ///                 Expanded abbreviations do not participate in namespace resolution.
+    ///             </li>
+    ///             <li>
+    ///                 Abbreviation expansion is done instead of the container search for a matching identifier.
+    ///             </li>
+    ///             <li>
+    ///                 Containers follow C++ namespace resolution rules with searches from the most qualified
+    ///                 name to the least qualified name.
+    ///             </li>
+    ///             <li>
+    ///                 Container references within the CEL program may be relative, and are resolved to fully
+    ///                 qualified names at either type-check time or program plan time, whichever comes first.
+    ///             </li>
     ///         </ul>
     ///     </para>
     ///     <para>

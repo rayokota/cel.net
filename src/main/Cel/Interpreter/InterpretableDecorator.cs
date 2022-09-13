@@ -99,7 +99,10 @@ public interface IInterpretableDecorator
     ///     <ul>
     ///         <li>
     ///             build list and map values with constant elements.
-    ///             <li>convert 'in' operations to set membership tests if possible.
+    ///         </li>
+    ///         <li>
+    ///             convert 'in' operations to set membership tests if possible.
+    ///         </li>
     ///     </ul>
     /// </summary>
     static InterpretableDecorator DecOptimize()
@@ -161,7 +164,10 @@ public interface IInterpretableDecorator
     ///     <ul>
     ///         <li>
     ///             the list is a constant with homogeneous element types.
-    ///             <li>the elements are all of primitive type.
+    ///         </li>
+    ///         <li>
+    ///             the elements are all of primitive type.
+    ///         </li>
     ///     </ul>
     /// </summary>
     static IInterpretable MaybeOptimizeSetMembership(IInterpretable i, IInterpretableCall inlist)

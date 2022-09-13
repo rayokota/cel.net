@@ -636,31 +636,33 @@ public sealed class MaybeAttribute : ICoster, IAttribute
     ///             <li>
     ///                 Create a maybe attribute from a simple identifier when it occurs in a parsed-only
     ///                 expression
-    ///                 <br>
-    ///                     <br>
-    ///                         {@code mb = MaybeAttribute(&lt;id&gt;, "a")}
-    ///                         <br>
-    ///                             <br>
-    ///                                 Initializing the maybe attribute creates an absolute attribute internally which
-    ///                                 includes the possible namespaced names of the attribute. In this example, let's assume
-    ///                                 we are in namespace 'ns', then the maybe is either one of the following variable names:
-    ///                                 <br>
-    ///                                     <br>
-    ///                                         possible variables names -- ns.a, a
-    ///                                         <li>
-    ///                                             Adding a qualifier to the maybe means that the variable name could be a
-    ///                                             longer
-    ///                                             qualified name, or a field selection on one of the possible variable names
-    ///                                             produced
-    ///                                             earlier:
-    ///                                             <br>
-    ///                                                 <br>
-    ///                                                     {@code mb.AddQualifier("b")}
-    ///                                                     <br>
-    ///                                                         <br>
-    ///                                                             possible variables names -- ns.a.b, a.b
-    ///                                                             <br>
-    ///                                                                 possible field selection -- ns.a['b'], a['b']
+    ///                 <br/>
+    ///                 <br/>
+    ///                 {@code mb = MaybeAttribute(&lt;id&gt;, "a")}
+    ///                 <br/>
+    ///                 <br/>
+    ///                 Initializing the maybe attribute creates an absolute attribute internally which
+    ///                 includes the possible namespaced names of the attribute. In this example, let's assume
+    ///                 we are in namespace 'ns', then the maybe is either one of the following variable names:
+    ///                 <br/>
+    ///                 <br/>
+    ///                 possible variables names -- ns.a, a
+    ///             </li>
+    ///             <li>
+    ///                 Adding a qualifier to the maybe means that the variable name could be a
+    ///                 longer
+    ///                 qualified name, or a field selection on one of the possible variable names
+    ///                 produced
+    ///                 earlier:
+    ///                 <br/>
+    ///                 <br/>
+    ///                 {@code mb.AddQualifier("b")}
+    ///                 <br/>
+    ///                 <br/>
+    ///                 possible variables names -- ns.a.b, a.b
+    ///                 <br/>
+    ///                 possible field selection -- ns.a['b'], a['b']
+    ///             </li>
     ///         </ol>
     ///         If none of the attributes within the maybe resolves a value, the result is an error.
     ///     </para>

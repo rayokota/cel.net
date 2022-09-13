@@ -183,9 +183,13 @@ public sealed class Planner : IInterpretablePlanner
     ///     <ol>
     ///         <li>
     ///             selects a field from a map or proto.
-    ///             <li>
-    ///                 creates a field presence test for a select within a has() macro.
-    ///                 <li>resolves the select expression to a namespaced identifier.
+    ///         </li>
+    ///         <li>
+    ///             creates a field presence test for a select within a has() macro.
+    ///         </li>
+    ///         <li>
+    ///             resolves the select expression to a namespaced identifier.
+    ///         </li>
     ///     </ol>
     /// </summary>
     internal IInterpretable? PlanSelect(Expr expr)
@@ -649,9 +653,13 @@ public sealed class Planner : IInterpretablePlanner
     ///         <ul>
     ///             <li>
     ///                 The target expression may only consist of ident and select expressions.
-    ///                 <li>
-    ///                     The function is declared in the environment using its fully-qualified name.
-    ///                     <li>The fully-qualified function name matches the string serialized target value.
+    ///             </li>
+    ///             <li>
+    ///                 The function is declared in the environment using its fully-qualified name.
+    ///             </li>
+    ///             <li>
+    ///                 The fully-qualified function name matches the string serialized target value.
+    ///             </li>
     ///         </ul>
     ///     </para>
     /// </summary>

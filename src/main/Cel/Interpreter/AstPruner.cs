@@ -37,29 +37,42 @@ namespace Cel.Interpreter;
 ///                 <ol>
 ///                     <li>
 ///                         Evaluate expr with some unknowns,
-///                         <li>
+///                     </li>
+///                     <li>
 ///                             If result is unknown:
-///                             <ol>
-///                                 <li>
-///                                     PruneAst
-///                                     <li>Goto 1
-///                             </ol>
-///                             Functional call results which are known would be effectively cached across
-///                             iterations.
+///                          <ol>
+///                              <li>
+///                                  PruneAst
+///                              </li>
+///                              <li>
+///                                  Goto 1
+///                              </li>
+///                          </ol>
+///                          Functional call results which are known would be effectively cached across
+///                          iterations.
+///                     </li>
 ///                 </ol>
-///                 <li>
-///                     <ol>
-///                         <li>
-///                             Compile the expression (maybe via a service and maybe after checking a compiled
-///                             expression does not exists in local cache)
-///                             <li>
-///                                 Prepare the environment and the interpreter. Activation might be empty.
-///                                 <li>
-///                                     Eval the expression. This might return unknown or error or a concrete value.
-///                                     <li>
-///                                         PruneAst
-///                                         <li>Maybe cache the expression
-///                     </ol>
+///             </li>
+///             <li>
+///                 <ol>
+///                     <li>
+///                          Compile the expression (maybe via a service and maybe after checking a compiled
+///                          expression does not exists in local cache)
+///                     </li>
+///                     <li>
+///                          Prepare the environment and the interpreter. Activation might be empty.
+///                     </li>
+///                     <li>
+///                          Eval the expression. This might return unknown or error or a concrete value.
+///                     </li>
+///                     <li>
+///                          PruneAst
+///                     </li>
+///                     <li>
+///                          Maybe cache the expression
+///                     </li>
+///                 </ol>
+///             </li>
 ///         </ol>
 ///     </para>
 ///     <para>

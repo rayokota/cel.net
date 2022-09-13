@@ -23,9 +23,9 @@ using Type = Google.Api.Expr.V1Alpha1.Type;
 namespace Cel.extension;
 
 /// <summary>
-///     StringsLib provides a <seealso cref="Cel.EnvOption" /> to configure extended functions for
+///     StringsLib provides a <seealso cref="IEnvOption" /> to configure extended functions for
 ///     string manipulation. As a general note, all indices are zero-based. The implementation is ported
-///     from <a href= https:// github.com/ google/ cel-go/ blob/ master/ ext/ strings.go>cel-go</a>.
+///     from <a href= "https://github.com/google/cel-go/blob/master/ext/strings.go">cel-go</a>.
 ///     <para>
 ///         Note: Currently the overloading isn't supported.
 ///         <h3>CharAt</h3>
@@ -33,7 +33,7 @@ namespace Cel.extension;
 ///     <para>
 ///         Returns the character at the given position. If the position is negative, or greater than the
 ///         length of the string, the function will produce an error:
-///         <pre>    {@code <string>.charAt(<int>) -> <string>}</pre>
+///         <pre>    {@code &lt;string&gt;.charAt(&lt;int&gt;) -> &lt;string&gt;}</pre>
 ///         <h4>Examples:</h4>
 ///         <pre>    {@code 'hello'.charAt(4)  // return 'o'}</pre>
 ///         <pre>    {@code 'hello'.charAt(5)  // return ''}</pre>
@@ -48,8 +48,8 @@ namespace Cel.extension;
 ///         The function also accepts an optional position from which to begin the substring search. If
 ///         the substring is the empty string, the index where the search starts is returned (zero or
 ///         custom).
-///         <pre>    {@code <string>.indexOf(<string>) -> <int>}</pre>
-///         <pre>    {@code <string>.indexOf(<string>, <int>) -> <int>}</pre>
+///         <pre>    {@code &lt;string&gt;.indexOf(&lt;string&gt;) -> &lt;int&gt;}</pre>
+///         <pre>    {@code &lt;string&gt;.indexOf(&lt;string&gt;, &lt;int&gt;) -> &lt;int&gt;}</pre>
 ///         <h4>Examples:</h4>
 ///         <pre>    {@code 'hello mellow'.indexOf('')         // returns 0}</pre>
 ///         <pre>    {@code 'hello mellow'.indexOf('ello')     // returns 1}</pre>
@@ -65,8 +65,8 @@ namespace Cel.extension;
 ///     <para>
 ///         The function also accepts an optional separator which is placed between elements in the
 ///         resulting string.
-///         <pre>    {@code <list<string>>.join() -> <string>}</pre>
-///         <pre>    {@code <list<string>>.join(<string>) -> <string>}</pre>
+///         <pre>    {@code &lt;list&lt;string&gt;&gt;.join() -> &lt;string&gt;}</pre>
+///         <pre>    {@code &lt;list&lt;string&gt;&gt;.join(&lt;string&gt;) -> &lt;string&gt;}</pre>
 ///         <h4>Examples:</h4>
 ///         <pre>    {@code ['hello', 'mellow'].join()    // returns 'hellomellow'}</pre>
 ///         <pre>    {@code ['hello', 'mellow'].join(' ') // returns 'hello mellow'}</pre>
@@ -82,22 +82,22 @@ namespace Cel.extension;
 ///         The function also accepts an optional position which represents the last index to be
 ///         considered as the beginning of the substring match. If the substring is the empty string, the
 ///         index where the search starts is returned (string length or custom).
-///         <pre>    {@code <string>.lastIndexOf(<string>) -> <int>}</pre>
-///         <pre>    {@code <string>.lastIndexOf(<string>, <int>) -> <int>}</pre>
+///         <pre>    {@code &lt;string&gt;.lastIndexOf(&lt;string&gt;) -> &lt;int&gt;}</pre>
+///         <pre>    {@code &lt;string&gt;.lastIndexOf(&lt;string&gt;, &lt;int&gt;) -> &lt;int&gt;}</pre>
 ///         <h4>Examples:</h4>
 ///         <pre>    {@code 'hello mellow'.lastIndexOf('')         // returns 12}</pre>
 ///         <pre>    {@code 'hello mellow'.lastIndexOf('ello')     // returns 7}</pre>
 ///         <pre>    {@code 'hello mellow'.lastIndexOf('jello')    // returns -1}</pre>
 ///         <pre>    {@code 'hello mellow'.lastIndexOf('ello', 6)  // returns 1}</pre>
 ///         <pre>    {@code 'hello mellow'.lastIndexOf('ello', -1) // error}</pre>
-///         <h3>LowerAscii</h4>
+///         <h4>LowerAscii</h4>
 ///     </para>
 ///     <para>
 ///         Returns a new string where all ASCII characters are lower-cased.
 ///     </para>
 ///     <para>
 ///         This function does not perform Unicode case-mapping for characters outside the ASCII range.
-///         <pre>    {@code <string>.lowerAscii() -> <string>}</pre>
+///         <pre>    {@code &lt;string&gt;.lowerAscii() -> &lt;string&gt;}</pre>
 ///         <h4>Examples:</h4>
 ///         <pre>    {@code 'TacoCat'.lowerAscii()     // returns 'tacocat'}</pre>
 ///         <pre>    {@code 'TacoCÆt Xii'.lowerAscii() // returns 'tacocÆt xii'}</pre>
@@ -111,8 +111,8 @@ namespace Cel.extension;
 ///     <para>
 ///         When the replacement limit is 0, the result is the original string. When the limit is a
 ///         negative number, the function behaves the same as replace all.
-///         <pre>    {@code <string>.replace(<string>, <string>) -> <string>}</pre>
-///         <pre>    {@code <string>.replace(<string>, <string>, <int>) -> <string>}</pre>
+///         <pre>    {@code &lt;string&gt;.replace(&lt;string&gt;, &lt;string&gt;) -> &lt;string&gt;}</pre>
+///         <pre>    {@code &lt;string&gt;.replace(&lt;string&gt;, &lt;string&gt;, &lt;int&gt;) -> &lt;string&gt;}</pre>
 ///         <h4>Examples:</h4>
 ///         <pre>    {@code 'hello hello'.replace('he', 'we')     // returns 'wello wello'}</pre>
 ///         <pre>    {@code 'hello hello'.replace('he', 'we', -1) // returns 'wello wello'}</pre>
@@ -128,8 +128,8 @@ namespace Cel.extension;
 ///         When the split limit is 0, the result is an empty list. When the limit is 1, the result is the
 ///         target string to split. When the limit is a negative number, the function behaves the same as
 ///         split all.
-///         <pre>    {@code <string>.split(<string>) -> <list<string>>}</pre>
-///         <pre>    {@code <string>.split(<string>, <int>) -> <list<string>>}</pre>
+///         <pre>    {@code &lt;string&gt;.split(&lt;string&gt;) -> &lt;list&lt;string&gt;&gt;}</pre>
+///         <pre>    {@code &lt;string&gt;.split(&lt;string&gt;, &lt;int&gt;) -> &lt;list&lt;string&gt;&gt;}</pre>
 ///         <h4>Examples:</h4>
 ///         <pre>    {@code 'hello hello hello'.split(' ')     // returns ['hello', 'hello', 'hello']}</pre>
 ///         <pre>    {@code 'hello hello hello'.split(' ', 0)  // returns []}</pre>
@@ -147,8 +147,8 @@ namespace Cel.extension;
 ///         Character offsets are 0-based with an inclusive start range. It is an error to specify an end
 ///         range that is lower than the start range, or for either the start or end index to be negative or
 ///         exceed the string length.
-///         <pre>    {@code <string>.substring(<int>) -> <string>}</pre>
-///         <pre>    {@code <string>.substring(<int>,<int>)-><string>}</pre>
+///         <pre>    {@code &lt;string&gt;.substring(&lt;int&gt;) -> &lt;string&gt;}</pre>
+///         <pre>    {@code &lt;string&gt;.substring(&lt;int&gt;,&lt;int&gt;)->&lt;string&gt;}</pre>
 ///         <h4>Examples:</h4>
 ///         <pre>    {@code 'tacocat'.substring(4)    // returns 'cat'}</pre>
 ///         <pre>    {@code 'tacocat'.substring(-1)   // error}</pre>
@@ -160,7 +160,7 @@ namespace Cel.extension;
 ///         Returns a new string which removes the leading and trailing whitespace in the target string.
 ///         The trim function uses the Unicode definition of whitespace which does not include the zero-width
 ///         spaces. See: <a href="https://en.wikipedia.org/wiki/Whitespace_character#Unicode">Unicode</a>
-///         <pre>    {@code <string>.trim() -> <string>}</pre>
+///         <pre>    {@code &lt;string&gt;.trim() -> &lt;string&gt;}</pre>
 ///         <h4>Examples:</h4>
 ///         <pre>    {@code ' \ttrim\n '.trim() // returns 'trim'}</pre>
 ///         <h3>UpperAscii</h3>
@@ -170,7 +170,7 @@ namespace Cel.extension;
 ///     </para>
 ///     <para>
 ///         This function does not perform Unicode case-mapping for characters outside the ASCII range.
-///         <pre>    {@code <string>.upperAscii() -> <string>}</pre>
+///         <pre>    {@code &lt;string&gt;.upperAscii() -> &lt;string&gt;}</pre>
 ///         <h4>Examples:</h4>
 ///         <pre>    {@code 'TacoCat'.upperAscii()     // returns 'TACOCAT'}</pre>
 ///         <pre>    {@code 'TacoCÆt Xii'.upperAscii() // returns 'TACOCÆT XII'}</pre>
@@ -373,7 +373,7 @@ public class StringsLib : ILibrary
     ///         if {@code n == 0}, there is no change to the string
     ///     </para>
     ///     <para>
-    ///         if {@code n < 0}, there is no limit on the number of replacement
+    ///         if {@code n &lt; 0}, there is no limit on the number of replacement
     ///     </para>
     ///     <para>
     ///         if {old} is empty, it matches at the beginning of the string and after each UTF-8 sequence,
@@ -428,13 +428,13 @@ public class StringsLib : ILibrary
     ///     SplitN slices s into substrings separated by sep and returns an array of the substrings between
     ///     those separators. The count determines the number of substrings to return:
     ///     <para>
-    ///         If {@code n > 0}, at most n substrings; the last substring will be the unsplit remainder.
+    ///         If {@code n &gt; 0}, at most n substrings; the last substring will be the unsplit remainder.
     ///     </para>
     ///     <para>
     ///         If {@code n == 0}, the result is empty array
     ///     </para>
     ///     <para>
-    ///         If {@code n < 0}, all substrings
+    ///         If {@code n &lt; 0}, all substrings
     ///     </para>
     ///     <para>
     ///         If sep is empty, splits after each UTF-8 sequence.
@@ -472,7 +472,7 @@ public class StringsLib : ILibrary
 
     /// <summary>
     ///     explode splits s into an array of UTF-8 strings, one string per Unicode character up to a
-    ///     maximum of n (n < 0 means no limit).
+    ///     maximum of n (n &lt; 0 means no limit).
     ///     <para>
     ///         ported from
     ///         <a href="https://github.com/golang/go/blob/master/src/strings/strings.go">
@@ -539,11 +539,6 @@ public class StringsLib : ILibrary
     ///         href="https://en.wikipedia.org/wiki/Whitespace_character#Unicode">
     ///         Unicode
     ///     </a>
-    ///     <para>
-    ///         Java functions like <seealso cref="java.lang.Character.isWhitespace(char)" /> or {@link
-    ///         java.lang.Character#isWhitespace(int)} use different whitespace definition hence they can't be
-    ///         used here.
-    ///     </para>
     /// </summary>
     /// <param name="ch"> the character to be tested </param>
     /// <returns> true if the character is a Unicode whitespace character; false otherwise. </returns>

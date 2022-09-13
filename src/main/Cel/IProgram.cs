@@ -39,9 +39,13 @@ public interface IProgram
     ///         <ul>
     ///             <li>
     ///                 `val`, `details`, `nil` - Successful evaluation of a non-error result.
-    ///                 <li>
-    ///                     `val`, `details`, `err` - Successful evaluation to an error result.
-    ///                     <li>`nil`, `details`, `err` - Unsuccessful evaluation.
+    ///             </li>
+    ///             <li>
+    ///                 `val`, `details`, `err` - Successful evaluation to an error result.
+    ///             </li>
+    ///             <li>
+    ///                 `nil`, `details`, `err` - Unsuccessful evaluation.
+    ///             </li>
     ///         </ul>
     ///     </para>
     ///     <para>
