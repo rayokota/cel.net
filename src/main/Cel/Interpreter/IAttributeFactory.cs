@@ -636,16 +636,16 @@ public sealed class MaybeAttribute : ICoster, IAttribute
     ///             <li>
     ///                 Create a maybe attribute from a simple identifier when it occurs in a parsed-only
     ///                 expression
-    ///                 <br/>
-    ///                 <br/>
+    ///                 <br />
+    ///                 <br />
     ///                 {@code mb = MaybeAttribute(&lt;id&gt;, "a")}
-    ///                 <br/>
-    ///                 <br/>
+    ///                 <br />
+    ///                 <br />
     ///                 Initializing the maybe attribute creates an absolute attribute internally which
     ///                 includes the possible namespaced names of the attribute. In this example, let's assume
     ///                 we are in namespace 'ns', then the maybe is either one of the following variable names:
-    ///                 <br/>
-    ///                 <br/>
+    ///                 <br />
+    ///                 <br />
     ///                 possible variables names -- ns.a, a
     ///             </li>
     ///             <li>
@@ -654,13 +654,13 @@ public sealed class MaybeAttribute : ICoster, IAttribute
     ///                 qualified name, or a field selection on one of the possible variable names
     ///                 produced
     ///                 earlier:
-    ///                 <br/>
-    ///                 <br/>
+    ///                 <br />
+    ///                 <br />
     ///                 {@code mb.AddQualifier("b")}
-    ///                 <br/>
-    ///                 <br/>
+    ///                 <br />
+    ///                 <br />
     ///                 possible variables names -- ns.a.b, a.b
-    ///                 <br/>
+    ///                 <br />
     ///                 possible field selection -- ns.a['b'], a['b']
     ///             </li>
     ///         </ol>

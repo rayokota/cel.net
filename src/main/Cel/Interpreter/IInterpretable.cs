@@ -79,7 +79,6 @@ public interface IInterpretable
         var r = Cost.EstimateCost(rhs);
         return Cost.OneOne.Add(l).Add(r);
     }
-
 }
 
 /// <summary>
@@ -1529,8 +1528,8 @@ public sealed class EvalExhaustiveAnd : AbstractEvalLhsRhs
 }
 
 /// <summary>
-/// evalExhaustiveConditional is like evalConditional, but does not short-circuit argument
-/// evaluation.
+///     evalExhaustiveConditional is like evalConditional, but does not short-circuit argument
+///     evaluation.
 /// </summary>
 public sealed class EvalExhaustiveConditional : AbstractEval, ICoster
 {

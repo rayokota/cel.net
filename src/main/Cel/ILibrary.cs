@@ -69,12 +69,11 @@ public interface ILibrary
     {
         return Lib(new StdLibrary());
     }
-
 }
 
 /// <summary>
-    /// stdLibrary implements the Library interface and provides functional options for the core CEL
-    /// features documented in the specification.
+///     stdLibrary implements the Library interface and provides functional options for the core CEL
+///     features documented in the specification.
 /// </summary>
 public sealed class StdLibrary : ILibrary
 {

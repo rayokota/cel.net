@@ -39,37 +39,37 @@ namespace Cel.Interpreter;
 ///                         Evaluate expr with some unknowns,
 ///                     </li>
 ///                     <li>
-///                             If result is unknown:
-///                          <ol>
-///                              <li>
-///                                  PruneAst
-///                              </li>
-///                              <li>
-///                                  Goto 1
-///                              </li>
-///                          </ol>
-///                          Functional call results which are known would be effectively cached across
-///                          iterations.
+///                         If result is unknown:
+///                         <ol>
+///                             <li>
+///                                 PruneAst
+///                             </li>
+///                             <li>
+///                                 Goto 1
+///                             </li>
+///                         </ol>
+///                         Functional call results which are known would be effectively cached across
+///                         iterations.
 ///                     </li>
 ///                 </ol>
 ///             </li>
 ///             <li>
 ///                 <ol>
 ///                     <li>
-///                          Compile the expression (maybe via a service and maybe after checking a compiled
-///                          expression does not exists in local cache)
+///                         Compile the expression (maybe via a service and maybe after checking a compiled
+///                         expression does not exists in local cache)
 ///                     </li>
 ///                     <li>
-///                          Prepare the environment and the interpreter. Activation might be empty.
+///                         Prepare the environment and the interpreter. Activation might be empty.
 ///                     </li>
 ///                     <li>
-///                          Eval the expression. This might return unknown or error or a concrete value.
+///                         Eval the expression. This might return unknown or error or a concrete value.
 ///                     </li>
 ///                     <li>
-///                          PruneAst
+///                         PruneAst
 ///                     </li>
 ///                     <li>
-///                          Maybe cache the expression
+///                         Maybe cache the expression
 ///                     </li>
 ///                 </ol>
 ///             </li>

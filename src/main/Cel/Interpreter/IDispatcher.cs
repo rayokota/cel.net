@@ -54,7 +54,6 @@ public interface IDispatcher
     {
         return new DefaultDispatcher(parent, new Dictionary<string, Overload>());
     }
-
 }
 
 /// <summary>

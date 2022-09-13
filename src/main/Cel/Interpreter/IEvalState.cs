@@ -52,7 +52,6 @@ public interface IEvalState
     {
         return new EvalStateImpl();
     }
-
 }
 
 /// <summary>

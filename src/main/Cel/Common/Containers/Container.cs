@@ -113,17 +113,17 @@ public sealed class Container
     ///     </para>
     ///     <para>
     ///         {@code a.b.c.M.N.R.s}
-    ///         <br/>
+    ///         <br />
     ///         {@code a.b.c.M.R.s}
-    ///         <br/>
+    ///         <br />
     ///         {@code a.b.c.R.s}
-    ///         <br/>
+    ///         <br />
     ///         {@code a.b.R.s}
-    ///         <br/>
+    ///         <br />
     ///         {@code a.R.s}
-    ///         <br/>
+    ///         <br />
     ///         {@code R.s}
-    ///         <br/>
+    ///         <br />
     ///     </para>
     ///     <para>
     ///         If aliases or abbreviations are configured for the container, then alias names will take

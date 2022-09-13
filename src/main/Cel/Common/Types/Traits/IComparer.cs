@@ -28,9 +28,9 @@ public interface IComparer
     ///     Compare this value to the input other value, returning an Int:
     ///     <para>
     ///         {@code this &lt; other -&gt; Int(-1)
-    ///         <br/>
+    ///         <br />
     ///         this == other -&gt; Int(0)
-    ///         <br/>
+    ///         <br />
     ///         this &gt; other
     ///         -&gt; Int(1) }
     ///     </para>

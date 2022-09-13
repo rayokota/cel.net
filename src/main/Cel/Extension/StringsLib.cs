@@ -25,7 +25,7 @@ namespace Cel.extension;
 /// <summary>
 ///     StringsLib provides a <seealso cref="IEnvOption" /> to configure extended functions for
 ///     string manipulation. As a general note, all indices are zero-based. The implementation is ported
-///     from <a href= "https://github.com/google/cel-go/blob/master/ext/strings.go">cel-go</a>.
+///     from <a href="https://github.com/google/cel-go/blob/master/ext/strings.go">cel-go</a>.
 ///     <para>
 ///         Note: Currently the overloading isn't supported.
 ///         <h3>CharAt</h3>

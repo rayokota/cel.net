@@ -59,11 +59,10 @@ public interface IInterpretablePlanner
         return new Planner(disp, provider, adapter, attrFactory, cont,
             new Dictionary<long, Reference>(), new Dictionary<long, Type>(), decorators);
     }
-
 }
 
 /// <summary>
-    /// planner is an implementatio of the interpretablePlanner interface.
+///     planner is an implementatio of the interpretablePlanner interface.
 /// </summary>
 public sealed class Planner : IInterpretablePlanner
 {
