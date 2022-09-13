@@ -437,7 +437,7 @@ public sealed class TimestampT : BaseVal, IAdder, IComparer, IReceiver, ISubtrac
     }
 
     /// <summary>
-    ///     Parses a string to a valid <seealso cref="ZoneId" />.
+    ///     Parses a string to a valid <seealso cref="DateTimeZone" />.
     ///     <para>
     ///         The input can be a
     ///         <ul>
@@ -447,7 +447,7 @@ public sealed class TimestampT : BaseVal, IAdder, IComparer, IReceiver, ISubtrac
     ///                 ZoneOffset.of(String)}, or a
     ///             </li>
     ///             <li>
-    ///                 zone ID, as returned by <seealso cref="ZoneId.of(String) ZoneId.of(String)" />, or a
+    ///                 zone ID, or a
     ///             </li>
     ///             <li>
     ///                 time zone, as returned by {@link TimeZone#getTimeZone(String)

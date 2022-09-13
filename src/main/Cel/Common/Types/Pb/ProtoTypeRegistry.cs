@@ -244,7 +244,7 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
     /// <summary>
     ///     Converts {@code value}, of the map-field {@code fieldDesc} from its Java
     ///     <seealso cref="System.Collections.IDictionary" />
-    ///     representation to the protobuf-y {@code <seealso cref="System.Collections.IList" /><<seealso cref="MapEntry" />>}
+    ///     representation to the protobuf-y {@code <seealso cref="System.Collections.IList" />}
     ///     representation.
     /// </summary>
     private object ToProtoMapStructure(FieldDescriptor fieldDesc, object value)
@@ -283,8 +283,8 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
     }
 
     /// <summary>
-    ///     Converts a value of type <seealso cref="Number" /> to <seealso cref="EnumValueDescriptor" />, also works for arrays
-    ///     and <seealso cref="System.Collections.IList" />s containing <seealso cref="Number" />s.
+    ///     Converts a value of type <seealso cref="int" /> to <seealso cref="EnumValueDescriptor" />, also works for arrays
+    ///     and <seealso cref="System.Collections.IList" />s containing <seealso cref="int" />s.
     /// </summary>
     private object IntToProtoEnumValues(FieldDescription field, object value)
     {

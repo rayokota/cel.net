@@ -47,10 +47,11 @@ public sealed class Checker
         this.sourceInfo = sourceInfo;
     }
 
-    /// Check performs type checking, giving a typed AST. The input is a ParsedExpr proto and an env
-    /// which encapsulates type binding of variables, declarations of built-in functions, descriptions
-    /// of protocol buffers, and a registry for errors. Returns a CheckedExpr proto, which might not be
-    /// usable if there are errors in the error registry.
+    /// <summary>
+    ///     Check performs type checking, giving a typed AST. The input is a ParsedExpr proto and an env
+    ///     which encapsulates type binding of variables, declarations of built-in functions, descriptions
+    ///     of protocol buffers, and a registry for errors. Returns a CheckedExpr proto, which might not be
+    ///     usable if there are errors in the error registry.
     /// </summary>
     public static CheckResult Check(Parser.Parser.ParseResult parsedExpr, ISource source, CheckerEnv env)
     {

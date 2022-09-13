@@ -24,7 +24,7 @@ namespace Cel.Tools;
 ///     Manages <seealso cref="Script" /> instances, works like a factory to generate reusable scripts.
 ///     <para>
 ///         The current implementation is rather dumb, but it might be extended in the future to cache
-///         <seealso cref="Script" /> instances returned by <seealso cref="getOrCreateScript(String, List, List)" />.
+///         <seealso cref="Script" /> instances returned by <seealso cref="GetOrCreateScript" />.
 ///     </para>
 /// </summary>
 public sealed class ScriptHost
@@ -39,7 +39,7 @@ public sealed class ScriptHost
     }
 
     /// <summary>
-    ///     Use <seealso cref="buildScript(String)" />.
+    ///     Use <seealso cref="BuildScript(String)" />.
     /// </summary>
     [Obsolete]
     public Script GetOrCreateScript(string sourceText, IList<Decl> declarations, IList<object> types)
