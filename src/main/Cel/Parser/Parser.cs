@@ -361,10 +361,10 @@ public sealed class Parser
             var result = ExprVisit(ctx.e);
             if (ctx.op == null) return result;
 
-            var opID = helper.Id(ctx.op);
+            var opId = helper.Id(ctx.op);
             var ifTrue = ExprVisit(ctx.e1);
             var ifFalse = ExprVisit(ctx.e2);
-            return globalCallOrMacro(opID, Operator.Conditional.Id, result, ifTrue, ifFalse);
+            return globalCallOrMacro(opId, Operator.Conditional.Id, result, ifTrue, ifFalse);
         }
 
         internal Expr VisitConditionalAnd(CELParser.ConditionalAndContext ctx)
@@ -380,8 +380,8 @@ public sealed class Parser
                 if (i >= rest.Count) return ReportError(ctx, "unexpected character, wanted '&&'");
 
                 var next = ExprVisit(rest[i]);
-                var opID = helper.Id(op);
-                b.AddTerm(opID, next);
+                var opId = helper.Id(op);
+                b.AddTerm(opId, next);
             }
 
             return b.balance();
@@ -400,8 +400,8 @@ public sealed class Parser
                 if (i >= rest.Count) return ReportError(ctx, "unexpected character, wanted '||'");
 
                 var next = ExprVisit(rest[i]);
-                var opID = helper.Id(op);
-                b.AddTerm(opID, next);
+                var opId = helper.Id(op);
+                b.AddTerm(opId, next);
             }
 
             return b.balance();
@@ -418,9 +418,9 @@ public sealed class Parser
             if (op != null)
             {
                 var lhs = ExprVisit(ctx.relation(0));
-                var opID = helper.Id(ctx.op);
+                var opId = helper.Id(ctx.op);
                 var rhs = ExprVisit(ctx.relation(1));
-                return globalCallOrMacro(opID, op.Id, lhs, rhs);
+                return globalCallOrMacro(opId, op.Id, lhs, rhs);
             }
 
             return ReportError(ctx, "operator not found");
@@ -437,9 +437,9 @@ public sealed class Parser
             if (op != null)
             {
                 var lhs = ExprVisit(ctx.calc(0));
-                var opID = helper.Id(ctx.op);
+                var opId = helper.Id(ctx.op);
                 var rhs = ExprVisit(ctx.calc(1));
-                return globalCallOrMacro(opID, op.Id, lhs, rhs);
+                return globalCallOrMacro(opId, op.Id, lhs, rhs);
             }
 
             return ReportError(ctx, "operator not found");
@@ -449,9 +449,9 @@ public sealed class Parser
         {
             if (ctx._ops.Count % 2 == 0) return ExprVisit(ctx.member());
 
-            var opID = helper.Id(ctx._ops[0]);
+            var opId = helper.Id(ctx._ops[0]);
             var target = ExprVisit(ctx.member());
-            return globalCallOrMacro(opID, Operator.LogicalNot.Id, target);
+            return globalCallOrMacro(opId, Operator.LogicalNot.Id, target);
         }
 
         internal Expr VisitMemberExpr(CELParser.MemberExprContext ctx)
@@ -660,9 +660,9 @@ public sealed class Parser
                     // This is the result of a syntax error detected elsewhere.
                     return new List<Expr.Types.CreateStruct.Types.Entry>();
 
-                var initID = helper.Id(cols[i]);
+                var initId = helper.Id(cols[i]);
                 var value = ExprVisit(vals[i]);
-                var field = helper.NewObjectField(initID, f.Text, value);
+                var field = helper.NewObjectField(initId, f.Text, value);
                 result.Add(field);
             }
 
@@ -684,8 +684,8 @@ public sealed class Parser
             identName += id;
             if (ctx.op != null)
             {
-                var opID = helper.Id(ctx.op);
-                return globalCallOrMacro(opID, identName, VisitList(ctx.args));
+                var opId = helper.Id(ctx.op);
+                return globalCallOrMacro(opId, identName, VisitList(ctx.args));
             }
 
             return helper.NewIdent(ctx.id, identName);
@@ -705,8 +705,8 @@ public sealed class Parser
             var id = ctx.id.Text;
             if (ctx.open != null)
             {
-                var opID = helper.Id(ctx.open);
-                return receiverCallOrMacro(opID, id, operand, VisitList(ctx.args));
+                var opId = helper.Id(ctx.open);
+                return receiverCallOrMacro(opId, id, operand, VisitList(ctx.args));
             }
 
             return helper.NewSelect(ctx.op, operand, id);
@@ -726,14 +726,14 @@ public sealed class Parser
             for (var i = 0; i < ctx._cols.Count; i++)
             {
                 var col = ctx._cols[i];
-                var colID = helper.Id(col);
+                var colId = helper.Id(col);
                 if (i >= keys.Count || i >= vals.Count)
                     // This is the result of a syntax error detected elsewhere.
                     return new List<Expr.Types.CreateStruct.Types.Entry>();
 
                 var key = ExprVisit(keys[i]);
                 var value = ExprVisit(vals[i]);
-                var entry = helper.NewMapEntry(colID, key, value);
+                var entry = helper.NewMapEntry(colId, key, value);
                 result.Add(entry);
             }
 
@@ -744,17 +744,17 @@ public sealed class Parser
         {
             if (ctx._ops.Count % 2 == 0) return ExprVisit(ctx.member());
 
-            var opID = helper.Id(ctx._ops[0]);
+            var opId = helper.Id(ctx._ops[0]);
             var target = ExprVisit(ctx.member());
-            return globalCallOrMacro(opID, Operator.Negate.Id, target);
+            return globalCallOrMacro(opId, Operator.Negate.Id, target);
         }
 
         internal Expr VisitIndex(CELParser.IndexContext ctx)
         {
             var target = ExprVisit(ctx.member());
-            var opID = helper.Id(ctx.op);
+            var opId = helper.Id(ctx.op);
             var index = ExprVisit(ctx.index);
-            return globalCallOrMacro(opID, Operator.Index.Id, target, index);
+            return globalCallOrMacro(opId, Operator.Index.Id, target, index);
         }
 
         internal Expr VisitUnary(CELParser.UnaryContext ctx)
@@ -764,54 +764,54 @@ public sealed class Parser
 
         internal Expr VisitCreateList(CELParser.CreateListContext ctx)
         {
-            var listID = helper.Id(ctx.op);
-            return helper.NewList(listID, VisitList(ctx.elems));
+            var listId = helper.Id(ctx.op);
+            return helper.NewList(listId, VisitList(ctx.elems));
         }
 
         internal Expr VisitCreateMessage(CELParser.CreateMessageContext ctx)
         {
             var target = ExprVisit(ctx.member());
-            var objID = helper.Id(ctx.op);
+            var objId = helper.Id(ctx.op);
             var messageName = ExtractQualifiedName(target);
             if (messageName != null)
             {
                 var entries = VisitIFieldInitializerList(ctx.entries);
-                return helper.NewObject(objID, messageName, entries);
+                return helper.NewObject(objId, messageName, entries);
             }
 
-            return helper.NewExpr(objID);
+            return helper.NewExpr(objId);
         }
 
         internal Expr VisitCreateStruct(CELParser.CreateStructContext ctx)
         {
-            var structID = helper.Id(ctx.op);
+            var structId = helper.Id(ctx.op);
             if (ctx.entries != null)
-                return helper.NewMap(structID, VisitMapInitializerList(ctx.entries));
-            return helper.NewMap(structID, new List<Expr.Types.CreateStruct.Types.Entry>());
+                return helper.NewMap(structId, VisitMapInitializerList(ctx.entries));
+            return helper.NewMap(structId, new List<Expr.Types.CreateStruct.Types.Entry>());
         }
 
-        internal Expr globalCallOrMacro(long exprID, string function, params Expr[] args)
+        internal Expr globalCallOrMacro(long exprId, string function, params Expr[] args)
         {
-            return globalCallOrMacro(exprID, function, new List<Expr>(args));
+            return globalCallOrMacro(exprId, function, new List<Expr>(args));
         }
 
-        internal Expr globalCallOrMacro(long exprID, string function, IList<Expr> args)
+        internal Expr globalCallOrMacro(long exprId, string function, IList<Expr> args)
         {
-            var expr = expandMacro(exprID, function, null, args);
+            var expr = expandMacro(exprId, function, null, args);
             if (expr != null) return expr;
 
-            return helper.NewGlobalCall(exprID, function, args);
+            return helper.NewGlobalCall(exprId, function, args);
         }
 
-        internal Expr receiverCallOrMacro(long exprID, string function, Expr target, IList<Expr> args)
+        internal Expr receiverCallOrMacro(long exprId, string function, Expr target, IList<Expr> args)
         {
-            var expr = expandMacro(exprID, function, target, args);
+            var expr = expandMacro(exprId, function, target, args);
             if (expr != null) return expr;
 
-            return helper.NewReceiverCall(exprID, function, target, args);
+            return helper.NewReceiverCall(exprId, function, target, args);
         }
 
-        internal Expr? expandMacro(long exprID, string function, Expr? target, IList<Expr> args)
+        internal Expr? expandMacro(long exprId, string function, Expr? target, IList<Expr> args)
         {
             var macro = outerInstance.options.GetMacro(Macro.MakeMacroKey(function, args.Count, target != null));
             if (macro == null)
@@ -820,7 +820,7 @@ public sealed class Parser
                 if (macro == null) return null;
             }
 
-            var eh = new ExprHelperImpl(helper, exprID);
+            var eh = new ExprHelperImpl(helper, exprId);
             try
             {
                 var expander = macro.Expander();
@@ -829,13 +829,13 @@ public sealed class Parser
             catch (ErrorWithLocation err)
             {
                 var loc = err.Location;
-                if (loc == null) loc = helper.GetLocation(exprID);
+                if (loc == null) loc = helper.GetLocation(exprId);
 
                 return ReportError(loc, err.Message);
             }
             catch (Exception e)
             {
-                return ReportError(helper.GetLocation(exprID), e.Message);
+                return ReportError(helper.GetLocation(exprId), e.Message);
             }
         }
 

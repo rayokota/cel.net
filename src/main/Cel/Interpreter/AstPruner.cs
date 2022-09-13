@@ -73,13 +73,13 @@ public sealed class AstPruner
 {
     private readonly Expr expr;
     private readonly IEvalState state;
-    private long nextExprID;
+    private long nextExprId;
 
-    private AstPruner(Expr expr, IEvalState state, long nextExprID)
+    private AstPruner(Expr expr, IEvalState state, long nextExprId)
     {
         this.expr = expr;
         this.state = state;
-        this.nextExprID = nextExprID;
+        this.nextExprId = nextExprId;
     }
 
     public static Expr? PruneAst(Expr expr, IEvalState state)
@@ -137,7 +137,7 @@ public sealed class AstPruner
                 var elem = list.Get(IntT.IntOf(i));
                 if (Util.IsUnknownOrError(elem)) return null;
 
-                var elemExpr = MaybeCreateLiteral(NextID(), elem);
+                var elemExpr = MaybeCreateLiteral(NextId(), elem);
                 if (elemExpr == null) return null;
 
                 elemExprs.Add(elemExpr);
@@ -164,10 +164,10 @@ public sealed class AstPruner
                 var val = mp.Get(key);
                 if (Util.IsUnknownOrError(key) || Util.IsUnknownOrError(val)) return null;
 
-                var keyExpr = MaybeCreateLiteral(NextID(), key);
+                var keyExpr = MaybeCreateLiteral(NextId(), key);
                 if (keyExpr == null) return null;
 
-                var valExpr = MaybeCreateLiteral(NextID(), val);
+                var valExpr = MaybeCreateLiteral(NextId(), val);
                 if (valExpr == null) return null;
 
                 var entry = new Expr.Types.CreateStruct.Types.Entry();
@@ -254,7 +254,7 @@ public sealed class AstPruner
                     sel.Field = select.Field;
                     sel.TestOnly = select.TestOnly;
                     var expr = new Expr();
-                    expr.Id = nextExprID;
+                    expr.Id = nextExprId;
                     expr.SelectExpr = sel;
                     return expr;
                 }
@@ -431,12 +431,12 @@ public sealed class AstPruner
         return val != null && !UnknownT.IsUnknown(val);
     }
 
-    internal long NextID()
+    internal long NextId()
     {
         while (true)
-            if (state.Value(nextExprID) != null)
-                nextExprID++;
+            if (state.Value(nextExprId) != null)
+                nextExprId++;
             else
-                return nextExprID++;
+                return nextExprId++;
     }
 }

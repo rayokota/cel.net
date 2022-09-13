@@ -478,9 +478,9 @@ internal class AttributesTest
         // Note: Migrated to JMH
     }
 
-    internal static IQualifier MakeQualifier(IAttributeFactory attrs, Type typ, long qualID, object val)
+    internal static IQualifier MakeQualifier(IAttributeFactory attrs, Type typ, long qualId, object val)
     {
-        var qual = attrs.NewQualifier(typ, qualID, val);
+        var qual = attrs.NewQualifier(typ, qualId, val);
         return qual;
     }
 
@@ -536,12 +536,12 @@ internal class AttributesTest
             this.af = af;
         }
 
-        public virtual IQualifier NewQualifier(Type? objType, long qualID, object val)
+        public virtual IQualifier NewQualifier(Type? objType, long qualId, object val)
         {
             if (objType.MessageType.Equals("google.api.expr.test.v1.proto3.TestAllTypes.NestedMessage"))
-                return new NestedMsgQualifier(qualID, (string)val);
+                return new NestedMsgQualifier(qualId, (string)val);
 
-            return af.NewQualifier(objType, qualID, val);
+            return af.NewQualifier(objType, qualId, val);
         }
 
         public virtual INamespacedAttribute AbsoluteAttribute(long id, params string[] names)

@@ -588,11 +588,11 @@ public sealed class Checker
             Check(value);
 
             var fieldType = Decls.Error;
-            var t = LookupFieldType(LocationByID(ent.Id), messageType.MessageType, field);
+            var t = LookupFieldType(LocationById(ent.Id), messageType.MessageType, field);
             if (t != null) fieldType = t.Type;
 
             if (!IsAssignable(fieldType, GetType(value)!))
-                errors.FieldTypeMismatch(LocationByID(ent.Id), field, fieldType, GetType(value));
+                errors.FieldTypeMismatch(LocationById(ent.Id), field, fieldType, GetType(value));
         }
     }
 
@@ -766,10 +766,10 @@ public sealed class Checker
 
     internal ILocation LocationByExpr(Expr e)
     {
-        return LocationByID(e.Id);
+        return LocationById(e.Id);
     }
 
-    internal ILocation LocationByID(long id)
+    internal ILocation LocationById(long id)
     {
         IDictionary<long, int> positions = sourceInfo.Positions;
         var line = 1;

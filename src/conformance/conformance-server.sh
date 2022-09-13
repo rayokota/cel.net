@@ -28,11 +28,10 @@ function kill_server() {
 trap kill_server SIGINT SIGTERM
 
 #dotnet run --project "${wd}" 2>&1 | tee /tmp/conformance-server.log | grep Listening &
-dotnet run --project "${wd}" | grep Listening
-#echo "Listening on localhost:5000"
+#dotnet "${wd}/bin/Debug/net6.0/Cel.conformance.dll" 2>&1 | tee /tmp/conformance-server.log | grep Listening &
+#${wd}//bin/Debug/net6.0/publish/Cel.conformance 2>&1 | tee /tmp/conformance-server.log | grep Listening &
 
-#(dotnet ${wd}/bin/Debug/net6.0/Cel.conformance.dll & echo $! > "${pid_file}") 2>&1 | tee /tmp/conformance-server.log | grep Listening
-#dotnet "${wd}/bin/Debug/net6.0/Cel.conformance.dll" 2>&1 | tee /tmp/conformance-server.log | grep Listening
+echo "Listening on localhost:5000"
 
 pid=$!
 echo "${pid}" > "${pid_file}"

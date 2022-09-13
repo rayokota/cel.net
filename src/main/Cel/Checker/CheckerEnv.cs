@@ -368,12 +368,12 @@ public sealed class CheckerEnv
         return string.Format("overlapping identifier for name '{0}'", name);
     }
 
-    internal string OverlappingOverloadError(string name, string overloadID1, Type f1, string overloadID2, Type f2)
+    internal string OverlappingOverloadError(string name, string overloadId1, Type f1, string overloadId2, Type f2)
     {
         return string.Format(
             "overlapping overload for name '{0}' (type '{1}' with overloadId: '{2}' " +
             "cannot be distinguished from '{3}' with overloadId: '{4}')", name, Types.FormatCheckedType(f1),
-            overloadID1, Types.FormatCheckedType(f2), overloadID2);
+            overloadId1, Types.FormatCheckedType(f2), overloadId2);
     }
 
     internal string OverlappingMacroError(string name, int argCount)

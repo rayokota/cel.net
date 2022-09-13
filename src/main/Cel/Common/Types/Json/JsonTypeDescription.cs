@@ -29,7 +29,7 @@ namespace Cel.Common.Types.Json;
 
 public sealed class JsonTypeDescription : ITypeDescription
 {
-    public delegate Type TypeQuery(System.Type Type);
+    public delegate Type TypeQuery(System.Type type);
 
     private readonly IDictionary<string, JsonFieldType> fieldTypes;
     private readonly string name;

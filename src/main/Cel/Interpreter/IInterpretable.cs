@@ -189,7 +189,7 @@ public interface IInterpretableCall : IInterpretable
     ///     are stable across language boundaries and can be treated as synonymous with a unique function
     ///     signature.
     /// </summary>
-    string OverloadID();
+    string OverloadId();
 
     /// <summary>
     ///     Args returns the normalized arguments to the function overload. For receiver-style functions,
@@ -478,7 +478,7 @@ public sealed class EvalEq : AbstractEvalLhsRhs, IInterpretableCall
     /// <summary>
     ///     OverloadID implements the InterpretableCall interface method.
     /// </summary>
-    public string OverloadID()
+    public string OverloadId()
     {
         return Overloads.Equals;
     }
@@ -541,7 +541,7 @@ public sealed class EvalNe : AbstractEvalLhsRhs, IInterpretableCall
     /// <summary>
     ///     OverloadID implements the InterpretableCall interface method.
     /// </summary>
-    public string OverloadID()
+    public string OverloadId()
     {
         return Overloads.NotEquals;
     }
@@ -609,7 +609,7 @@ public sealed class EvalZeroArity : AbstractEval, IInterpretableCall,
     /// <summary>
     ///     OverloadID implements the InterpretableCall interface method.
     /// </summary>
-    public string OverloadID()
+    public string OverloadId()
     {
         return overload;
     }
@@ -687,7 +687,7 @@ public sealed class EvalUnary : AbstractEval, IInterpretableCall, ICoster
     /// <summary>
     ///     OverloadID implements the InterpretableCall interface method.
     /// </summary>
-    public string OverloadID()
+    public string OverloadId()
     {
         return overload;
     }
@@ -757,7 +757,7 @@ public sealed class EvalBinary : AbstractEvalLhsRhs, IInterpretableCall
     /// <summary>
     ///     OverloadID implements the InterpretableCall interface method.
     /// </summary>
-    public string OverloadID()
+    public string OverloadId()
     {
         return overload;
     }
@@ -854,7 +854,7 @@ public sealed class EvalVarArgs : AbstractEval, ICoster, IInterpretableCall
     /// <summary>
     ///     OverloadID implements the InterpretableCall interface method.
     /// </summary>
-    public string OverloadID()
+    public string OverloadId()
     {
         return overload;
     }

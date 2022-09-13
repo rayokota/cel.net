@@ -873,22 +873,22 @@ internal class ParserTest
 
         public virtual string GetMetadata(object elem)
         {
-            long elemID;
+            long elemId;
             if (elem is Expr)
-                elemID = ((Expr)elem).Id;
+                elemId = ((Expr)elem).Id;
             else if (elem is Expr.Types.CreateStruct.Types.Entry)
-                elemID = ((Expr.Types.CreateStruct.Types.Entry)elem).Id;
+                elemId = ((Expr.Types.CreateStruct.Types.Entry)elem).Id;
             else
                 throw new ArgumentException(elem.GetType().FullName);
 
-            var location = GetLocation(elemID);
-            return string.Format("^#{0:D}[{1:D},{2:D}]#", elemID, location.Line(), location.Column());
+            var location = GetLocation(elemId);
+            return string.Format("^#{0:D}[{1:D},{2:D}]#", elemId, location.Line(), location.Column());
         }
 
-        public virtual ILocation? GetLocation(long exprID)
+        public virtual ILocation? GetLocation(long exprId)
         {
             var pos = -1;
-            sourceInfo.Positions.TryGetValue(exprID, out pos);
+            sourceInfo.Positions.TryGetValue(exprId, out pos);
             if (pos >= 0)
             {
                 var line = 1;

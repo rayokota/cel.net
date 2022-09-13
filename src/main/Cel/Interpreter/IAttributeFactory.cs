@@ -75,7 +75,7 @@ public interface IAttributeFactory
     ///         may be sub-optimal.
     ///     </para>
     /// </summary>
-    IQualifier NewQualifier(Type? objType, long qualID, object val);
+    IQualifier NewQualifier(Type? objType, long qualId, object val);
 
     /// <summary>
     ///     Qualifier marker interface for designating different qualifier values and where they appear
@@ -334,7 +334,7 @@ public sealed class AttrFactory : IAttributeFactory
     /// <summary>
     ///     NewQualifier is an implementation of the AttributeFactory interface.
     /// </summary>
-    public IQualifier NewQualifier(Type? objType, long qualID, object val)
+    public IQualifier NewQualifier(Type? objType, long qualId, object val)
     {
         // Before creating a new qualifier check to see if this is a protobuf message field access.
         // If so, use the precomputed GetFrom qualification method rather than the standard
@@ -345,11 +345,11 @@ public sealed class AttrFactory : IAttributeFactory
             if (objType != null && objType.MessageType.Length > 0)
             {
                 var ft = provider.FindFieldType(objType.MessageType, str);
-                if (ft != null) return new FieldQualifier(qualID, str, ft, adapter);
+                if (ft != null) return new FieldQualifier(qualId, str, ft, adapter);
             }
         }
 
-        return IAttributeFactory.NewQualifierStatic(adapter, qualID, val);
+        return IAttributeFactory.NewQualifierStatic(adapter, qualId, val);
     }
 
     public override string ToString()

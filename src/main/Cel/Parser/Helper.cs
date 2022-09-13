@@ -26,12 +26,12 @@ public sealed class Helper
 {
     private readonly IDictionary<long, int> positions;
     private readonly ISource source;
-    private long nextID;
+    private long nextId;
 
     internal Helper(ISource source)
     {
         this.source = source;
-        nextID = 1;
+        nextId = 1;
         positions = new Dictionary<long, int>();
     }
 
@@ -170,10 +170,10 @@ public sealed class Helper
         return expr;
     }
 
-    internal Expr.Types.CreateStruct.Types.Entry NewMapEntry(long entryID, Expr key, Expr value)
+    internal Expr.Types.CreateStruct.Types.Entry NewMapEntry(long entryId, Expr key, Expr value)
     {
         var entry = new Expr.Types.CreateStruct.Types.Entry();
-        entry.Id = entryID;
+        entry.Id = entryId;
         entry.MapKey = key;
         entry.Value = value;
         return entry;
@@ -189,10 +189,10 @@ public sealed class Helper
         return expr;
     }
 
-    internal Expr.Types.CreateStruct.Types.Entry NewObjectField(long fieldID, string field, Expr value)
+    internal Expr.Types.CreateStruct.Types.Entry NewObjectField(long fieldId, string field, Expr value)
     {
         var entry = new Expr.Types.CreateStruct.Types.Entry();
-        entry.Id = fieldID;
+        entry.Id = fieldId;
         entry.FieldKey = field;
         entry.Value = value;
         return entry;
@@ -245,9 +245,9 @@ public sealed class Helper
             return -1L;
         }
 
-        var id = nextID;
+        var id = nextId;
         positions[id] = source.LocationOffset(location);
-        nextID++;
+        nextId++;
         return id;
     }
 

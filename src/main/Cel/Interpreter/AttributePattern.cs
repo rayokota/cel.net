@@ -251,9 +251,9 @@ public sealed class AttributePattern
             return fac.RelativeAttribute(id, operand);
         }
 
-        public IQualifier NewQualifier(Type? objType, long qualID, object val)
+        public IQualifier NewQualifier(Type? objType, long qualId, object val)
         {
-            return fac.NewQualifier(objType, qualID, val);
+            return fac.NewQualifier(objType, qualId, val);
         }
 
         /// <summary>
@@ -307,7 +307,7 @@ public sealed class AttributePattern
         ///         Unknown.
         ///     </para>
         /// </summary>
-        internal object? MatchesUnknownPatterns(IPartialActivation vars, long attrID,
+        internal object? MatchesUnknownPatterns(IPartialActivation vars, long attrId,
             string[] variableNames, IList<IQualifier> qualifiers)
         {
             var patterns = vars.UnknownAttributePatterns();
@@ -323,7 +323,7 @@ public sealed class AttributePattern
             if (candidateIndices.Count == 0) return null;
 
             // Determine whether to return early if there are no qualifiers.
-            if (qualifiers.Count == 0) return UnknownT.UnknownOf(attrID);
+            if (qualifiers.Count == 0) return UnknownT.UnknownOf(attrId);
 
             // Resolve the attribute qualifiers into a static set. This prevents more dynamic
             // Attribute resolutions than necessary when there are multiple unknown patterns
@@ -350,14 +350,14 @@ public sealed class AttributePattern
             {
                 var pat = patterns[patIdx];
                 var isUnk = true;
-                var matchExprID = attrID;
+                var matchExprId = attrId;
                 var qualPats = pat.QualifierPatterns();
                 for (var i = 0; i < newQuals.Length; i++)
                 {
                     var qual = newQuals[i];
                     if (i >= qualPats.Count) break;
 
-                    matchExprID = qual.Id();
+                    matchExprId = qual.Id();
                     var qualPat = qualPats[i];
                     // Note, the AttributeQualifierPattern relies on the input Qualifier not being an
                     // Attribute, since there is no way to resolve the Attribute with the information
@@ -369,7 +369,7 @@ public sealed class AttributePattern
                     }
                 }
 
-                if (isUnk) return UnknownT.UnknownOf(matchExprID);
+                if (isUnk) return UnknownT.UnknownOf(matchExprId);
             }
 
             return null;

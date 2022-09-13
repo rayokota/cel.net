@@ -113,7 +113,7 @@ public interface IInterpretableDecorator
             if (i is IInterpretableCall)
             {
                 var inst = (IInterpretableCall)i;
-                if (inst.OverloadID().Equals(Overloads.InList)) return MaybeOptimizeSetMembership(i, inst);
+                if (inst.OverloadId().Equals(Overloads.InList)) return MaybeOptimizeSetMembership(i, inst);
 
                 if (Overloads.IsTypeConversionFunction(inst.Function())) return MaybeOptimizeConstUnary(i, inst);
             }
