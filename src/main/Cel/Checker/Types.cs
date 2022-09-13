@@ -34,11 +34,11 @@ public sealed class Types
         // short-cut the "easy" types
         switch (KindOf(t))
         {
-            case Kind.kindDyn:
+            case Kind.KindDyn:
                 return "dyn";
-            case Kind.kindNull:
+            case Kind.KindNull:
                 return "null";
-            case Kind.kindPrimitive:
+            case Kind.KindPrimitive:
                 switch (t.Primitive)
                 {
                     case Type.Types.PrimitiveType.Uint64:
@@ -57,7 +57,7 @@ public sealed class Types
 
                 // unrecognizes & not-specified - ignore above
                 return t.Primitive.ToString().ToLowerInvariant().Trim();
-            case Kind.kindWellKnown:
+            case Kind.KindWellKnown:
                 switch (t.WellKnown)
                 {
                     case Type.Types.WellKnownType.Any:
@@ -69,7 +69,7 @@ public sealed class Types
                 }
 
                 break;
-            case Kind.kindError:
+            case Kind.KindError:
                 return "!error!";
         }
 
@@ -83,34 +83,34 @@ public sealed class Types
     {
         switch (KindOf(t))
         {
-            case Kind.kindDyn:
+            case Kind.KindDyn:
                 sb.Append("dyn");
                 return;
-            case Kind.kindFunction:
+            case Kind.KindFunction:
                 TypeErrors.FormatFunction(sb, t.Function.ResultType, t.Function.ArgTypes, false);
                 return;
-            case Kind.kindList:
+            case Kind.KindList:
                 sb.Append("list(");
                 FormatCheckedType(sb, t.ListType.ElemType);
                 sb.Append(')');
                 return;
-            case Kind.kindObject:
+            case Kind.KindObject:
                 sb.Append(t.MessageType);
                 return;
-            case Kind.kindMap:
+            case Kind.KindMap:
                 sb.Append("map(");
                 FormatCheckedType(sb, t.MapType.KeyType);
                 sb.Append(", ");
                 FormatCheckedType(sb, t.MapType.ValueType);
                 sb.Append(')');
                 return;
-            case Kind.kindNull:
+            case Kind.KindNull:
                 sb.Append("null");
                 return;
-            case Kind.kindPrimitive:
+            case Kind.KindPrimitive:
                 FormatCheckedTypePrimitive(sb, t.Primitive);
                 return;
-            case Kind.kindType:
+            case Kind.KindType:
                 if (t.Type_ == null || Equals(t.Type_, new Type()))
                 {
                     sb.Append("type");
@@ -121,7 +121,7 @@ public sealed class Types
                 FormatCheckedType(sb, t.Type_);
                 sb.Append(')');
                 return;
-            case Kind.kindWellKnown:
+            case Kind.KindWellKnown:
                 switch (t.WellKnown)
                 {
                     case Type.Types.WellKnownType.Any:
@@ -136,12 +136,12 @@ public sealed class Types
                 }
 
                 break;
-            case Kind.kindWrapper:
+            case Kind.KindWrapper:
                 sb.Append("wrapper(");
                 FormatCheckedTypePrimitive(sb, t.Wrapper);
                 sb.Append(')');
                 return;
-            case Kind.kindError:
+            case Kind.KindError:
                 sb.Append("!error!");
                 return;
         }
@@ -191,9 +191,9 @@ public sealed class Types
         // are sanitized prior to being added to the environment.
         switch (KindOf(t))
         {
-            case Kind.kindDyn:
+            case Kind.KindDyn:
                 return true;
-            case Kind.kindWellKnown:
+            case Kind.KindWellKnown:
                 return t.WellKnown == Type.Types.WellKnownType.Any;
             default:
                 return false;
@@ -205,7 +205,7 @@ public sealed class Types
     /// </summary>
     internal static bool IsDynOrError(Type t)
     {
-        if (KindOf(t) == Kind.kindError) return true;
+        if (KindOf(t) == Kind.KindError) return true;
 
         return IsDyn(t);
     }
@@ -219,10 +219,10 @@ public sealed class Types
         var kind1 = KindOf(t1);
         var kind2 = KindOf(t2);
         // The first type is less specific.
-        if (IsDyn(t1) || kind1 == Kind.kindTypeParam) return true;
+        if (IsDyn(t1) || kind1 == Kind.KindTypeParam) return true;
 
         // The first type is not less specific.
-        if (IsDyn(t2) || kind2 == Kind.kindTypeParam) return false;
+        if (IsDyn(t2) || kind2 == Kind.KindTypeParam) return false;
 
         // Types must be of the same kind to be equal.
         if (kind1 != kind2) return false;
@@ -231,7 +231,7 @@ public sealed class Types
         // order to return true.
         switch (kind1)
         {
-            case Kind.kindAbstract:
+            case Kind.KindAbstract:
             {
                 var a1 = t1.AbstractType;
                 var a2 = t2.AbstractType;
@@ -245,7 +245,7 @@ public sealed class Types
 
                 return true;
             }
-            case Kind.kindFunction:
+            case Kind.KindFunction:
             {
                 var fn1 = t1.Function;
                 var fn2 = t2.Function;
@@ -261,16 +261,16 @@ public sealed class Types
 
                 return true;
             }
-            case Kind.kindList:
+            case Kind.KindList:
                 return IsEqualOrLessSpecific(t1.ListType.ElemType, t2.ListType.ElemType);
-            case Kind.kindMap:
+            case Kind.KindMap:
             {
                 var m1 = t1.MapType;
                 var m2 = t2.MapType;
                 return IsEqualOrLessSpecific(m1.KeyType, m2.KeyType) &&
                        IsEqualOrLessSpecific(m1.ValueType, m2.ValueType);
             }
-            case Kind.kindType:
+            case Kind.KindType:
                 return true;
             default:
                 return t1.Equals(t2);
@@ -289,7 +289,7 @@ public sealed class Types
 
         var kind1 = KindOf(t1);
         var kind2 = KindOf(t2);
-        if (kind2 == Kind.kindTypeParam)
+        if (kind2 == Kind.KindTypeParam)
         {
             var t2Sub = m.Find(t2);
             if (t2Sub != null)
@@ -311,7 +311,7 @@ public sealed class Types
             }
         }
 
-        if (kind1 == Kind.kindTypeParam)
+        if (kind1 == Kind.KindTypeParam)
         {
             // For the lower type bound, we currently do not perform adjustment. The restricted
             // way we use type parameters in lower type bounds, it is not necessary, but may
@@ -342,11 +342,11 @@ public sealed class Types
         // Test for when the types do not need to agree, but are more specific than dyn.
         switch (kind1)
         {
-            case Kind.kindNull:
+            case Kind.KindNull:
                 return InternalIsAssignableNull(t2);
-            case Kind.kindPrimitive:
+            case Kind.KindPrimitive:
                 return InternalIsAssignablePrimitive(t1.Primitive, t2);
-            case Kind.kindWrapper:
+            case Kind.KindWrapper:
                 return InternalIsAssignable(m, Decls.NewPrimitiveType(t1.Wrapper), t2);
             default:
                 if (kind1 != kind2) return false;
@@ -358,21 +358,21 @@ public sealed class Types
         switch (kind1)
         {
             // ERROR, TYPE_PARAM, and DYN handled above.
-            case Kind.kindAbstract:
+            case Kind.KindAbstract:
                 return InternalIsAssignableAbstractType(m, t1.AbstractType, t2.AbstractType);
-            case Kind.kindFunction:
+            case Kind.KindFunction:
                 return InternalIsAssignableFunction(m, t1.Function, t2.Function);
-            case Kind.kindList:
+            case Kind.KindList:
                 return InternalIsAssignable(m, t1.ListType.ElemType, t2.ListType.ElemType);
-            case Kind.kindMap:
+            case Kind.KindMap:
                 return InternalIsAssignableMap(m, t1.MapType, t2.MapType);
-            case Kind.kindObject:
+            case Kind.KindObject:
                 return t1.MessageType.Equals(t2.MessageType);
-            case Kind.kindType:
+            case Kind.KindType:
                 // A type is a type is a type, any additional parameterization of the
                 // type cannot affect method resolution or assignability.
                 return true;
-            case Kind.kindWellKnown:
+            case Kind.KindWellKnown:
                 return t1.WellKnown == t2.WellKnown;
             default:
                 return false;
@@ -436,11 +436,11 @@ public sealed class Types
     {
         switch (KindOf(t))
         {
-            case Kind.kindAbstract:
-            case Kind.kindObject:
-            case Kind.kindNull:
-            case Kind.kindWellKnown:
-            case Kind.kindWrapper:
+            case Kind.KindAbstract:
+            case Kind.KindObject:
+            case Kind.KindNull:
+            case Kind.KindWellKnown:
+            case Kind.KindWrapper:
                 return true;
             default:
                 return false;
@@ -455,9 +455,9 @@ public sealed class Types
     {
         switch (KindOf(target))
         {
-            case Kind.kindPrimitive:
+            case Kind.KindPrimitive:
                 return p == target.Primitive;
-            case Kind.kindWrapper:
+            case Kind.KindWrapper:
                 return p == target.Wrapper;
             default:
                 return false;
@@ -491,37 +491,37 @@ public sealed class Types
     /// </summary>
     internal static Kind KindOf(Type? t)
     {
-        if (t == null || t.TypeKindCase == TypeKindCase.None) return Kind.kindUnknown;
+        if (t == null || t.TypeKindCase == TypeKindCase.None) return Kind.KindUnknown;
 
         switch (t.TypeKindCase)
         {
             case TypeKindCase.Error:
-                return Kind.kindError;
+                return Kind.KindError;
             case TypeKindCase.Function:
-                return Kind.kindFunction;
+                return Kind.KindFunction;
             case TypeKindCase.Dyn:
-                return Kind.kindDyn;
+                return Kind.KindDyn;
             case TypeKindCase.Primitive:
-                return Kind.kindPrimitive;
+                return Kind.KindPrimitive;
             case TypeKindCase.WellKnown:
-                return Kind.kindWellKnown;
+                return Kind.KindWellKnown;
             case TypeKindCase.Wrapper:
-                return Kind.kindWrapper;
+                return Kind.KindWrapper;
             case TypeKindCase.Null:
-                return Kind.kindNull;
+                return Kind.KindNull;
             case TypeKindCase.Type_:
-                return Kind.kindType;
+                return Kind.KindType;
             case TypeKindCase.ListType:
-                return Kind.kindList;
+                return Kind.KindList;
             case TypeKindCase.MapType:
-                return Kind.kindMap;
+                return Kind.KindMap;
             case TypeKindCase.MessageType:
-                return Kind.kindObject;
+                return Kind.KindObject;
             case TypeKindCase.TypeParam:
-                return Kind.kindTypeParam;
+                return Kind.KindTypeParam;
         }
 
-        return Kind.kindUnknown;
+        return Kind.KindUnknown;
     }
 
     /// <summary>
@@ -546,18 +546,18 @@ public sealed class Types
         var withinKind = KindOf(withinType);
         switch (withinKind)
         {
-            case Kind.kindTypeParam:
+            case Kind.KindTypeParam:
                 var wtSub = m.Find(withinType);
                 if (wtSub == null) return true;
 
                 return NotReferencedIn(m, t, wtSub);
-            case Kind.kindAbstract:
+            case Kind.KindAbstract:
                 foreach (var pt in withinType.AbstractType.ParameterTypes)
                     if (!NotReferencedIn(m, t, pt))
                         return false;
 
                 return true;
-            case Kind.kindFunction:
+            case Kind.KindFunction:
                 var fn = withinType.Function;
                 var types = FlattenFunctionTypes(fn);
                 foreach (var a in types)
@@ -565,12 +565,12 @@ public sealed class Types
                         return false;
 
                 return true;
-            case Kind.kindList:
+            case Kind.KindList:
                 return NotReferencedIn(m, t, withinType.ListType.ElemType);
-            case Kind.kindMap:
+            case Kind.KindMap:
                 var mt = withinType.MapType;
                 return NotReferencedIn(m, t, mt.KeyType) && NotReferencedIn(m, t, mt.ValueType);
-            case Kind.kindWrapper:
+            case Kind.KindWrapper:
                 return NotReferencedIn(m, t, Decls.NewPrimitiveType(withinType.Wrapper));
             default:
                 return true;
@@ -587,31 +587,31 @@ public sealed class Types
         if (tSub != null) return Substitute(m, tSub, typeParamToDyn);
 
         var kind = KindOf(t);
-        if (typeParamToDyn && kind == Kind.kindTypeParam) return Decls.Dyn;
+        if (typeParamToDyn && kind == Kind.KindTypeParam) return Decls.Dyn;
 
         switch (kind)
         {
-            case Kind.kindAbstract:
+            case Kind.KindAbstract:
                 // TODO: implement!
                 var at = t.AbstractType;
                 IList<Type> @params = new List<Type>(at.ParameterTypes.Count);
                 foreach (var p in at.ParameterTypes) @params.Add(Substitute(m, p, typeParamToDyn));
 
                 return Decls.NewAbstractType(at.Name, @params);
-            case Kind.kindFunction:
+            case Kind.KindFunction:
                 var fn = t.Function;
                 var rt = Substitute(m, fn.ResultType, typeParamToDyn);
                 IList<Type> args = new List<Type>(fn.ArgTypes.Count);
                 foreach (var a in fn.ArgTypes) args.Add(Substitute(m, a, typeParamToDyn));
 
                 return Decls.NewFunctionType(rt, args);
-            case Kind.kindList:
+            case Kind.KindList:
                 return Decls.NewListType(Substitute(m, t.ListType.ElemType, typeParamToDyn));
-            case Kind.kindMap:
+            case Kind.KindMap:
                 var mt = t.MapType;
                 return Decls.NewMapType(Substitute(m, mt.KeyType, typeParamToDyn),
                     Substitute(m, mt.ValueType, typeParamToDyn));
-            case Kind.kindType:
+            case Kind.KindType:
                 if (!Equals(t.Type_, new Type()))
                     return Decls.NewTypeType(Substitute(m, t.Type_, typeParamToDyn));
 
@@ -643,19 +643,19 @@ public sealed class Types
 
     internal enum Kind
     {
-        kindUnknown,
-        kindError,
-        kindFunction,
-        kindDyn,
-        kindPrimitive,
-        kindWellKnown,
-        kindWrapper,
-        kindNull,
-        kindAbstract, // TODO: Update the checker protos to include abstract
-        kindType,
-        kindList,
-        kindMap,
-        kindObject,
-        kindTypeParam
+        KindUnknown,
+        KindError,
+        KindFunction,
+        KindDyn,
+        KindPrimitive,
+        KindWellKnown,
+        KindWrapper,
+        KindNull,
+        KindAbstract, // TODO: Update the checker protos to include abstract
+        KindType,
+        KindList,
+        KindMap,
+        KindObject,
+        KindTypeParam
     }
 }

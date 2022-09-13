@@ -22,7 +22,7 @@ namespace Cel.Common.Types;
 /// <summary>
 ///     TypeValue is an instance of a Value that describes a value's type.
 /// </summary>
-public class TypeT : IType, IVal
+public class TypeT : IType
 {
     /// <summary>
     ///     TypeType is the type of a TypeValue.

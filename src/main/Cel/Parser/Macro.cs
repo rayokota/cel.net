@@ -112,17 +112,17 @@ public sealed class Macro
 
     internal static Expr MakeAll(IExprHelper eh, Expr? target, IList<Expr> args)
     {
-        return MakeQuantifier(QuantifierKind.quantifierAll, eh, target, args);
+        return MakeQuantifier(QuantifierKind.QuantifierAll, eh, target, args);
     }
 
     internal static Expr MakeExists(IExprHelper eh, Expr? target, IList<Expr> args)
     {
-        return MakeQuantifier(QuantifierKind.quantifierExists, eh, target, args);
+        return MakeQuantifier(QuantifierKind.QuantifierExists, eh, target, args);
     }
 
     internal static Expr MakeExistsOne(IExprHelper eh, Expr? target, IList<Expr> args)
     {
-        return MakeQuantifier(QuantifierKind.quantifierExistsOne, eh, target, args);
+        return MakeQuantifier(QuantifierKind.QuantifierExistsOne, eh, target, args);
     }
 
     internal static Expr MakeQuantifier(QuantifierKind kind, IExprHelper eh, Expr? target, IList<Expr> args)
@@ -142,20 +142,20 @@ public sealed class Macro
         Expr result;
         switch (kind)
         {
-            case QuantifierKind.quantifierAll:
+            case QuantifierKind.QuantifierAll:
                 init = eh.LiteralBool(true);
                 condition = eh.GlobalCall(Operator.NotStrictlyFalse.Id, accuIdent());
                 step = eh.GlobalCall(Operator.LogicalAnd.Id, accuIdent(), args[1]);
                 result = accuIdent();
                 break;
-            case QuantifierKind.quantifierExists:
+            case QuantifierKind.QuantifierExists:
                 init = eh.LiteralBool(false);
                 condition = eh.GlobalCall(Operator.NotStrictlyFalse.Id,
                     eh.GlobalCall(Operator.LogicalNot.Id, accuIdent()));
                 step = eh.GlobalCall(Operator.LogicalOr.Id, accuIdent(), args[1]);
                 result = accuIdent();
                 break;
-            case QuantifierKind.quantifierExistsOne:
+            case QuantifierKind.QuantifierExistsOne:
                 var zeroExpr = eh.LiteralInt(0);
                 var oneExpr = eh.LiteralInt(1);
                 init = zeroExpr;
@@ -256,8 +256,8 @@ public sealed class Macro
 
     internal enum QuantifierKind
     {
-        quantifierAll,
-        quantifierExists,
-        quantifierExistsOne
+        QuantifierAll,
+        QuantifierExists,
+        QuantifierExistsOne
     }
 }

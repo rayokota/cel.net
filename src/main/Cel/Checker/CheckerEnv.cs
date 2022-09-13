@@ -329,7 +329,7 @@ public sealed class CheckerEnv
     /// </summary>
     internal static bool IsObjectWellKnownType(Type t)
     {
-        if (Types.KindOf(t) != Types.Kind.kindObject) return false;
+        if (Types.KindOf(t) != Types.Kind.KindObject) return false;
 
         return Checked.CheckedWellKnowns.TryGetValue(t.MessageType, out var type);
     }

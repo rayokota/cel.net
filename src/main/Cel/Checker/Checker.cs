@@ -240,19 +240,19 @@ public sealed class Checker
         var resultType = Decls.Error;
         switch (Types.KindOf(targetType))
         {
-            case Types.Kind.kindMap:
+            case Types.Kind.KindMap:
                 // Maps yield their value type as the selection result type.
                 var mapType = targetType.MapType;
                 resultType = mapType.ValueType;
                 break;
-            case Types.Kind.kindObject:
+            case Types.Kind.KindObject:
                 // Objects yield their field type declaration as the selection result type, but only if
                 // the field is defined.
                 var fieldType = LookupFieldType(LocationByExpr(e), targetType.MessageType, sel.Field);
                 if (fieldType != null) resultType = fieldType.Type;
 
                 break;
-            case Types.Kind.kindTypeParam:
+            case Types.Kind.KindTypeParam:
                 // Set the operand type to DYN to prevent assignment to a potentionally incorrect type
                 // at a later point in type-checking. The isAssignable call will update the type
                 // substitutions for the type param under the covers.
@@ -552,16 +552,16 @@ public sealed class Checker
         SetReference(e, NewIdentReference(decl.Name, null));
         var ident = decl.Ident;
         var identKind = Types.KindOf(ident.Type);
-        if (identKind != Types.Kind.kindError)
+        if (identKind != Types.Kind.KindError)
         {
-            if (identKind != Types.Kind.kindType)
+            if (identKind != Types.Kind.KindType)
             {
                 errors.NotAType(LocationByExpr(e), ident.Type);
             }
             else
             {
                 messageType = ident.Type.Type_;
-                if (Types.KindOf(messageType) != Types.Kind.kindObject)
+                if (Types.KindOf(messageType) != Types.Kind.KindObject)
                 {
                     errors.NotAMessageType(LocationByExpr(e), messageType);
                     messageType = Decls.Error;
@@ -615,16 +615,16 @@ public sealed class Checker
 
         switch (Types.KindOf(rangeType))
         {
-            case Types.Kind.kindList:
+            case Types.Kind.KindList:
                 varType = rangeType.ListType.ElemType;
                 break;
-            case Types.Kind.kindMap:
+            case Types.Kind.KindMap:
                 // Ranges over the keys.
                 varType = rangeType.MapType.KeyType;
                 break;
-            case Types.Kind.kindDyn:
-            case Types.Kind.kindError:
-            case Types.Kind.kindTypeParam:
+            case Types.Kind.KindDyn:
+            case Types.Kind.KindError:
+            case Types.Kind.KindTypeParam:
                 // Set the range type to DYN to prevent assignment to a potentionally incorrect type
                 // at a later point in type-checking. The isAssignable call will update the type
                 // substitutions for the type param under the covers.
