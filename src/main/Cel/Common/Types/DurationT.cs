@@ -157,8 +157,10 @@ public sealed class DurationT : BaseVal, IAdder, IComparer, INegater, IReceiver,
 
     public static DurationT DurationOf(Duration d)
     {
-        // TODO nanos
-        return new DurationT(Period.FromSeconds(d.Seconds));
+        PeriodBuilder periodBuilder = new PeriodBuilder();
+        periodBuilder.Seconds = d.Seconds;
+        periodBuilder.Nanoseconds = d.Nanos;
+        return new DurationT(periodBuilder.Build());
     }
 
     public static DurationT DurationOf(Period d)

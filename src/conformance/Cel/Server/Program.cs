@@ -23,7 +23,6 @@ public class Program
                         HttpProtocols.Http2);
                 });
                 webBuilder.UseStartup<Startup>();
-                Console.WriteLine("Listening on {0}:{1}", "localhost", 5000);
             });
     }
 }

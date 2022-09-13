@@ -33,7 +33,8 @@ public class Startup
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, 
+        IHostApplicationLifetime lifetime)
     {
         if (env.IsDevelopment())
             app.UseDeveloperExceptionPage();
@@ -46,6 +47,10 @@ public class Startup
         {
             endpoints.MapGrpcService<ConformanceServiceImpl>();
             endpoints.MapGrpcReflectionService();
+        });
+        
+        lifetime.ApplicationStarted.Register(() => {
+            Console.WriteLine("Listening on {0}:{1}", "localhost", 5000);
         });
     }
 
