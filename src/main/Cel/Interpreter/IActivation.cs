@@ -73,20 +73,12 @@ public interface IActivation
         if (bindings is IDictionary<string, object>)
             return new MapActivation((IDictionary<string, object>)bindings);
 
+        if (bindings is Func<string, object?>) return new FunctionActivation((Func<string, object?>)bindings);
+
         throw new ArgumentException(string.Format(
             "activation input must be an activation or map[string]interface: got {0}", bindings.GetType().FullName));
     }
 
-    /// <summary>
-    ///     mapActivation which implements Activation and maps of named values.
-    ///     <para>
-    ///         Named bindings may lazily supply values by providing a function which accepts no arguments
-    ///         and produces an interface value.
-    ///     </para>
-    /// </summary>
-    /// <summary>
-    ///     hierarchicalActivation which implements Activation and contains a parent and child activation.
-    /// </summary>
     /// <summary>
     ///     NewHierarchicalActivation takes two activations and produces a new one which prioritizes
     ///     resolution in the child first and parent(s) second.
@@ -109,22 +101,15 @@ public interface IActivation
         var a = NewActivation(bindings);
         return new PartActivation(a, unknowns);
     }
-
-    /// <summary>
-    /// PartialActivation extends the Activation interface with a set of UnknownAttributePatterns. </summary>
-
-    /// <summary>
-    /// partActivation is the default implementations of the PartialActivation interface. </summary>
-
-    /// <summary>
-    /// varActivation represents a single mutable variable binding.
-    /// 
-    /// <para>This activation type should only be used within folds as the fold loop controls the object
-    /// life-cycle.
-    /// </para>
-    /// </summary>
 }
 
+/// <summary>
+///     mapActivation which implements Activation and maps of named values.
+///     <para>
+///         Named bindings may lazily supply values by providing a function which accepts no arguments
+///         and produces an interface value.
+///     </para>
+/// </summary>
 public sealed class MapActivation : IActivation
 {
     private readonly IDictionary<string, object> bindings;
@@ -165,6 +150,43 @@ public sealed class MapActivation : IActivation
     }
 }
 
+/// <summary>
+///     functionActivation which implements Activation and a provider of named values.
+/// </summary>
+public sealed class FunctionActivation : IActivation
+{
+    private readonly Func<string, object?> provider;
+
+    internal FunctionActivation(Func<string, object?> provider)
+    {
+        this.provider = provider;
+    }
+
+    /// <summary>
+    ///     Parent implements the Activation interface method.
+    /// </summary>
+    public IActivation Parent()
+    {
+        return null;
+    }
+
+    /// <summary>
+    ///     ResolveName implements the Activation interface method.
+    /// </summary>
+    public object? ResolveName(string name)
+    {
+        return provider.Invoke(name);
+    }
+
+    public override string ToString()
+    {
+        return "FunctionActivation{" + "provider=" + provider + '}';
+    }
+}
+
+/// <summary>
+///     hierarchicalActivation which implements Activation and contains a parent and child activation.
+/// </summary>
 public sealed class HierarchicalActivation : IActivation
 {
     private readonly IActivation child;
@@ -201,6 +223,9 @@ public sealed class HierarchicalActivation : IActivation
     }
 }
 
+/// <summary>
+///     PartialActivation extends the Activation interface with a set of UnknownAttributePatterns.
+/// </summary>
 public interface IPartialActivation : IActivation
 {
     /// <summary>
@@ -210,6 +235,9 @@ public interface IPartialActivation : IActivation
     AttributePattern[] UnknownAttributePatterns();
 }
 
+/// <summary>
+///     partActivation is the default implementations of the PartialActivation interface.
+/// </summary>
 public sealed class PartActivation : IPartialActivation
 {
     private readonly IActivation @delegate;
@@ -246,6 +274,13 @@ public sealed class PartActivation : IPartialActivation
     }
 }
 
+/// <summary>
+///     varActivation represents a single mutable variable binding.
+///     <para>
+///         This activation type should only be used within folds as the fold loop controls the object
+///         life-cycle.
+///     </para>
+/// </summary>
 public sealed class VarActivation : IActivation
 {
     internal string name;

@@ -29,7 +29,17 @@ public sealed class Script
         this.prg = prg;
     }
 
+    public T Execute<T>(Func<string, object?> arguments)
+    {
+        return Evaluate<T>(arguments);
+    }
+
     public T Execute<T>(IDictionary<string, object> arguments)
+    {
+        return Evaluate<T>(arguments);
+    }
+
+    private T Evaluate<T>(object arguments)
     {
         var evalResult = prg.Eval(arguments);
 

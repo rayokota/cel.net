@@ -20,7 +20,7 @@ public sealed class ScriptCreateException : ScriptException
 {
     public ScriptCreateException(string message, Issues issues) : base(string.Format("{0}: {1}", message, issues))
     {
-        this.Issues = issues;
+        Issues = issues;
     }
 
     public Issues Issues { get; }

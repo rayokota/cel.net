@@ -40,6 +40,34 @@ internal class ScriptHostTest
 
         Assert.That(result, Is.EqualTo("hello world"));
     }
+    
+    [Test]
+    public virtual void Function()
+    {
+        var scriptHost = ScriptHost.NewBuilder().Build();
+
+    // create the script, will be parsed and checked
+    Script script =
+        scriptHost
+            .BuildScript("x + ' ' + y")
+            // Variable declarations - we need `x` and `y` in this example
+            .WithDeclarations(Decls.NewVar("x", Decls.String), Decls.NewVar("y", Decls.String))
+            .Build();
+
+    String result =
+        script.Execute<string>(
+    arg => {
+        if ("x".Equals(arg)) {
+            return "hello";
+        } else if ("y".Equals(arg)) {
+            return "world";
+        } else {
+            return null;
+        }
+    });
+
+Assert.That(result, Is.EqualTo("hello world"));
+}
 
     [Test]
     public virtual void ExecFail()
