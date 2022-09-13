@@ -19,7 +19,7 @@ using Cel.Common.Types.Ref;
 namespace Cel.Common.Types.Traits;
 
 /// <summary>
-///     Divider interface to support '/' operator overloads.
+///     IDivider interface to support '/' operator overloads.
 /// </summary>
 public interface IDivider
 {

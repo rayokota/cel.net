@@ -19,7 +19,7 @@ using Cel.Common.Types.Ref;
 namespace Cel.Common.Types.Traits;
 
 /// <summary>
-///     Mapper interface which aggregates the traits of a maps.
+///     IMapper interface which aggregates the traits of a maps.
 /// </summary>
 public interface IMapper : IVal, IContainer, IIndexer, IIterableT, ISizer
 {

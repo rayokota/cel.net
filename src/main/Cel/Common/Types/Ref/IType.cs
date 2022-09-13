@@ -19,7 +19,7 @@ using Cel.Common.Types.Traits;
 namespace Cel.Common.Types.Ref;
 
 /// <summary>
-///     Type interface indicate the name of a given type.
+///     IType interface indicate the name of a given type.
 /// </summary>
 public interface IType : IVal
 {

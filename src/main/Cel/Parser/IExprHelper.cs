@@ -20,7 +20,7 @@ using Google.Protobuf;
 namespace Cel.Parser;
 
 /// <summary>
-///     ExprHelper assists with the manipulation of proto-based Expr values in a manner which is
+///     IExprHelper assists with the manipulation of proto-based Expr values in a manner which is
 ///     consistent with the source position and expression id generation code leveraged by both the
 ///     parser and type-checker.
 /// </summary>

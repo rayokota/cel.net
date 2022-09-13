@@ -19,7 +19,7 @@ using Cel.Common.Types.Ref;
 namespace Cel;
 
 /// <summary>
-///     Program is an evaluable view of an Ast.
+///     IProgram is an evaluable view of an Ast.
 /// </summary>
 public interface IProgram
 {

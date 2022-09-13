@@ -19,7 +19,7 @@ using Google.Api.Expr.V1Alpha1;
 namespace Cel.Common;
 
 /// <summary>
-///     Source interface for filter source contents.
+///     ISource interface for filter source contents.
 /// </summary>
 public interface ISource
 {

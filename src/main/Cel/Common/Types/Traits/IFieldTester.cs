@@ -19,7 +19,7 @@ using Cel.Common.Types.Ref;
 namespace Cel.Common.Types.Traits;
 
 /// <summary>
-///     FieldTester indicates if a defined field on an object type is set to a non-default value.
+///     IFieldTester indicates if a defined field on an object type is set to a non-default value.
 ///     <para>
 ///         For use with the `has()` macro.
 ///     </para>

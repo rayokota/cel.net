@@ -202,7 +202,7 @@ public sealed class AttributePattern
     }
 
     /// <summary>
-    ///     qualifierValueEquator defines an interface for determining if an input value, of valid map key
+    ///     IQualifierValueEquator defines an interface for determining if an input value, of valid map key
     ///     type, is equal to the value held in the Qualifier. This interface is used by the
     ///     AttributeQualifierPattern to determine pattern matches for non-wildcard qualifier patterns.
     ///     <para>

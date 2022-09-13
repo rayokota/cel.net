@@ -19,7 +19,7 @@ using Cel.Parser;
 namespace Cel;
 
 /// <summary>
-///     Library provides a collection of EnvOption and ProgramOption values used to confiugre a CEL
+///     ILibrary provides a collection of EnvOption and ProgramOption values used to confiugre a CEL
 ///     environment for a particular use case or with a related set of functionality.
 ///     <para>
 ///         Note, the ProgramOption values provided by a library are expected to be static and not vary
@@ -70,12 +70,12 @@ public interface ILibrary
         return Lib(new StdLibrary());
     }
 
-    /// <summary>
-    /// stdLibrary implements the Library interface and provides functional options for the core CEL
-    /// features documented in the specification.
-    /// </summary>
 }
 
+/// <summary>
+    /// stdLibrary implements the Library interface and provides functional options for the core CEL
+    /// features documented in the specification.
+/// </summary>
 public sealed class StdLibrary : ILibrary
 {
     /// <summary>

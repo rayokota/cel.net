@@ -19,7 +19,7 @@ using Cel.Common.Types.Ref;
 namespace Cel.Common.Types.Traits;
 
 /// <summary>
-///     Lister interface which aggregates the traits of a list.
+///     ILister interface which aggregates the traits of a list.
 /// </summary>
 public interface ILister : IVal, IAdder, IContainer, IIndexer, IIterableT, ISizer
 {

@@ -25,7 +25,7 @@ using Type = Google.Api.Expr.V1Alpha1.Type;
 namespace Cel.Interpreter;
 
 /// <summary>
-///     interpretablePlanner creates an Interpretable evaluation plan from a proto Expr value.
+///     IInterpretablePlanner creates an Interpretable evaluation plan from a proto Expr value.
 /// </summary>
 public interface IInterpretablePlanner
 {
@@ -60,10 +60,11 @@ public interface IInterpretablePlanner
             new Dictionary<long, Reference>(), new Dictionary<long, Type>(), decorators);
     }
 
-    /// <summary>
-    /// planner is an implementatio of the interpretablePlanner interface. </summary>
 }
 
+/// <summary>
+    /// planner is an implementatio of the interpretablePlanner interface.
+/// </summary>
 public sealed class Planner : IInterpretablePlanner
 {
     private readonly TypeAdapter adapter;

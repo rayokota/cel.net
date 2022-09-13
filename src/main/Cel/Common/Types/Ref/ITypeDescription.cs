@@ -17,7 +17,7 @@
 namespace Cel.Common.Types.Ref;
 
 /// <summary>
-///     TypeDescription is a collection of type metadata relevant to expression checking and evaluation.
+///     ITypeDescription is a collection of type metadata relevant to expression checking and evaluation.
 /// </summary>
 public interface ITypeDescription
 {

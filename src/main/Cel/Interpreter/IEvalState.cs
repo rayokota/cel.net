@@ -19,7 +19,7 @@ using Cel.Common.Types.Ref;
 namespace Cel.Interpreter;
 
 /// <summary>
-///     EvalState tracks the values associated with expression ids during execution.
+///     IEvalState tracks the values associated with expression ids during execution.
 /// </summary>
 public interface IEvalState
 {
@@ -53,10 +53,11 @@ public interface IEvalState
         return new EvalStateImpl();
     }
 
-    /// <summary>
-    /// evalState permits the mutation of evaluation state for a given expression id. </summary>
 }
 
+/// <summary>
+///     evalState permits the mutation of evaluation state for a given expression id.
+/// </summary>
 public sealed class EvalStateImpl : IEvalState
 {
     private readonly IDictionary<long, IVal> values = new Dictionary<long, IVal>();

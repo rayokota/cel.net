@@ -47,7 +47,6 @@ public sealed class Checker
         this.sourceInfo = sourceInfo;
     }
 
-    /// <summary>
     ///     Check performs type checking, giving a typed AST. The input is a ParsedExpr proto and an env
     ///     which encapsulates type binding of variables, declarations of built-in functions, descriptions
     ///     of protocol buffers, and a registry for errors. Returns a CheckedExpr proto, which might not be

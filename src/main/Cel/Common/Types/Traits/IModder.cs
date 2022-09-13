@@ -19,7 +19,7 @@ using Cel.Common.Types.Ref;
 namespace Cel.Common.Types.Traits;
 
 /// <summary>
-///     Modder interface to support '%' operator overloads.
+///     IModder interface to support '%' operator overloads.
 /// </summary>
 public interface IModder
 {

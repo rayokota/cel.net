@@ -19,7 +19,7 @@ using Type = Google.Api.Expr.V1Alpha1.Type;
 namespace Cel.Common.Types.Ref;
 
 /// <summary>
-///     TypeProvider specifies functions for creating new object instances and for resolving enum values
+///     ITypeProvider specifies functions for creating new object instances and for resolving enum values
 ///     by name.
 /// </summary>
 public interface ITypeProvider

@@ -19,7 +19,7 @@ using Cel.Common.Types.Ref;
 namespace Cel.Common.Types.Traits;
 
 /// <summary>
-///     Receiver interface for routing instance method calls within a value.
+///     IReceiver interface for routing instance method calls within a value.
 /// </summary>
 public interface IReceiver
 {

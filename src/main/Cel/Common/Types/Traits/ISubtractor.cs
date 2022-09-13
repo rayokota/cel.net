@@ -19,7 +19,7 @@ using Cel.Common.Types.Ref;
 namespace Cel.Common.Types.Traits;
 
 /// <summary>
-///     Subtractor interface to support binary '-' operator overloads.
+///     ISubtractor interface to support binary '-' operator overloads.
 /// </summary>
 public interface ISubtractor
 {

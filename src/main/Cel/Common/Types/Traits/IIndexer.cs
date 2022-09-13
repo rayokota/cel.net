@@ -19,7 +19,7 @@ using Cel.Common.Types.Ref;
 namespace Cel.Common.Types.Traits;
 
 /// <summary>
-///     Indexer permits random access of elements by index 'a[b()]'.
+///     IIndexer permits random access of elements by index 'a[b()]'.
 /// </summary>
 public interface IIndexer
 {

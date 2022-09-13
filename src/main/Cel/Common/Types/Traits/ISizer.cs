@@ -19,7 +19,7 @@ using Cel.Common.Types.Ref;
 namespace Cel.Common.Types.Traits;
 
 /// <summary>
-///     Sizer interface for supporting 'size()' overloads.
+///     ISizer interface for supporting 'size()' overloads.
 /// </summary>
 public interface ISizer
 {

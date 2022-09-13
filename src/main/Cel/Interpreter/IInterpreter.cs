@@ -22,7 +22,7 @@ using Google.Api.Expr.V1Alpha1;
 namespace Cel.Interpreter;
 
 /// <summary>
-///     Interpreter generates a new Interpretable from a checked or unchecked expression.
+///     IInterpreter generates a new Interpretable from a checked or unchecked expression.
 /// </summary>
 public interface IInterpreter
 {

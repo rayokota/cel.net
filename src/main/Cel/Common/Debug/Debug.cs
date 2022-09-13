@@ -171,7 +171,7 @@ public sealed class Debug
     }
 
     /// <summary>
-    ///     Adorner returns debug metadata that will be tacked on to the string representation of an
+    ///     IAdorner returns debug metadata that will be tacked on to the string representation of an
     ///     expression.#
     /// </summary>
     public interface IAdorner

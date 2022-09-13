@@ -17,7 +17,7 @@
 namespace Cel.Interpreter;
 
 /// <summary>
-///     Coster calculates the heuristic cost incurred during evaluation.
+///     ICoster calculates the heuristic cost incurred during evaluation.
 /// </summary>
 public interface ICoster
 {

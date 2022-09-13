@@ -19,7 +19,7 @@ using Cel.Common.Types.Ref;
 namespace Cel.Common.Types.Traits;
 
 /// <summary>
-///     Comparer interface for ordering comparisons between values in order to support '&lt;', '&lt;=',
+///     IComparer interface for ordering comparisons between values in order to support '&lt;', '&lt;=',
 ///     '&gt;=', '&gt;' overloads.
 /// </summary>
 public interface IComparer

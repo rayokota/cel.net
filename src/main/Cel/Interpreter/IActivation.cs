@@ -18,7 +18,7 @@
 namespace Cel.Interpreter;
 
 /// <summary>
-///     Activation used to resolve identifiers by name and references by id.
+///     IActivation used to resolve identifiers by name and references by id.
 ///     <para>
 ///         An Activation is the primary mechanism by which a caller supplies input into a CEL program.
 ///     </para>
@@ -224,7 +224,7 @@ public sealed class HierarchicalActivation : IActivation
 }
 
 /// <summary>
-///     PartialActivation extends the Activation interface with a set of UnknownAttributePatterns.
+///     IPartialActivation extends the Activation interface with a set of UnknownAttributePatterns.
 /// </summary>
 public interface IPartialActivation : IActivation
 {

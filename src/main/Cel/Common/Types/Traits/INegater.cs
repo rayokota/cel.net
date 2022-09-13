@@ -19,7 +19,7 @@ using Cel.Common.Types.Ref;
 namespace Cel.Common.Types.Traits;
 
 /// <summary>
-///     Negater interface to support unary '-' and '!' operator overloads.
+///     INegater interface to support unary '-' and '!' operator overloads.
 /// </summary>
 public interface INegater
 {

@@ -17,7 +17,7 @@
 namespace Cel.Common.Types.Ref;
 
 /// <summary>
-///     Val interface defines the functions supported by all expression values. Val implementations may
+///     IVal interface defines the functions supported by all expression values. Val implementations may
 ///     specialize the behavior of the value through the addition of traits.
 /// </summary>
 public interface IVal

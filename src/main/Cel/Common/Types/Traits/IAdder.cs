@@ -19,7 +19,7 @@ using Cel.Common.Types.Ref;
 namespace Cel.Common.Types.Traits;
 
 /// <summary>
-///     Adder interface to support '+' operator overloads.
+///     IAdder interface to support '+' operator overloads.
 /// </summary>
 public interface IAdder
 {

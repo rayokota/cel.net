@@ -19,7 +19,7 @@ using Cel.Common.Types.Ref;
 namespace Cel.Common.Types.Traits;
 
 /// <summary>
-///     Multiplier interface to support '*' operator overloads.
+///     IMultiplier interface to support '*' operator overloads.
 /// </summary>
 public interface IMultiplier
 {

@@ -18,7 +18,7 @@
 namespace Cel.Interpreter;
 
 /// <summary>
-///     Dispatcher resolves function calls to their appropriate overload.
+///     IDispatcher resolves function calls to their appropriate overload.
 /// </summary>
 public interface IDispatcher
 {
@@ -55,10 +55,11 @@ public interface IDispatcher
         return new DefaultDispatcher(parent, new Dictionary<string, Overload>());
     }
 
-    /// <summary>
-    /// defaultDispatcher struct which contains an overload map. </summary>
 }
 
+/// <summary>
+///     defaultDispatcher struct which contains an overload map.
+/// </summary>
 public sealed class DefaultDispatcher : IDispatcher
 {
     private readonly IDictionary<string, Overload> overloads;

@@ -20,7 +20,7 @@ using Cel.Common.Types.Traits;
 namespace Cel.Interpreter;
 
 /// <summary>
-///     InterpretableDecorator is a functional interface for decorating or replacing Interpretable
+///     IInterpretableDecorator is a functional interface for decorating or replacing Interpretable
 ///     expression nodes at construction time.
 /// </summary>
 public delegate IInterpretable? InterpretableDecorator(IInterpretable? i);

@@ -19,7 +19,7 @@ using Cel.Common.Types.Ref;
 namespace Cel.Common.Types.Traits;
 
 /// <summary>
-///     Container interface which permits containment tests such as 'a in b'.
+///     IContainer interface which permits containment tests such as 'a in b'.
 /// </summary>
 public interface IContainer
 {

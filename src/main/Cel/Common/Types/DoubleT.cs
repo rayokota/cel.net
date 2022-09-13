@@ -191,8 +191,7 @@ public sealed class DoubleT : BaseVal, IAdder, IComparer, IDivider, IMultiplier,
     {
         if (!(other is DoubleT)) return Err.NoSuchOverload(this, "equal", other);
 
-        /// <summary>
-        /// TODO: Handle NaNs properly. </summary>
+        // TODO: Handle NaNs properly.
         return Types.BoolOf(d == ((DoubleT)other).d);
     }
 

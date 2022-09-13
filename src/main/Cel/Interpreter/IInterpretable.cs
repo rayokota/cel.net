@@ -22,7 +22,7 @@ using Cel.Interpreter.Functions;
 namespace Cel.Interpreter;
 
 /// <summary>
-///     Interpretable can accept a given Activation and produce a value along with an accompanying
+///     IInterpretable can accept a given Activation and produce a value along with an accompanying
 ///     EvalState which can be used to inspect whether additional data might be necessary to complete the
 ///     evaluation.
 /// </summary>
@@ -38,16 +38,6 @@ public interface IInterpretable
     /// </summary>
     IVal Eval(IActivation activation);
 
-    /// <summary>
-    /// InterpretableConst interface for tracking whether the Interpretable is a constant value. </summary>
-
-    /// <summary>
-    /// InterpretableAttribute interface for tracking whether the Interpretable is an attribute. </summary>
-
-    /// <summary>
-    /// InterpretableCall interface for inspecting Interpretable instructions related to function
-    /// calls.
-    /// </summary>
 
     // Core Interpretable implementations used during the program planning phase.
 
@@ -83,37 +73,6 @@ public interface IInterpretable
     // Optional Intepretable implementations that specialize, subsume, or extend the core evaluation
     // plan via decorators.
 
-    /// <summary>
-    ///     evalSetMembership is an Interpretable implementation which tests whether an input value exists
-    ///     within the set of map keys used to model a set.
-    /// </summary>
-    /// <summary>
-    ///     evalWatch is an Interpretable implementation that wraps the execution of a given expression so
-    ///     that it may observe the computed value and send it to an observer.
-    /// </summary>
-    /// <summary>
-    ///     evalWatchAttr describes a watcher of an instAttr Interpretable.
-    ///     <para>
-    ///         Since the watcher may be selected against at a later stage in program planning, the watcher
-    ///         must implement the instAttr interface by proxy.
-    ///     </para>
-    /// </summary>
-    /// <summary>
-    ///     evalWatchConstQual observes the qualification of an object using a constant boolean, int,
-    ///     string, or uint.
-    /// </summary>
-    /// <summary>
-    ///     evalWatchQual observes the qualification of an object by a value computed at runtime.
-    /// </summary>
-    /// <summary>
-    ///     evalWatchConst describes a watcher of an instConst Interpretable.
-    /// </summary>
-    /// <summary>
-    ///     evalExhaustiveOr is just like evalOr, but does not short-circuit argument evaluation.
-    /// </summary>
-    /// <summary>
-    ///     evalExhaustiveAnd is just like evalAnd, but does not short-circuit argument evaluation.
-    /// </summary>
     static Cost CalExhaustiveBinaryOpsCost(IInterpretable lhs, IInterpretable rhs)
     {
         var l = Cost.EstimateCost(lhs);
@@ -121,18 +80,11 @@ public interface IInterpretable
         return Cost.OneOne.Add(l).Add(r);
     }
 
-    /// <summary>
-    /// evalExhaustiveConditional is like evalConditional, but does not short-circuit argument
-    /// evaluation.
-    /// </summary>
-
-    /// <summary>
-    /// evalExhaustiveFold is like evalFold, but does not short-circuit argument evaluation. </summary>
-
-    /// <summary>
-    /// evalAttr evaluates an Attribute value. </summary>
 }
 
+/// <summary>
+///     IInterpretableConst interface for tracking whether the Interpretable is a constant value.
+/// </summary>
 public interface IInterpretableConst : IInterpretable
 {
     /// <summary>
@@ -141,6 +93,9 @@ public interface IInterpretableConst : IInterpretable
     IVal Value();
 }
 
+/// <summary>
+///     IInterpretableAttribute interface for tracking whether the Interpretable is an attribute.
+/// </summary>
 public interface IInterpretableAttribute : IInterpretable, IAttribute
 {
     /// <summary>
@@ -176,6 +131,10 @@ public interface IInterpretableAttribute : IInterpretable, IAttribute
     object? Resolve(IActivation act);
 }
 
+/// <summary>
+///     IInterpretableCall interface for inspecting Interpretable instructions related to function
+///     calls.
+/// </summary>
 public interface IInterpretableCall : IInterpretable
 {
     /// <summary>
@@ -1126,6 +1085,10 @@ public sealed class EvalFold : AbstractEval, ICoster
     }
 }
 
+/// <summary>
+///     evalSetMembership is an Interpretable implementation which tests whether an input value exists
+///     within the set of map keys used to model a set.
+/// </summary>
 public sealed class EvalSetMembership : AbstractEval, ICoster
 {
     private readonly IInterpretable arg;
@@ -1168,6 +1131,10 @@ public sealed class EvalSetMembership : AbstractEval, ICoster
     }
 }
 
+/// <summary>
+///     evalWatch is an Interpretable implementation that wraps the execution of a given expression so
+///     that it may observe the computed value and send it to an observer.
+/// </summary>
 public sealed class EvalWatch : IInterpretable, ICoster
 {
     private readonly IInterpretable i;
@@ -1208,6 +1175,13 @@ public sealed class EvalWatch : IInterpretable, ICoster
     }
 }
 
+/// <summary>
+///     evalWatchAttr describes a watcher of an instAttr Interpretable.
+///     <para>
+///         Since the watcher may be selected against at a later stage in program planning, the watcher
+///         must implement the instAttr interface by proxy.
+///     </para>
+/// </summary>
 public sealed class EvalWatchAttr : ICoster, IInterpretableAttribute
 {
     private readonly IInterpretableAttribute attr;
@@ -1369,6 +1343,10 @@ public sealed class EvalWatchConstQualEquat :
     }
 }
 
+/// <summary>
+///     evalWatchConstQual observes the qualification of an object using a constant boolean, int,
+///     string, or uint.
+/// </summary>
 public sealed class EvalWatchConstQual :
     AbstractEvalWatch<IConstantQualifier>, IConstantQualifier
 {
@@ -1393,6 +1371,9 @@ public sealed class EvalWatchConstQual :
     }
 }
 
+/// <summary>
+///     evalWatchQual observes the qualification of an object by a value computed at runtime.
+/// </summary>
 public sealed class EvalWatchQual : AbstractEvalWatch<IQualifier>
 {
     public EvalWatchQual(IQualifier @delegate,
@@ -1411,6 +1392,9 @@ public sealed class EvalWatchQual : AbstractEvalWatch<IQualifier>
     }
 }
 
+/// <summary>
+///     evalWatchConst describes a watcher of an instConst Interpretable.
+/// </summary>
 public sealed class EvalWatchConst : IInterpretableConst, ICoster
 {
     private readonly IInterpretableConst c;
@@ -1454,6 +1438,9 @@ public sealed class EvalWatchConst : IInterpretableConst, ICoster
     }
 }
 
+/// <summary>
+///     evalExhaustiveOr is just like evalOr, but does not short-circuit argument evaluation.
+/// </summary>
 public sealed class EvalExhaustiveOr : AbstractEvalLhsRhs
 {
     // TODO combine with EvalOr
@@ -1497,6 +1484,9 @@ public sealed class EvalExhaustiveOr : AbstractEvalLhsRhs
     }
 }
 
+/// <summary>
+///     evalExhaustiveAnd is just like evalAnd, but does not short-circuit argument evaluation.
+/// </summary>
 public sealed class EvalExhaustiveAnd : AbstractEvalLhsRhs
 {
     // TODO combine with EvalAnd
@@ -1538,6 +1528,10 @@ public sealed class EvalExhaustiveAnd : AbstractEvalLhsRhs
     }
 }
 
+/// <summary>
+/// evalExhaustiveConditional is like evalConditional, but does not short-circuit argument
+/// evaluation.
+/// </summary>
 public sealed class EvalExhaustiveConditional : AbstractEval, ICoster
 {
     // TODO combine with EvalConditional
@@ -1580,6 +1574,9 @@ public sealed class EvalExhaustiveConditional : AbstractEval, ICoster
     }
 }
 
+/// <summary>
+///     evalExhaustiveFold is like evalFold, but does not short-circuit argument evaluation.
+/// </summary>
 public sealed class EvalExhaustiveFold : AbstractEval, ICoster
 {
     private readonly IInterpretable accu;
@@ -1677,6 +1674,9 @@ public sealed class EvalExhaustiveFold : AbstractEval, ICoster
     }
 }
 
+/// <summary>
+///     evalAttr evaluates an Attribute value.
+/// </summary>
 public sealed class EvalAttr : AbstractEval, IInterpretableAttribute, ICoster
 {
     private readonly TypeAdapter adapter;

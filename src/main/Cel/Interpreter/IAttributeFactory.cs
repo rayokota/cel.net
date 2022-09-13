@@ -23,7 +23,7 @@ using Type = Google.Api.Expr.V1Alpha1.Type;
 namespace Cel.Interpreter;
 
 /// <summary>
-///     AttributeFactory provides methods creating Attribute and Qualifier values.
+///     IAttributeFactory provides methods creating Attribute and Qualifier values.
 /// </summary>
 public interface IAttributeFactory
 {
@@ -77,25 +77,6 @@ public interface IAttributeFactory
     /// </summary>
     IQualifier NewQualifier(Type? objType, long qualId, object val);
 
-    /// <summary>
-    ///     Qualifier marker interface for designating different qualifier values and where they appear
-    ///     within field selections and index call expressions (`_[_]`).
-    /// </summary>
-    /// <summary>
-    ///     ConstantQualifier interface embeds the Qualifier interface and provides an option to inspect
-    ///     the qualifier's constant value.
-    ///     <para>
-    ///         Non-constant qualifiers are of Attribute type.
-    ///     </para>
-    /// </summary>
-    /// <summary>
-    ///     Attribute values are a variable or value with an optional set of qualifiers, such as field,
-    ///     key, or index accesses.
-    /// </summary>
-    /// <summary>
-    ///     NamespacedAttribute values are a variable within a namespace, and an optional set of qualifiers
-    ///     such as field, key, or index accesses.
-    /// </summary>
     /// <summary>
     ///     NewAttributeFactory returns a default AttributeFactory which is produces Attribute values
     ///     capable of resolving types by simple names and qualify the values using the supported qualifier
@@ -179,11 +160,6 @@ public interface IAttributeFactory
     }
 
     /// <summary>
-    ///     fieldQualifier indicates that the qualification is a well-defined field with a known field
-    ///     type. When the field type is known this can be used to improve the speed and efficiency of
-    ///     field resolution.
-    /// </summary>
-    /// <summary>
     ///     RefResolve attempts to convert the value to a CEL value and then uses reflection methods to try
     ///     and resolve the qualifier.
     /// </summary>
@@ -215,6 +191,10 @@ public interface IAttributeFactory
     }
 }
 
+/// <summary>
+///     IQualifier marker interface for designating different qualifier values and where they appear
+///     within field selections and index call expressions (`_[_]`).
+/// </summary>
 public interface IQualifier
 {
     /// <summary>
@@ -229,6 +209,13 @@ public interface IQualifier
     object? Qualify(IActivation vars, object obj);
 }
 
+/// <summary>
+///     IConstantQualifier interface embeds the Qualifier interface and provides an option to inspect
+///     the qualifier's constant value.
+///     <para>
+///         Non-constant qualifiers are of Attribute type.
+///     </para>
+/// </summary>
 public interface IConstantQualifier : IQualifier
 {
     IVal Value();
@@ -239,6 +226,10 @@ public interface IConstantQualifierEquator : AttributePattern.IQualifierValueEqu
 {
 }
 
+/// <summary>
+///     IAttribute values are a variable or value with an optional set of qualifiers, such as field,
+///     key, or index accesses.
+/// </summary>
 public interface IAttribute : IQualifier
 {
     /// <summary>
@@ -253,6 +244,10 @@ public interface IAttribute : IQualifier
     object? Resolve(IActivation a);
 }
 
+/// <summary>
+///     INamespacedAttribute values are a variable within a namespace, and an optional set of qualifiers
+///     such as field, key, or index accesses.
+/// </summary>
 public interface INamespacedAttribute : IAttribute
 {
     /// <summary>
@@ -1272,6 +1267,11 @@ public sealed class BoolQualifier : ICoster, IConstantQualifierEquator
     }
 }
 
+/// <summary>
+///     fieldQualifier indicates that the qualification is a well-defined field with a known field
+///     type. When the field type is known this can be used to improve the speed and efficiency of
+///     field resolution.
+/// </summary>
 public sealed class FieldQualifier : ICoster, IConstantQualifierEquator
 {
     private readonly TypeAdapter adapter;

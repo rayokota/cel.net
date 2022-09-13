@@ -19,7 +19,7 @@ using Cel.Common.Types.Ref;
 namespace Cel.Common.Types.Traits;
 
 /// <summary>
-///     Matcher interface for supporting 'matches()' overloads.
+///     IMatcher interface for supporting 'matches()' overloads.
 /// </summary>
 public interface IMatcher
 {
