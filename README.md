@@ -2,7 +2,7 @@
 
 [![Build Status][github-actions-shield]][github-actions-link]
 
-[github-actions-shield]: https://github.com/rayokota/cel-csharp/workflows/build/badge.svg?branch=master
+[github-actions-shield]: https://github.com/rayokota/cel-csharp/actions/workflows/build.yml/badge.svg?branch=master
 [github-actions-link]: https://github.com/rayokota/cel-csharp/actions
 
 This is a C# port of the [Common-Expression-Language (CEL)](https://opensource.google/projects/cel), based on [CEL-Java](https://github.com/projectnessie/cel-java).
