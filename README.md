@@ -5,7 +5,7 @@
 [github-actions-shield]: https://github.com/rayokota/cel.net/actions/workflows/build.yml/badge.svg?branch=master
 [github-actions-link]: https://github.com/rayokota/cel.net/actions
 
-This is a C# port of the [Common-Expression-Language (CEL)](https://opensource.google/projects/cel), based on [CEL-Java](https://github.com/projectnessie/cel-java).
+This is a C# port of the [Common Expression Language (CEL)](https://opensource.google/projects/cel), based on [CEL-Java](https://github.com/projectnessie/cel-java).
 
 The CEL specification can be found [here](https://github.com/google/cel-spec).
 
