@@ -1,4 +1,4 @@
-# C# implementation of Common-Expression-Language (CEL)
+# Common-Expression-Language (CEL) for .NET
 
 [![Build Status][github-actions-shield]][github-actions-link] [![NuGet Package](https://img.shields.io/nuget/v/Cel.NET.svg)](https://www.nuget.org/packages/Cel.NET)
 
