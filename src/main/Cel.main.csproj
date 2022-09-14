@@ -8,10 +8,10 @@
 
     <PropertyGroup Label="Package">
         <Version>0.1.0</Version>
-        <Title>CEL.Net</Title>
+        <Title>Cel.NET</Title>
         <Authors>Robert YOkota</Authors>
-        <Description>CEL.Net is an implementation of the Common Expression Language (CEL) for .NET</Description>
-        <PackageId>CEL.Net</PackageId>
+        <Description>Cel.NET is an implementation of the Common Expression Language (CEL) for .NET</Description>
+        <PackageId>Cel.NET</PackageId>
         <PackageTags>common;expression;language;apache</PackageTags>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/rayokota/cel.net</RepositoryUrl>

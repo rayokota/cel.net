@@ -89,7 +89,7 @@ public class MyClass
 }
 ```
 
-Note that the Json.NET field-names are used as property names in CEL.Net. It is not necessary to
+Note that the Json.NET field-names are used as property names in Cel.NET. It is not necessary to
 annotate "plain C#" classes with Json.NET attributes.
 
 
