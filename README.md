@@ -1,6 +1,6 @@
 # C# implementation of Common-Expression-Language (CEL)
 
-[![Build Status][github-actions-shield]][github-actions-link]
+[![Build Status][github-actions-shield]][github-actions-link] [![NuGet Package](https://img.shields.io/nuget/v/Cel.NET.svg)](https://www.nuget.org/packages/Cel.NET)
 
 [github-actions-shield]: https://github.com/rayokota/cel.net/actions/workflows/build.yml/badge.svg?branch=master
 [github-actions-link]: https://github.com/rayokota/cel.net/actions
