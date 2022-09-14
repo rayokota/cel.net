@@ -36,7 +36,7 @@ public class MyClass
         arguments.Add("x", "hello");
         arguments.Add("y", "world");
 
-        String result = script.Execute<string>(arguments);
+        string result = script.Execute<string>(arguments);
 
         Console.WriteLine(result); // Prints "hello world"
     }
