@@ -8,9 +8,9 @@
     </PropertyGroup>
 
     <PropertyGroup Label="Package">
-        <Version>0.1.0</Version>
+        <Version>0.2.0</Version>
         <Title>Cel.NET</Title>
-        <Authors>Robert YOkota</Authors>
+        <Authors>Robert Yokota</Authors>
         <Description>Cel.NET is an implementation of the Common Expression Language (CEL) for .NET</Description>
         <PackageId>Cel.NET</PackageId>
         <PackageTags>common;expression;language;cel</PackageTags>
