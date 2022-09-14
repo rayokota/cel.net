@@ -1,9 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
+    <PropertyGroup Label="Build">
         <TargetFramework>net6.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <PropertyGroup Label="Package">
+        <Version>0.1.0</Version>
+        <Title>CEL.Net</Title>
+        <Authors>Robert YOkota</Authors>
+        <Description>CEL.Net is an implementation of the Common Expression Language (CEL) for .NET</Description>
+        <PackageId>CEL.Net</PackageId>
+        <PackageTags>common;expression;language;apache</PackageTags>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <RepositoryUrl>https://github.com/rayokota/cel.net</RepositoryUrl>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
     </PropertyGroup>
 
     <ItemGroup>

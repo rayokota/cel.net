@@ -2,8 +2,8 @@
 
 [![Build Status][github-actions-shield]][github-actions-link]
 
-[github-actions-shield]: https://github.com/rayokota/cel-csharp/actions/workflows/build.yml/badge.svg?branch=master
-[github-actions-link]: https://github.com/rayokota/cel-csharp/actions
+[github-actions-shield]: https://github.com/rayokota/cel.net/actions/workflows/build.yml/badge.svg?branch=master
+[github-actions-link]: https://github.com/rayokota/cel.net/actions
 
 This is a C# port of the [Common-Expression-Language (CEL)](https://opensource.google/projects/cel), based on [CEL-Java](https://github.com/projectnessie/cel-java).
 
@@ -89,7 +89,7 @@ public class MyClass
 }
 ```
 
-Note that the Json.NET field-names are used as property names in Cel-CSharp. It is not necessary to
+Note that the Json.NET field-names are used as property names in CEL.Net. It is not necessary to
 annotate "plain C#" classes with Json.NET attributes.
 
 
