@@ -48,6 +48,7 @@ It is also possible to use plain C# and Json.NET objects as arguments by using t
 `Cel.Common.Types.Json.JsonRegistry`.
 
 Code sample similar to the one above. It takes a user-provided object type `MyInput`.
+
 ```csharp
 using Cel.Checker;
 using Cel.Tools;
