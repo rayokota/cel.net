@@ -1,16 +1,4 @@
-﻿using System.Collections;
-using Cel.Checker;
-using Cel.Common.Types.Pb;
-using Cel.Common.Types.Ref;
-using Google.Protobuf;
-using Google.Protobuf.WellKnownTypes;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using NodaTime;
-using Duration = Google.Protobuf.WellKnownTypes.Duration;
-using Type = Google.Api.Expr.V1Alpha1.Type;
-
-/*
+﻿/*
  * Copyright (C) 2022 Robert Yokota
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +13,18 @@ using Type = Google.Api.Expr.V1Alpha1.Type;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+using System.Collections;
+using Cel.Checker;
+using Cel.Common.Types.Pb;
+using Cel.Common.Types.Ref;
+using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using NodaTime;
+using Duration = Google.Protobuf.WellKnownTypes.Duration;
+using Type = Google.Api.Expr.V1Alpha1.Type;
+
 namespace Cel.Common.Types.Json;
 
 public sealed class JsonTypeDescription : ITypeDescription

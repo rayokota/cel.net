@@ -1,4 +1,4 @@
-﻿/*
+/*
  * Copyright (C) 2022 Robert Yokota
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,25 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+using Avro;
 using Cel.Common.Types.Pb;
 using Type = Google.Api.Expr.V1Alpha1.Type;
 
-namespace Cel.Common.Types.Json;
+namespace Cel.Common.Types.Avro;
 
-public sealed class JsonEnumDescription
+public sealed class AvroEnumDescription
 {
-    private readonly IList<Enum> enumValues;
-
-    private readonly string name;
+    private readonly string fullName;
     private readonly Type pbType;
+    private readonly IList<string> enumValues;
 
-    public JsonEnumDescription(System.Type type)
+    public AvroEnumDescription(EnumSchema schema)
     {
-        name = type.FullName!;
+        fullName = schema.Fullname;
+        enumValues = schema.Symbols;
+        pbType = Checked.CheckedString;
+    }
 
-        enumValues = new List<Enum>();
-        foreach (Enum e in Enum.GetValues(type)) enumValues.Add(e);
-        pbType = Checked.CheckedInt;
+    public string FullName()
+    {
+        return fullName;
     }
 
     public Type PbType()
@@ -39,8 +43,8 @@ public sealed class JsonEnumDescription
         return pbType;
     }
 
-    public IEnumerable<JsonEnumValue> BuildValues()
+    public IEnumerable<AvroEnumValue> BuildValues()
     {
-        return enumValues.Select(v => new JsonEnumValue(v));
+        return enumValues.Select(v => new AvroEnumValue(this, v));
     }
 }

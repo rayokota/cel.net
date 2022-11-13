@@ -1,7 +1,4 @@
-﻿using Cel.Common.Types.Ref;
-using Newtonsoft.Json;
-
-/*
+﻿/*
  * Copyright (C) 2022 Robert Yokota
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +13,9 @@ using Newtonsoft.Json;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+using Cel.Common.Types.Ref;
+using Newtonsoft.Json;
+
 namespace Cel.Common.Types.Json;
 
 /// <summary>
