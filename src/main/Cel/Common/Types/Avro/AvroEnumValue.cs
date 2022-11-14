@@ -32,7 +32,7 @@ public sealed class AvroEnumValue
 
     public static string FullyQualifiedName(GenericEnum value)
     {
-        return value.Schema.Fullname + '.' + value;
+        return value.Schema.Fullname + '.' + value.Value;
     }
 
     public string FullyQualifiedName()

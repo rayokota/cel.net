@@ -125,6 +125,14 @@ public sealed class AvroRegistry : ITypeRegistry
             return v.StringValue();
         }
 
+        if (value is Enum)
+        {
+            string fq = value.GetType().FullName + "." + value;
+            enumValues.TryGetValue(fq, out var v);
+            if (v == null) return Err.NewErr("unknown enum name '{0}'", fq);
+            return v.StringValue();
+        }
+
         try
         {
             return AvroObjectT.NewObject(this, value, TypeDescription(AvroTypeDescription.GetSchema(value)));

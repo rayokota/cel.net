@@ -28,6 +28,8 @@ public sealed class AvroTypeDescription : ITypeDescription
 {
     public delegate Type TypeQuery(Schema type);
 
+    public static readonly Schema NullAvroSchema = PrimitiveSchema.Create(Schema.Type.Null);
+
     private readonly Schema schema;
     private readonly string fullName;
     private readonly IType type;
@@ -69,6 +71,7 @@ public sealed class AvroTypeDescription : ITypeDescription
             case Schema.Type.Long:
                 return Checked.CheckedInt;
             case Schema.Type.Bytes:
+            case Schema.Type.Fixed:
                 return Checked.CheckedBytes;
             case Schema.Type.Float:
             case Schema.Type.Double:
@@ -84,8 +87,24 @@ public sealed class AvroTypeDescription : ITypeDescription
                 return typeQuery(schema);
             case Schema.Type.Null:
                 return Checked.CheckedNull;
-            default:
+            case Schema.Type.Record:
                 return typeQuery(schema);
+            case Schema.Type.Union:
+                UnionSchema unionSchema = (UnionSchema)schema;
+                if (unionSchema.Schemas.Count == 2 && unionSchema.Schemas.Contains(NullAvroSchema))
+                {
+                    foreach (Schema memberSchema in unionSchema.Schemas)
+                    {
+                        if (!memberSchema.Equals(NullAvroSchema))
+                        {
+                            return FindTypeForAvroType(memberSchema, typeQuery);
+                        }
+                    }
+                }
+
+                throw new ArgumentException("Unsupported union type");
+            default:
+                throw new ArgumentException($"Unsupported type {type}");
         }
     }
 
@@ -149,7 +168,11 @@ public sealed class AvroTypeDescription : ITypeDescription
 
     public static RecordSchema GetSchema(object message)
     {
-        if (message is GenericRecord)
+        if (message is RecordSchema)
+        {
+            return (RecordSchema)message;
+        }
+        else if (message is GenericRecord)
         {
             return ((GenericRecord)message).Schema;
         }

@@ -1,16 +1,4 @@
-﻿using System.Collections;
-using Cel.Common.Types;
-using Cel.Common.Types.Json;
-using Cel.Common.Types.Json.Types;
-using Cel.Common.Types.Pb;
-using Google.Protobuf;
-using Google.Protobuf.WellKnownTypes;
-using NodaTime;
-using NUnit.Framework;
-using Duration = Google.Protobuf.WellKnownTypes.Duration;
-using Type = Google.Api.Expr.V1Alpha1.Type;
-
-/*
+﻿/*
  * Copyright (C) 2022 Robert Yokota
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -25,6 +13,18 @@ using Type = Google.Api.Expr.V1Alpha1.Type;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+using System.Collections;
+using Cel.Common.Types;
+using Cel.Common.Types.Json;
+using Cel.Common.Types.Json.Types;
+using Cel.Common.Types.Pb;
+using Google.Protobuf;
+using Google.Protobuf.WellKnownTypes;
+using NodaTime;
+using NUnit.Framework;
+using Duration = Google.Protobuf.WellKnownTypes.Duration;
+using Type = Google.Api.Expr.V1Alpha1.Type;
+
 namespace Cel.Types.Json;
 
 using TypeKindCase = Type.TypeKindOneofCase;

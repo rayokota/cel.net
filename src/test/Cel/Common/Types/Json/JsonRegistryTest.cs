@@ -1,12 +1,4 @@
-﻿using System.Collections;
-using Cel.Common.Types;
-using Cel.Common.Types.Json;
-using Cel.Common.Types.Json.Types;
-using Cel.Common.Types.Ref;
-using NodaTime;
-using NUnit.Framework;
-
-/*
+﻿/*
  * Copyright (C) 2022 Robert Yokota
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,6 +13,14 @@ using NUnit.Framework;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+using System.Collections;
+using Cel.Common.Types;
+using Cel.Common.Types.Json;
+using Cel.Common.Types.Json.Types;
+using Cel.Common.Types.Ref;
+using NodaTime;
+using NUnit.Framework;
+
 namespace Cel.Types.Json;
 
 internal class JsonRegistryTest
