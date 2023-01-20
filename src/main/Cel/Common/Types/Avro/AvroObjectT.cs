@@ -66,6 +66,7 @@ internal sealed class AvroObjectT : ObjectT
 
         if (typeDesc.IsAssignableFrom(GetType())) return this;
 
-        throw new NotSupportedException();
+        throw new ArgumentException(
+            Err.NewTypeConversionError(value.GetType().FullName!, typeDesc).ToString());
     }
 }
