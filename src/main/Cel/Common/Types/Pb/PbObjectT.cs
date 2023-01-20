@@ -74,8 +74,6 @@ public sealed class PbObjectT : ObjectT
 
         if (typeDesc.IsAssignableFrom(GetType())) return this;
 
-        if (typeDesc.IsAssignableFrom(value.GetType())) return value;
-
         if (typeDesc == typeof(Any))
         {
             // anyValueType

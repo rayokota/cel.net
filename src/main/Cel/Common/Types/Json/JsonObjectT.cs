@@ -63,6 +63,10 @@ internal sealed class JsonObjectT : ObjectT
 
     public override object? ConvertToNative(Type typeDesc)
     {
+        if (typeDesc.IsAssignableFrom(value.GetType())) return value;
+
+        if (typeDesc.IsAssignableFrom(GetType())) return this;
+
         throw new NotSupportedException();
     }
 }
