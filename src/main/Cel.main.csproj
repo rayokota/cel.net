@@ -13,7 +13,7 @@
         <Authors>Robert Yokota</Authors>
         <Description>Cel.NET is an implementation of the Common Expression Language (CEL) for .NET</Description>
         <PackageId>Cel.NET</PackageId>
-        <PackageTags>common;expression;language;cel</PackageTags>
+        <PackageTags>google;common;expression;language;cel</PackageTags>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <RepositoryUrl>https://github.com/rayokota/cel.net</RepositoryUrl>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
