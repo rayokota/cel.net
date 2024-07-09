@@ -20,7 +20,7 @@ using Type = Google.Api.Expr.V1Alpha1.Type;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.extension;
+namespace Cel.Extension;
 
 /// <summary>
 ///     StringsLib provides a <seealso cref="IEnvOption" /> to configure extended functions for

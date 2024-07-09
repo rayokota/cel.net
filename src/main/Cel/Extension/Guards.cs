@@ -16,7 +16,7 @@ using Cel.Interpreter.Functions;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-namespace Cel.extension;
+namespace Cel.Extension;
 
 /// <summary>
 ///     function invocation guards for common call signatures within extension functions.
