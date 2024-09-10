@@ -17,6 +17,7 @@
 using Avro;
 using Avro.Generic;
 using Avro.Specific;
+using Avro.Util;
 using Cel.Common.Types.Pb;
 using Cel.Common.Types.Ref;
 using Field = Avro.Field;
@@ -103,6 +104,8 @@ public sealed class AvroTypeDescription : ITypeDescription
                 }
 
                 throw new ArgumentException("Unsupported union type");
+            case Schema.Type.Logical:
+                return FindTypeForAvroType((schema as LogicalSchema).BaseSchema, typeQuery);
             default:
                 throw new ArgumentException($"Unsupported type {type}");
         }
