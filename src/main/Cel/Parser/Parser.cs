@@ -82,7 +82,7 @@ public sealed class Parser
         try
         {
             if (charStream.Size > options.ExpressionSizeCodePointLimit)
-                errors.ReportError(ILocation.NoLocation,
+                errors.ReportError(LocationFactory.NoLocation,
                     "expression code point size exceeds limit: size: %d, limit %d", charStream.Size,
                     options.ExpressionSizeCodePointLimit);
             else
@@ -90,7 +90,7 @@ public sealed class Parser
         }
         catch (Exception e) when (e is RecoveryLimitError || e is RecursionError)
         {
-            errors.ReportError(ILocation.NoLocation, "{0}", e.Message);
+            errors.ReportError(LocationFactory.NoLocation, "{0}", e.Message);
         }
 
         if (errors.HasErrors()) expr = null;
@@ -226,7 +226,7 @@ public sealed class Parser
         public void SyntaxError(TextWriter output, IRecognizer recognizer, Symbol offendingSymbol, int line,
             int charPositionInLine, string msg, RecognitionException e)
         {
-            errors.SyntaxError(ILocation.NewLocation(line, charPositionInLine), msg);
+            errors.SyntaxError(LocationFactory.NewLocation(line, charPositionInLine), msg);
         }
 
         public void ReportAmbiguity(Antlr4.Runtime.Parser recognizer, DFA dfa, int startIndex, int stopIndex,
@@ -267,7 +267,7 @@ public sealed class Parser
             }
             else
             {
-                location = ILocation.NoLocation;
+                location = LocationFactory.NoLocation;
             }
 
             err = helper.NewExpr(ctx);
@@ -345,10 +345,10 @@ public sealed class Parser
                 var txt = "<<nil>>";
                 if (tree != null) txt = string.Format("<<{0}>>", tree.GetType().FullName);
 
-                return ReportError(ILocation.NoLocation, "unknown parse element encountered: {0}", txt);
+                return ReportError(LocationFactory.NoLocation, "unknown parse element encountered: {0}", txt);
             }
 
-            return helper.NewExpr(ILocation.NoLocation);
+            return helper.NewExpr(LocationFactory.NoLocation);
         }
 
         internal object VisitStart(CELParser.StartContext ctx)

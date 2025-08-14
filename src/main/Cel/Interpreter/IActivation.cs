@@ -40,11 +40,7 @@ public interface IActivation
     /// <summary>
     ///     EmptyActivation returns a variable free activation.
     /// </summary>
-    static IActivation EmptyActivation()
-    {
-        // This call cannot fail.
-        return NewActivation(new Dictionary<string, object>());
-    }
+    
 
     /// <summary>
     ///     NewActivation returns an activation based on a map-based binding where the map keys are
@@ -64,29 +60,13 @@ public interface IActivation
     ///         the ref.TypeAdapter configured in the environment.
     ///     </para>
     /// </summary>
-    static IActivation NewActivation(object bindings)
-    {
-        if (bindings == null) throw new NullReferenceException("bindings must be non-nil");
-
-        if (bindings is IActivation) return (IActivation)bindings;
-
-        if (bindings is IDictionary<string, object>)
-            return new MapActivation((IDictionary<string, object>)bindings);
-
-        if (bindings is Func<string, object?>) return new FunctionActivation((Func<string, object?>)bindings);
-
-        throw new ArgumentException(string.Format(
-            "activation input must be an activation or map[string]interface: got {0}", bindings.GetType().FullName));
-    }
+    
 
     /// <summary>
     ///     NewHierarchicalActivation takes two activations and produces a new one which prioritizes
     ///     resolution in the child first and parent(s) second.
     /// </summary>
-    static IActivation NewHierarchicalActivation(IActivation parent, IActivation child)
-    {
-        return new HierarchicalActivation(parent, child);
-    }
+    
 
     /// <summary>
     ///     NewPartialActivation returns an Activation which contains a list of AttributePattern values
@@ -96,11 +76,7 @@ public interface IActivation
     ///         but is typically either an existing Activation or map[string]interface{}.
     ///     </para>
     /// </summary>
-    static IPartialActivation NewPartialActivation(object bindings, params AttributePattern[] unknowns)
-    {
-        var a = NewActivation(bindings);
-        return new PartActivation(a, unknowns);
-    }
+    
 }
 
 /// <summary>

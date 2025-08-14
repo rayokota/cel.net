@@ -44,19 +44,33 @@ public interface IInterpretable
     /// <summary>
     ///     NewConstValue creates a new constant valued Interpretable.
     /// </summary>
-    static IInterpretableConst NewConstValue(long id, IVal val)
+    
+
+    
+
+    
+
+    // Optional Intepretable implementations that specialize, subsume, or extend the core evaluation
+    // plan via decorators.
+
+    
+}
+
+public static class InterpretableUtils
+{
+    public static IInterpretableConst NewConstValue(long id, IVal val)
     {
         return new EvalConst(id, val);
     }
 
-    static Cost CalShortCircuitBinaryOpsCost(IInterpretable lhs, IInterpretable rhs)
+    public static Cost CalShortCircuitBinaryOpsCost(IInterpretable lhs, IInterpretable rhs)
     {
         var l = Cost.EstimateCost(lhs);
         var r = Cost.EstimateCost(rhs);
-        return ICoster.CostOf(l.Min, l.Max + r.Max + 1);
+        return Cost.Of(l.Min, l.Max + r.Max + 1);
     }
 
-    static Cost SumOfCost(IInterpretable[] interps)
+    public static Cost SumOfCost(IInterpretable[] interps)
     {
         var min = 0L;
         var max = 0L;
@@ -67,13 +81,10 @@ public interface IInterpretable
             max += t.Max;
         }
 
-        return ICoster.CostOf(min, max);
+        return Cost.Of(min, max);
     }
 
-    // Optional Intepretable implementations that specialize, subsume, or extend the core evaluation
-    // plan via decorators.
-
-    static Cost CalExhaustiveBinaryOpsCost(IInterpretable lhs, IInterpretable rhs)
+    public static Cost CalExhaustiveBinaryOpsCost(IInterpretable lhs, IInterpretable rhs)
     {
         var l = Cost.EstimateCost(lhs);
         var r = Cost.EstimateCost(rhs);
@@ -350,7 +361,7 @@ public sealed class EvalOr : AbstractEvalLhsRhs
     /// </summary>
     public override Cost Cost()
     {
-        return IInterpretable.CalShortCircuitBinaryOpsCost(lhs, rhs);
+        return InterpretableUtils.CalShortCircuitBinaryOpsCost(lhs, rhs);
     }
 
     public override string ToString()
@@ -400,7 +411,7 @@ public sealed class EvalAnd : AbstractEvalLhsRhs
     /// </summary>
     public override Cost Cost()
     {
-        return IInterpretable.CalShortCircuitBinaryOpsCost(lhs, rhs);
+        return InterpretableUtils.CalShortCircuitBinaryOpsCost(lhs, rhs);
     }
 
     public override string ToString()
@@ -454,7 +465,7 @@ public sealed class EvalEq : AbstractEvalLhsRhs, IInterpretableCall
     /// </summary>
     public override Cost Cost()
     {
-        return IInterpretable.CalExhaustiveBinaryOpsCost(lhs, rhs);
+        return InterpretableUtils.CalExhaustiveBinaryOpsCost(lhs, rhs);
     }
 
     public override string ToString()
@@ -517,7 +528,7 @@ public sealed class EvalNe : AbstractEvalLhsRhs, IInterpretableCall
     /// </summary>
     public override Cost Cost()
     {
-        return IInterpretable.CalExhaustiveBinaryOpsCost(lhs, rhs);
+        return InterpretableUtils.CalExhaustiveBinaryOpsCost(lhs, rhs);
     }
 
     public override string ToString()
@@ -733,7 +744,7 @@ public sealed class EvalBinary : AbstractEvalLhsRhs, IInterpretableCall
     /// </summary>
     public override Cost Cost()
     {
-        return IInterpretable.CalExhaustiveBinaryOpsCost(lhs, rhs);
+        return InterpretableUtils.CalExhaustiveBinaryOpsCost(lhs, rhs);
     }
 
     public override string ToString()
@@ -766,7 +777,7 @@ public sealed class EvalVarArgs : AbstractEval, ICoster, IInterpretableCall
     /// </summary>
     public Cost Cost()
     {
-        var c = IInterpretable.SumOfCost(args);
+        var c = InterpretableUtils.SumOfCost(args);
         return c.Add(Interpreter.Cost.OneOne); // add cost for function
     }
 
@@ -850,7 +861,7 @@ public sealed class EvalList : AbstractEval, ICoster
     /// </summary>
     public Cost Cost()
     {
-        return IInterpretable.SumOfCost(elems);
+        return InterpretableUtils.SumOfCost(elems);
     }
 
     /// <summary>
@@ -898,8 +909,8 @@ public sealed class EvalMap : AbstractEval, ICoster
     /// </summary>
     public Cost Cost()
     {
-        var k = IInterpretable.SumOfCost(keys);
-        var v = IInterpretable.SumOfCost(vals);
+        var k = InterpretableUtils.SumOfCost(keys);
+        var v = InterpretableUtils.SumOfCost(vals);
         return k.Add(v);
     }
 
@@ -954,7 +965,7 @@ public sealed class EvalObj : AbstractEval, ICoster
     /// </summary>
     public Cost Cost()
     {
-        return IInterpretable.SumOfCost(vals);
+        return InterpretableUtils.SumOfCost(vals);
     }
 
     /// <summary>
@@ -1019,7 +1030,7 @@ public sealed class EvalFold : AbstractEval, ICoster
         // Compute the size of iterRange. If the size depends on the input, return the maximum
         // possible
         // cost range.
-        var foldRange = iterRange.Eval(IActivation.EmptyActivation());
+        var foldRange = iterRange.Eval(ActivationFactory.EmptyActivation());
         if (!foldRange.Type().HasTrait(Trait.IterableType)) return Interpreter.Cost.Unknown;
 
         var rangeCnt = 0L;
@@ -1037,8 +1048,8 @@ public sealed class EvalFold : AbstractEval, ICoster
 
         // The cond and step costs are multiplied by size(iterRange). The minimum possible cost incurs
         // when the evaluation result can be determined by the first iteration.
-        return i.Add(a).Add(r).Add(ICoster.CostOf(c.Min, c.Max * rangeCnt))
-            .Add(ICoster.CostOf(s.Min, s.Max * rangeCnt));
+        return i.Add(a).Add(r).Add(Interpreter.Cost.Of(c.Min, c.Max * rangeCnt))
+            .Add(Interpreter.Cost.Of(s.Min, s.Max * rangeCnt));
     }
 
     /// <summary>
@@ -1474,7 +1485,7 @@ public sealed class EvalExhaustiveOr : AbstractEvalLhsRhs
     /// </summary>
     public override Cost Cost()
     {
-        return IInterpretable.CalExhaustiveBinaryOpsCost(lhs, rhs);
+        return InterpretableUtils.CalExhaustiveBinaryOpsCost(lhs, rhs);
     }
 
     public override string ToString()
@@ -1518,7 +1529,7 @@ public sealed class EvalExhaustiveAnd : AbstractEvalLhsRhs
     /// </summary>
     public override Cost Cost()
     {
-        return IInterpretable.CalExhaustiveBinaryOpsCost(lhs, rhs);
+        return InterpretableUtils.CalExhaustiveBinaryOpsCost(lhs, rhs);
     }
 
     public override string ToString()
@@ -1611,7 +1622,7 @@ public sealed class EvalExhaustiveFold : AbstractEval, ICoster
         // Compute the size of iterRange. If the size depends on the input, return the maximum
         // possible
         // cost range.
-        var foldRange = iterRange.Eval(IActivation.EmptyActivation());
+        var foldRange = iterRange.Eval(ActivationFactory.EmptyActivation());
         if (!foldRange.Type().HasTrait(Trait.IterableType)) return Interpreter.Cost.Unknown;
 
         var rangeCnt = 0L;

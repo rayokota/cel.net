@@ -22,10 +22,6 @@ namespace Cel.Common.Types;
 /// </summary>
 public interface IIteratorT : IVal
 {
-    static IIteratorT Iterator<T1>(TypeAdapter adapter, IEnumerator<T1> iterator)
-    {
-        return new IteratorAdapter<T1>(adapter, iterator);
-    }
 
     /// <summary>
     ///     HasNext returns true if there are unvisited elements in the Iterator.
@@ -36,6 +32,14 @@ public interface IIteratorT : IVal
     ///     Next returns the next element.
     /// </summary>
     IVal Next();
+}
+
+public static class IteratorFactory
+{
+    public static IIteratorT Iterator<T1>(TypeAdapter adapter, IEnumerator<T1> iterator)
+    {
+        return new IteratorAdapter<T1>(adapter, iterator);
+    }
 }
 
 internal class IteratorAdapter<T> : BaseVal, IIteratorT

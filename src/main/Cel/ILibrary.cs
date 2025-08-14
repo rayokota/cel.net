@@ -45,7 +45,17 @@ public interface ILibrary
     ///     Lib creates an EnvOption out of a Library, allowing libraries to be provided as functional
     ///     args, and to be linked to each other.
     /// </summary>
-    static EnvOption Lib(ILibrary l)
+    
+
+    /// <summary>
+    ///     StdLib returns an EnvOption for the standard library of CEL functions and macros.
+    /// </summary>
+    
+}
+
+public static class LibraryOptions
+{
+    public static EnvOption Lib(ILibrary l)
     {
         return e =>
         {
@@ -62,9 +72,6 @@ public interface ILibrary
         };
     }
 
-    /// <summary>
-    ///     StdLib returns an EnvOption for the standard library of CEL functions and macros.
-    /// </summary>
     public static EnvOption StdLib()
     {
         return Lib(new StdLibrary());
@@ -83,13 +90,13 @@ public sealed class StdLibrary : ILibrary
     public IList<EnvOption> CompileOptions =>
         new List<EnvOption>
         {
-            IEnvOption.Declarations(Checker.Checker.StandardDeclarations),
-            IEnvOption.Macros(Macro.AllMacros)
+            EnvOptions.Declarations(Checker.Checker.StandardDeclarations),
+            EnvOptions.Macros(Macro.AllMacros)
         };
 
     /// <summary>
     ///     ProgramOptions returns function implementations for the standard CEL functions.
     /// </summary>
     public IList<ProgramOption> ProgramOptions => new List<ProgramOption>
-        { IProgramOption.Functions(Overload.StandardOverloads()) };
+        { global::Cel.ProgramOptions.Functions(Overload.StandardOverloads()) };
 }

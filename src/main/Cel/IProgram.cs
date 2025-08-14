@@ -23,10 +23,6 @@ namespace Cel;
 /// </summary>
 public interface IProgram
 {
-    static EvalResult NewEvalResult(IVal val, EvalDetails evalDetails)
-    {
-        return new EvalResult(val, evalDetails);
-    }
 
     /// <summary>
     ///     Eval returns the result of an evaluation of the Ast and environment against the input vars.

@@ -51,7 +51,7 @@ public class ConformanceServiceImpl : ConformanceServiceImplBase
 
         // NOTE: syntax_version isn't currently used
         IList<EnvOption> parseOptions = new List<EnvOption>();
-        if (request.DisableMacros) parseOptions.Add(IEnvOption.ClearMacros());
+        if (request.DisableMacros) parseOptions.Add(EnvOptions.ClearMacros());
 
         var env = Env.NewEnv(((List<EnvOption>)parseOptions).ToArray());
         var astIss = env.Parse(sourceText);
@@ -71,11 +71,11 @@ public class ConformanceServiceImpl : ConformanceServiceImplBase
     {
         // Build the environment.
         IList<EnvOption> checkOptions = new List<EnvOption>();
-        if (!request.NoStdEnv) checkOptions.Add(ILibrary.StdLib());
+        if (!request.NoStdEnv) checkOptions.Add(LibraryOptions.StdLib());
 
-        checkOptions.Add(IEnvOption.Container(request.Container));
-        checkOptions.Add(IEnvOption.Declarations(request.TypeEnv));
-        checkOptions.Add(IEnvOption.Types(new TestAllTypesPb2(), new TestAllTypesPb3()));
+        checkOptions.Add(EnvOptions.Container(request.Container));
+        checkOptions.Add(EnvOptions.Declarations(request.TypeEnv));
+        checkOptions.Add(EnvOptions.Types(new TestAllTypesPb2(), new TestAllTypesPb3()));
         var env = Env.NewCustomEnv(((List<EnvOption>)checkOptions).ToArray());
 
         // Check the expression.
@@ -94,8 +94,8 @@ public class ConformanceServiceImpl : ConformanceServiceImplBase
 
     public override Task<EvalResponse> Eval(EvalRequest request, ServerCallContext context)
     {
-        var env = Env.NewEnv(IEnvOption.Container(request.Container),
-            IEnvOption.Types(new TestAllTypesPb2(), new TestAllTypesPb3()));
+        var env = Env.NewEnv(EnvOptions.Container(request.Container),
+            EnvOptions.Types(new TestAllTypesPb2(), new TestAllTypesPb3()));
 
         IProgram prg;
         Ast ast;

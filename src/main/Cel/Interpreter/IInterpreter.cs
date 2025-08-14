@@ -43,10 +43,7 @@ public interface IInterpreter
     ///     with the given expression id. EvalState must be provided to the decorator. This decorator is
     ///     not thread-safe, and the EvalState must be reset between Eval() calls.
     /// </summary>
-    static InterpretableDecorator TrackState(IEvalState state)
-    {
-        return IInterpretableDecorator.DecObserveEval(state.SetValue);
-    }
+    
 
     /// <summary>
     ///     ExhaustiveEval replaces operations that short-circuit with versions that evaluate expressions
@@ -54,9 +51,36 @@ public interface IInterpreter
     ///     evaluation state of the entire expression. EvalState must be provided to the decorator. This
     ///     decorator is not thread-safe, and the EvalState must be reset between Eval() calls.
     /// </summary>
-    static InterpretableDecorator ExhaustiveEval(IEvalState state)
+    
+
+    /// <summary>
+    ///     Optimize will pre-compute operations such as list and map construction and optimize call
+    ///     arguments to set membership tests. The set of optimizations will increase over time.
+    /// </summary>
+    
+
+    /// <summary>
+    ///     NewInterpreter builds an Interpreter from a Dispatcher and TypeProvider which will be used
+    ///     throughout the Eval of all Interpretable instances gerenated from it.
+    /// </summary>
+    
+
+    /// <summary>
+    ///     NewStandardInterpreter builds a Dispatcher and TypeProvider with support for all of the CEL
+    ///     builtins defined in the language definition.
+    /// </summary>
+}
+
+public static class InterpreterUtils
+{
+    public static InterpretableDecorator TrackState(IEvalState state)
     {
-        var ex = IInterpretableDecorator.DecDisableShortcircuits();
+        return InterpretableDecoratorUtils.DecObserveEval(state.SetValue);
+    }
+
+    public static InterpretableDecorator ExhaustiveEval(IEvalState state)
+    {
+        var ex = InterpretableDecoratorUtils.DecDisableShortcircuits();
         var obs = TrackState(state);
         return i =>
         {
@@ -65,33 +89,21 @@ public interface IInterpreter
         };
     }
 
-    /// <summary>
-    ///     Optimize will pre-compute operations such as list and map construction and optimize call
-    ///     arguments to set membership tests. The set of optimizations will increase over time.
-    /// </summary>
-    static InterpretableDecorator Optimize()
+    public static InterpretableDecorator Optimize()
     {
-        return IInterpretableDecorator.DecOptimize();
+        return InterpretableDecoratorUtils.DecOptimize();
     }
 
-    /// <summary>
-    ///     NewInterpreter builds an Interpreter from a Dispatcher and TypeProvider which will be used
-    ///     throughout the Eval of all Interpretable instances gerenated from it.
-    /// </summary>
-    static IInterpreter NewInterpreter(IDispatcher dispatcher, Container container, ITypeProvider provider,
+    public static IInterpreter NewInterpreter(IDispatcher dispatcher, Container container, ITypeProvider provider,
         TypeAdapter adapter, IAttributeFactory attrFactory)
     {
         return new ExprInterpreter(dispatcher, container, provider, adapter, attrFactory);
     }
 
-    /// <summary>
-    ///     NewStandardInterpreter builds a Dispatcher and TypeProvider with support for all of the CEL
-    ///     builtins defined in the language definition.
-    /// </summary>
-    static IInterpreter NewStandardInterpreter(Container container, ITypeProvider provider, TypeAdapter adapter,
+    public static IInterpreter NewStandardInterpreter(Container container, ITypeProvider provider, TypeAdapter adapter,
         IAttributeFactory resolver)
     {
-        var dispatcher = IDispatcher.NewDispatcher();
+        var dispatcher = DispatcherFactory.NewDispatcher();
         dispatcher.Add(Overload.StandardOverloads());
         return NewInterpreter(dispatcher, container, provider, adapter, resolver);
     }
@@ -120,7 +132,7 @@ public sealed class ExprInterpreter : IInterpreter
     /// </summary>
     public IInterpretable? NewInterpretable(CheckedExpr @checked, params InterpretableDecorator[] decorators)
     {
-        var p = IInterpretablePlanner.NewPlanner(dispatcher, provider, adapter, attrFactory,
+        var p = InterpretablePlannerFactory.NewPlanner(dispatcher, provider, adapter, attrFactory,
             container, @checked, decorators);
         return p.Plan(@checked.Expr);
     }
@@ -130,7 +142,7 @@ public sealed class ExprInterpreter : IInterpreter
     /// </summary>
     public IInterpretable? NewUncheckedInterpretable(Expr expr, params InterpretableDecorator[] decorators)
     {
-        var p = IInterpretablePlanner.NewUncheckedPlanner(dispatcher, provider, adapter,
+        var p = InterpretablePlannerFactory.NewUncheckedPlanner(dispatcher, provider, adapter,
             attrFactory, container, decorators);
         return p.Plan(expr);
     }

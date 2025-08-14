@@ -156,7 +156,7 @@ public sealed class AttributePattern
     public static IAttributeFactory NewPartialAttributeFactory(Container container, TypeAdapter adapter,
         ITypeProvider provider)
     {
-        var fac = IAttributeFactory.NewAttributeFactory(container, adapter, provider);
+        var fac = AttributeFactoryUtils.NewAttributeFactory(container, adapter, provider);
         return new PartialAttributeFactory(fac, container, adapter, provider);
     }
 

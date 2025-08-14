@@ -34,8 +34,8 @@ internal class AttributesTest
     {
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var cont = Container.NewContainer(Container.Name("acme.ns"));
-        var attrs = IAttributeFactory.NewAttributeFactory(cont!, reg.ToTypeAdapter(), reg);
-        var vars = IActivation.NewActivation(TestUtil.BindingsOf("acme.a",
+        var attrs = AttributeFactoryUtils.NewAttributeFactory(cont!, reg.ToTypeAdapter(), reg);
+        var vars = ActivationFactory.NewActivation(TestUtil.BindingsOf("acme.a",
             TestUtil.MapOf("b", TestUtil.MapOf(4L, TestUtil.MapOf(false, "success")))));
 
         // acme.a.b[4][false]
@@ -56,11 +56,11 @@ internal class AttributesTest
     public virtual void AttributesAbsoluteAttrType()
     {
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
-        var attrs = IAttributeFactory.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
+        var attrs = AttributeFactoryUtils.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
 
         // int
         var attr = attrs.AbsoluteAttribute(1, "int");
-        var @out = attr.Resolve(IActivation.EmptyActivation());
+        var @out = attr.Resolve(ActivationFactory.EmptyActivation());
         Assert.That(@out, Is.SameAs(IntT.IntType));
         Assert.That(@out, Is.SameAs(IntT.IntType));
         Assert.That(Cost.EstimateCost(attr).Min, Is.EqualTo(1L));
@@ -71,9 +71,9 @@ internal class AttributesTest
     public virtual void AttributesRelativeAttr()
     {
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
-        var attrs = IAttributeFactory.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
+        var attrs = AttributeFactoryUtils.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
         var data = TestUtil.BindingsOf("a", TestUtil.MapOf(-1, new[] { 2, 42 }), "b", 1);
-        var vars = IActivation.NewActivation(data);
+        var vars = ActivationFactory.NewActivation(data);
 
         // The relative attribute under test is applied to a map literal:
         // {
@@ -82,7 +82,7 @@ internal class AttributesTest
         // }
         //
         // The expression being evaluated is: <map-literal>.a[-1][b] -> 42
-        var op = IInterpretable.NewConstValue(1, reg.ToTypeAdapter()(data));
+        var op = InterpretableUtils.NewConstValue(1, reg.ToTypeAdapter()(data));
         var attr = attrs.RelativeAttribute(1, op);
         var qualA = attrs.NewQualifier(null, 2, "a");
         var qualNeg1 = attrs.NewQualifier(null, 3, IntT.IntOf(-1));
@@ -100,10 +100,10 @@ internal class AttributesTest
     {
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var cont = Container.NewContainer(Container.Name("acme.ns"));
-        var attrs = IAttributeFactory.NewAttributeFactory(cont!, reg.ToTypeAdapter(), reg);
+        var attrs = AttributeFactoryUtils.NewAttributeFactory(cont!, reg.ToTypeAdapter(), reg);
         var
             data = TestUtil.BindingsOf("a", TestUtil.MapOf(-1, new[] { 2, 42 }), "acme.b", 1);
-        var vars = IActivation.NewActivation(data);
+        var vars = ActivationFactory.NewActivation(data);
 
         // The relative attribute under test is applied to a map literal:
         // {
@@ -119,7 +119,7 @@ internal class AttributesTest
         // - <map-literal>.a[-1][acme.b]
         //
         // The correct behavior should yield the value of the last alternative.
-        var op = IInterpretable.NewConstValue(1, reg.ToTypeAdapter()(data));
+        var op = InterpretableUtils.NewConstValue(1, reg.ToTypeAdapter()(data));
         var attr = attrs.RelativeAttribute(1, op);
         var qualA = attrs.NewQualifier(null, 2, "a");
         var qualNeg1 = attrs.NewQualifier(null, 3, IntT.IntOf(-1));
@@ -136,10 +136,10 @@ internal class AttributesTest
     public virtual void AttributesRelativeAttrConditional()
     {
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
-        var attrs = IAttributeFactory.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
+        var attrs = AttributeFactoryUtils.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
         var data = TestUtil.BindingsOf("a", TestUtil.MapOf(-1, new[] { 2, 42 }), "b",
             new[] { 0, 1 }, "c", new object[] { 1, 0 });
-        var vars = IActivation.NewActivation(data);
+        var vars = ActivationFactory.NewActivation(data);
 
         // The relative attribute under test is applied to a map literal:
         // {
@@ -152,13 +152,13 @@ internal class AttributesTest
         // <map-literal>.a[-1][(false ? b : c)[0]] -> 42
         //
         // Effectively the same as saying <map-literal>.a[-1][c[0]]
-        var cond = IInterpretable.NewConstValue(2, BoolT.False);
+        var cond = InterpretableUtils.NewConstValue(2, BoolT.False);
         var condAttr = attrs.ConditionalAttribute(4, cond, attrs.AbsoluteAttribute(5, "b"),
             attrs.AbsoluteAttribute(6, "c"));
         var qual0 = attrs.NewQualifier(null, 7, 0);
         condAttr.AddQualifier(qual0);
 
-        var obj = IInterpretable.NewConstValue(1, reg.ToTypeAdapter()(data));
+        var obj = InterpretableUtils.NewConstValue(1, reg.ToTypeAdapter()(data));
         var attr = attrs.RelativeAttribute(1, obj);
         var qualA = attrs.NewQualifier(null, 2, "a");
         var qualNeg1 = attrs.NewQualifier(null, 3, IntT.IntOf(-1));
@@ -176,10 +176,10 @@ internal class AttributesTest
     {
         var cont = Container.NewContainer(Container.Name("acme.ns"));
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
-        var attrs = IAttributeFactory.NewAttributeFactory(cont!, reg.ToTypeAdapter(), reg);
+        var attrs = AttributeFactoryUtils.NewAttributeFactory(cont!, reg.ToTypeAdapter(), reg);
         var data = TestUtil.BindingsOf("a",
             TestUtil.MapOf(-1, TestUtil.MapOf("first", 1, "second", 2, "third", 3)), "b", 2L);
-        var vars = IActivation.NewActivation(data);
+        var vars = ActivationFactory.NewActivation(data);
 
         // The environment declares the following variables:
         // {
@@ -207,8 +207,8 @@ internal class AttributesTest
         //
         // This is equivalent to:
         //   <obj>.a[-1]["second"] -> 2u
-        var obj = IInterpretable.NewConstValue(1, reg.ToTypeAdapter()(data));
-        var mp = IInterpretable.NewConstValue(1,
+        var obj = InterpretableUtils.NewConstValue(1, reg.ToTypeAdapter()(data));
+        var mp = InterpretableUtils.NewConstValue(1,
             reg.ToTypeAdapter()(TestUtil.MapOf(1, "first", 2, "second", 3, "third")));
         var relAttr = attrs.RelativeAttribute(4, mp);
         var qualB = attrs.NewQualifier(null, 5, attrs.AbsoluteAttribute(5, "b"));
@@ -231,10 +231,10 @@ internal class AttributesTest
     {
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var cont = Container.NewContainer(Container.Name("acme.ns"));
-        var attrs = IAttributeFactory.NewAttributeFactory(cont!, reg.ToTypeAdapter(), reg);
+        var attrs = AttributeFactoryUtils.NewAttributeFactory(cont!, reg.ToTypeAdapter(), reg);
         var data = TestUtil.BindingsOf("a", TestUtil.MapOf("b", new[] { 2, 42 }), "acme.a.b",
             1, "acme.ns.a.b", "found");
-        var vars = IActivation.NewActivation(data);
+        var vars = ActivationFactory.NewActivation(data);
 
         // a.b -> should resolve to acme.ns.a.b per namespace resolution rules.
         var attr = attrs.MaybeAttribute(1, "a");
@@ -250,17 +250,17 @@ internal class AttributesTest
     public virtual void AttributesConditionalAttrTrueBranch()
     {
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
-        var attrs = IAttributeFactory.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
+        var attrs = AttributeFactoryUtils.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
         var data = TestUtil.BindingsOf("a", TestUtil.MapOf(-1, new[] { 2, 42 }), "b",
             TestUtil.MapOf("c", TestUtil.MapOf(-1, new[] { 2, 42 })));
-        var vars = IActivation.NewActivation(data);
+        var vars = ActivationFactory.NewActivation(data);
 
         // (true ? a : b.c)[-1][1]
         var tv = attrs.AbsoluteAttribute(2, "a");
         var fv = attrs.MaybeAttribute(3, "b");
         var qualC = attrs.NewQualifier(null, 4, "c");
         fv.AddQualifier(qualC);
-        var cond = attrs.ConditionalAttribute(1, IInterpretable.NewConstValue(0, BoolT.True), tv, fv);
+        var cond = attrs.ConditionalAttribute(1, InterpretableUtils.NewConstValue(0, BoolT.True), tv, fv);
         var qualNeg1 = attrs.NewQualifier(null, 5, IntT.IntOf(-1));
         var qual1 = attrs.NewQualifier(null, 6, IntT.IntOf(1));
         cond.AddQualifier(qualNeg1);
@@ -276,17 +276,17 @@ internal class AttributesTest
     public virtual void AttributesConditionalAttrFalseBranch()
     {
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
-        var attrs = IAttributeFactory.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
+        var attrs = AttributeFactoryUtils.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
         var data = TestUtil.BindingsOf("a", TestUtil.MapOf(-1, new[] { 2, 42 }), "b",
             TestUtil.MapOf("c", TestUtil.MapOf(-1, new[] { 2, 42 })));
-        var vars = IActivation.NewActivation(data);
+        var vars = ActivationFactory.NewActivation(data);
 
         // (false ? a : b.c)[-1][1]
         var tv = attrs.AbsoluteAttribute(2, "a");
         var fv = attrs.MaybeAttribute(3, "b");
         var qualC = attrs.NewQualifier(null, 4, "c");
         fv.AddQualifier(qualC);
-        var cond = attrs.ConditionalAttribute(1, IInterpretable.NewConstValue(0, BoolT.False), tv, fv);
+        var cond = attrs.ConditionalAttribute(1, InterpretableUtils.NewConstValue(0, BoolT.False), tv, fv);
         var qualNeg1 = attrs.NewQualifier(null, 5, IntT.IntOf(-1));
         var qual1 = attrs.NewQualifier(null, 6, IntT.IntOf(1));
         cond.AddQualifier(qualNeg1);
@@ -302,21 +302,21 @@ internal class AttributesTest
     public virtual void AttributesConditionalAttrErrorUnknown()
     {
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
-        var attrs = IAttributeFactory.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
+        var attrs = AttributeFactoryUtils.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
 
         // err ? a : b
         var tv = attrs.AbsoluteAttribute(2, "a");
         var fv = attrs.MaybeAttribute(3, "b");
         var cond =
-            attrs.ConditionalAttribute(1, IInterpretable.NewConstValue(0, Err.NewErr("test error")), tv, fv);
-        var @out = cond.Resolve(IActivation.EmptyActivation());
+            attrs.ConditionalAttribute(1, InterpretableUtils.NewConstValue(0, Err.NewErr("test error")), tv, fv);
+        var @out = cond.Resolve(ActivationFactory.EmptyActivation());
         Assert.That(Cost.EstimateCost(fv).Min, Is.EqualTo(1L));
         Assert.That(Cost.EstimateCost(fv).Max, Is.EqualTo(1L));
 
         // unk ? a : b
         var condUnk =
-            attrs.ConditionalAttribute(1, IInterpretable.NewConstValue(0, UnknownT.UnknownOf(1)), tv, fv);
-        @out = condUnk.Resolve(IActivation.EmptyActivation());
+            attrs.ConditionalAttribute(1, InterpretableUtils.NewConstValue(0, UnknownT.UnknownOf(1)), tv, fv);
+        @out = condUnk.Resolve(ActivationFactory.EmptyActivation());
         Assert.That(@out, Is.InstanceOf(typeof(UnknownT)));
         Assert.That(Cost.EstimateCost(fv).Min, Is.EqualTo(1L));
         Assert.That(Cost.EstimateCost(fv).Max, Is.EqualTo(1L));
@@ -330,8 +330,8 @@ internal class AttributesTest
         var msg = new TestAllTypes();
         msg.SingleNestedMessage = nestedMsg;
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry(msg);
-        var attrs = IAttributeFactory.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
-        var vars = IActivation.NewActivation(TestUtil.BindingsOf("msg", msg));
+        var attrs = AttributeFactoryUtils.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
+        var vars = ActivationFactory.NewActivation(TestUtil.BindingsOf("msg", msg));
         var attr = attrs.AbsoluteAttribute(1, "msg");
         var opType = reg.FindType("google.api.expr.test.v1.proto3.TestAllTypes");
         Assert.That(opType, Is.Not.Null);
@@ -348,10 +348,10 @@ internal class AttributesTest
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         IAttributeFactory attrs =
             new CustAttrFactory(
-                IAttributeFactory.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg));
+                AttributeFactoryUtils.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg));
         var msg = new TestAllTypes.Types.NestedMessage();
         msg.Bb = 123;
-        var vars = IActivation.NewActivation(TestUtil.BindingsOf("msg", msg));
+        var vars = ActivationFactory.NewActivation(TestUtil.BindingsOf("msg", msg));
         var attr = attrs.AbsoluteAttribute(1, "msg");
         var type = new Type();
         type.MessageType = "google.api.expr.test.v1.proto3.TestAllTypes.NestedMessage";
@@ -368,9 +368,9 @@ internal class AttributesTest
     public virtual void AttributesMissingMsg()
     {
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
-        var attrs = IAttributeFactory.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
+        var attrs = AttributeFactoryUtils.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
         var any = Any.Pack(new TestAllTypes());
-        var vars = IActivation.NewActivation(TestUtil.BindingsOf("missing_msg", any));
+        var vars = ActivationFactory.NewActivation(TestUtil.BindingsOf("missing_msg", any));
 
         // missing_msg.field
         var attr = attrs.AbsoluteAttribute(1, "missing_msg");
@@ -385,7 +385,7 @@ internal class AttributesTest
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var attrs = AttributePattern.NewPartialAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
         var any = Any.Pack(new TestAllTypes());
-        IActivation vars = IActivation.NewPartialActivation(TestUtil.BindingsOf("missing_msg", any),
+        IActivation vars = ActivationFactory.NewPartialActivation(TestUtil.BindingsOf("missing_msg", any),
             AttributePattern.NewAttributePattern("missing_msg").QualString("field"));
 
         // missing_msg.field
@@ -429,7 +429,7 @@ internal class AttributesTest
     [TestCaseSource(nameof(AttributeStateTrackingTests))]
     public virtual void AttributeStateTracking(TestDef tc)
     {
-        var src = ISource.NewTextSource(tc.expr);
+        var src = SourceFactory.NewTextSource(tc.expr);
         var parsed = Parser.Parser.ParseAllMacros(src);
         Assert.That(parsed.HasErrors(), Is.False);
         var cont = Container.DefaultContainer;
@@ -440,13 +440,13 @@ internal class AttributesTest
         var checkResult = Checker.Checker.Check(parsed, src, env);
         if (parsed.HasErrors()) throw new ArgumentException(parsed.Errors.ToDisplayString());
 
-        var attrs = IAttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
-        var interp = IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
+        var attrs = AttributeFactoryUtils.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
+        var interp = InterpreterUtils.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
         // Show that program planning will now produce an error.
-        var st = IEvalState.NewEvalState();
-        var i = interp.NewInterpretable(checkResult.CheckedExpr, IInterpreter.Optimize(),
-            IInterpreter.TrackState(st))!;
-        var @in = IActivation.NewActivation(tc.@in);
+        var st = EvalStateFactory.NewEvalState();
+        var i = interp.NewInterpretable(checkResult.CheckedExpr, InterpreterUtils.Optimize(),
+            InterpreterUtils.TrackState(st))!;
+        var @in = ActivationFactory.NewActivation(tc.@in);
         var @out = i.Eval(@in);
         Assert.That(@out, Is.EqualTo(tc.@out));
         foreach (var iv in tc.state)
@@ -466,10 +466,10 @@ internal class AttributesTest
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         IAttributeFactory attrs =
             new CustAttrFactory(
-                IAttributeFactory.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg));
+                AttributeFactoryUtils.NewAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg));
         var msg = new TestAllTypes.Types.NestedMessage();
         msg.Bb = 123;
-        var vars = IActivation.NewActivation(TestUtil.BindingsOf("msg", msg));
+        var vars = ActivationFactory.NewActivation(TestUtil.BindingsOf("msg", msg));
         var attr = attrs.AbsoluteAttribute(1, "msg");
         var type = new Type();
         type.MessageType = "google.api.expr.test.v1.proto3.TestAllTypes.NestedMessage";

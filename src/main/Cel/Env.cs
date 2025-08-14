@@ -102,7 +102,7 @@ public sealed class Env
                 if (d.DeclKindCase == DeclKindCase.Ident)
                     unknownPatterns.Add(AttributePattern.NewAttributePattern(d.Name));
 
-            return Cel.PartialVars(IActivation.EmptyActivation(),
+            return Cel.PartialVars(ActivationFactory.EmptyActivation(),
                 ((List<AttributePattern>)unknownPatterns).ToArray());
         }
     }
@@ -119,7 +119,7 @@ public sealed class Env
     public static Env NewEnv(params EnvOption[] opts)
     {
         var stdOpts = new List<EnvOption>(opts.Length + 1);
-        stdOpts.Add(ILibrary.StdLib());
+        stdOpts.Add(LibraryOptions.StdLib());
         stdOpts.AddRange(opts);
         return NewCustomEnv(stdOpts.ToArray());
     }
@@ -196,7 +196,7 @@ public sealed class Env
         if (chkErr != null)
         {
             var errs = new Errors(ast.Source);
-            errs.ReportError(ILocation.NoLocation, "{0}", chkErr.ToString());
+            errs.ReportError(LocationFactory.NoLocation, "{0}", chkErr.ToString());
             return new AstIssuesTuple(null, Issues.NewIssues(errs));
         }
 
@@ -225,7 +225,7 @@ public sealed class Env
     /// </summary>
     public AstIssuesTuple Compile(string txt)
     {
-        return CompileSource(ISource.NewTextSource(txt));
+        return CompileSource(SourceFactory.NewTextSource(txt));
     }
 
     /// <summary>
@@ -327,7 +327,7 @@ public sealed class Env
     /// </summary>
     public AstIssuesTuple Parse(string txt)
     {
-        var src = ISource.NewTextSource(txt);
+        var src = SourceFactory.NewTextSource(txt);
         return ParseSource(src);
     }
 

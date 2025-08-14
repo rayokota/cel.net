@@ -789,10 +789,10 @@ public sealed class Checker
                     break;
                 }
 
-            return ILocation.NewLocation(line, col);
+            return LocationFactory.NewLocation(line, col);
         }
 
-        return ILocation.NoLocation;
+        return LocationFactory.NoLocation;
     }
 
     internal static Reference NewIdentReference(string name, Constant? value)

@@ -204,7 +204,7 @@ public class StringsLib : ILibrary
         get
         {
             IList<EnvOption> list = new List<EnvOption>();
-            var option = IEnvOption.Declarations(
+            var option = EnvOptions.Declarations(
                 Decls.NewFunction(CHAR_AT,
                     Decls.NewInstanceOverload("string_char_at_int",
                         new List<Type> { Decls.String, Decls.Int }, Decls.String)),
@@ -264,7 +264,7 @@ public class StringsLib : ILibrary
         get
         {
             IList<ProgramOption> list = new List<ProgramOption>();
-            var functions = IProgramOption.Functions(
+            var functions = global::Cel.ProgramOptions.Functions(
                 Overload.Binary(CHAR_AT, Guards.CallInStrIntOutStr(CharAt)),
                 Overload.NewOverload(INDEX_OF, Trait.None, null, Guards.CallInStrStrOutInt(IndexOf),
                     Guards.CallInStrStrIntOutInt(IndexOfOffset)),
@@ -295,7 +295,7 @@ public class StringsLib : ILibrary
 
     public static EnvOption Strings()
     {
-        return ILibrary.Lib(new StringsLib());
+        return LibraryOptions.Lib(new StringsLib());
     }
 
     internal static string CharAt(string str, int index)
@@ -421,7 +421,7 @@ public class StringsLib : ILibrary
     {
         // TODO fix
         //return str.Split(Pattern.quote(separator), true);
-        return str.Split(separator);
+        return str.Split(new[] { separator }, System.StringSplitOptions.None);
     }
 
     /// <summary>

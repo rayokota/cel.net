@@ -82,12 +82,25 @@ public interface IAttributeFactory
     ///     capable of resolving types by simple names and qualify the values using the supported qualifier
     ///     types: bool, int, string, and uint.
     /// </summary>
-    static IAttributeFactory NewAttributeFactory(Container cont, TypeAdapter a, ITypeProvider p)
+    
+
+    
+
+    /// <summary>
+    ///     RefResolve attempts to convert the value to a CEL value and then uses reflection methods to try
+    ///     and resolve the qualifier.
+    /// </summary>
+    
+}
+
+public static class AttributeFactoryUtils
+{
+    public static IAttributeFactory NewAttributeFactory(Container cont, TypeAdapter a, ITypeProvider p)
     {
         return new AttrFactory(cont, a, p);
     }
 
-    static IQualifier NewQualifierStatic(TypeAdapter adapter, long id, object v)
+    public static IQualifier NewQualifierStatic(TypeAdapter adapter, long id, object v)
     {
         if (v is IAttribute)
             return new AttrQualifier(id, (IAttribute)v);
@@ -155,15 +168,10 @@ public interface IAttributeFactory
             return new BoolQualifier(id, b, Types.BoolOf(b), adapter);
         }
 
-        throw new InvalidOperationException(string.Format("invalid qualifier type: {0}",
-            v.GetType()));
+        throw new InvalidOperationException(string.Format("invalid qualifier type: {0}", v.GetType()));
     }
 
-    /// <summary>
-    ///     RefResolve attempts to convert the value to a CEL value and then uses reflection methods to try
-    ///     and resolve the qualifier.
-    /// </summary>
-    static IVal RefResolve(TypeAdapter adapter, IVal idx, object obj)
+    public static IVal RefResolve(TypeAdapter adapter, IVal idx, object obj)
     {
         var celVal = adapter(obj);
         if (celVal is IMapper)
@@ -183,9 +191,6 @@ public interface IAttributeFactory
 
         if (UnknownT.IsUnknown(celVal)) return celVal;
 
-        // TODO: If the types.Err value contains more than just an error message at some point in the
-        //  future, then it would be reasonable to return error values as ref.Val types rather than
-        //  simple go error types.
         Err.ThrowErrorAsIllegalStateException(celVal);
         return Err.NoSuchOverload(celVal, "ref-resolve", null);
     }
@@ -344,7 +349,7 @@ public sealed class AttrFactory : IAttributeFactory
             }
         }
 
-        return IAttributeFactory.NewQualifierStatic(adapter, qualId, val);
+        return AttributeFactoryUtils.NewQualifierStatic(adapter, qualId, val);
     }
 
     public override string ToString()
@@ -397,7 +402,7 @@ public sealed class AbsoluteAttribute : INamespacedAttribute, ICoster
 
         min++; // For object retrieval.
         max++;
-        return ICoster.CostOf(min, max);
+        return Interpreter.Cost.Of(min, max);
     }
 
     /// <summary>
@@ -589,7 +594,7 @@ public sealed class ConditionalAttribute : IAttribute, ICoster
         var t = Interpreter.Cost.EstimateCost(truthy);
         var f = Interpreter.Cost.EstimateCost(falsy);
         var e = Interpreter.Cost.EstimateCost(expr);
-        return ICoster.CostOf(e.Min + Math.Min(t.Min, f.Min), e.Max + Math.Max(t.Max, f.Max));
+        return Interpreter.Cost.Of(e.Min + Math.Min(t.Min, f.Min), e.Max + Math.Max(t.Max, f.Max));
     }
 
     /// <summary>
@@ -753,7 +758,7 @@ public sealed class MaybeAttribute : ICoster, IAttribute
             max = Math.Max(max, ac.Max);
         }
 
-        return ICoster.CostOf(min, max);
+        return Interpreter.Cost.Of(min, max);
     }
 
     /// <summary>
@@ -853,7 +858,7 @@ public sealed class RelativeAttribute : ICoster, IAttribute
             max += q.Max;
         }
 
-        return ICoster.CostOf(min, max);
+        return Interpreter.Cost.Of(min, max);
     }
 
     /// <summary>
@@ -958,7 +963,7 @@ public sealed class StringQualifier : ICoster, IConstantQualifierEquator
         }
         else
         {
-            return IAttributeFactory.RefResolve(adapter, celValue, obj);
+            return AttributeFactoryUtils.RefResolve(adapter, celValue, obj);
         }
 
         return obj;
@@ -1065,7 +1070,7 @@ public sealed class IntQualifier : ICoster, IConstantQualifierEquator
 
         if (UnknownT.IsUnknown(obj)) return obj;
 
-        return IAttributeFactory.RefResolve(adapter, celValue, obj);
+        return AttributeFactoryUtils.RefResolve(adapter, celValue, obj);
     }
 
     /// <summary>
@@ -1156,7 +1161,7 @@ public sealed class UintQualifier : ICoster, IConstantQualifierEquator
 
         if (UnknownT.IsUnknown(obj)) return obj;
 
-        return IAttributeFactory.RefResolve(adapter, celValue, obj);
+        return AttributeFactoryUtils.RefResolve(adapter, celValue, obj);
     }
 
     /// <summary>
@@ -1233,7 +1238,7 @@ public sealed class BoolQualifier : ICoster, IConstantQualifierEquator
         }
         else
         {
-            return IAttributeFactory.RefResolve(adapter, celValue, obj);
+            return AttributeFactoryUtils.RefResolve(adapter, celValue, obj);
         }
 
         return obj;

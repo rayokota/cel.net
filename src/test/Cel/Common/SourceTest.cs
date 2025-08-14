@@ -30,7 +30,7 @@ internal class SourceTest
     {
         var contents = "example content\nsecond line";
 
-        var source = ISource.NewStringSource(contents, "description-test");
+        var source = SourceFactory.NewStringSource(contents, "description-test");
 
         Assert.That(source.Content(), Is.EqualTo(contents));
         Assert.That(source.Description(), Is.EqualTo("description-test"));
@@ -46,7 +46,7 @@ internal class SourceTest
     [Test]
     public virtual void EmptyContents()
     {
-        var source = ISource.NewStringSource("", "empty-test");
+        var source = SourceFactory.NewStringSource("", "empty-test");
 
         Assert.That(source.Snippet(1), Is.EqualTo(""));
 
@@ -60,7 +60,7 @@ internal class SourceTest
     [Test]
     public virtual void SnippetSingleline()
     {
-        var source = ISource.NewStringSource("hello, world", "one-line-test");
+        var source = SourceFactory.NewStringSource("hello, world", "one-line-test");
 
         Assert.That(source.Snippet(1), Is.EqualTo("hello, world"));
 
@@ -76,7 +76,7 @@ internal class SourceTest
     {
         IList<string> testLines = new List<string> { "", "", "hello", "world", "", "my", "bub", "", "" };
 
-        var source = ISource.NewStringSource(string.Join("\n", testLines), "mulit-line-test");
+        var source = SourceFactory.NewStringSource(string.Join("\n", testLines), "mulit-line-test");
 
         Assert.That(source.Snippet(testLines.Count + 1), Is.Null);
         Assert.That(source.Snippet(0), Is.Null);
@@ -97,15 +97,15 @@ internal class SourceTest
     public virtual void LocationOffset()
     {
         var contents = "c.d &&\n\t b.c.arg(10) &&\n\t test(10)";
-        var source = ISource.NewStringSource(contents, "offset-test");
+        var source = SourceFactory.NewStringSource(contents, "offset-test");
         Assert.That(source.LineOffsets(), Is.EquivalentTo(new List<int> { 7, 24, 35 }));
 
         // Ensure that selecting a set of characters across multiple lines works as
         // expected.
-        var charStart = source.LocationOffset(ILocation.NewLocation(1, 2));
-        var charEnd = source.LocationOffset(ILocation.NewLocation(3, 2));
+        var charStart = source.LocationOffset(LocationFactory.NewLocation(1, 2));
+        var charEnd = source.LocationOffset(LocationFactory.NewLocation(3, 2));
         Assert.That(contents.Substring(charStart, charEnd - charStart), Is.EqualTo("d &&\n\t b.c.arg(10) &&\n\t "));
-        Assert.That(source.LocationOffset(ILocation.NewLocation(4, 0)), Is.EqualTo(-1));
+        Assert.That(source.LocationOffset(LocationFactory.NewLocation(4, 0)), Is.EqualTo(-1));
     }
 
     /// <summary>

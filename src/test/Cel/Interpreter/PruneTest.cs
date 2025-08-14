@@ -56,15 +56,15 @@ internal class PruneTest
     [TestCaseSource(nameof(PruneTestCases))]
     public virtual void Prune(TestCase tc)
     {
-        var parseResult = Parser.Parser.ParseAllMacros(ISource.NewStringSource(tc.expr, "<input>"));
+        var parseResult = Parser.Parser.ParseAllMacros(SourceFactory.NewStringSource(tc.expr, "<input>"));
         if (parseResult.HasErrors()) Assert.Fail(parseResult.Errors.ToDisplayString());
 
-        var state = IEvalState.NewEvalState();
+        var state = EvalStateFactory.NewEvalState();
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var attrs = AttributePattern.NewPartialAttributeFactory(Container.DefaultContainer, reg.ToTypeAdapter(), reg);
-        var interp = IInterpreter.NewStandardInterpreter(Container.DefaultContainer, reg, reg.ToTypeAdapter(), attrs);
+        var interp = InterpreterUtils.NewStandardInterpreter(Container.DefaultContainer, reg, reg.ToTypeAdapter(), attrs);
 
-        var interpretable = interp.NewUncheckedInterpretable(parseResult.Expr!, IInterpreter.ExhaustiveEval(state))!;
+        var interpretable = interp.NewUncheckedInterpretable(parseResult.Expr!, InterpreterUtils.ExhaustiveEval(state))!;
         interpretable.Eval(TestActivation(tc.@in));
         var newExpr = AstPruner.PruneAst(parseResult.Expr!, state);
         var actual = Unparser.Unparse(newExpr!, null);
@@ -80,14 +80,14 @@ internal class PruneTest
             pats[i] = AttributePattern.NewAttributePattern(v);
         }
 
-        return IActivation.NewPartialActivation(new Dictionary<string, object>(), pats);
+        return ActivationFactory.NewPartialActivation(new Dictionary<string, object>(), pats);
     }
 
     internal virtual IActivation TestActivation(object @in)
     {
-        if (@in == null) return IActivation.EmptyActivation();
+        if (@in == null) return ActivationFactory.EmptyActivation();
 
-        return IActivation.NewActivation(@in);
+        return ActivationFactory.NewActivation(@in);
     }
 
     internal class TestCase

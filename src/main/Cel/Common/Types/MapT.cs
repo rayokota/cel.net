@@ -147,7 +147,7 @@ public abstract class MapT : BaseVal, IMapper, IContainer, IIndexer, IIterableT,
 
         public override IIteratorT Iterator()
         {
-            return IIteratorT.Iterator(adapter, map.Keys.GetEnumerator());
+            return IteratorFactory.Iterator(adapter, map.Keys.GetEnumerator());
         }
 
         public override IVal Equal(IVal other)

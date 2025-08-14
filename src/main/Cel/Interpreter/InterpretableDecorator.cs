@@ -28,20 +28,16 @@ public delegate IInterpretable? InterpretableDecorator(IInterpretable? i);
 public interface IInterpretableDecorator
 {
     IInterpretable Decorate(IInterpretable i);
+}
 
-    /// <summary>
-    ///     evalObserver is a functional interface that accepts an expression id and an observed value.
-    /// </summary>
-    /// <summary>
-    ///     decObserveEval records evaluation state into an EvalState object.
-    /// </summary>
-    static InterpretableDecorator DecObserveEval(EvalObserver observer)
+public static class InterpretableDecoratorUtils
+{
+    public static InterpretableDecorator DecObserveEval(EvalObserver observer)
     {
         return i =>
         {
             if (i is EvalWatch || i is EvalWatchAttr ||
                 i is EvalWatchConst)
-                // these instruction are already watching, return straight-away.
                 return i;
 
             if (i is IInterpretableAttribute)
@@ -54,11 +50,7 @@ public interface IInterpretableDecorator
         };
     }
 
-    /// <summary>
-    ///     decDisableShortcircuits ensures that all branches of an expression will be evaluated, no
-    ///     short-circuiting.
-    /// </summary>
-    static InterpretableDecorator DecDisableShortcircuits()
+    public static InterpretableDecorator DecDisableShortcircuits()
     {
         return i =>
         {
@@ -93,19 +85,7 @@ public interface IInterpretableDecorator
         };
     }
 
-    /// <summary>
-    ///     decOptimize optimizes the program plan by looking for common evaluation patterns and
-    ///     conditionally precomputating the result.
-    ///     <ul>
-    ///         <li>
-    ///             build list and map values with constant elements.
-    ///         </li>
-    ///         <li>
-    ///             convert 'in' operations to set membership tests if possible.
-    ///         </li>
-    ///     </ul>
-    /// </summary>
-    static InterpretableDecorator DecOptimize()
+    public static InterpretableDecorator DecOptimize()
     {
         return i =>
         {
@@ -125,28 +105,28 @@ public interface IInterpretableDecorator
         };
     }
 
-    static IInterpretable MaybeOptimizeConstUnary(IInterpretable i, IInterpretableCall call)
+    public static IInterpretable MaybeOptimizeConstUnary(IInterpretable i, IInterpretableCall call)
     {
         var args = call.Args();
         if (args.Length != 1) return i;
 
         if (!(args[0] is IInterpretableConst)) return i;
 
-        var val = call.Eval(IActivation.EmptyActivation());
+        var val = call.Eval(ActivationFactory.EmptyActivation());
         Err.ThrowErrorAsIllegalStateException(val);
-        return IInterpretable.NewConstValue(call.Id(), val);
+        return InterpretableUtils.NewConstValue(call.Id(), val);
     }
 
-    static IInterpretable MaybeBuildListLiteral(IInterpretable i, EvalList l)
+    public static IInterpretable MaybeBuildListLiteral(IInterpretable i, EvalList l)
     {
         foreach (var elem in l.elems)
             if (!(elem is IInterpretableConst))
                 return i;
 
-        return IInterpretable.NewConstValue(l.Id(), l.Eval(IActivation.EmptyActivation()));
+        return InterpretableUtils.NewConstValue(l.Id(), l.Eval(ActivationFactory.EmptyActivation()));
     }
 
-    static IInterpretable MaybeBuildMapLiteral(IInterpretable i, EvalMap mp)
+    public static IInterpretable MaybeBuildMapLiteral(IInterpretable i, EvalMap mp)
     {
         for (var idx = 0; idx < mp.keys.Length; idx++)
         {
@@ -155,7 +135,7 @@ public interface IInterpretableDecorator
             if (!(mp.vals[idx] is IInterpretableConst)) return i;
         }
 
-        return IInterpretable.NewConstValue(mp.Id(), mp.Eval(IActivation.EmptyActivation()));
+        return InterpretableUtils.NewConstValue(mp.Id(), mp.Eval(ActivationFactory.EmptyActivation()));
     }
 
     /// <summary>
@@ -170,7 +150,7 @@ public interface IInterpretableDecorator
     ///         </li>
     ///     </ul>
     /// </summary>
-    static IInterpretable MaybeOptimizeSetMembership(IInterpretable i, IInterpretableCall inlist)
+    public static IInterpretable MaybeOptimizeSetMembership(IInterpretable i, IInterpretableCall inlist)
     {
         var args = inlist.Args();
         var lhs = args[0];
@@ -181,7 +161,7 @@ public interface IInterpretableDecorator
         // When the incoming binary call is flagged with as the InList overload, the value will
         // always be convertible to a `traits.Lister` type.
         var list = (ILister)l.Value();
-        if (list.Size() == IntT.IntZero) return IInterpretable.NewConstValue(inlist.Id(), BoolT.False);
+        if (list.Size() == IntT.IntZero) return InterpretableUtils.NewConstValue(inlist.Id(), BoolT.False);
 
         var it = list.Iterator();
         IType? typ = null;

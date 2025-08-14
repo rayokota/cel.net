@@ -40,17 +40,23 @@ public interface IDispatcher
     /// <summary>
     ///     NewDispatcher returns an empty Dispatcher instance.
     /// </summary>
-    static IDispatcher NewDispatcher()
-    {
-        return new DefaultDispatcher(null, new Dictionary<string, Overload>());
-    }
+    
 
     /// <summary>
     ///     ExtendDispatcher returns a Dispatcher which inherits the overloads of its parent, and provides
     ///     an isolation layer between built-ins and extension functions which is useful for forward
     ///     compatibility.
     /// </summary>
-    static IDispatcher ExtendDispatcher(IDispatcher parent)
+}
+
+public static class DispatcherFactory
+{
+    public static IDispatcher NewDispatcher()
+    {
+        return new DefaultDispatcher(null, new Dictionary<string, Overload>());
+    }
+
+    public static IDispatcher ExtendDispatcher(IDispatcher parent)
     {
         return new DefaultDispatcher(parent, new Dictionary<string, Overload>());
     }

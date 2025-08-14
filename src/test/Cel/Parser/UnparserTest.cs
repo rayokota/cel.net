@@ -94,13 +94,13 @@ public class UnparserTest
     {
         var parser = new Parser(new Options.Builder().Build());
 
-        var p = parser.Parse(ISource.NewTextSource(@in));
+        var p = parser.Parse(SourceFactory.NewTextSource(@in));
         if (p.HasErrors()) Assert.Fail(p.Errors.ToDisplayString());
 
         var @out = Unparser.Unparse(p.Expr!, p.SourceInfo);
         Assert.That(@out, Is.EqualTo(@in));
 
-        var p2 = parser.Parse(ISource.NewTextSource(@out));
+        var p2 = parser.Parse(SourceFactory.NewTextSource(@out));
         if (p2.HasErrors()) Assert.Fail(p2.Errors.ToDisplayString());
 
         var before = p.Expr;
@@ -161,12 +161,12 @@ public class UnparserTest
     {
         var parser = new Parser(new Options.Builder().Build());
 
-        var p = parser.Parse(ISource.NewTextSource(@in[0]));
+        var p = parser.Parse(SourceFactory.NewTextSource(@in[0]));
         if (p.HasErrors()) Assert.Fail(p.Errors.ToDisplayString());
         var @out = Unparser.Unparse(p.Expr!, p.SourceInfo);
         Assert.That(@out, Is.EqualTo(@in[1]));
 
-        var p2 = parser.Parse(ISource.NewTextSource(@out));
+        var p2 = parser.Parse(SourceFactory.NewTextSource(@out));
         if (p2.HasErrors()) Assert.Fail(p2.Errors.ToDisplayString());
         var before = p.Expr;
         var after = p2.Expr;

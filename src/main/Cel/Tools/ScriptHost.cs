@@ -116,11 +116,11 @@ public sealed class ScriptHost
         public Script Build()
         {
             IList<EnvOption> envOptions = new List<EnvOption>();
-            envOptions.Add(ILibrary.StdLib());
-            envOptions.Add(IEnvOption.Declarations(declarations));
-            envOptions.Add(IEnvOption.Types(types));
-            if (!ReferenceEquals(container, null)) envOptions.Add(IEnvOption.Container(container));
-            ((List<EnvOption>)envOptions).AddRange(libraries.Select(l => ILibrary.Lib(l)).ToList());
+            envOptions.Add(LibraryOptions.StdLib());
+            envOptions.Add(EnvOptions.Declarations(declarations));
+            envOptions.Add(EnvOptions.Types(types));
+            if (!ReferenceEquals(container, null)) envOptions.Add(EnvOptions.Container(container));
+            ((List<EnvOption>)envOptions).AddRange(libraries.Select(l => LibraryOptions.Lib(l)).ToList());
 
             var env = Env.NewCustomEnv(outerInstance.registry, envOptions);
 
@@ -132,7 +132,7 @@ public sealed class ScriptHost
             if (astIss.HasIssues()) throw new ScriptCreateException("check failed", astIss.Issues);
 
             IList<ProgramOption> programOptions = new List<ProgramOption>();
-            if (!outerInstance.disableOptimize) programOptions.Add(IProgramOption.EvalOptions(EvalOption.OptOptimize));
+            if (!outerInstance.disableOptimize) programOptions.Add(ProgramOptions.EvalOptions(EvalOption.OptOptimize));
 
             var prg = env.Program(ast, ((List<ProgramOption>)programOptions).ToArray());
 

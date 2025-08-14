@@ -48,7 +48,11 @@ public interface IEvalState
     ///     NewEvalState returns an EvalState instanced used to observe the intermediate evaluations of an
     ///     expression.
     /// </summary>
-    static IEvalState NewEvalState()
+}
+
+public static class EvalStateFactory
+{
+    public static IEvalState NewEvalState()
     {
         return new EvalStateImpl();
     }

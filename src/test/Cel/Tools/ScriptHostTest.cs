@@ -117,7 +117,7 @@ internal class MyLib : ILibrary
     public IList<EnvOption> CompileOptions =>
         new List<EnvOption>
         {
-            IEnvOption.Declarations(Decls.NewFunction("foo",
+            EnvOptions.Declarations(Decls.NewFunction("foo",
                 Decls.NewOverload("foo_void", new List<Type>(), Decls.Int)))
         };
 
@@ -125,5 +125,5 @@ internal class MyLib : ILibrary
     ///     ProgramOptions returns function implementations for the standard CEL functions.
     /// </summary>
     public IList<ProgramOption> ProgramOptions =>
-        new List<ProgramOption> { IProgramOption.Functions(Overload.Function("foo", e => IntT.IntOf(42))) };
+        new List<ProgramOption> { global::Cel.ProgramOptions.Functions(Overload.Function("foo", e => IntT.IntOf(42))) };
 }

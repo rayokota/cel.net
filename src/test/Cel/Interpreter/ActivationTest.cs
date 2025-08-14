@@ -27,17 +27,17 @@ public class ActivationTest
     [Test]
     public virtual void Activation()
     {
-        var act = IActivation.NewActivation(TestUtil.BindingsOf("a", BoolT.True));
+        var act = ActivationFactory.NewActivation(TestUtil.BindingsOf("a", BoolT.True));
         Assert.That(act, Is.Not.Null);
-        Assert.That(IActivation.NewActivation(act), Is.Not.Null);
-        Assert.That(() => IActivation.NewActivation(""),
+        Assert.That(ActivationFactory.NewActivation(act), Is.Not.Null);
+        Assert.That(() => ActivationFactory.NewActivation(""),
             Throws.Exception.TypeOf(typeof(ArgumentException)));
     }
 
     [Test]
     public virtual void Resolve()
     {
-        var activation = IActivation.NewActivation(TestUtil.BindingsOf("a", BoolT.True));
+        var activation = ActivationFactory.NewActivation(TestUtil.BindingsOf("a", BoolT.True));
         Assert.That(activation.ResolveName("a"), Is.SameAs(BoolT.True));
     }
 
@@ -52,7 +52,7 @@ public class ActivationTest
         };
         IDictionary<string, object> map = new Dictionary<string, object>();
         map["now"] = now;
-        var a = IActivation.NewActivation(map);
+        var a = ActivationFactory.NewActivation(map);
         var first = a.ResolveName("now");
         var second = a.ResolveName("now");
         Assert.That(first, Is.SameAs(second));
@@ -65,13 +65,13 @@ public class ActivationTest
         IDictionary<string, object> parentMap = new Dictionary<string, object>();
         parentMap["a"] = StringT.StringOf("world");
         parentMap["b"] = IntT.IntOf(-42);
-        var parent = IActivation.NewActivation(parentMap);
+        var parent = ActivationFactory.NewActivation(parentMap);
         // compose the child such that it shadows the parent
         IDictionary<string, object> childMap = new Dictionary<string, object>();
         childMap["a"] = BoolT.True;
         childMap["c"] = StringT.StringOf("universe");
-        var child = IActivation.NewActivation(childMap);
-        var combined = IActivation.NewHierarchicalActivation(parent, child);
+        var child = ActivationFactory.NewActivation(childMap);
+        var combined = ActivationFactory.NewHierarchicalActivation(parent, child);
 
         // Resolve the shadowed child value.
         Assert.That(combined.ResolveName("a"), Is.SameAs(BoolT.True));

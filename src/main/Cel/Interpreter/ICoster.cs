@@ -22,18 +22,13 @@ namespace Cel.Interpreter;
 public interface ICoster
 {
     Cost Cost();
-
-    static Cost CostOf(long min, long max)
-    {
-        return new Cost(min, max);
-    }
 }
 
 public sealed class Cost
 {
-    public static readonly Cost Unknown = ICoster.CostOf(0, long.MaxValue);
-    public static readonly Cost None = ICoster.CostOf(0, 0);
-    public static readonly Cost OneOne = ICoster.CostOf(1, 1);
+    public static readonly Cost Unknown = Of(0, long.MaxValue);
+    public static readonly Cost None = Of(0, 0);
+    public static readonly Cost OneOne = Of(1, 1);
 
     internal Cost(long min, long max)
     {
@@ -53,6 +48,11 @@ public sealed class Cost
         if (i is ICoster) return ((ICoster)i).Cost();
 
         return Unknown;
+    }
+
+    public static Cost Of(long min, long max)
+    {
+        return new Cost(min, max);
     }
 
     public override bool Equals(object? o)

@@ -26,44 +26,17 @@ public interface ISource
     /// <summary>
     ///     NewTextSource creates a new Source from the input text string.
     /// </summary>
-    static ISource NewTextSource(string text)
-    {
-        return NewStringSource(text, "<input>");
-    }
+    
 
     /// <summary>
     ///     NewStringSource creates a new Source from the given contents and description.
     /// </summary>
-    static ISource NewStringSource(string contents, string description)
-    {
-        // Compute line offsets up front as they are referred to frequently.
-        IList<int> offsets = new List<int>();
-        for (var i = 0; i <= contents.Length;)
-        {
-            if (i > 0)
-                // don't add '0' for the first line, it's implicit
-                offsets.Add(i);
-
-            var nl = contents.IndexOf('\n', i);
-            if (nl == -1)
-            {
-                offsets.Add(contents.Length + 1);
-                break;
-            }
-
-            i = nl + 1;
-        }
-
-        return new SourceImpl(contents, description, offsets);
-    }
+    
 
     /// <summary>
     ///     NewInfoSource creates a new Source from a SourceInfo.
     /// </summary>
-    static ISource NewInfoSource(SourceInfo info)
-    {
-        return new SourceImpl("", info.Location, info.LineOffsets, info.Positions);
-    }
+    
 
     /// <summary>
     ///     Content returns the source content represented as a string. Examples contents are the single
@@ -154,7 +127,7 @@ internal sealed class SourceImpl : ISource
 
     public ILocation NewLocation(int line, int col)
     {
-        return ILocation.NewLocation(line, col);
+        return LocationFactory.NewLocation(line, col);
     }
 
     public ILocation OffsetLocation(int offset)
@@ -176,7 +149,7 @@ internal sealed class SourceImpl : ISource
         else
             lineOffset = lineOffsets[line - 2];
 
-        return ILocation.NewLocation(line, offset - lineOffset);
+        return LocationFactory.NewLocation(line, offset - lineOffset);
     }
 
     public string? Snippet(int line)

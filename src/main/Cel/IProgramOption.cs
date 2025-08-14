@@ -21,7 +21,9 @@ namespace Cel;
 
 public delegate Prog ProgramOption(Prog prog);
 
-public interface IProgramOption
+public interface IProgramOption { }
+
+public static class ProgramOptions
 {
     /// <summary>
     ///     CustomDecorator appends an InterpreterDecorator to the program.
@@ -62,7 +64,7 @@ public interface IProgramOption
     {
         return p =>
         {
-            p.defaultVars = IActivation.NewActivation(vars);
+            p.defaultVars = ActivationFactory.NewActivation(vars);
             return p;
         };
     }

@@ -211,27 +211,27 @@ internal class InterpreterTest
                 .Out(StringT.StringOf("foo")),
             new TestCase(InterpreterTestCase.cond_bad_type).Expr("'cows' ? false : 17").Err("no such overload")
                 .Unchecked(),
-            new TestCase(InterpreterTestCase.and_false_1st).Expr("false && true").Cost(ICoster.CostOf(0, 1))
-                .ExhaustiveCost(ICoster.CostOf(1, 1)).Out(BoolT.False),
-            new TestCase(InterpreterTestCase.and_false_2nd).Expr("true && false").Cost(ICoster.CostOf(0, 1))
-                .ExhaustiveCost(ICoster.CostOf(1, 1)).Out(BoolT.False),
+            new TestCase(InterpreterTestCase.and_false_1st).Expr("false && true").Cost(Cost.Of(0, 1))
+                .ExhaustiveCost(Cost.Of(1, 1)).Out(BoolT.False),
+            new TestCase(InterpreterTestCase.and_false_2nd).Expr("true && false").Cost(Cost.Of(0, 1))
+                .ExhaustiveCost(Cost.Of(1, 1)).Out(BoolT.False),
             new TestCase(InterpreterTestCase.and_error_1st_false).Expr("1/0 != 0 && false")
-                .Cost(ICoster.CostOf(2, 3)).ExhaustiveCost(ICoster.CostOf(3, 3)).Out(BoolT.False),
+                .Cost(Cost.Of(2, 3)).ExhaustiveCost(Cost.Of(3, 3)).Out(BoolT.False),
             new TestCase(InterpreterTestCase.and_error_2nd_false).Expr("false && 1/0 != 0")
-                .Cost(ICoster.CostOf(0, 3)).ExhaustiveCost(ICoster.CostOf(3, 3)).Out(BoolT.False),
+                .Cost(Cost.Of(0, 3)).ExhaustiveCost(Cost.Of(3, 3)).Out(BoolT.False),
             new TestCase(InterpreterTestCase.and_error_1st_error).Expr("1/0 != 0 && true")
-                .Cost(ICoster.CostOf(2, 3)).ExhaustiveCost(ICoster.CostOf(3, 3)).Err("divide by zero"),
+                .Cost(Cost.Of(2, 3)).ExhaustiveCost(Cost.Of(3, 3)).Err("divide by zero"),
             new TestCase(InterpreterTestCase.and_error_2nd_error).Expr("true && 1/0 != 0")
-                .Cost(ICoster.CostOf(0, 3)).ExhaustiveCost(ICoster.CostOf(3, 3)).Err("divide by zero"),
-            new TestCase(InterpreterTestCase.call_no_args).Expr("zero()").Cost(ICoster.CostOf(1, 1)).Unchecked()
+                .Cost(Cost.Of(0, 3)).ExhaustiveCost(Cost.Of(3, 3)).Err("divide by zero"),
+            new TestCase(InterpreterTestCase.call_no_args).Expr("zero()").Cost(Cost.Of(1, 1)).Unchecked()
                 .Funcs(Overload.Function("zero", args => IntT.IntZero)).Out(IntT.IntZero),
-            new TestCase(InterpreterTestCase.call_one_arg).Expr("neg(1)").Cost(ICoster.CostOf(1, 1)).Unchecked()
+            new TestCase(InterpreterTestCase.call_one_arg).Expr("neg(1)").Cost(Cost.Of(1, 1)).Unchecked()
                 .Funcs(Overload.Unary("neg", Trait.NegatorType, arg => ((INegater)arg).Negate())).Out(IntT.IntNegOne),
-            new TestCase(InterpreterTestCase.call_two_arg).Expr("b'abc'.concat(b'def')").Cost(ICoster.CostOf(1, 1))
+            new TestCase(InterpreterTestCase.call_two_arg).Expr("b'abc'.concat(b'def')").Cost(Cost.Of(1, 1))
                 .Unchecked().Funcs(Overload.Binary("concat", Trait.AdderType, (lhs, rhs) => ((IAdder)lhs).Add(rhs)))
                 .Out(new[] { (byte)'a', (byte)'b', (byte)'c', (byte)'d', (byte)'e', (byte)'f' }),
             new TestCase(InterpreterTestCase.call_varargs).Expr("addall(a, b, c, d) == 10")
-                .Cost(ICoster.CostOf(6, 6)).Unchecked().Funcs(Overload.Function("addall", Trait.AdderType, args =>
+                .Cost(Cost.Of(6, 6)).Unchecked().Funcs(Overload.Function("addall", Trait.AdderType, args =>
                 {
                     var val = 0;
                     foreach (var arg in args) val += (int)arg.IntValue();
@@ -239,7 +239,7 @@ internal class InterpreterTest
                     return IntT.IntOf(val);
                 })).In("a", 1, "b", 2, "c", 3, "d", 4),
             new TestCase(InterpreterTestCase.call_ns_func).Expr("base64.encode('hello')")
-                .Cost(ICoster.CostOf(1, 1))
+                .Cost(Cost.Of(1, 1))
                 .Env(Decls.NewFunction("base64.encode",
                     new List<Decl.Types.FunctionDecl.Types.Overload>
                     {
@@ -248,10 +248,10 @@ internal class InterpreterTest
                     })).Funcs(Overload.Unary("base64.encode", Base64Encode),
                     Overload.Unary("base64_encode_string", Base64Encode)).Out("aGVsbG8="),
             new TestCase(InterpreterTestCase.call_ns_func_unchecked).Expr("base64.encode('hello')")
-                .Cost(ICoster.CostOf(1, 1)).Unchecked()
+                .Cost(Cost.Of(1, 1)).Unchecked()
                 .Funcs(Overload.Unary("base64.encode", Base64Encode)).Out("aGVsbG8="),
             new TestCase(InterpreterTestCase.call_ns_func_in_pkg).Container("base64").Expr("encode('hello')")
-                .Cost(ICoster.CostOf(1, 1))
+                .Cost(Cost.Of(1, 1))
                 .Env(Decls.NewFunction("base64.encode",
                     new List<Decl.Types.FunctionDecl.Types.Overload>
                     {
@@ -260,14 +260,14 @@ internal class InterpreterTest
                     })).Funcs(Overload.Unary("base64.encode", Base64Encode),
                     Overload.Unary("base64_encode_string", Base64Encode)).Out("aGVsbG8="),
             new TestCase(InterpreterTestCase.call_ns_func_unchecked_in_pkg).Expr("encode('hello')")
-                .Cost(ICoster.CostOf(1, 1)).Container("base64").Unchecked()
+                .Cost(Cost.Of(1, 1)).Container("base64").Unchecked()
                 .Funcs(Overload.Unary("base64.encode", Base64Encode)).Out("aGVsbG8="),
             new TestCase(InterpreterTestCase.complex)
                 .Expr("!(headers.ip in [\"10.0.1.4\", \"10.0.1.5\"]) && \n" +
                       "((headers.path.startsWith(\"v1\") && headers.token in [\"v1\", \"v2\", \"admin\"]) || \n" +
                       "(headers.path.startsWith(\"v2\") && headers.token in [\"v2\", \"admin\"]) || \n" +
                       "(headers.path.startsWith(\"/admin\") && headers.token == \"admin\" && headers.ip in [\"10.0.1.2\", \"10.0.1.2\", \"10.0.1.2\"]))")
-                .Cost(ICoster.CostOf(3, 24)).ExhaustiveCost(ICoster.CostOf(24, 24)).OptimizedCost(ICoster.CostOf(2, 20))
+                .Cost(Cost.Of(3, 24)).ExhaustiveCost(Cost.Of(24, 24)).OptimizedCost(Cost.Of(2, 20))
                 .Env(Decls.NewVar("headers", Decls.NewMapType(Decls.String, Decls.String))).In("headers",
                     TestUtil.BindingsOf("ip", "10.0.1.2", "path", "/admin/edit", "token", "admin")),
             new TestCase(InterpreterTestCase.complex_qual_vars)
@@ -275,83 +275,83 @@ internal class InterpreterTest
                       "((headers.path.startsWith(\"v1\") && headers.token in [\"v1\", \"v2\", \"admin\"]) || \n" +
                       "(headers.path.startsWith(\"v2\") && headers.token in [\"v2\", \"admin\"]) || \n" +
                       "(headers.path.startsWith(\"/admin\") && headers.token == \"admin\" && headers.ip in [\"10.0.1.2\", \"10.0.1.2\", \"10.0.1.2\"]))")
-                .Cost(ICoster.CostOf(3, 24)).ExhaustiveCost(ICoster.CostOf(24, 24)).OptimizedCost(ICoster.CostOf(2, 20))
+                .Cost(Cost.Of(3, 24)).ExhaustiveCost(Cost.Of(24, 24)).OptimizedCost(Cost.Of(2, 20))
                 .Env(Decls.NewVar("headers.ip", Decls.String), Decls.NewVar("headers.path", Decls.String),
                     Decls.NewVar("headers.token", Decls.String))
                 .In("headers.ip", "10.0.1.2", "headers.path", "/admin/edit", "headers.token", "admin"),
-            new TestCase(InterpreterTestCase.cond).Expr("a ? b < 1.2 : c == ['hello']").Cost(ICoster.CostOf(3, 3))
+            new TestCase(InterpreterTestCase.cond).Expr("a ? b < 1.2 : c == ['hello']").Cost(Cost.Of(3, 3))
                 .Env(Decls.NewVar("a", Decls.Bool), Decls.NewVar("b", Decls.Double),
                     Decls.NewVar("c", Decls.NewListType(Decls.String)))
                 .In("a", true, "b", 2.0, "c", new[] { "hello" }).Out(BoolT.False),
-            new TestCase(InterpreterTestCase.in_list).Expr("6 in [2, 12, 6]").Cost(ICoster.CostOf(1, 1))
-                .OptimizedCost(ICoster.CostOf(0, 0)),
+            new TestCase(InterpreterTestCase.in_list).Expr("6 in [2, 12, 6]").Cost(Cost.Of(1, 1))
+                .OptimizedCost(Cost.Of(0, 0)),
             new TestCase(InterpreterTestCase.in_map).Expr("'other-key' in {'key': null, 'other-key': 42}")
-                .Cost(ICoster.CostOf(1, 1)),
+                .Cost(Cost.Of(1, 1)),
             new TestCase(InterpreterTestCase.index)
-                .Expr("m['key'][1] == 42u && m['null'] == null && m[string(0)] == 10").Cost(ICoster.CostOf(2, 9))
-                .ExhaustiveCost(ICoster.CostOf(9, 9)).OptimizedCost(ICoster.CostOf(2, 8))
+                .Expr("m['key'][1] == 42u && m['null'] == null && m[string(0)] == 10").Cost(Cost.Of(2, 9))
+                .ExhaustiveCost(Cost.Of(9, 9)).OptimizedCost(Cost.Of(2, 8))
                 .Env(Decls.NewVar("m", Decls.NewMapType(Decls.String, Decls.Dyn)))
                 .In("m",
                     TestUtil.BindingsOf("key", new object[] { (ulong)21, (ulong)42 }, "null", null, "0",
                         10)),
             new TestCase(InterpreterTestCase.index_relative)
                 .Expr("([[[1]], [[2]], [[3]]][0][0] + [2, 3, {'four': {'five': 'six'}}])[3].four.five == 'six'")
-                .Cost(ICoster.CostOf(2, 2)),
-            new TestCase(InterpreterTestCase.literal_bool_false).Expr("false").Cost(ICoster.CostOf(0, 0))
+                .Cost(Cost.Of(2, 2)),
+            new TestCase(InterpreterTestCase.literal_bool_false).Expr("false").Cost(Cost.Of(0, 0))
                 .Out(BoolT.False),
-            new TestCase(InterpreterTestCase.literal_bool_true).Expr("true").Cost(ICoster.CostOf(0, 0)),
+            new TestCase(InterpreterTestCase.literal_bool_true).Expr("true").Cost(Cost.Of(0, 0)),
             new TestCase(InterpreterTestCase.literal_empty).Expr("google.protobuf.Any{}")
                 .Err("conversion error: got Any with empty type-url"),
-            new TestCase(InterpreterTestCase.literal_null).Expr("null").Cost(ICoster.CostOf(0, 0))
+            new TestCase(InterpreterTestCase.literal_null).Expr("null").Cost(Cost.Of(0, 0))
                 .Out(NullT.NullValue),
-            new TestCase(InterpreterTestCase.literal_list).Expr("[1, 2, 3]").Cost(ICoster.CostOf(0, 0))
+            new TestCase(InterpreterTestCase.literal_list).Expr("[1, 2, 3]").Cost(Cost.Of(0, 0))
                 .Out(new long[] { 1, 2, 3 }),
             new TestCase(InterpreterTestCase.literal_map).Expr("{'hi': 21, 'world': 42u}")
-                .Cost(ICoster.CostOf(0, 0)).Out(TestUtil.BindingsOf("hi", 21, "world", (ulong)42)),
+                .Cost(Cost.Of(0, 0)).Out(TestUtil.BindingsOf("hi", 21, "world", (ulong)42)),
             new TestCase(InterpreterTestCase.literal_equiv_string_bytes)
-                .Expr("string(bytes(\"\\303\\277\")) == '''\\303\\277'''").Cost(ICoster.CostOf(3, 3))
-                .OptimizedCost(ICoster.CostOf(1, 1)),
+                .Expr("string(bytes(\"\\303\\277\")) == '''\\303\\277'''").Cost(Cost.Of(3, 3))
+                .OptimizedCost(Cost.Of(1, 1)),
             new TestCase(InterpreterTestCase.literal_not_equiv_string_bytes)
-                .Expr("string(b\"\\303\\277\") != '''\\303\\277'''").Cost(ICoster.CostOf(2, 2))
-                .OptimizedCost(ICoster.CostOf(1, 1)),
+                .Expr("string(b\"\\303\\277\") != '''\\303\\277'''").Cost(Cost.Of(2, 2))
+                .OptimizedCost(Cost.Of(1, 1)),
             new TestCase(InterpreterTestCase.literal_equiv_bytes_string)
-                .Expr("string(b\"\\303\\277\") == '\u00FF'").Cost(ICoster.CostOf(2, 2))
-                .OptimizedCost(ICoster.CostOf(1, 1)),
+                .Expr("string(b\"\\303\\277\") == '\u00FF'").Cost(Cost.Of(2, 2))
+                .OptimizedCost(Cost.Of(1, 1)),
             new TestCase(InterpreterTestCase.literal_bytes_string).Expr("string(b'aaa\"bbb')")
-                .Cost(ICoster.CostOf(1, 1)).OptimizedCost(ICoster.CostOf(0, 0)).Out("aaa\"bbb"),
+                .Cost(Cost.Of(1, 1)).OptimizedCost(Cost.Of(0, 0)).Out("aaa\"bbb"),
             new TestCase(InterpreterTestCase.literal_bytes_string2).Expr("string(b\"\"\"Kim\\t\"\"\")")
-                .Cost(ICoster.CostOf(1, 1)).OptimizedCost(ICoster.CostOf(0, 0)).Out("Kim\t"),
+                .Cost(Cost.Of(1, 1)).OptimizedCost(Cost.Of(0, 0)).Out("Kim\t"),
             new TestCase(InterpreterTestCase.literal_pb_struct)
                 .Expr("google.protobuf.Struct{fields: {'uno': 1.0, 'dos': 2.0}}")
                 .Out(TestUtil.BindingsOf("uno", 1.0d, "dos", 2.0d)),
             new TestCase(InterpreterTestCase.literal_pb3_msg).Container("google.api.expr")
                 .Types(new Expr())
                 .Expr("v1alpha1.Expr{ \n" + "	id: 1, \n" + "	const_expr: v1alpha1.Constant{ \n" +
-                      "		string_value: \"oneof_test\" \n" + "	}\n" + "}").Cost(ICoster.CostOf(0, 0)).Out(expr1),
+                      "		string_value: \"oneof_test\" \n" + "	}\n" + "}").Cost(Cost.Of(0, 0)).Out(expr1),
             new TestCase(InterpreterTestCase.literal_pb_enum).Container("google.api.expr.test.v1.proto3")
                 .Types(new TestAllTypesPb3())
                 .Expr("TestAllTypes{\n" + "repeated_nested_enum: [\n" + "	0,\n" + "	TestAllTypes.NestedEnum.BAZ,\n" +
                       "	TestAllTypes.NestedEnum.BAR],\n" + "repeated_int32: [\n" + "	TestAllTypes.NestedEnum.FOO,\n" +
-                      "	TestAllTypes.NestedEnum.BAZ]}").Cost(ICoster.CostOf(0, 0))
+                      "	TestAllTypes.NestedEnum.BAZ]}").Cost(Cost.Of(0, 0))
                 .Out(t4),
             new TestCase(InterpreterTestCase.timestamp_eq_timestamp).Expr("timestamp(0) == timestamp(0)")
-                .Cost(ICoster.CostOf(3, 3)).OptimizedCost(ICoster.CostOf(1, 1)),
+                .Cost(Cost.Of(3, 3)).OptimizedCost(Cost.Of(1, 1)),
             new TestCase(InterpreterTestCase.timestamp_ne_timestamp).Expr("timestamp(1) != timestamp(2)")
-                .Cost(ICoster.CostOf(3, 3)).OptimizedCost(ICoster.CostOf(1, 1)),
+                .Cost(Cost.Of(3, 3)).OptimizedCost(Cost.Of(1, 1)),
             new TestCase(InterpreterTestCase.timestamp_lt_timestamp).Expr("timestamp(0) < timestamp(1)")
-                .Cost(ICoster.CostOf(3, 3)).OptimizedCost(ICoster.CostOf(1, 1)),
+                .Cost(Cost.Of(3, 3)).OptimizedCost(Cost.Of(1, 1)),
             new TestCase(InterpreterTestCase.timestamp_le_timestamp).Expr("timestamp(2) <= timestamp(2)")
-                .Cost(ICoster.CostOf(3, 3)).OptimizedCost(ICoster.CostOf(1, 1)),
+                .Cost(Cost.Of(3, 3)).OptimizedCost(Cost.Of(1, 1)),
             new TestCase(InterpreterTestCase.timestamp_gt_timestamp).Expr("timestamp(1) > timestamp(0)")
-                .Cost(ICoster.CostOf(3, 3)).OptimizedCost(ICoster.CostOf(1, 1)),
+                .Cost(Cost.Of(3, 3)).OptimizedCost(Cost.Of(1, 1)),
             new TestCase(InterpreterTestCase.timestamp_ge_timestamp).Expr("timestamp(2) >= timestamp(2)")
-                .Cost(ICoster.CostOf(3, 3)).OptimizedCost(ICoster.CostOf(1, 1)),
+                .Cost(Cost.Of(3, 3)).OptimizedCost(Cost.Of(1, 1)),
             new TestCase(InterpreterTestCase.string_to_timestamp).Expr("timestamp('1986-04-26T01:23:40Z')")
-                .Cost(ICoster.CostOf(1, 1)).OptimizedCost(ICoster.CostOf(0, 0))
+                .Cost(Cost.Of(1, 1)).OptimizedCost(Cost.Of(0, 0))
                 .Out(ts1),
             new TestCase(InterpreterTestCase.macro_all_non_strict)
-                .Expr("![0, 2, 4].all(x, 4/x != 2 && 4/(4-x) != 2)").Cost(ICoster.CostOf(5, 38))
-                .ExhaustiveCost(ICoster.CostOf(38, 38)),
+                .Expr("![0, 2, 4].all(x, 4/x != 2 && 4/(4-x) != 2)").Cost(Cost.Of(5, 38))
+                .ExhaustiveCost(Cost.Of(38, 38)),
             new TestCase(InterpreterTestCase.macro_all_non_strict_var)
                 .Expr("code == \"111\" && [\"a\", \"b\"].all(x, x in tags) \n" +
                       "|| code == \"222\" && [\"a\", \"b\"].all(x, x in tags)")
@@ -362,13 +362,13 @@ internal class InterpreterTest
             new TestCase(InterpreterTestCase.macro_exists_nonstrict).Expr(
                 "[0, 2, 4].exists(x, 4/x == 2 && 4/(4-x) == 2)"),
             new TestCase(InterpreterTestCase.macro_exists_var).Expr("elems.exists(e, type(e) == uint)")
-                .Cost(ICoster.CostOf(0, 9223372036854775807L)).ExhaustiveCost(ICoster.CostOf(0, 9223372036854775807L))
+                .Cost(Cost.Of(0, 9223372036854775807L)).ExhaustiveCost(Cost.Of(0, 9223372036854775807L))
                 .Env(Decls.NewVar("elems", Decls.NewListType(Decls.Dyn)))
                 .In("elems", new object[] { 0, 1, 2, 3, 4, (ulong)5, 6 }),
             new TestCase(InterpreterTestCase.macro_exists_one).Expr("[1, 2, 3].exists_one(x, (x % 2) == 0)"),
             new TestCase(InterpreterTestCase.macro_filter).Expr("[1, 2, 3].filter(x, x > 2) == [3]"),
             new TestCase(InterpreterTestCase.macro_has_map_key).Expr("has({'a':1}.a) && !has({}.a)")
-                .Cost(ICoster.CostOf(1, 4)).ExhaustiveCost(ICoster.CostOf(4, 4)),
+                .Cost(Cost.Of(1, 4)).ExhaustiveCost(Cost.Of(4, 4)),
             new TestCase(InterpreterTestCase.macro_has_pb2_field).Container("google.api.expr.test.v1.proto2")
                 .Types(new TestAllTypesPb2())
                 .Env(Decls.NewVar("pb2", Decls.NewObjectType("google.api.expr.test.v1.proto2.TestAllTypes")))
@@ -380,8 +380,8 @@ internal class InterpreterTest
                       "&& has(TestAllTypes{single_nested_enum: TestAllTypes.NestedEnum.FOO}.single_nested_enum) \n" +
                       "&& !has(pb2.single_int64) \n" + "&& has(pb2.repeated_bool) \n" +
                       "&& !has(pb2.repeated_int32) \n" + "&& has(pb2.map_int64_nested_type) \n" +
-                      "&& !has(pb2.map_string_string)").Cost(ICoster.CostOf(1, 29))
-                .ExhaustiveCost(ICoster.CostOf(29, 29)),
+                      "&& !has(pb2.map_string_string)").Cost(Cost.Of(1, 29))
+                .ExhaustiveCost(Cost.Of(29, 29)),
             // TODO fix
             new TestCase(InterpreterTestCase.macro_has_pb3_field)
                 .Types(new TestAllTypesPb3())
@@ -400,53 +400,53 @@ internal class InterpreterTest
                       "&& has(pb3.map_int64_nested_type) \n" + "&& !has(pb3.map_string_string)"),
             //.Cost(Coster.CostOf(1, 35)).ExhaustiveCost(Coster.CostOf(35, 35)),
             new TestCase(InterpreterTestCase.macro_map).Expr("[1, 2, 3].map(x, x * 2) == [2, 4, 6]")
-                .Cost(ICoster.CostOf(6, 14)).ExhaustiveCost(ICoster.CostOf(14, 14)),
+                .Cost(Cost.Of(6, 14)).ExhaustiveCost(Cost.Of(14, 14)),
             new TestCase(InterpreterTestCase.matches)
                 .Expr("input.matches('k.*') \n" + "&& !'foo'.matches('k.*') \n" + "&& !'bar'.matches('k.*') \n" +
-                      "&& 'kilimanjaro'.matches('.*ro')").Cost(ICoster.CostOf(2, 10))
-                .ExhaustiveCost(ICoster.CostOf(10, 10)).Env(Decls.NewVar("input", Decls.String))
+                      "&& 'kilimanjaro'.matches('.*ro')").Cost(Cost.Of(2, 10))
+                .ExhaustiveCost(Cost.Of(10, 10)).Env(Decls.NewVar("input", Decls.String))
                 .In("input", "kathmandu"),
             new TestCase(InterpreterTestCase.nested_proto_field).Expr("pb3.single_nested_message.bb")
-                .Cost(ICoster.CostOf(1, 1))
+                .Cost(Cost.Of(1, 1))
                 .Types(new TestAllTypesPb3())
                 .Env(Decls.NewVar("pb3", Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes")))
                 .In("pb3", t6).Out(IntT.IntOf(1234)),
             new TestCase(InterpreterTestCase.nested_proto_field_with_index)
-                .Expr("pb3.map_int64_nested_type[0].child.payload.single_int32 == 1").Cost(ICoster.CostOf(2, 2))
+                .Expr("pb3.map_int64_nested_type[0].child.payload.single_int32 == 1").Cost(Cost.Of(2, 2))
                 .Types(new TestAllTypesPb3())
                 .Env(Decls.NewVar("pb3", Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes"))).In(
                     "pb3", t8),
             new TestCase(InterpreterTestCase.or_true_1st).Expr("ai == 20 || ar[\"foo\"] == \"bar\"")
-                .Cost(ICoster.CostOf(2, 5)).ExhaustiveCost(ICoster.CostOf(5, 5))
+                .Cost(Cost.Of(2, 5)).ExhaustiveCost(Cost.Of(5, 5))
                 .Env(Decls.NewVar("ai", Decls.Int),
                     Decls.NewVar("ar", Decls.NewMapType(Decls.String, Decls.String)))
                 .In("ai", 20, "ar", TestUtil.BindingsOf("foo", "bar")),
             new TestCase(InterpreterTestCase.or_true_2nd).Expr("ai == 20 || ar[\"foo\"] == \"bar\"")
-                .Cost(ICoster.CostOf(2, 5)).ExhaustiveCost(ICoster.CostOf(5, 5))
+                .Cost(Cost.Of(2, 5)).ExhaustiveCost(Cost.Of(5, 5))
                 .Env(Decls.NewVar("ai", Decls.Int),
                     Decls.NewVar("ar", Decls.NewMapType(Decls.String, Decls.String)))
                 .In("ai", 2, "ar", TestUtil.BindingsOf("foo", "bar")),
             new TestCase(InterpreterTestCase.or_false).Expr("ai == 20 || ar[\"foo\"] == \"bar\"")
-                .Cost(ICoster.CostOf(2, 5)).ExhaustiveCost(ICoster.CostOf(5, 5))
+                .Cost(Cost.Of(2, 5)).ExhaustiveCost(Cost.Of(5, 5))
                 .Env(Decls.NewVar("ai", Decls.Int),
                     Decls.NewVar("ar", Decls.NewMapType(Decls.String, Decls.String)))
                 .In("ai", 2, "ar", TestUtil.BindingsOf("foo", "baz")).Out(BoolT.False),
             new TestCase(InterpreterTestCase.or_error_1st_error).Expr("1/0 != 0 || false")
-                .Cost(ICoster.CostOf(2, 3)).ExhaustiveCost(ICoster.CostOf(3, 3)).Err("divide by zero"),
+                .Cost(Cost.Of(2, 3)).ExhaustiveCost(Cost.Of(3, 3)).Err("divide by zero"),
             new TestCase(InterpreterTestCase.or_error_2nd_error).Expr("false || 1/0 != 0")
-                .Cost(ICoster.CostOf(0, 3)).ExhaustiveCost(ICoster.CostOf(3, 3)).Err("divide by zero"),
+                .Cost(Cost.Of(0, 3)).ExhaustiveCost(Cost.Of(3, 3)).Err("divide by zero"),
             new TestCase(InterpreterTestCase.or_error_1st_true).Expr("1/0 != 0 || true")
-                .Cost(ICoster.CostOf(2, 3))
-                .ExhaustiveCost(ICoster.CostOf(3, 3)).Out(BoolT.True),
+                .Cost(Cost.Of(2, 3))
+                .ExhaustiveCost(Cost.Of(3, 3)).Out(BoolT.True),
             new TestCase(InterpreterTestCase.or_error_2nd_true).Expr("true || 1/0 != 0")
-                .Cost(ICoster.CostOf(0, 3))
-                .ExhaustiveCost(ICoster.CostOf(3, 3)).Out(BoolT.True),
-            new TestCase(InterpreterTestCase.pkg_qualified_id).Expr("b.c.d != 10").Cost(ICoster.CostOf(2, 2))
+                .Cost(Cost.Of(0, 3))
+                .ExhaustiveCost(Cost.Of(3, 3)).Out(BoolT.True),
+            new TestCase(InterpreterTestCase.pkg_qualified_id).Expr("b.c.d != 10").Cost(Cost.Of(2, 2))
                 .Container("a.b").Env(Decls.NewVar("a.b.c.d", Decls.Int)).In("a.b.c.d", 9),
             new TestCase(InterpreterTestCase.pkg_qualified_id_unchecked).Expr("c.d != 10")
-                .Cost(ICoster.CostOf(2, 2)).Unchecked().Container("a.b").In("a.c.d", 9),
+                .Cost(Cost.Of(2, 2)).Unchecked().Container("a.b").In("a.c.d", 9),
             new TestCase(InterpreterTestCase.pkg_qualified_index_unchecked).Expr("b.c['d'] == 10")
-                .Cost(ICoster.CostOf(2, 2)).Unchecked().Container("a.b").In("a.b.c", TestUtil.BindingsOf("d", 10)),
+                .Cost(Cost.Of(2, 2)).Unchecked().Container("a.b").In("a.b.c", TestUtil.BindingsOf("d", 10)),
             new TestCase(InterpreterTestCase.select_key)
                 .Expr("m.strMap['val'] == 'string'\n" + "&& m.floatMap['val'] == 1.5\n" +
                       "&& m.doubleMap['val'] == -2.0\n" + "&& m.intMap['val'] == -3\n" +
@@ -454,8 +454,8 @@ internal class InterpreterTest
                       "&& m.int64Map['val'] == -5\n" + "&& m.uintMap['val'] == 6u\n" +
                       "&& m.uint32Map['val'] == 7u\n" +
                       "&& m.uint64Map['val'] == 8u\n" + "&& m.boolMap['val'] == true\n" +
-                      "&& m.boolMap['val'] != false").Cost(ICoster.CostOf(2, 32))
-                .ExhaustiveCost(ICoster.CostOf(32, 32))
+                      "&& m.boolMap['val'] != false").Cost(Cost.Of(2, 32))
+                .ExhaustiveCost(Cost.Of(32, 32))
                 .Env(Decls.NewVar("m", Decls.NewMapType(Decls.String, Decls.Dyn)))
                 .In("m",
                     TestUtil.BindingsOf("strMap", TestUtil.MapOf("val", "string"), "floatMap",
@@ -472,8 +472,8 @@ internal class InterpreterTest
                       "&& m.boolInt32[false] == 0\n" + "&& m.boolInt64[true] == 4\n" +
                       "&& m.boolUint[true] == 5u\n" +
                       "&& m.boolUint32[true] == 6u\n" + "&& m.boolUint64[false] == 7u\n" + "&& m.boolBool[true]\n" +
-                      "&& m.boolIface[false] == true").Cost(ICoster.CostOf(2, 31))
-                .ExhaustiveCost(ICoster.CostOf(31, 31))
+                      "&& m.boolIface[false] == true").Cost(Cost.Of(2, 31))
+                .ExhaustiveCost(Cost.Of(31, 31))
                 .Env(Decls.NewVar("m", Decls.NewMapType(Decls.String, Decls.Dyn))).In("m",
                     TestUtil.BindingsOf("boolStr", TestUtil.MapOf(true, "string"), "boolFloat32",
                         TestUtil.MapOf(true, 1.5f),
@@ -488,8 +488,8 @@ internal class InterpreterTest
             new TestCase(InterpreterTestCase.select_uint_key)
                 .Expr("m.uintIface[1u] == 'string'\n" + "&& m.uint32Iface[2u] == 1.5\n" +
                       "&& m.uint64Iface[3u] == -2.1\n" + "&& m.uint64String[4u] == 'three'")
-                .Cost(ICoster.CostOf(2, 11))
-                .ExhaustiveCost(ICoster.CostOf(11, 11))
+                .Cost(Cost.Of(2, 11))
+                .ExhaustiveCost(Cost.Of(11, 11))
                 .Env(Decls.NewVar("m", Decls.NewMapType(Decls.String, Decls.Dyn)))
                 .In("m",
                     TestUtil.BindingsOf("uintIface", TestUtil.MapOf((ulong)1, "string"), "uint32Iface",
@@ -501,7 +501,7 @@ internal class InterpreterTest
                       "&& m.intList[0] == -3\n" + "&& m.int32List[0] == 4\n" + "&& m.int64List[0] == -5\n" +
                       "&& m.uintList[0] == 6u\n" + "&& m.uint32List[0] == 7u\n" + "&& m.uint64List[0] == 8u\n" +
                       "&& m.boolList[0] == true\n" + "&& m.boolList[1] != true\n" + "&& m.ifaceList[0] == {}")
-                .Cost(ICoster.CostOf(2, 35)).ExhaustiveCost(ICoster.CostOf(35, 35))
+                .Cost(Cost.Of(2, 35)).ExhaustiveCost(Cost.Of(35, 35))
                 .Env(Decls.NewVar("m", Decls.NewMapType(Decls.String, Decls.Dyn))).In("m",
                     TestUtil.BindingsOf("strList", new[] { "string" }, "floatList", new float?[] { 1.5f },
                         "doubleList", new double?[] { -2.0d }, "intList", new[] { -3 }, "int32List",
@@ -512,7 +512,7 @@ internal class InterpreterTest
                         new object[] { new Dictionary<object, object>() })),
             new TestCase(InterpreterTestCase.select_field)
                 .Expr("a.b.c\n" + "&& pb3.repeated_nested_enum[0] == TestAllTypes.NestedEnum.BAR\n" +
-                      "&& json.list[0] == 'world'").Cost(ICoster.CostOf(1, 7)).ExhaustiveCost(ICoster.CostOf(7, 7))
+                      "&& json.list[0] == 'world'").Cost(Cost.Of(1, 7)).ExhaustiveCost(Cost.Of(7, 7))
                 .Container("google.api.expr.test.v1.proto3")
                 .Types(new TestAllTypesPb3())
                 .Env(Decls.NewVar("a.b", Decls.NewMapType(Decls.String, Decls.Bool)),
@@ -523,26 +523,26 @@ internal class InterpreterTest
                 .Expr("!has(a.single_int32)\n" + "&& a.single_int32 == -32\n" + "&& a.single_int64 == -64\n" +
                       "&& a.single_uint32 == 32u\n" + "&& a.single_uint64 == 64u\n" + "&& a.single_float == 3.0\n" +
                       "&& a.single_double == 6.4\n" + "&& a.single_bool\n" + "&& \"empty\" == a.single_string")
-                .Cost(ICoster.CostOf(3, 26)).ExhaustiveCost(ICoster.CostOf(26, 26))
+                .Cost(Cost.Of(3, 26)).ExhaustiveCost(Cost.Of(26, 26))
                 .Types(new TestAllTypesPb2()).In("a", new TestAllTypesPb2())
                 .Env(Decls.NewVar("a", Decls.NewObjectType("google.api.expr.test.v1.proto2.TestAllTypes"))),
             new TestCase(InterpreterTestCase.select_pb3_wrapper_fields)
                 .Expr("!has(a.single_int32_wrapper) && a.single_int32_wrapper == null\n" +
                       "&& has(a.single_int64_wrapper) && a.single_int64_wrapper == 0\n" +
                       "&& has(a.single_string_wrapper) && a.single_string_wrapper == \"hello\"\n" +
-                      "&& a.single_int64_wrapper == Int32Value{value: 0}").Cost(ICoster.CostOf(3, 21))
-                .ExhaustiveCost(ICoster.CostOf(21, 21))
+                      "&& a.single_int64_wrapper == Int32Value{value: 0}").Cost(Cost.Of(3, 21))
+                .ExhaustiveCost(Cost.Of(21, 21))
                 .Types(new TestAllTypesPb3())
                 .Abbrevs("google.protobuf.Int32Value")
                 .Env(Decls.NewVar("a", Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes")))
                 .In("a", t10),
             new TestCase(InterpreterTestCase.select_pb3_compare).Expr("a.single_uint64 > 3u")
-                .Cost(ICoster.CostOf(2, 2)).Container("google.api.expr.test.v1.proto3")
+                .Cost(Cost.Of(2, 2)).Container("google.api.expr.test.v1.proto3")
                 .Types(new TestAllTypesPb3())
                 .Env(Decls.NewVar("a", Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes"))).In("a",
                     t11).Out(BoolT.True),
             new TestCase(InterpreterTestCase.select_pb3_compare_signed).Expr("a.single_int64 > 3")
-                .Cost(ICoster.CostOf(2, 2)).Container("google.api.expr.test.v1.proto3")
+                .Cost(Cost.Of(2, 2)).Container("google.api.expr.test.v1.proto3")
                 .Types(new TestAllTypesPb3())
                 .Env(Decls.NewVar("a", Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes")))
                 .In("a", t12).Out(BoolT.True),
@@ -560,7 +560,7 @@ internal class InterpreterTest
                     .setBb(101).build()).Out(BoolT.True),
                     */
             new TestCase(InterpreterTestCase.select_relative).Expr("json('{\"hi\":\"world\"}').hi == 'world'")
-                .Cost(ICoster.CostOf(2, 2))
+                .Cost(Cost.Of(2, 2))
                 .Env(Decls.NewFunction("json",
                     new List<Decl.Types.FunctionDecl.Types.Overload>
                         { Decls.NewOverload("string_to_json", new List<Type> { Decls.String }, Decls.Dyn) }))
@@ -574,22 +574,22 @@ internal class InterpreterTest
                         IDictionary<object, object> m = new Dictionary<object, object>();
                         throw new NotSupportedException("IMPLEMENT ME");
                     })).Disabled("would need some JSON library to implement this test..."),
-            new TestCase(InterpreterTestCase.select_subsumed_field).Expr("a.b.c").Cost(ICoster.CostOf(1, 1))
+            new TestCase(InterpreterTestCase.select_subsumed_field).Expr("a.b.c").Cost(Cost.Of(1, 1))
                 .Env(Decls.NewVar("a.b.c", Decls.Int),
                     Decls.NewVar("a.b", Decls.NewMapType(Decls.String, Decls.String)))
                 .In("a.b.c", 10, "a.b", TestUtil.BindingsOf("c", "ten")).Out(IntT.IntOf(10)),
             new TestCase(InterpreterTestCase.select_empty_repeated_nested)
-                .Expr("TestAllTypes{}.repeated_nested_message.size() == 0").Cost(ICoster.CostOf(2, 2))
+                .Expr("TestAllTypes{}.repeated_nested_message.size() == 0").Cost(Cost.Of(2, 2))
                 .Types(new TestAllTypesPb3())
                 .Container("google.api.expr.test.v1.proto3").Out(BoolT.True),
             new TestCase(InterpreterTestCase.duration_get_milliseconds).Expr("x.getMilliseconds()")
                 .Env(Decls.NewVar("x", Decls.Duration))
                 .In("x", d1)
-                .Cost(ICoster.CostOf(2, 2)).ExhaustiveCost(ICoster.CostOf(2, 2)).Out(123123),
+                .Cost(Cost.Of(2, 2)).ExhaustiveCost(Cost.Of(2, 2)).Out(123123),
             new TestCase(InterpreterTestCase.timestamp_get_hours_tz)
                 .Expr("timestamp('2009-02-13T23:31:30Z').getHours('2:00')").Out(IntT.IntOf(1))
-                .Cost(ICoster.CostOf(2, 2))
-                .OptimizedCost(ICoster.CostOf(1, 1)),
+                .Cost(Cost.Of(2, 2))
+                .OptimizedCost(Cost.Of(1, 1)),
             new TestCase(InterpreterTestCase.index_out_of_range).Expr("[1, 2, 3][3]")
                 .Err("invalid_argument: index '3' out of range in list of size '3'"),
             new TestCase(InterpreterTestCase.parse_nest_list_index)
@@ -636,11 +636,11 @@ internal class InterpreterTest
             Assert.That(cost, Is.EqualTo(tc.cost));
         }
 
-        var state = IEvalState.NewEvalState();
+        var state = EvalStateFactory.NewEvalState();
         IDictionary<string, InterpretableDecorator> opts = new Dictionary<string, InterpretableDecorator>();
-        opts["Interpreter.Optimize"] = IInterpreter.Optimize();
-        opts["exhaustive"] = IInterpreter.ExhaustiveEval(state);
-        opts["track"] = IInterpreter.TrackState(state);
+        opts["Interpreter.Optimize"] = InterpreterUtils.Optimize();
+        opts["exhaustive"] = InterpreterUtils.ExhaustiveEval(state);
+        opts["track"] = InterpreterUtils.TrackState(state);
         foreach (var en in opts)
         {
             var mode = en.Key;
@@ -706,7 +706,7 @@ internal class InterpreterTest
                     .Types(new TestAllTypesPb3())
                     .Env(Decls.NewVar("pb3", Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes"))).In(
                         "pb3", t),
-                IInterpreter.Optimize());
+                InterpreterUtils.Optimize());
         Assert.That(inst.interpretable, Is.InstanceOf(typeof(IInterpretableAttribute)));
         var attr = (IInterpretableAttribute)inst.interpretable;
         Assert.That(attr.Attr(), Is.InstanceOf(typeof(INamespacedAttribute)));
@@ -723,16 +723,16 @@ internal class InterpreterTest
     [Test]
     public virtual void LogicalAndMissingType()
     {
-        var src = ISource.NewTextSource("a && TestProto{c: true}.c");
+        var src = SourceFactory.NewTextSource("a && TestProto{c: true}.c");
 
         var parsed = Parser.Parser.ParseAllMacros(src);
         Assert.That(parsed.HasErrors(), Is.False);
 
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry();
         var cont = Container.DefaultContainer;
-        var attrs = IAttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
+        var attrs = AttributeFactoryUtils.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
         var intr =
-            IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
+            InterpreterUtils.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
         Assert.That(() => intr.NewUncheckedInterpretable(parsed.Expr!),
             Throws.Exception.InstanceOf(typeof(InvalidOperationException)));
     }
@@ -740,19 +740,19 @@ internal class InterpreterTest
     [Test]
     public virtual void ExhaustiveConditionalExpr()
     {
-        var src = ISource.NewTextSource("a ? b < 1.0 : c == ['hello']");
+        var src = SourceFactory.NewTextSource("a ? b < 1.0 : c == ['hello']");
         var parsed = Parser.Parser.ParseAllMacros(src);
         Assert.That(parsed.HasErrors(), Is.False);
 
-        var state = IEvalState.NewEvalState();
+        var state = EvalStateFactory.NewEvalState();
         var cont = Container.DefaultContainer;
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry(new ParsedExpr());
-        var attrs = IAttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
+        var attrs = AttributeFactoryUtils.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
         var intr =
-            IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
+            InterpreterUtils.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
         var interpretable =
-            intr.NewUncheckedInterpretable(parsed.Expr!, IInterpreter.ExhaustiveEval(state))!;
-        var vars = IActivation.NewActivation(TestUtil.BindingsOf("a", BoolT.True, "b", DoubleT.DoubleOf(0.999),
+            intr.NewUncheckedInterpretable(parsed.Expr!, InterpreterUtils.ExhaustiveEval(state))!;
+        var vars = ActivationFactory.NewActivation(TestUtil.BindingsOf("a", BoolT.True, "b", DoubleT.DoubleOf(0.999),
             "c", ListT.NewStringArrayList(new[] { "hello" })));
         var result = interpretable.Eval(vars);
         // Operator "_==_" is at Expr 7, should be evaluated in exhaustive mode
@@ -768,19 +768,19 @@ internal class InterpreterTest
     {
         // a || b == "b"
         // Operator "==" is at Expr 4, should be evaluated though "a" is true
-        var src = ISource.NewTextSource("a || b == \"b\"");
+        var src = SourceFactory.NewTextSource("a || b == \"b\"");
         var parsed = Parser.Parser.ParseAllMacros(src);
         Assert.That(parsed.HasErrors(), Is.False);
 
-        var state = IEvalState.NewEvalState();
+        var state = EvalStateFactory.NewEvalState();
         ITypeRegistry reg = ProtoTypeRegistry.NewRegistry(new Expr());
         var cont = TestContainer("test");
-        var attrs = IAttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
+        var attrs = AttributeFactoryUtils.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
         var interp =
-            IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
+            InterpreterUtils.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
         var i = interp.NewUncheckedInterpretable(parsed.Expr!,
-            IInterpreter.ExhaustiveEval(state))!;
-        var vars = IActivation.NewActivation(TestUtil.BindingsOf("a", true, "b", "b"));
+            InterpreterUtils.ExhaustiveEval(state))!;
+        var vars = ActivationFactory.NewActivation(TestUtil.BindingsOf("a", true, "b", "b"));
         var result = i.Eval(vars);
         var rhv = state.Value(3);
         // "==" should be evaluated in exhaustive mode though unnecessary
@@ -792,7 +792,7 @@ internal class InterpreterTest
     public virtual void SetProto2PrimitiveFields()
     {
         // Test the use of proto2 primitives within object construction.
-        var src = ISource.NewTextSource("input == TestAllTypes{\n" + "  single_int32: 1,\n" +
+        var src = SourceFactory.NewTextSource("input == TestAllTypes{\n" + "  single_int32: 1,\n" +
                                         "  single_int64: 2,\n" + "  single_uint32: 3u,\n" +
                                         "  single_uint64: 4u,\n" + "  single_float: -3.3,\n" +
                                         "  single_double: -2.2,\n" + "  single_string: \"hello world\",\n" +
@@ -811,9 +811,9 @@ internal class InterpreterTest
         var checkResult = Checker.Checker.Check(parsed, src, env);
         if (parsed.HasErrors()) throw new ArgumentException(parsed.Errors.ToDisplayString());
 
-        var attrs = IAttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
+        var attrs = AttributeFactoryUtils.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
         var i =
-            IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
+            InterpreterUtils.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
         var eval = i.NewInterpretable(checkResult.CheckedExpr)!;
         var one = 1;
         var two = 2L;
@@ -832,7 +832,7 @@ internal class InterpreterTest
         input.SingleDouble = six;
         input.SingleString = str;
         input.SingleBool = truth;
-        var vars = IActivation.NewActivation(TestUtil.BindingsOf("input", reg.ToTypeAdapter()(input)));
+        var vars = ActivationFactory.NewActivation(TestUtil.BindingsOf("input", reg.ToTypeAdapter()(input)));
         var result = eval.Eval(vars);
         Assert.That(result.Value(), Is.InstanceOf(typeof(bool)));
         var got = ((bool?)result.Value()).Value;
@@ -842,7 +842,7 @@ internal class InterpreterTest
     [Test]
     public virtual void MissingIdentInSelect()
     {
-        var src = ISource.NewTextSource("a.b.c");
+        var src = SourceFactory.NewTextSource("a.b.c");
         var parsed = Parser.Parser.ParseAllMacros(src);
         Assert.That(parsed.HasErrors(), Is.False);
 
@@ -854,15 +854,15 @@ internal class InterpreterTest
         if (parsed.HasErrors()) throw new ArgumentException(parsed.Errors.ToDisplayString());
 
         var attrs = AttributePattern.NewPartialAttributeFactory(cont, reg.ToTypeAdapter(), reg);
-        var interp = IInterpreter.NewStandardInterpreter(cont, reg,
+        var interp = InterpreterUtils.NewStandardInterpreter(cont, reg,
             reg.ToTypeAdapter(), attrs);
         var i = interp.NewInterpretable(checkResult.CheckedExpr)!;
-        IActivation vars = IActivation.NewPartialActivation(TestUtil.BindingsOf("a.b", TestUtil.MapOf("d", "hello")),
+        IActivation vars = ActivationFactory.NewPartialActivation(TestUtil.BindingsOf("a.b", TestUtil.MapOf("d", "hello")),
             AttributePattern.NewAttributePattern("a.b").QualString("c"));
         var result = i.Eval(vars);
         Assert.That(result, Is.InstanceOf(typeof(UnknownT)));
 
-        result = i.Eval(IActivation.EmptyActivation());
+        result = i.Eval(ActivationFactory.EmptyActivation());
         Assert.That(result, Is.InstanceOf(typeof(Err)));
     }
 
@@ -919,7 +919,7 @@ internal class InterpreterTest
     [TestCaseSource(nameof(TypeConversionOptTests))]
     public virtual void TypeConversionOpt(ConvTestCase tc)
     {
-        var src = ISource.NewTextSource(tc.@in);
+        var src = SourceFactory.NewTextSource(tc.@in);
         var parsed = Parser.Parser.ParseAllMacros(src);
         Assert.That(parsed.HasErrors(), Is.False);
         var cont = Container.DefaultContainer;
@@ -928,9 +928,9 @@ internal class InterpreterTest
         var checkResult = Checker.Checker.Check(parsed, src, env);
         if (parsed.HasErrors()) throw new ArgumentException(parsed.Errors.ToDisplayString());
 
-        var attrs = IAttributeFactory.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
+        var attrs = AttributeFactoryUtils.NewAttributeFactory(cont, reg.ToTypeAdapter(), reg);
         var interp =
-            IInterpreter.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
+            InterpreterUtils.NewStandardInterpreter(cont, reg, reg.ToTypeAdapter(), attrs);
         // Show that program planning will now produce an error.
 
         if (!tc.fail)
@@ -954,7 +954,7 @@ internal class InterpreterTest
             //  Show how the error returned during program planning is the same as the runtime
             //  error which would be produced normally.
             var i2 = interp.NewInterpretable(checkResult.CheckedExpr)!;
-            var errVal = i2.Eval(IActivation.EmptyActivation());
+            var errVal = i2.Eval(ActivationFactory.EmptyActivation());
             var errValStr = errVal.ToString();
             Assert.That(errValStr, Is.EqualTo(err.Message));
 
@@ -966,7 +966,7 @@ internal class InterpreterTest
         IInterpreter interp)
     {
         var i =
-            interp.NewInterpretable(checkResult.CheckedExpr, IInterpreter.Optimize());
+            interp.NewInterpretable(checkResult.CheckedExpr, InterpreterUtils.Optimize());
         if (tc.@out != null)
         {
             Assert.That(i, Is.InstanceOf(typeof(IInterpretableConst)));
@@ -993,7 +993,7 @@ internal class InterpreterTest
         reg = ProtoTypeRegistry.NewRegistry();
         if (tst.types != null) reg = ProtoTypeRegistry.NewRegistry(tst.types);
 
-        var attrs = IAttributeFactory.NewAttributeFactory(cont!, reg.ToTypeAdapter(), reg);
+        var attrs = AttributeFactoryUtils.NewAttributeFactory(cont!, reg.ToTypeAdapter(), reg);
         if (tst.attrs != null) attrs = tst.attrs;
 
         // Configure the environment.
@@ -1001,21 +1001,21 @@ internal class InterpreterTest
         if (tst.env != null) env.Add(tst.env);
 
         // Configure the program input.
-        var vars = IActivation.EmptyActivation();
-        if (tst.@in != null) vars = IActivation.NewActivation(tst.@in);
+        var vars = ActivationFactory.EmptyActivation();
+        if (tst.@in != null) vars = ActivationFactory.NewActivation(tst.@in);
 
         // Adapt the test output, if needed.
         if (tst.@out != null) tst.@out = reg.ToTypeAdapter()(tst.@out);
 
-        var disp = IDispatcher.NewDispatcher();
+        var disp = DispatcherFactory.NewDispatcher();
         disp.Add(Overload.StandardOverloads());
         if (tst.funcs != null) disp.Add(tst.funcs);
 
         var interp =
-            IInterpreter.NewInterpreter(disp, cont, reg, reg.ToTypeAdapter(), attrs);
+            InterpreterUtils.NewInterpreter(disp, cont, reg, reg.ToTypeAdapter(), attrs);
 
         // Parse the expression.
-        var s = ISource.NewTextSource(tst.expr!);
+        var s = SourceFactory.NewTextSource(tst.expr!);
         var parsed = Parser.Parser.ParseAllMacros(s);
         Assert.That(parsed.HasErrors(), Is.False);
         IInterpretable prg;

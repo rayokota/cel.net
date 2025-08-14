@@ -18,13 +18,6 @@ namespace Cel.Common;
 
 public interface ILocation : IComparable<ILocation>
 {
-    public static readonly ILocation NoLocation = NewLocation(-1, -1);
-
-    // NewLocation creates a new location.
-    public static ILocation NewLocation(int line, int column)
-    {
-        return new SourceLocation(line, column);
-    }
 
     /// <summary>
     ///     1-based line number within source.
@@ -35,6 +28,16 @@ public interface ILocation : IComparable<ILocation>
     ///     0-based column number within source.
     /// </summary>
     int Column();
+}
+
+public static class LocationFactory
+{
+    public static readonly ILocation NoLocation = NewLocation(-1, -1);
+
+    public static ILocation NewLocation(int line, int column)
+    {
+        return new SourceLocation(line, column);
+    }
 }
 
 internal sealed class SourceLocation : ILocation

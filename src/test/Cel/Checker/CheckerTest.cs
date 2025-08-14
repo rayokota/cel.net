@@ -658,7 +658,7 @@ public class CheckerTest
     {
         if (tc.disabled != null) return;
 
-        var src = ISource.NewTextSource(tc.i);
+        var src = SourceFactory.NewTextSource(tc.i);
         var parsed = Parser.Parser.ParseAllMacros(src);
         Assert.That(parsed.Errors.GetErrors, Is.Empty);
 

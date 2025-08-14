@@ -805,7 +805,7 @@ internal class ParserTest
     [TestCaseSource(nameof(TestCases))]
     public virtual void ParseTest(string num, string i, string p, string e, string l)
     {
-        var src = ISource.NewTextSource(i);
+        var src = SourceFactory.NewTextSource(i);
         var parseResult = Parser.ParseAllMacros(src);
 
         var actualErr = parseResult.Errors.ToDisplayString();
@@ -832,10 +832,10 @@ internal class ParserTest
 
         var p = new Parser(new Options.Builder().Macros(Macro.AllMacros).ExpressionSizeCodePointLimit(2)
             .Build());
-        var src = ISource.NewTextSource("foo");
+        var src = SourceFactory.NewTextSource("foo");
         var parseResult = p.Parse(src);
         Assert.That(parseResult.Errors.GetErrors,
-            Has.Exactly(1).EqualTo(new CelError(ILocation.NewLocation(-1, -1),
+            Has.Exactly(1).EqualTo(new CelError(LocationFactory.NewLocation(-1, -1),
                 "expression code point size exceeds limit: size: 3, limit 2")));
     }
 
@@ -901,7 +901,7 @@ internal class ParserTest
                 long column = pos;
                 if (line > 1) column = pos - sourceInfo.LineOffsets[line - 2];
 
-                return ILocation.NewLocation(line, (int)column);
+                return LocationFactory.NewLocation(line, (int)column);
             }
 
             return null;

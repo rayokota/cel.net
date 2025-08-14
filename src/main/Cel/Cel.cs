@@ -33,7 +33,7 @@ public sealed class Cel
     public static IProgram NewProgram(Env e, Ast ast, params ProgramOption[] opts)
     {
         // Build the dispatcher, interpreter, and default program value.
-        var disp = IDispatcher.NewDispatcher();
+        var disp = DispatcherFactory.NewDispatcher();
 
         // Ensure the default attribute factory is set after the adapter and provider are
         // configured.
@@ -54,17 +54,17 @@ public sealed class Cel
         if (p.evalOpts.Contains(EvalOption.OptPartialEval))
             p.attrFactory = AttributePattern.NewPartialAttributeFactory(e.Container, e.TypeAdapter, e.TypeProvider);
         else
-            p.attrFactory = IAttributeFactory.NewAttributeFactory(e.Container, e.TypeAdapter, e.TypeProvider);
+            p.attrFactory = AttributeFactoryUtils.NewAttributeFactory(e.Container, e.TypeAdapter, e.TypeProvider);
 
         var interp =
-            IInterpreter.NewInterpreter(disp, e.Container, e.TypeProvider, e.TypeAdapter, p.attrFactory);
+            InterpreterUtils.NewInterpreter(disp, e.Container, e.TypeProvider, e.TypeAdapter, p.attrFactory);
         p.interpreter = interp;
 
         // Translate the EvalOption flags into InterpretableDecorator instances.
         IList<InterpretableDecorator> decorators = new List<InterpretableDecorator>(p.decorators);
 
         // Enable constant folding first.
-        if (p.evalOpts.Contains(EvalOption.OptOptimize)) decorators.Add(IInterpreter.Optimize());
+        if (p.evalOpts.Contains(EvalOption.OptOptimize)) decorators.Add(InterpreterUtils.Optimize());
 
         var pp = p;
 
@@ -76,7 +76,7 @@ public sealed class Cel
             ProgFactory factory = state =>
             {
                 IList<InterpretableDecorator> decs = new List<InterpretableDecorator>(decorators);
-                decs.Add(IInterpreter.ExhaustiveEval(state));
+                decs.Add(InterpreterUtils.ExhaustiveEval(state));
                 var clone = new Prog(e, pp.evalOpts, pp.defaultVars, disp, interp, state);
                 return InitInterpretable(clone, ast, decs);
             };
@@ -90,7 +90,7 @@ public sealed class Cel
             ProgFactory factory = state =>
             {
                 IList<InterpretableDecorator> decs = new List<InterpretableDecorator>(decorators);
-                decs.Add(IInterpreter.TrackState(state));
+                decs.Add(InterpreterUtils.TrackState(state));
                 var clone = new Prog(e, pp.evalOpts, pp.defaultVars, disp, interp, state);
                 return InitInterpretable(clone, ast, decs);
             };
@@ -107,7 +107,7 @@ public sealed class Cel
     private static IProgram InitProgGen(ProgFactory factory)
     {
         // Test the factory to make sure that configuration errors are spotted at config
-        factory(IEvalState.NewEvalState());
+        factory(EvalStateFactory.NewEvalState());
         return new ProgGen(factory);
     }
 
@@ -142,7 +142,7 @@ public sealed class Cel
     {
         IDictionary<long, Reference> refMap = checkedExpr.ReferenceMap;
         IDictionary<long, Type> typeMap = checkedExpr.TypeMap;
-        return new Ast(checkedExpr.Expr, checkedExpr.SourceInfo, ISource.NewInfoSource(checkedExpr.SourceInfo),
+        return new Ast(checkedExpr.Expr, checkedExpr.SourceInfo, SourceFactory.NewInfoSource(checkedExpr.SourceInfo),
             refMap, typeMap);
     }
 
@@ -171,7 +171,7 @@ public sealed class Cel
     {
         var si = parsedExpr.SourceInfo;
         if (si == null) si = new SourceInfo();
-        return new Ast(parsedExpr.Expr, si, ISource.NewInfoSource(si));
+        return new Ast(parsedExpr.Expr, si, SourceFactory.NewInfoSource(si));
     }
 
     /// <summary>
@@ -204,7 +204,7 @@ public sealed class Cel
     /// </summary>
     public static IActivation NoVars()
     {
-        return IActivation.EmptyActivation();
+        return ActivationFactory.EmptyActivation();
     }
 
     /// <summary>
@@ -217,7 +217,7 @@ public sealed class Cel
     /// </summary>
     public static IPartialActivation PartialVars(object vars, params AttributePattern[] unknowns)
     {
-        return IActivation.NewPartialActivation(vars, unknowns);
+        return ActivationFactory.NewPartialActivation(vars, unknowns);
     }
 
     /// <summary>

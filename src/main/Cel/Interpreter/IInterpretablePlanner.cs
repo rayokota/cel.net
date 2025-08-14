@@ -40,7 +40,18 @@ public interface IInterpretablePlanner
     ///     functions, types, and namespaced identifiers at plan time rather than at runtime since it only
     ///     needs to be done once and may be semi-expensive to compute.
     /// </summary>
-    static IInterpretablePlanner NewPlanner(IDispatcher disp, ITypeProvider provider, TypeAdapter adapter,
+    
+
+    /// <summary>
+    ///     newUncheckedPlanner creates an interpretablePlanner which references a Dispatcher,
+    ///     TypeProvider, TypeAdapter, and Container to resolve functions and types at plan time.
+    ///     Namespaces present in Select expressions are resolved lazily at evaluation time.
+    /// </summary>
+}
+
+public static class InterpretablePlannerFactory
+{
+    public static IInterpretablePlanner NewPlanner(IDispatcher disp, ITypeProvider provider, TypeAdapter adapter,
         IAttributeFactory attrFactory, Container cont, CheckedExpr @checked,
         params InterpretableDecorator[] decorators)
     {
@@ -48,12 +59,7 @@ public interface IInterpretablePlanner
             @checked.TypeMap, decorators);
     }
 
-    /// <summary>
-    ///     newUncheckedPlanner creates an interpretablePlanner which references a Dispatcher,
-    ///     TypeProvider, TypeAdapter, and Container to resolve functions and types at plan time.
-    ///     Namespaces present in Select expressions are resolved lazily at evaluation time.
-    /// </summary>
-    static IInterpretablePlanner NewUncheckedPlanner(IDispatcher disp, ITypeProvider provider, TypeAdapter adapter,
+    public static IInterpretablePlanner NewUncheckedPlanner(IDispatcher disp, ITypeProvider provider, TypeAdapter adapter,
         IAttributeFactory attrFactory, Container cont, params InterpretableDecorator[] decorators)
     {
         return new Planner(disp, provider, adapter, attrFactory, cont,
@@ -170,7 +176,7 @@ public sealed class Planner : IInterpretablePlanner
                 throw new InvalidOperationException(string.Format("reference to undefined type: {0}",
                     identRef.Name));
 
-            return IInterpretable.NewConstValue(id, cVal);
+            return InterpretableUtils.NewConstValue(id, cVal);
         }
 
         // Otherwise, return the attribute for the resolved identifier name.
@@ -596,7 +602,7 @@ public sealed class Planner : IInterpretablePlanner
     {
         var val = ConstValue(expr.ConstExpr);
 
-        return IInterpretable.NewConstValue(expr.Id, val);
+        return InterpretableUtils.NewConstValue(expr.Id, val);
     }
 
     /// <summary>

@@ -24,7 +24,7 @@ namespace Cel;
 /// </summary>
 public sealed class Prog : IProgram, ICoster
 {
-    internal static readonly IEvalState EmptyEvalState = IEvalState.NewEvalState();
+    internal static readonly IEvalState EmptyEvalState = EvalStateFactory.NewEvalState();
     internal readonly IList<InterpretableDecorator> decorators = new List<InterpretableDecorator>();
     internal readonly IDispatcher dispatcher;
 
@@ -40,7 +40,7 @@ public sealed class Prog : IProgram, ICoster
     {
         this.e = e;
         this.dispatcher = dispatcher;
-        state = IEvalState.NewEvalState();
+        state = EvalStateFactory.NewEvalState();
     }
 
     internal Prog(Env e, ISet<EvalOption> evalOpts, IActivation? defaultVars, IDispatcher dispatcher,
@@ -72,9 +72,9 @@ public sealed class Prog : IProgram, ICoster
         try
         {
             // Build a hierarchical activation if there are default vars set.
-            var vars = IActivation.NewActivation(input);
+            var vars = ActivationFactory.NewActivation(input);
 
-            if (defaultVars != null) vars = IActivation.NewHierarchicalActivation(defaultVars, vars);
+            if (defaultVars != null) vars = ActivationFactory.NewHierarchicalActivation(defaultVars, vars);
 
             v = interpretable.Eval(vars);
         }
@@ -96,6 +96,6 @@ public sealed class Prog : IProgram, ICoster
         //      throw new EvalException(v);
         //    }
 
-        return IProgram.NewEvalResult(v, evalDetails);
+        return new EvalResult(v, evalDetails);
     }
 }

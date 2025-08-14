@@ -45,7 +45,7 @@ internal sealed class ProgGen : IProgram, ICoster
         // The factory based Eval() differs from the standard evaluation model in that it generates a
         // new EvalState instance for each call to ensure that unique evaluations yield unique stateful
         // results.
-        var state = IEvalState.NewEvalState();
+        var state = EvalStateFactory.NewEvalState();
 
         // Generate a new instance of the interpretable using the factory configured during the call to
         // newProgram(). It is incredibly unlikely that the factory call will generate an error given
