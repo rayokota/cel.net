@@ -16,6 +16,7 @@
         <PackageTags>google;common;expression;language;cel</PackageTags>
         <PackageProjectUrl>https://github.com/rayokota/cel.net</PackageProjectUrl>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
         <RepositoryUrl>https://github.com/rayokota/cel.net</RepositoryUrl>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
     </PropertyGroup>
