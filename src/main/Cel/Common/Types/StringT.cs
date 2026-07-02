@@ -81,7 +81,14 @@ public sealed class StringT : BaseVal, IAdder, IComparer, IMatcher, IReceiver, I
 
         try
         {
+#if NET7_0_OR_GREATER
+            // NonBacktracking guards against ReDoS from user-supplied patterns; it rejects
+            // constructs it can't run in linear time (e.g. backreferences, lookaround) by
+            // throwing, which is caught below and surfaced as a CEL error.
+            var p = new Regex(((StringT)pattern).s, RegexOptions.NonBacktracking);
+#else
             var p = new Regex(((StringT)pattern).s);
+#endif
             return Types.BoolOf(p.IsMatch(s));
         }
         catch (Exception e)
