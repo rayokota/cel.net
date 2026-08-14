@@ -373,4 +373,77 @@ internal sealed class Standard
 
         return idents;
     }
+
+    /// <summary>
+    ///     Returns the Decls for comparisons whose operands are numbers of different types.
+    ///     Kept apart from <see cref="MakeStandardDeclarations" /> so that an environment can
+    ///     be built with or without them; see
+    ///     <see cref="EnvFeature.FeatureCrossTypeNumericComparisons" />.
+    ///     <para>
+    ///         Only the four ordering operators appear here. Equality is declared over a
+    ///         single type parameter and stays homogeneous, matching cel-go and cel-java.
+    ///     </para>
+    /// </summary>
+    internal static IList<Decl> MakeCrossTypeNumericComparisonDeclarations()
+    {
+        IList<Decl> idents = new List<Decl>();
+
+        idents.Add(Decls.NewFunction(Operator.Less.Id,
+            Decls.NewOverload(Overloads.LessInt64Double,
+                new List<Type> { Decls.Int, Decls.Double }, Decls.Bool),
+            Decls.NewOverload(Overloads.LessInt64Uint64,
+                new List<Type> { Decls.Int, Decls.Uint }, Decls.Bool),
+            Decls.NewOverload(Overloads.LessUint64Double,
+                new List<Type> { Decls.Uint, Decls.Double }, Decls.Bool),
+            Decls.NewOverload(Overloads.LessUint64Int64,
+                new List<Type> { Decls.Uint, Decls.Int }, Decls.Bool),
+            Decls.NewOverload(Overloads.LessDoubleInt64,
+                new List<Type> { Decls.Double, Decls.Int }, Decls.Bool),
+            Decls.NewOverload(Overloads.LessDoubleUint64,
+                new List<Type> { Decls.Double, Decls.Uint }, Decls.Bool)));
+
+        idents.Add(Decls.NewFunction(Operator.LessEquals.Id,
+            Decls.NewOverload(Overloads.LessEqualsInt64Double,
+                new List<Type> { Decls.Int, Decls.Double }, Decls.Bool),
+            Decls.NewOverload(Overloads.LessEqualsInt64Uint64,
+                new List<Type> { Decls.Int, Decls.Uint }, Decls.Bool),
+            Decls.NewOverload(Overloads.LessEqualsUint64Double,
+                new List<Type> { Decls.Uint, Decls.Double }, Decls.Bool),
+            Decls.NewOverload(Overloads.LessEqualsUint64Int64,
+                new List<Type> { Decls.Uint, Decls.Int }, Decls.Bool),
+            Decls.NewOverload(Overloads.LessEqualsDoubleInt64,
+                new List<Type> { Decls.Double, Decls.Int }, Decls.Bool),
+            Decls.NewOverload(Overloads.LessEqualsDoubleUint64,
+                new List<Type> { Decls.Double, Decls.Uint }, Decls.Bool)));
+
+        idents.Add(Decls.NewFunction(Operator.Greater.Id,
+            Decls.NewOverload(Overloads.GreaterInt64Double,
+                new List<Type> { Decls.Int, Decls.Double }, Decls.Bool),
+            Decls.NewOverload(Overloads.GreaterInt64Uint64,
+                new List<Type> { Decls.Int, Decls.Uint }, Decls.Bool),
+            Decls.NewOverload(Overloads.GreaterUint64Double,
+                new List<Type> { Decls.Uint, Decls.Double }, Decls.Bool),
+            Decls.NewOverload(Overloads.GreaterUint64Int64,
+                new List<Type> { Decls.Uint, Decls.Int }, Decls.Bool),
+            Decls.NewOverload(Overloads.GreaterDoubleInt64,
+                new List<Type> { Decls.Double, Decls.Int }, Decls.Bool),
+            Decls.NewOverload(Overloads.GreaterDoubleUint64,
+                new List<Type> { Decls.Double, Decls.Uint }, Decls.Bool)));
+
+        idents.Add(Decls.NewFunction(Operator.GreaterEquals.Id,
+            Decls.NewOverload(Overloads.GreaterEqualsInt64Double,
+                new List<Type> { Decls.Int, Decls.Double }, Decls.Bool),
+            Decls.NewOverload(Overloads.GreaterEqualsInt64Uint64,
+                new List<Type> { Decls.Int, Decls.Uint }, Decls.Bool),
+            Decls.NewOverload(Overloads.GreaterEqualsUint64Double,
+                new List<Type> { Decls.Uint, Decls.Double }, Decls.Bool),
+            Decls.NewOverload(Overloads.GreaterEqualsUint64Int64,
+                new List<Type> { Decls.Uint, Decls.Int }, Decls.Bool),
+            Decls.NewOverload(Overloads.GreaterEqualsDoubleInt64,
+                new List<Type> { Decls.Double, Decls.Int }, Decls.Bool),
+            Decls.NewOverload(Overloads.GreaterEqualsDoubleUint64,
+                new List<Type> { Decls.Double, Decls.Uint }, Decls.Bool)));
+
+        return idents;
+    }
 }

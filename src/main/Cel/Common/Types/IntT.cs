@@ -85,10 +85,24 @@ public sealed class IntT : BaseVal, IAdder, IComparer, IDivider, IModder, IMulti
     /// </summary>
     public IVal Compare(IVal other)
     {
-        if (!(other is IntT)) return Err.NoSuchOverload(this, "compare", other);
-
-        return IntOf(i.CompareTo(((IntT)other).i));
+        switch (other)
+        {
+            case IntT o:
+                return IntOfCompare(NumericCompare.CompareLongLong(i, o.i));
+            case UintT o:
+                return IntOfCompare(NumericCompare.CompareLongULong(i, o.ULongValue));
+            case DoubleT o:
+                if (double.IsNaN(o.DoubleValue)) return Err.NewErr("NaN values cannot be ordered");
+                return IntOfCompare(NumericCompare.CompareLongDouble(i, o.DoubleValue));
+            default:
+                return Err.NoSuchOverload(this, "compare", other);
+        }
     }
+
+    /// <summary>
+    ///     The wrapped value, for the cross-type comparisons in <see cref="Compare" />.
+    /// </summary>
+    internal long LongValue => i;
 
     /// <summary>
     ///     Divide implements traits.Divider.Divide.
