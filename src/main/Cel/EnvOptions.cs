@@ -136,6 +136,18 @@ public static class EnvOptions
 
 public enum EnvFeature
 {
-    FeatureDisableDynamicAggregateLiterals
+    FeatureDisableDynamicAggregateLiterals,
+
+    /// <summary>
+    ///     Declares the cross-type numeric comparison overloads, so that a comparison may mix
+    ///     int, uint and double operands rather than requiring both sides to share a type.
+    ///     Off by default, matching cel-go's CrossTypeNumericComparisons and cel-java's
+    ///     CelOptions.enableHeterogeneousNumericComparisons.
+    ///     <para>
+    ///         Ordering only. Equality stays homogeneous, because it is declared over a single
+    ///         type parameter (A, A) -> bool, which no set of overloads can widen.
+    ///     </para>
+    /// </summary>
+    FeatureCrossTypeNumericComparisons
 }
 

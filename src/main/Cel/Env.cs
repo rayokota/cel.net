@@ -182,6 +182,12 @@ public sealed class Env
 
                 try
                 {
+                    // Added before the environment's own declarations so that they merge
+                    // into the standard comparison functions rather than the other way
+                    // round; CheckerEnv folds overloads into an existing decl of the same
+                    // name either way, but this keeps the standard set contiguous.
+                    if (HasFeature(EnvFeature.FeatureCrossTypeNumericComparisons))
+                        ce.Add(Checker.Checker.CrossTypeNumericComparisonDeclarations);
                     ce.Add(declarations);
                     chk = ce;
                 }

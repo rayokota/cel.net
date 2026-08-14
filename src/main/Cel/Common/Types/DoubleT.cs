@@ -56,15 +56,29 @@ public sealed class DoubleT : BaseVal, IAdder, IComparer, IDivider, IMultiplier,
     /// </summary>
     public IVal Compare(IVal other)
     {
-        if (!(other is DoubleT)) return Err.NoSuchOverload(this, "compare", other);
+        // NaN has no place in an ordering; report it rather than let CompareTo impose the
+        // total order it uses for sorting.
+        if (double.IsNaN(d)) return Err.NewErr("NaN values cannot be ordered");
 
-        var od = ((DoubleT)other).d;
-        if (d == od)
-            // work around for special case of -0.0d == 0.0d (IEEE 754)
-            return IntT.IntZero;
-
-        return IntT.IntOfCompare(d.CompareTo(od));
+        switch (other)
+        {
+            case DoubleT o:
+                if (double.IsNaN(o.d)) return Err.NewErr("NaN values cannot be ordered");
+                // Compares equal for the special case of -0.0d == 0.0d (IEEE 754).
+                return IntT.IntOfCompare(NumericCompare.CompareDoubleDouble(d, o.d));
+            case IntT o:
+                return IntT.IntOfCompare(NumericCompare.CompareDoubleLong(d, o.LongValue));
+            case UintT o:
+                return IntT.IntOfCompare(NumericCompare.CompareDoubleULong(d, o.ULongValue));
+            default:
+                return Err.NoSuchOverload(this, "compare", other);
+        }
     }
+
+    /// <summary>
+    ///     The wrapped value, for the cross-type comparisons in <see cref="Compare" />.
+    /// </summary>
+    internal double DoubleValue => d;
 
     /// <summary>
     ///     Divide implements traits.Divider.Divide.

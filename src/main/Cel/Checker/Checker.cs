@@ -28,6 +28,15 @@ using ConstantKindCase = Constant.ConstantKindOneofCase;
 public sealed class Checker
 {
     public static readonly IList<Decl> StandardDeclarations = Standard.MakeStandardDeclarations();
+
+    /// <summary>
+    ///     The cross-type numeric comparison overloads, declared separately from
+    ///     <see cref="StandardDeclarations" /> so that an environment can take them or not.
+    ///     Added on top of the standard declarations, whose same-type overloads they extend
+    ///     rather than replace. See <see cref="EnvFeature.FeatureCrossTypeNumericComparisons" />.
+    /// </summary>
+    public static readonly IList<Decl> CrossTypeNumericComparisonDeclarations =
+        Standard.MakeCrossTypeNumericComparisonDeclarations();
     private readonly TypeErrors errors;
     private readonly IDictionary<long, Reference> references = new Dictionary<long, Reference>();
     private readonly SourceInfo sourceInfo;
