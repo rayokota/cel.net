@@ -203,10 +203,22 @@ public sealed class DoubleT : BaseVal, IAdder, IComparer, IDivider, IMultiplier,
     /// </summary>
     public override IVal Equal(IVal other)
     {
-        if (!(other is DoubleT)) return Err.NoSuchOverload(this, "equal", other);
-
-        // TODO: Handle NaNs properly.
-        return Types.BoolOf(d == ((DoubleT)other).d);
+        // Numeric equality is cross-type, matching cel-go and cel-java; a NaN operand - on
+        // either side - is never equal. See IntT.Equal for why this is independent of the
+        // ordering feature.
+        if (double.IsNaN(d)) return BoolT.False;
+        switch (other)
+        {
+            case DoubleT o:
+                if (double.IsNaN(o.d)) return BoolT.False;
+                return Types.BoolOf(d == o.d);
+            case IntT o:
+                return Types.BoolOf(NumericCompare.CompareDoubleLong(d, o.LongValue) == 0);
+            case UintT o:
+                return Types.BoolOf(NumericCompare.CompareDoubleULong(d, o.ULongValue) == 0);
+            default:
+                return Err.NoSuchOverload(this, "equal", other);
+        }
     }
 
     /// <summary>
