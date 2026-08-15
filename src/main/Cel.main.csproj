@@ -61,8 +61,8 @@
         <PackageReference Include="Google.Protobuf" Version="3.26.1" />
         <!-- Only the generated ConformanceService gRPC stub needs this, and only the Grpc.Core
              abstractions (ClientBase/Marshaller) it references at compile time. -->
-        <PackageReference Include="Grpc.Core.Api" Version="2.83.0" />
-        <PackageReference Include="Grpc.Tools" Version="2.83.0">
+        <PackageReference Include="Grpc.Core.Api" Version="2.63.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.63.0">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
