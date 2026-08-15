@@ -174,6 +174,15 @@ namespace Cel.Extension;
 ///         <h4>Examples:</h4>
 ///         <pre>    {@code 'TacoCat'.upperAscii()     // returns 'TACOCAT'}</pre>
 ///         <pre>    {@code 'TacoCÆt Xii'.upperAscii() // returns 'TACOCÆT XII'}</pre>
+///         <h3>Reverse</h3>
+///     </para>
+///     <para>
+///         Returns a new string with the characters in reverse order. The string is reversed by
+///         Unicode code point, matching cel-go, so surrogate pairs are preserved rather than split.
+///         <pre>    {@code &lt;string&gt;.reverse() -> &lt;string&gt;}</pre>
+///         <h4>Examples:</h4>
+///         <pre>    {@code 'gums'.reverse()       // returns 'smug'}</pre>
+///         <pre>    {@code 'John Smith'.reverse() // returns 'htimS nhoJ'}</pre>
 ///     </para>
 /// </summary>
 public class StringsLib : ILibrary
@@ -184,6 +193,7 @@ public class StringsLib : ILibrary
     private const string LAST_INDEX_OF = "lastIndexOf";
     private const string LOWER_ASCII = "lowerAscii";
     private const string REPLACE = "replace";
+    private const string REVERSE = "reverse";
     private const string SPLIT = "split";
     private const string SUBSTR = "substring";
     private const string TRIM_SPACE = "trim";
@@ -251,6 +261,9 @@ public class StringsLib : ILibrary
                 Decls.NewFunction(TRIM_SPACE,
                     Decls.NewInstanceOverload("string_trim",
                         new List<Type> { Decls.String }, Decls.String)),
+                Decls.NewFunction(REVERSE,
+                    Decls.NewInstanceOverload("string_reverse",
+                        new List<Type> { Decls.String }, Decls.String)),
                 Decls.NewFunction(UPPER_ASCII,
                     Decls.NewInstanceOverload("string_upper_ascii",
                         new List<Type> { Decls.String }, Decls.String)));
@@ -287,6 +300,7 @@ public class StringsLib : ILibrary
                 Overload.NewOverload(SUBSTR, Trait.None, null, Guards.CallInStrIntOutStr(Substr),
                     Guards.CallInStrIntIntOutStr(SubstrRange)),
                 Overload.Unary(TRIM_SPACE, Guards.CallInStrOutStr(TrimSpace)),
+                Overload.Unary(REVERSE, Guards.CallInStrOutStr(Reverse)),
                 Overload.Unary(UPPER_ASCII, Guards.CallInStrOutStr(UpperASCII)));
             list.Add(functions);
             return list;
@@ -556,6 +570,26 @@ public class StringsLib : ILibrary
                 stringBuilder.Append(char.ToUpper(c));
             else
                 stringBuilder.Append(c);
+
+        return stringBuilder.ToString();
+    }
+
+    internal static string Reverse(string str)
+    {
+        // Reverse by Unicode code point, matching cel-go's []rune reversal: a surrogate pair is
+        // kept intact rather than split as a char-by-char reversal would.
+        var stringBuilder = new StringBuilder(str.Length);
+        for (var i = str.Length - 1; i >= 0; i--)
+            if (i > 0 && char.IsLowSurrogate(str[i]) && char.IsHighSurrogate(str[i - 1]))
+            {
+                stringBuilder.Append(str[i - 1]);
+                stringBuilder.Append(str[i]);
+                i--;
+            }
+            else
+            {
+                stringBuilder.Append(str[i]);
+            }
 
         return stringBuilder.ToString();
     }
