@@ -46,6 +46,8 @@ public enum InterpreterTestCase
     eq_list_elem_mixed_types_true,
     in_list,
     in_map,
+    in_map_numeric_key,
+    index_map_numeric_key,
     index,
     index_out_of_range,
     index_relative,
