@@ -40,8 +40,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Antlr4.Runtime.Standard" Version="4.10.1" />
-        <PackageReference Include="Antlr4BuildTasks" Version="10.6.0" />
+        <PackageReference Include="Antlr4.Runtime.Standard" Version="4.13.1" />
+        <!-- Build-time grammar codegen; keep it out of consumers' dependency closure, like
+             Grpc.Tools below. -->
+        <PackageReference Include="Antlr4BuildTasks" Version="12.14.0">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
@@ -52,10 +57,12 @@
     <ItemGroup>
         <PackageReference Include="Apache.Avro" Version="1.12.1" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
-        <PackageReference Include="NodaTime" Version="3.2.2" />
-        <PackageReference Include="Google.Protobuf" Version="3.19.4" />
-        <PackageReference Include="Grpc.Net.Client" Version="2.44.0" />
-        <PackageReference Include="Grpc.Tools" Version="2.44.0">
+        <PackageReference Include="NodaTime" Version="3.3.3" />
+        <PackageReference Include="Google.Protobuf" Version="3.26.1" />
+        <!-- Only the generated ConformanceService gRPC stub needs this, and only the Grpc.Core
+             abstractions (ClientBase/Marshaller) it references at compile time. -->
+        <PackageReference Include="Grpc.Core.Api" Version="2.83.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.83.0">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
