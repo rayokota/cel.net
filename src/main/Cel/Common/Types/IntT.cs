@@ -333,9 +333,22 @@ public sealed class IntT : BaseVal, IAdder, IComparer, IDivider, IModder, IMulti
     /// </summary>
     public override IVal Equal(IVal other)
     {
-        if (!(other is IntT)) return Err.NoSuchOverload(this, "equal", other);
-
-        return Types.BoolOf(i == ((IntT)other).i);
+        // Numeric equality is cross-type, matching cel-go and cel-java, whose runtime equality
+        // compares int, uint and double as points on one number line regardless of the
+        // heterogeneous-comparisons feature (that feature only widens ordering, at the checker).
+        // A NaN operand is never equal, rather than being ordered.
+        switch (other)
+        {
+            case IntT o:
+                return Types.BoolOf(i == o.i);
+            case UintT o:
+                return Types.BoolOf(NumericCompare.CompareLongULong(i, o.ULongValue) == 0);
+            case DoubleT o:
+                if (double.IsNaN(o.DoubleValue)) return BoolT.False;
+                return Types.BoolOf(NumericCompare.CompareLongDouble(i, o.DoubleValue) == 0);
+            default:
+                return Err.NoSuchOverload(this, "equal", other);
+        }
     }
 
     /// <summary>

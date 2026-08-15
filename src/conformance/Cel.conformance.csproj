@@ -5,11 +5,20 @@
         <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <!-- A gRPC conformance server, not a test project; keep `dotnet test` from trying to
+             run it (and from applying the test platform's targets to it). -->
+        <IsTestProject>false</IsTestProject>
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="../main/Cel.main.csproj"/>
-        <ProjectReference Include="../test/Cel.test.csproj"/>
+        <!-- Needed for the generated test protos (Google.Api.Expr.Test / TestAllTypes) the
+             conformance service echoes. Exclude the build assets so the test project's
+             Microsoft.Testing.Platform MSBuild targets do not flow here and make `dotnet test`
+             treat this gRPC server as a (zero-test) test project. -->
+        <ProjectReference Include="../test/Cel.test.csproj">
+            <ExcludeAssets>build;buildTransitive</ExcludeAssets>
+        </ProjectReference>
     </ItemGroup>
 
     <ItemGroup>
@@ -18,13 +27,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="NodaTime" Version="3.2.2"/>
-        <PackageReference Include="Google.Protobuf" Version="3.19.4"/>
-        <PackageReference Include="Grpc" Version="2.44.0"/>
-        <PackageReference Include="Grpc.AspNetCore" Version="2.44.0"/>
-        <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.44.0"/>
-        <PackageReference Include="Grpc.Net.Client" Version="2.44.0"/>
-        <PackageReference Include="Grpc.Tools" Version="2.44.0">
+        <PackageReference Include="NodaTime" Version="3.3.3"/>
+        <PackageReference Include="Google.Protobuf" Version="3.26.1"/>
+        <PackageReference Include="Grpc.AspNetCore" Version="2.63.0"/>
+        <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.63.0"/>
+        <PackageReference Include="Grpc.Net.Client" Version="2.63.0"/>
+        <PackageReference Include="Grpc.Tools" Version="2.63.0">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>

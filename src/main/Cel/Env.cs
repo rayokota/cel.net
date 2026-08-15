@@ -249,6 +249,10 @@ public sealed class Env
     public AstIssuesTuple CompileSource(ISource src)
     {
         var aiParse = ParseSource(src);
+        // A parse error leaves no AST to check - ParseSource returns a null ast - so stop here
+        // rather than dereferencing it, as this method's contract already states. A parse-phase
+        // macro error (has(), math.least(), ...) surfaces this way.
+        if (aiParse.HasIssues()) return aiParse;
         var aiCheck = Check(aiParse.ast!);
         var iss = aiParse.issues.Append(aiCheck.issues);
         return new AstIssuesTuple(aiCheck.ast, iss);

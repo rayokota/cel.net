@@ -4,6 +4,14 @@
         <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <!-- Run under Microsoft.Testing.Platform. Test.Sdk 18.x / NUnit3TestAdapter 6.x pull in
+             MTP; the .NET 10 SDK then refuses the classic VSTest `dotnet test`. A test project
+             is an executable with the NUnit MTP runner enabled. The MTP runner is selected by
+             global.json on the .NET 10 SDK (native support) and by
+             TestingPlatformDotnetTestSupport on the .NET 8/9 SDK (VSTest-bridge support). -->
+        <OutputType>Exe</OutputType>
+        <EnableNUnitRunner>true</EnableNUnitRunner>
+        <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,15 +23,15 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="JsonSubTypes" Version="1.9.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-        <PackageReference Include="NUnit" Version="3.13.2" />
-        <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
-        <PackageReference Include="NUnit.ConsoleRunner" Version="3.15.0" />
-        <PackageReference Include="NodaTime" Version="3.2.2" />
-        <PackageReference Include="Google.Protobuf" Version="3.19.4" />
-        <PackageReference Include="Grpc.Net.Client" Version="2.44.0" />
-        <PackageReference Include="Grpc.Tools" Version="2.44.0">
+        <PackageReference Include="JsonSubTypes" Version="2.1.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.9.0" />
+        <PackageReference Include="NUnit" Version="3.14.0" />
+        <PackageReference Include="NUnit3TestAdapter" Version="6.2.0" />
+        <PackageReference Include="NUnit.ConsoleRunner" Version="3.22.0" />
+        <PackageReference Include="NodaTime" Version="3.3.3" />
+        <PackageReference Include="Google.Protobuf" Version="3.26.1" />
+        <PackageReference Include="Grpc.Net.Client" Version="2.63.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.63.0">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
