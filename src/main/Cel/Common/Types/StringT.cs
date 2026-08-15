@@ -165,9 +165,10 @@ public sealed class StringT : BaseVal, IAdder, IComparer, IMatcher, IReceiver, I
         {
             switch (typeVal.TypeEnum().InnerEnumValue)
             {
-                // Parse with the invariant culture and Go-strconv-equivalent number styles (no
-                // surrounding whitespace, no group separators, '.' decimal only) so results do not
-                // depend on the process culture, matching cel-go's strconv.Parse* functions.
+                // Parse with the invariant culture and restrictive number styles (no surrounding
+                // whitespace, no group separators, '.' decimal only) so results do not depend on
+                // the process culture, matching the locale-independent parsing of cel-go and
+                // cel-java. (Overflow still yields infinity as in Java, unlike cel-go's range error.)
                 case TypeEnum.InnerEnum.Int:
                     return IntT.IntOf(long.Parse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture));
                 case TypeEnum.InnerEnum.Uint:
