@@ -431,9 +431,19 @@ public sealed class EvalEq : AbstractEvalLhsRhs, IInterpretableCall
     /// </summary>
     public override IVal Eval(IActivation ctx)
     {
+        // Ported from cel-go's evalEq: errors and unknowns are propagated here so that the
+        // value-level Equal methods can return a plain false for an unrelated type. Both operands
+        // are evaluated before propagating (CEL has no side effects) so exhaustive evaluation still
+        // records each side's state, while the checks below preserve the error-then-unknown,
+        // lhs-then-rhs precedence.
         var lVal = lhs.Eval(ctx);
         var rVal = rhs.Eval(ctx);
-        return lVal.Equal(rVal);
+        if (Err.IsError(lVal)) return lVal;
+        if (Err.IsError(rVal)) return rVal;
+        if (UnknownT.IsUnknown(lVal)) return lVal;
+        if (UnknownT.IsUnknown(rVal)) return rVal;
+
+        return Types.Equal(lVal, rVal);
     }
 
     /// <summary>
@@ -485,18 +495,20 @@ public sealed class EvalNe : AbstractEvalLhsRhs, IInterpretableCall
     /// </summary>
     public override IVal Eval(IActivation ctx)
     {
+        // Ported from cel-go's evalNe: errors and unknowns are propagated here, then not-equal is
+        // the negation of Types.Equal (a nested error/unknown from the comparison is propagated).
+        // Both operands are evaluated before propagating; see EvalEq for why.
         var lVal = lhs.Eval(ctx);
         var rVal = rhs.Eval(ctx);
-        var eqVal = lVal.Equal(rVal);
-        switch (eqVal.Type().TypeEnum().InnerEnumValue)
-        {
-            case TypeEnum.InnerEnum.Err:
-                return eqVal;
-            case TypeEnum.InnerEnum.Bool:
-                return ((INegater)eqVal).Negate();
-        }
+        if (Err.IsError(lVal)) return lVal;
+        if (Err.IsError(rVal)) return rVal;
+        if (UnknownT.IsUnknown(lVal)) return lVal;
+        if (UnknownT.IsUnknown(rVal)) return rVal;
 
-        return Err.NoSuchOverload(lVal, Operator.NotEquals.Id, rVal);
+        var eqVal = Types.Equal(lVal, rVal);
+        if (Util.IsUnknownOrError(eqVal)) return eqVal;
+
+        return Types.BoolOf(eqVal != BoolT.True);
     }
 
     /// <summary>

@@ -171,9 +171,9 @@ public abstract class MapT : BaseVal, IMapper, IContainer, IIndexer, IIterableT,
 
                 if (Err.IsError(oVal)) return val;
 
-                if (val.Type() != oVal.Type()) return Err.NoSuchOverload(val, Operator.Equals.Id, oVal);
-
-                var eq = val.Equal(oVal);
+                // A value of an unrelated type is simply not equal (false), matching cel-go,
+                // rather than raising a no-such-overload error.
+                var eq = Types.Equal(val, oVal);
                 if (eq is Err) return eq;
 
                 if (eq != BoolT.True) return BoolT.False;

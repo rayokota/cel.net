@@ -48,4 +48,20 @@ public sealed class Types
     {
         return b ? BoolT.True : BoolT.False;
     }
+
+    /// <summary>
+    ///     Equal returns whether the two values are equal, ported from cel-go's <c>types.Equal</c>.
+    ///     A null on either side is equal only to another null; otherwise equality is delegated to
+    ///     the left value, whose <see cref="IVal.Equal" /> returns false (not an error) when the
+    ///     right value is of an unrelated type. Callers are expected to have already propagated any
+    ///     error or unknown operand, as the interpreter's equality nodes do.
+    /// </summary>
+    public static IVal Equal(IVal lhs, IVal rhs)
+    {
+        var lNull = lhs is NullT;
+        var rNull = rhs is NullT;
+        if (lNull || rNull) return BoolOf(lNull == rNull);
+
+        return lhs.Equal(rhs);
+    }
 }

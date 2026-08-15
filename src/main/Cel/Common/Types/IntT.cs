@@ -347,7 +347,7 @@ public sealed class IntT : BaseVal, IAdder, IComparer, IDivider, IModder, IMulti
                 if (double.IsNaN(o.DoubleValue)) return BoolT.False;
                 return Types.BoolOf(NumericCompare.CompareLongDouble(i, o.DoubleValue) == 0);
             default:
-                return Err.NoSuchOverload(this, "equal", other);
+                return BoolT.False;
         }
     }
 

@@ -170,8 +170,10 @@ internal class InterpreterTest
             .Types(new Google.Api.Expr.Test.V1.Proto3.TestAllTypes())
             .Out(new Struct()),
             */
-            new TestCase(InterpreterTestCase.elem_in_mixed_type_list_error)
-                .Expr("'elem' in [1u, 'str', 2, b'bytes']").Err("no such overload: string.@in(uint,bytes,...)"),
+            // A heterogeneous list yields false (no element matches), matching cel-go, rather than
+            // a no-such-overload error.
+            new TestCase(InterpreterTestCase.elem_in_mixed_type_list_false)
+                .Expr("'elem' in [1u, 'str', 2, b'bytes']").Out(Common.Types.Types.BoolOf(false)),
             new TestCase(InterpreterTestCase.elem_in_mixed_type_list).Expr("'elem' in [1, 'elem', 2]")
                 .Out(Common.Types.Types.BoolOf(true)),
             new TestCase(InterpreterTestCase.select_literal_uint).Expr("google.protobuf.UInt32Value{value: 123u}")
@@ -189,8 +191,10 @@ internal class InterpreterTest
                 .Types(new TestAllTypesPb3())
                 .Env(Decls.NewVar("x", Decls.NewObjectType("google.api.expr.test.v1.proto3.TestAllTypes"))).In("x",
                     t2).Out(IntT.IntOf(2)),
-            new TestCase(InterpreterTestCase.eq_list_elem_mixed_types_error).Expr("[1] == [1.0]").Unchecked()
-                .Err("no such overload: int._==_(double)"),
+            // Cross-type numeric equality applies element-wise, so [1] == [1.0] is true, matching
+            // cel-go, rather than a no-such-overload error.
+            new TestCase(InterpreterTestCase.eq_list_elem_mixed_types_true).Expr("[1] == [1.0]").Unchecked()
+                .Out(Common.Types.Types.BoolOf(true)),
             // TODO remove
             /*
             (new TestCase(InterpreterTestCase.parse_nest_message_literal))

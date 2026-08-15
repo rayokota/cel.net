@@ -125,7 +125,8 @@ public class StringTest
     {
         Assert.That(StringT.StringOf("hello").Equal(StringT.StringOf("hello")), Is.SameAs(BoolT.True));
         Assert.That(StringT.StringOf("hello").Equal(StringT.StringOf("hell")), Is.SameAs(BoolT.False));
-        Assert.That(StringT.StringOf("c").Equal(IntT.IntOf(99)), Is.InstanceOf(typeof(Err)));
+        // A value of an unrelated type is not equal (false), matching cel-go, rather than an error.
+        Assert.That(StringT.StringOf("c").Equal(IntT.IntOf(99)), Is.SameAs(BoolT.False));
     }
 
     [Test]

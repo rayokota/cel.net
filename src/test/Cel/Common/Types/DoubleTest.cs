@@ -166,7 +166,8 @@ public class DoubleTest
     [Test]
     public virtual void DoubleEqual()
     {
-        Assert.That(Err.IsError(DoubleT.DoubleOf(0).Equal(BoolT.False)), Is.True);
+        // A value of an unrelated type is not equal (false), matching cel-go, rather than an error.
+        Assert.That(DoubleT.DoubleOf(0).Equal(BoolT.False), Is.SameAs(BoolT.False));
     }
 
     [Test]

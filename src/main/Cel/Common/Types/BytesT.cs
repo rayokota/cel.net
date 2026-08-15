@@ -179,7 +179,7 @@ public sealed class BytesT : BaseVal, IAdder, IComparer, ISizer
     /// </summary>
     public override IVal Equal(IVal other)
     {
-        if (!(other is BytesT)) return Err.NoSuchOverload(this, "equal", other);
+        if (!(other is BytesT)) return BoolT.False;
 
         return Types.BoolOf(b.SequenceEqual(((BytesT)other).b));
     }
