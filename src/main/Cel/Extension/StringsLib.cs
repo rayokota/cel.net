@@ -174,6 +174,15 @@ namespace Cel.Extension;
 ///         <h4>Examples:</h4>
 ///         <pre>    {@code 'TacoCat'.upperAscii()     // returns 'TACOCAT'}</pre>
 ///         <pre>    {@code 'TacoCÆt Xii'.upperAscii() // returns 'TACOCÆT XII'}</pre>
+///         <h3>Reverse</h3>
+///     </para>
+///     <para>
+///         Returns a new string with the characters in reverse order. The string is reversed by
+///         Unicode code point, matching cel-go, so surrogate pairs are preserved rather than split.
+///         <pre>    {@code &lt;string&gt;.reverse() -> &lt;string&gt;}</pre>
+///         <h4>Examples:</h4>
+///         <pre>    {@code 'gums'.reverse()       // returns 'smug'}</pre>
+///         <pre>    {@code 'John Smith'.reverse() // returns 'htimS nhoJ'}</pre>
 ///     </para>
 /// </summary>
 public class StringsLib : ILibrary
