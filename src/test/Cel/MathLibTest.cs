@@ -269,4 +269,30 @@ public class MathLibTest
             Assert.That(result.Val, Is.InstanceOf<Err>(), expr);
         }
     }
+
+    /// <summary>
+    ///     Reducing math.least/greatest over an unknown operand yields the unknown, not a number
+    ///     or a spurious overload error. During partial evaluation an unset variable resolves to
+    ///     an unknown, and the reduction must carry it through - matching cel-go's minPair/maxPair.
+    /// </summary>
+    [Test]
+    public virtual void PropagatesUnknownOperands()
+    {
+        var env = Env.NewEnv(MathLib.Math(), EnvOptions.Declarations(Decls.NewVar("x", Decls.Int)));
+        foreach (var expr in new[]
+                 {
+                     "math.least(x, 1)",
+                     "math.greatest(x, 1)",
+                     "math.least([x, 1])",
+                     "math.greatest([x, 2, 3])"
+                 })
+        {
+            var astIss = env.Compile(expr);
+            Assert.That(astIss.HasIssues(), Is.False, expr);
+            var prg = env.Program(astIss.Ast!,
+                ProgramOptions.EvalOptions(EvalOption.OptTrackState, EvalOption.OptPartialEval));
+            var result = prg.Eval(env.UnknownVars).Val;
+            Assert.That(UnknownT.IsUnknown(result), Is.True, expr);
+        }
+    }
 }

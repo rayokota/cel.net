@@ -322,9 +322,12 @@ public class MathLib : ILibrary
 
     private static IVal MinPair(IVal first, IVal second)
     {
-        if (first is not IComparer cmp) return Err.NoSuchOverload(first, MinFunc, null);
+        // MaybeNoSuchOverloadErr preserves an unknown or error first rather than masking it as
+        // a plain overload error, and an unknown or error comparison result is propagated too -
+        // reducing a list must not turn an indeterminate value into a number. Matches cel-go.
+        if (first is not IComparer cmp) return Err.MaybeNoSuchOverloadErr(first);
         var cmpVal = cmp.Compare(second);
-        if (Err.IsError(cmpVal)) return cmpVal;
+        if (Util.IsUnknownOrError(cmpVal)) return cmpVal;
         // Compare returns 1 when first > second, so the smaller of the two is second.
         if (cmpVal is IntT it && it.LongValue == 1) return second;
         return first;
@@ -332,9 +335,9 @@ public class MathLib : ILibrary
 
     private static IVal MaxPair(IVal first, IVal second)
     {
-        if (first is not IComparer cmp) return Err.NoSuchOverload(first, MaxFunc, null);
+        if (first is not IComparer cmp) return Err.MaybeNoSuchOverloadErr(first);
         var cmpVal = cmp.Compare(second);
-        if (Err.IsError(cmpVal)) return cmpVal;
+        if (Util.IsUnknownOrError(cmpVal)) return cmpVal;
         // Compare returns -1 when first < second, so the greater of the two is second.
         if (cmpVal is IntT it && it.LongValue == -1) return second;
         return first;
@@ -347,7 +350,9 @@ public class MathLib : ILibrary
         if (size == 0) return Err.NewErr("math.@min(list) argument must not be empty");
         var min = list.Get(IntT.IntOf(0));
         for (long i = 1; i < size; i++) min = MinPair(min, list.Get(IntT.IntOf(i)));
-        if (min is IntT or UintT or DoubleT) return min;
+        // A numeric or unknown reduction is returned as-is; an error too, rather than being
+        // flattened to a generic overload error.
+        if (min is IntT or UintT or DoubleT or UnknownT) return min;
         if (Err.IsError(min)) return min;
         return Err.NewErr("no such overload: math.@min");
     }
@@ -359,7 +364,7 @@ public class MathLib : ILibrary
         if (size == 0) return Err.NewErr("math.@max(list) argument must not be empty");
         var max = list.Get(IntT.IntOf(0));
         for (long i = 1; i < size; i++) max = MaxPair(max, list.Get(IntT.IntOf(i)));
-        if (max is IntT or UintT or DoubleT) return max;
+        if (max is IntT or UintT or DoubleT or UnknownT) return max;
         if (Err.IsError(max)) return max;
         return Err.NewErr("no such overload: math.@max");
     }

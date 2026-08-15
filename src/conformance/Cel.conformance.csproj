@@ -5,11 +5,20 @@
         <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <!-- A gRPC conformance server, not a test project; keep `dotnet test` from trying to
+             run it (and from applying the test platform's targets to it). -->
+        <IsTestProject>false</IsTestProject>
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="../main/Cel.main.csproj"/>
-        <ProjectReference Include="../test/Cel.test.csproj"/>
+        <!-- Needed for the generated test protos (Google.Api.Expr.Test / TestAllTypes) the
+             conformance service echoes. Exclude the build assets so the test project's
+             Microsoft.Testing.Platform MSBuild targets do not flow here and make `dotnet test`
+             treat this gRPC server as a (zero-test) test project. -->
+        <ProjectReference Include="../test/Cel.test.csproj">
+            <ExcludeAssets>build;buildTransitive</ExcludeAssets>
+        </ProjectReference>
     </ItemGroup>
 
     <ItemGroup>

@@ -4,6 +4,14 @@
         <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <!-- Run under Microsoft.Testing.Platform. Test.Sdk 18.x / NUnit3TestAdapter 6.x pull in
+             MTP; the .NET 10 SDK then refuses the classic VSTest `dotnet test`. A test project
+             is an executable with the NUnit MTP runner enabled. The MTP runner is selected by
+             global.json on the .NET 10 SDK (native support) and by
+             TestingPlatformDotnetTestSupport on the .NET 8/9 SDK (VSTest-bridge support). -->
+        <OutputType>Exe</OutputType>
+        <EnableNUnitRunner>true</EnableNUnitRunner>
+        <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
     </PropertyGroup>
 
     <ItemGroup>
