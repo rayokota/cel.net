@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
 using Cel.Common.Types.Ref;
 using Cel.Common.Types.Traits;
@@ -164,12 +165,18 @@ public sealed class StringT : BaseVal, IAdder, IComparer, IMatcher, IReceiver, I
         {
             switch (typeVal.TypeEnum().InnerEnumValue)
             {
+                // Parse with the invariant culture and restrictive number styles (no surrounding
+                // whitespace, no group separators, '.' decimal only) so results do not depend on
+                // the process culture, matching the locale-independent parsing of cel-go and
+                // cel-java. (Overflow still yields infinity as in Java, unlike cel-go's range error.)
                 case TypeEnum.InnerEnum.Int:
-                    return IntT.IntOf(long.Parse(s));
+                    return IntT.IntOf(long.Parse(s, NumberStyles.AllowLeadingSign, CultureInfo.InvariantCulture));
                 case TypeEnum.InnerEnum.Uint:
-                    return UintT.UintOf(ulong.Parse(s));
+                    return UintT.UintOf(ulong.Parse(s, NumberStyles.None, CultureInfo.InvariantCulture));
                 case TypeEnum.InnerEnum.Double:
-                    return DoubleT.DoubleOf(double.Parse(s));
+                    return DoubleT.DoubleOf(double.Parse(s,
+                        NumberStyles.AllowLeadingSign | NumberStyles.AllowDecimalPoint | NumberStyles.AllowExponent,
+                        CultureInfo.InvariantCulture));
                 case TypeEnum.InnerEnum.Bool:
                     if ("true".Equals(s, StringComparison.OrdinalIgnoreCase)) return BoolT.True;
 

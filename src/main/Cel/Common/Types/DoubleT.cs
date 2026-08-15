@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Globalization;
+using System.Numerics;
 using Cel.Common.Types.Ref;
 using Cel.Common.Types.Traits;
 using Google.Protobuf.WellKnownTypes;
@@ -190,7 +191,11 @@ public sealed class DoubleT : BaseVal, IAdder, IComparer, IDivider, IMultiplier,
             case TypeEnum.InnerEnum.Double:
                 return this;
             case TypeEnum.InnerEnum.String:
-                return StringT.StringOf(Convert.ToString(d));
+                // Format with the invariant culture so the decimal separator does not depend on the
+                // process culture. The shape follows .NET's shortest round-trip, close to the Java
+                // Double.toString that cel.net was ported from; cel-go's %g differs in edge cases,
+                // and the CEL engines do not agree on a canonical double->string format.
+                return StringT.StringOf(d.ToString(CultureInfo.InvariantCulture));
             case TypeEnum.InnerEnum.Type:
                 return DoubleType;
         }

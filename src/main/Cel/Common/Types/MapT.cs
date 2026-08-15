@@ -169,7 +169,7 @@ public abstract class MapT : BaseVal, IMapper, IContainer, IIndexer, IIterableT,
 
                 if (Err.IsError(val)) return val;
 
-                if (Err.IsError(oVal)) return val;
+                if (Err.IsError(oVal)) return oVal;
 
                 // A value of an unrelated type is simply not equal (false), matching cel-go,
                 // rather than raising a no-such-overload error.
@@ -191,12 +191,12 @@ public abstract class MapT : BaseVal, IMapper, IContainer, IIndexer, IIterableT,
 
         public override IVal Contains(IVal value)
         {
-            return Types.BoolOf(map.ContainsKey(value));
+            return Types.BoolOf(FindInternal(value) != null);
         }
 
         public override IVal Get(IVal index)
         {
-            map.TryGetValue(index, out var v);
+            var v = FindInternal(index);
             if (v == null) return Err.NoSuchField(index.Value());
             return v;
         }
@@ -208,8 +208,77 @@ public abstract class MapT : BaseVal, IMapper, IContainer, IIndexer, IIterableT,
 
         public override IVal? Find(IVal key)
         {
-            map.TryGetValue(key, out var v);
-            return v;
+            return FindInternal(key);
+        }
+
+        /// <summary>
+        ///     Looks up a key, normalizing numeric key types on a miss to match
+        ///     cel-go/cel-cpp/cel-java: an int, uint or double index also matches a lossless-equal
+        ///     key of the other integer type. (CEL map keys are only int, uint, bool or string, so
+        ///     in practice this is int/uint normalization plus a double index resolving against an
+        ///     int or uint key.) Ported from cel-go's refValMapAccessor.Find.
+        /// </summary>
+        private IVal? FindInternal(IVal key)
+        {
+            if (map.TryGetValue(key, out var v)) return v;
+
+            switch (key)
+            {
+                case DoubleT d:
+                    if (DoubleToInt64Lossless(d.DoubleValue, out var di) &&
+                        map.TryGetValue(IntT.IntOf(di), out var dv))
+                        return dv;
+                    if (DoubleToUint64Lossless(d.DoubleValue, out var du) &&
+                        map.TryGetValue(UintT.UintOf(du), out var dvu))
+                        return dvu;
+                    break;
+                case IntT i:
+                    if (Int64ToUint64Lossless(i.IntValue(), out var iu) &&
+                        map.TryGetValue(UintT.UintOf(iu), out var ivu))
+                        return ivu;
+                    break;
+                case UintT u:
+                    if (Uint64ToInt64Lossless(u.UintValue(), out var ui) &&
+                        map.TryGetValue(IntT.IntOf(ui), out var uvi))
+                        return uvi;
+                    break;
+            }
+
+            return null;
+        }
+
+        // Lossless numeric conversions used for numeric map-key normalization, ported from
+        // cel-go's overflow.go.
+        private static bool DoubleToInt64Lossless(double v, out long result)
+        {
+            result = 0;
+            if (double.IsInfinity(v) || double.IsNaN(v) || v <= long.MinValue || v >= long.MaxValue) return false;
+            var i = (long)v;
+            if (i != v) return false;
+            result = i;
+            return true;
+        }
+
+        private static bool DoubleToUint64Lossless(double v, out ulong result)
+        {
+            result = 0;
+            if (double.IsInfinity(v) || double.IsNaN(v) || v < 0 || v >= 18446744073709551616.0) return false;
+            var u = (ulong)v;
+            if (u != v) return false;
+            result = u;
+            return true;
+        }
+
+        private static bool Int64ToUint64Lossless(long v, out ulong result)
+        {
+            result = v >= 0 ? (ulong)v : 0;
+            return v >= 0;
+        }
+
+        private static bool Uint64ToInt64Lossless(ulong v, out long result)
+        {
+            result = v <= long.MaxValue ? (long)v : 0;
+            return v <= long.MaxValue;
         }
 
         public override bool Equals(object? o)

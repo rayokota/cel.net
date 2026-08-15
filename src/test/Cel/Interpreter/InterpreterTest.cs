@@ -291,6 +291,19 @@ internal class InterpreterTest
                 .OptimizedCost(Cost.Of(0, 0)),
             new TestCase(InterpreterTestCase.in_map).Expr("'other-key' in {'key': null, 'other-key': 42}")
                 .Cost(Cost.Of(1, 1)),
+            // Numeric map keys are normalized on lookup, matching cel-go: a uint or double index
+            // matches a lossless-equal int key, and vice versa.
+            new TestCase(InterpreterTestCase.in_map_numeric_key)
+                .Expr("1u in {1: 42} && 1.0 in {1: 42} && 1 in {1u: 42}" +
+                      // double index resolving a uint key above long.MaxValue (2^63), exercising
+                      // the double->uint fallback and the int-range guard...
+                      " && 9223372036854775808.0 in {9223372036854775808u: 42}" +
+                      // ...and a fractional index that must not match an integer key.
+                      " && !(1.5 in {1: 42})").Unchecked()
+                .Out(Common.Types.Types.BoolOf(true)),
+            new TestCase(InterpreterTestCase.index_map_numeric_key)
+                .Expr("{2: 42}[2u] == 42").Unchecked()
+                .Out(Common.Types.Types.BoolOf(true)),
             new TestCase(InterpreterTestCase.index)
                 .Expr("m['key'][1] == 42u && m['null'] == null && m[string(0)] == 10").Cost(Cost.Of(2, 9))
                 .ExhaustiveCost(Cost.Of(9, 9)).OptimizedCost(Cost.Of(2, 8))
