@@ -132,7 +132,8 @@ public class UintTest
     [Test]
     public virtual void UintEqual()
     {
-        Assert.That(UintT.UintOf(0).Equal(BoolT.False), Is.InstanceOf(typeof(Err)));
+        // A value of an unrelated type is not equal (false), matching cel-go, rather than an error.
+        Assert.That(UintT.UintOf(0).Equal(BoolT.False), Is.SameAs(BoolT.False));
     }
 
     [Test]

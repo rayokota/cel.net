@@ -120,7 +120,7 @@ public sealed class BoolT : BaseVal, IComparer, INegater
     /// </summary>
     public override IVal Equal(IVal other)
     {
-        if (!(other is BoolT)) return Err.NoSuchOverload(this, "equal", other);
+        if (!(other is BoolT)) return BoolT.False;
 
         return Types.BoolOf(b == ((BoolT)other).b);
     }

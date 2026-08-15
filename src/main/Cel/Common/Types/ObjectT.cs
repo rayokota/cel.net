@@ -59,7 +59,7 @@ public abstract class ObjectT : BaseVal, IFieldTester, IIndexer, ITypeAdapterPro
 
     public override IVal Equal(IVal other)
     {
-        if (!typeDesc.Name().Equals(other.Type().TypeName())) return Err.NoSuchOverload(this, "equal", other);
+        if (!typeDesc.Name().Equals(other.Type().TypeName())) return BoolT.False;
 
         return Types.BoolOf(value.Equals(other.Value()));
     }

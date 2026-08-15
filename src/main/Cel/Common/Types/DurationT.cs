@@ -256,7 +256,7 @@ public sealed class DurationT : BaseVal, IAdder, IComparer, INegater, IReceiver,
     /// </summary>
     public override IVal Equal(IVal other)
     {
-        if (!(other is DurationT)) return Err.NoSuchOverload(this, "equal", other);
+        if (!(other is DurationT)) return BoolT.False;
 
         return Types.BoolOf(d.Equals(((DurationT)other).d));
     }

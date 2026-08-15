@@ -281,7 +281,7 @@ public sealed class TimestampT : BaseVal, IAdder, IComparer, IReceiver, ISubtrac
     /// </summary>
     public override IVal Equal(IVal other)
     {
-        if (TimestampType != other.Type()) return Err.NoSuchOverload(this, "equal", other);
+        if (TimestampType != other.Type()) return BoolT.False;
 
         return Types.BoolOf(t.Equals(((TimestampT)other).t));
     }

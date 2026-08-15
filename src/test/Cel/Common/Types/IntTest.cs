@@ -152,7 +152,8 @@ public class IntTest
     [Test]
     public virtual void IntEqual()
     {
-        Assert.That(IntT.IntOf(0).Equal(BoolT.False), Is.InstanceOf(typeof(Err)));
+        // A value of an unrelated type is not equal (false), matching cel-go, rather than an error.
+        Assert.That(IntT.IntOf(0).Equal(BoolT.False), Is.SameAs(BoolT.False));
     }
 
     [Test]

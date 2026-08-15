@@ -217,7 +217,7 @@ public sealed class DoubleT : BaseVal, IAdder, IComparer, IDivider, IMultiplier,
             case UintT o:
                 return Types.BoolOf(NumericCompare.CompareDoubleULong(d, o.ULongValue) == 0);
             default:
-                return Err.NoSuchOverload(this, "equal", other);
+                return BoolT.False;
         }
     }
 

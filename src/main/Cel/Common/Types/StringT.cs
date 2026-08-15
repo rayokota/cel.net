@@ -202,7 +202,7 @@ public sealed class StringT : BaseVal, IAdder, IComparer, IMatcher, IReceiver, I
     /// </summary>
     public override IVal Equal(IVal other)
     {
-        if (!(other is StringT)) return Err.NoSuchOverload(this, "equal", other);
+        if (!(other is StringT)) return BoolT.False;
 
         return Types.BoolOf(s.Equals(((StringT)other).s));
     }

@@ -83,7 +83,7 @@ public class TypeT : IType
     /// </summary>
     public virtual IVal Equal(IVal other)
     {
-        if (TypeType != other.Type()) return Err.NoSuchOverload(this, "equal", other);
+        if (TypeType != other.Type()) return BoolT.False;
 
         return Types.BoolOf(Equals(other));
     }

@@ -101,7 +101,7 @@ public sealed class NullT : BaseVal
     /// </summary>
     public override IVal Equal(IVal other)
     {
-        if (NullType != other.Type()) return Err.NoSuchOverload(this, "equal", other);
+        if (NullType != other.Type()) return BoolT.False;
 
         return BoolT.True;
     }

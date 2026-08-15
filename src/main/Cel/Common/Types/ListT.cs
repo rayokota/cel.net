@@ -208,9 +208,9 @@ public abstract class ListT : BaseVal, ILister
                 var e2 = o.Get(idx);
                 if (Err.IsError(e2)) return e2;
 
-                if (e1.Type() != e2.Type()) return Err.NoSuchOverload(e1, Operator.Equals.Id, e2);
-
-                if (e1.Equal(e2) != BoolT.True) return BoolT.False;
+                // An element of an unrelated type is simply not equal (false), matching cel-go,
+                // rather than raising a no-such-overload error.
+                if (Types.Equal(e1, e2) != BoolT.True) return BoolT.False;
             }
 
             return BoolT.True;
@@ -218,20 +218,13 @@ public abstract class ListT : BaseVal, ILister
 
         public override IVal Contains(IVal value)
         {
-            IType? firstType = null;
-            IType? mixedType = null;
+            // Ported from cel-go's baseList.Contains: a mismatched element type is simply not a
+            // match (false), rather than raising a no-such-overload error for a heterogeneous list.
             for (long i = 0; i < size; i++)
             {
                 var elem = Get(IntT.IntOf(i));
-                var elemType = elem.Type();
-                if (firstType == null)
-                    firstType = elemType;
-                else if (!firstType.Equals(elemType)) mixedType = elemType;
-
-                if (value.Equal(elem) == BoolT.True) return BoolT.True;
+                if (Types.Equal(value, elem) == BoolT.True) return BoolT.True;
             }
-
-            if (mixedType != null) return Err.NoSuchOverload(value, Operator.In.Id, firstType, mixedType);
 
             return BoolT.False;
         }
