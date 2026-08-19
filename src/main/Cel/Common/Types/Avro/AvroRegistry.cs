@@ -117,6 +117,16 @@ public sealed class AvroRegistry : ITypeRegistry
         var maybe = TypeAdapterSupport.MaybeNativeToValue(ToTypeAdapter(), value);
         if (maybe != null) return maybe;
 
+        if (value is AvroDecimal dec)
+        {
+            // Avro's `decimal` logical type decodes to AvroDecimal. CEL has no decimal type,
+            // so preserve the value as-is in a passthrough carrier whose Value() returns the
+            // AvroDecimal; callers reconstruct the exact value from its unscaled value + scale.
+            // Without this arm, an AvroDecimal field read would fall through to the record
+            // fallback below and throw "Cannot get schema for Avro.AvroDecimal".
+            return AvroDecimalT.Of(dec);
+        }
+
         if (value is GenericEnum)
         {
             string fq = AvroEnumValue.FullyQualifiedName(((GenericEnum)value));
