@@ -60,6 +60,33 @@ internal class AvroScriptHostTest
         Assert.That(script.Execute<bool>(new Dictionary<string, object> { ["user"] = userNoMatch2 }), Is.False);
     }
 
+    // An Avro `decimal` logical-type field decodes to AvroDecimal. Reading it through field
+    // access must not throw (it used to fail with "Cannot get schema for Avro.AvroDecimal");
+    // the value is carried unchanged so a caller can reconstruct the exact decimal.
+    [Test]
+    public virtual void DecimalLogicalFieldIsCarried()
+    {
+        RecordSchema recordSchema = (RecordSchema)Schema.Parse(
+            "{\"type\":\"record\",\"name\":\"DecimalRecord\",\"fields\":[" +
+            "{\"name\":\"amount\",\"type\":{\"type\":\"bytes\",\"logicalType\":\"decimal\"," +
+            "\"precision\":8,\"scale\":2}}]}");
+
+        ScriptHost scriptHost = ScriptHost.NewBuilder().Registry(AvroRegistry.NewRegistry()).Build();
+        Script script =
+            scriptHost
+                .BuildScript("user.amount")
+                .WithDeclarations(Decls.NewVar("user", Decls.NewObjectType(recordSchema.Fullname)))
+                .WithTypes(recordSchema)
+                .Build();
+
+        AvroDecimal amount = new AvroDecimal(12.34m);
+        GenericRecord record = new GenericRecord(recordSchema);
+        record.Add("amount", amount);
+
+        object result = script.Execute<object>(new Dictionary<string, object> { ["user"] = record });
+        Assert.That(result, Is.EqualTo(amount));
+    }
+
     [Test]
     public virtual void ComplexInput()
     {
