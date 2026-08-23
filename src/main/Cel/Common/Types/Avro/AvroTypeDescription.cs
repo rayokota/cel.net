@@ -105,7 +105,16 @@ public sealed class AvroTypeDescription : ITypeDescription
 
                 throw new ArgumentException("Unsupported union type");
             case Schema.Type.Logical:
-                return FindTypeForAvroType((schema as LogicalSchema).BaseSchema, typeQuery);
+                // A logical-typed field's value is the logical representation, not the
+                // underlying primitive: timestamp-* decodes to DateTime, decimal to
+                // AvroDecimal, uuid to Guid — and NativeToValue adapts those to a CEL
+                // timestamp / AvroDecimalT / string. Reporting the base type here (Int for a
+                // timestamp-millis long, say) is a check/runtime mismatch: `this.ts < now`
+                // fails to check with "no matching overload for '_<_' applied to
+                // '(int, timestamp)'" even though the value IS a timestamp. Dyn defers to the
+                // runtime value, which is what every other CEL implementation does for a type
+                // the checker cannot name.
+                return Checked.CheckedDyn;
             default:
                 throw new ArgumentException($"Unsupported type {type}");
         }
