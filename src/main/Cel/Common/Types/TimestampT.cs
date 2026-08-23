@@ -187,8 +187,7 @@ public sealed class TimestampT : BaseVal, IAdder, IComparer, IReceiver, ISubtrac
 
     public static TimestampT TimestampOf(Timestamp t)
     {
-        var ldt = Instant.FromUnixTimeSeconds(t.Seconds);
-        ldt.PlusNanoseconds(t.Nanos);
+        var ldt = Instant.FromUnixTimeSeconds(t.Seconds).PlusNanoseconds(t.Nanos);
         var zdt = new ZonedDateTime(ldt, ZoneIdZ);
         return new TimestampT(zdt);
     }

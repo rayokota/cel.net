@@ -419,6 +419,20 @@ public class TimestampTest
         Assert.That(((ZonedDateTime)z).NanosecondOfSecond, Is.EqualTo(nano9));
     }
 
+    [Test]
+    public virtual void TimestampOfProtoPreservesNanos()
+    {
+        // Regression: TimestampOf(Timestamp) must preserve sub-second nanos. Previously the
+        // result of Instant.PlusNanoseconds was discarded (NodaTime Instant is immutable), so
+        // every proto Timestamp collapsed to whole seconds. The RFC-3339 string overload masked
+        // this because it never went through the proto path.
+        var secondsEpoch = 1624006650L;
+        var proto = new Timestamp { Seconds = secondsEpoch, Nanos = 123456789 };
+        var z = (ZonedDateTime)TimestampT.TimestampOf(proto).Value();
+        Assert.That(z.ToInstant().ToUnixTimeSeconds(), Is.EqualTo(secondsEpoch));
+        Assert.That(z.NanosecondOfSecond, Is.EqualTo(123456789));
+    }
+
     public class ParseTestCase
     {
         internal readonly DateTime ldt;
