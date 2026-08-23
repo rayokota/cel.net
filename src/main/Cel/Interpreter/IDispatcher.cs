@@ -83,13 +83,46 @@ public sealed class DefaultDispatcher : IDispatcher
     {
         foreach (var o in overloads)
         {
-            // add the overload unless an overload of the same name has already been provided.
-            if (this.overloads.ContainsKey(o.Operator))
-                throw new ArgumentException(string.Format("overload already exists '{0}'", o.Operator));
+            // Overloads are indexed by function name, so a name already present is only
+            // acceptable when the two definitions occupy disjoint arity slots — a library adding
+            // a binary form to a standard function that defines only the unary one, say. Merging
+            // those keeps both callable; anything that would displace an existing implementation
+            // is still rejected.
+            if (this.overloads.TryGetValue(o.Operator, out var existing))
+            {
+                var merged = TryMerge(existing, o);
+                if (merged == null)
+                    throw new ArgumentException(string.Format("overload already exists '{0}'",
+                        o.Operator));
+
+                this.overloads[o.Operator] = merged;
+                continue;
+            }
 
             // index the overload by function name.
             this.overloads[o.Operator] = o;
         }
+    }
+
+    /// <summary>
+    ///     Combines two overloads of the same function name when no arity slot is defined by
+    ///     both, or returns null when they overlap. The operand trait must agree: it selects
+    ///     which slot the interpreter dispatches to, so two different traits under one name
+    ///     could not both be honored.
+    /// </summary>
+    private static Overload? TryMerge(Overload existing, Overload incoming)
+    {
+        if (existing.OperandTrait != incoming.OperandTrait) return null;
+        if (existing.UnaryOp != null && incoming.UnaryOp != null) return null;
+        if (existing.BinaryOp != null && incoming.BinaryOp != null) return null;
+        if (existing.FunctionOp != null && incoming.FunctionOp != null) return null;
+
+        return Overload.NewOverload(
+            existing.Operator,
+            existing.OperandTrait,
+            existing.UnaryOp ?? incoming.UnaryOp,
+            existing.BinaryOp ?? incoming.BinaryOp,
+            existing.FunctionOp ?? incoming.FunctionOp);
     }
 
     /// <summary>
