@@ -66,8 +66,12 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
     /// </summary>
     public ITypeRegistry Copy()
     {
+        // customAdapter is carried into the copy. Dropping it would silently disable the
+        // customization for any caller that copies the registry - Env.Extend() does, via
+        // ITypeRegistry.Copy() - so a value the adapter owns would be adapted by the standard
+        // mapping in the extended environment and not in the original.
         return new ProtoTypeRegistry(new Dictionary<string, IType>(revTypeMap),
-            pbdb.Copy());
+            pbdb.Copy(), customAdapter);
     }
 
     public void Register(object t)
