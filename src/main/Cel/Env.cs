@@ -42,7 +42,10 @@ public sealed class Env
     /// </summary>
     private readonly IList<ProgramOption> progOpts;
 
-    internal TypeAdapter adapter;
+    // The adapter is an object, not a bare delegate, matching cel-go's types.Adapter. Extend
+    // below depends on it: recognizing that the adapter is a mutable registry - and that it may
+    // be the very same object as the provider - is only possible with a reference to it.
+    internal ITypeAdapterProvider adapter;
 
     /// <summary>
     ///     Internal checker representation
@@ -53,7 +56,8 @@ public sealed class Env
     internal Container container;
     internal ITypeProvider provider;
 
-    private Env(Container container, IList<Decl> declarations, IList<Macro> macros, TypeAdapter adapter,
+    private Env(Container container, IList<Decl> declarations, IList<Macro> macros,
+        ITypeAdapterProvider adapter,
         ITypeProvider provider, ISet<EnvFeature> features, IList<ProgramOption> progOpts)
     {
         this.container = container;
@@ -78,7 +82,14 @@ public sealed class Env
     /// <summary>
     ///     TypeAdapter returns the `ref.TypeAdapter` configured for the environment.
     /// </summary>
-    public TypeAdapter TypeAdapter => adapter;
+    public TypeAdapter TypeAdapter => adapter.ToTypeAdapter();
+
+    /// <summary>
+    ///     CelTypeAdapter returns the `ITypeAdapterProvider` configured for the environment - the
+    ///     counterpart of cel-go's Env.CELTypeAdapter(). Prefer this over TypeAdapter when the
+    ///     adapter needs to be wrapped, since a delegate cannot be recognized or copied.
+    /// </summary>
+    public ITypeAdapterProvider CelTypeAdapter => adapter;
 
     /// <summary>
     ///     TypeProvider returns the `ref.TypeProvider` configured for the environment.
@@ -140,7 +151,7 @@ public sealed class Env
     /// </summary>
     public static Env NewCustomEnv(ITypeRegistry registry, IList<EnvOption> opts)
     {
-        return new Env(Container.DefaultContainer, new List<Decl>(), new List<Macro>(), registry.ToTypeAdapter(),
+        return new Env(Container.DefaultContainer, new List<Decl>(), new List<Macro>(), registry,
             registry, new HashSet<EnvFeature>(), new List<ProgramOption>()).Configure(opts);
     }
 
@@ -278,35 +289,34 @@ public sealed class Env
         IList<ProgramOption> progOptsCopy = new List<ProgramOption>(progOpts);
 
         // Copy the adapter / provider if they appear to be mutable.
+        // A direct port of cel-go's Env.Extend (cel/env.go). In most cases the provider and
+        // adapter are the same ITypeRegistry; where they are not, they are assumed immutable.
+        // Since the provider can be set separately from the adapter, all the configurations that
+        // could use a registry as the base implementation are handled below. Previously only the
+        // provider was copied, which left a custom adapter pointing at the pre-extension registry.
         var adapter = this.adapter;
         var provider = this.provider;
-        // In most cases the provider and adapter will be a ref.TypeRegistry;
-        // however, in the rare cases where they are not, they are assumed to
-        // be immutable. Since it is possible to set the TypeProvider separately
-        // from the TypeAdapter, the possible configurations which could use a
-        // TypeRegistry as the base implementation are captured below.
-        // TODO check
-        /* 
-        if (this.adapter is TypeRegistry && this.provider is TypeRegistry)
+        var adapterReg = this.adapter as ITypeRegistry;
+        var providerReg = this.provider as ITypeRegistry;
+        if (adapterReg != null && providerReg != null)
         {
-          TypeRegistry adapterReg = (TypeRegistry) this.adapter;
-          TypeRegistry providerReg = (TypeRegistry) this.provider;
-          TypeRegistry reg = providerReg.Copy();
-          provider = reg;
-          // If the adapter and provider are the same object, set the adapter
-          // to the same ref.TypeRegistry as the provider.
-          if (adapterReg.Equals(providerReg))
-          {
-            adapter = reg;
-          }
-          else
-          {
-            // Otherwise, make a copy of the adapter.
-            adapter = adapterReg.Copy();
-          }
+            var reg = providerReg.Copy();
+            provider = reg;
+            // If the adapter and provider are the same object, point the adapter at the same
+            // copied registry; otherwise copy the adapter separately.
+            if (ReferenceEquals(adapterReg, providerReg))
+                adapter = reg;
+            else
+                adapter = (ITypeAdapterProvider)adapterReg.Copy();
         }
-        */
-        if (this.provider is ITypeRegistry) provider = ((ITypeRegistry)this.provider).Copy();
+        else if (providerReg != null)
+        {
+            provider = providerReg.Copy();
+        }
+        else if (adapterReg != null)
+        {
+            adapter = (ITypeAdapterProvider)adapterReg.Copy();
+        }
 
         ISet<EnvFeature> featuresCopy = new HashSet<EnvFeature>(features);
 

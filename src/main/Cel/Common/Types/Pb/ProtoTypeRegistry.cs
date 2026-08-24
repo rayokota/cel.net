@@ -32,10 +32,14 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
     private readonly Db pbdb;
     private readonly IDictionary<string, IType> revTypeMap;
 
-    private ProtoTypeRegistry(IDictionary<string, IType> revTypeMap, Db pbdb)
+    private readonly Func<object, IVal?>? customAdapter;
+
+    private ProtoTypeRegistry(IDictionary<string, IType> revTypeMap, Db pbdb,
+        Func<object, IVal?>? customAdapter = null)
     {
         this.revTypeMap = revTypeMap;
         this.pbdb = pbdb;
+        this.customAdapter = customAdapter;
     }
 
     /// <summary>
@@ -44,8 +48,11 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
     /// </summary>
     public ITypeRegistry Copy()
     {
+        // customAdapter is carried into the copy. Dropping it would silently disable the
+        // customization for any caller that copies the registry - Env.Extend() does, via
+        // ITypeRegistry.Copy().
         return new ProtoTypeRegistry(new Dictionary<string, IType>(revTypeMap),
-            pbdb.Copy());
+            pbdb.Copy(), customAdapter);
     }
 
     public void Register(object t)
@@ -140,8 +147,31 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
     /// </summary>
     public static ProtoTypeRegistry NewRegistry(params Message[] types)
     {
+        return NewRegistry(null, types);
+    }
+
+    /// <summary>
+    ///     A registry that offers every native value to <paramref name="customAdapter" /> before
+    ///     applying the standard mapping, so a caller can own the CEL representation of a protobuf
+    ///     message type. Returning null defers to the standard mapping.
+    ///     <para>
+    ///         This exists because a registry-level adapter is the only one that reaches message
+    ///         *fields*. <see cref="EnvOptions.CustomTypeAdapter" /> is consulted for a bound value
+    ///         only: the attribute layer adapts the *container* first
+    ///         (IAttributeFactory.RefResolve), and every field of the resulting PbObjectT is then
+    ///         adapted by the registry the object was built with, never by the environment's
+    ///         adapter. cel-go differs here - its qualifiers read fields off the *native* object
+    ///         (fieldQualifier.Qualify) and adapt the field value with the environment's adapter,
+    ///         so a wrapper installed there does reach fields. Aligning cel.net's attribute layer
+    ///         with cel-go's would make this factory unnecessary; until then it is the only hook
+    ///         that works for nested values.
+    ///     </para>
+    /// </summary>
+    public static ProtoTypeRegistry NewRegistry(Func<object, IVal?>? customAdapter,
+        params Message[] types)
+    {
         var p =
-            new ProtoTypeRegistry(new Dictionary<string, IType>(), Db.NewDb());
+            new ProtoTypeRegistry(new Dictionary<string, IType>(), Db.NewDb(), customAdapter);
         p.RegisterType(
             BoolT.BoolType,
             BytesT.BytesType,
@@ -356,6 +386,16 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
     public IVal NativeToValue(object? value)
     {
         IVal? val;
+        // Identity for an already-adapted value, before the custom adapter is consulted: the
+        // adapter's contract is over native values, and DefaultTypeAdapter preserves an IVal
+        // further down this method. AvroRegistry.NativeToValue orders these the same way.
+        if (value is IVal alreadyAdapted) return alreadyAdapted;
+        if (customAdapter != null && value != null)
+        {
+            var custom = customAdapter(value);
+            if (custom != null) return custom;
+        }
+
         if (value is Message)
         {
             var v = (Message)value;

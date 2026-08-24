@@ -34,7 +34,14 @@ public static class EnvOptions
         };
     }
 
-    public static EnvOption CustomTypeAdapter(TypeAdapter adapter)
+    /// <summary>
+    ///     CustomTypeAdapter swaps the adapter implementation, matching cel-go's
+    ///     cel.CustomTypeAdapter. Note that it *replaces* rather than composes: a caller that wants
+    ///     to intercept some values and defer the rest must wrap the environment's existing adapter
+    ///     (see Env.CelTypeAdapter), and must do so after any types have been registered, or the
+    ///     wrapped adapter will not know them.
+    /// </summary>
+    public static EnvOption CustomTypeAdapter(ITypeAdapterProvider adapter)
     {
         return e =>
         {
