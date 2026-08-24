@@ -42,28 +42,6 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
         this.customAdapter = customAdapter;
     }
 
-    /// <summary>
-    ///     A copy of this registry that offers every native value to <paramref name="adapter" />
-    ///     before applying the standard mapping, so a caller can own the CEL representation of a
-    ///     protobuf message type - a <c>confluent.type.Decimal</c>, say, which a caller may want
-    ///     carried as its own decimal value rather than as a message compared field by field.
-    ///     Returning null defers to the standard mapping.
-    ///     <para>
-    ///         The adapter reaches message *fields* as well as top-level values, because
-    ///         <see cref="NativeToValue" /> is the single funnel every conversion passes through
-    ///         and it recurses into itself. That is why a caller cannot get the same effect by
-    ///         wrapping the registry from outside. Mirrors AvroRegistry.NewRegistry(customAdapter).
-    ///     </para>
-    /// </summary>
-    public ProtoTypeRegistry WithCustomAdapter(Func<object, IVal?> adapter)
-    {
-        return new ProtoTypeRegistry(revTypeMap, pbdb, adapter);
-    }
-
-    /// <summary>
-    ///     Copy implements the ref.TypeRegistry interface method which copies the current state of the
-    ///     registry into its own memory space.
-    /// </summary>
     public ITypeRegistry Copy()
     {
         // customAdapter is carried into the copy. Dropping it would silently disable the
@@ -166,8 +144,27 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
     /// </summary>
     public static ProtoTypeRegistry NewRegistry(params Message[] types)
     {
-        var p =
-            new ProtoTypeRegistry(new Dictionary<string, IType>(), Db.NewDb());
+        return NewRegistry(null, types);
+    }
+
+    /// <summary>
+    ///     A registry that offers every native value to <paramref name="customAdapter" /> before
+    ///     applying the standard mapping, so a caller can own the CEL representation of a protobuf
+    ///     message type - a <c>confluent.type.Decimal</c>, say, which a caller may want carried as
+    ///     its own decimal value rather than as a message compared field by field. Returning null
+    ///     defers to the standard mapping.
+    ///     <para>
+    ///         The adapter reaches message *fields* as well as top-level values, because
+    ///         <see cref="NativeToValue" /> is the single funnel every conversion passes through and
+    ///         it recurses into itself. That is why a caller cannot get the same effect by wrapping
+    ///         the registry from outside. Mirrors AvroRegistry.NewRegistry(customAdapter).
+    ///     </para>
+    /// </summary>
+    public static ProtoTypeRegistry NewRegistry(Func<object, IVal?>? customAdapter,
+        params Message[] types)
+    {
+        var p = new ProtoTypeRegistry(new Dictionary<string, IType>(), Db.NewDb(),
+            customAdapter);
         p.RegisterType(
             BoolT.BoolType,
             BytesT.BytesType,
