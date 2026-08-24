@@ -228,7 +228,7 @@ public class CELTest
     {
         var exprType = Decls.NewObjectType("google.api.expr.v1alpha1.Expr");
         ITypeRegistry reg = ProtoTypeRegistry.NewEmptyRegistry();
-        var e = Env.NewEnv(EnvOptions.CustomTypeAdapter(reg.ToTypeAdapter()), EnvOptions.CustomTypeProvider(reg),
+        var e = Env.NewEnv(EnvOptions.CustomTypeAdapter(reg), EnvOptions.CustomTypeProvider(reg),
             EnvOptions.Container("google.api.expr.v1alpha1"),
             EnvOptions.Types(new Expr(), BoolT.BoolType, IntT.IntType, StringT.StringType),
             EnvOptions.Declarations(Decls.NewVar("expr", exprType)));
@@ -550,7 +550,7 @@ public class CELTest
     {
         var e = Env.NewEnv(EnvOptions.Container("google.api.expr.v1alpha1"), EnvOptions.Types(new Expr()),
             EnvOptions.Declarations(Decls.NewVar("expr", Decls.NewObjectType("google.api.expr.v1alpha1.Expr"))));
-        var e2 = e.Extend(EnvOptions.CustomTypeAdapter(DefaultTypeAdapter.Instance.ToTypeAdapter()),
+        var e2 = e.Extend(EnvOptions.CustomTypeAdapter(DefaultTypeAdapter.Instance),
             EnvOptions.Types(new TestAllTypes()));
         Assert.That(e, Is.Not.EqualTo(e2));
         Assert.That(e.TypeAdapter, Is.Not.EqualTo(e2.TypeAdapter));

@@ -42,12 +42,15 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
         this.customAdapter = customAdapter;
     }
 
+    /// <summary>
+    ///     Copy implements the ref.TypeRegistry interface method which copies the current state of the
+    ///     registry into its own memory space.
+    /// </summary>
     public ITypeRegistry Copy()
     {
         // customAdapter is carried into the copy. Dropping it would silently disable the
         // customization for any caller that copies the registry - Env.Extend() does, via
-        // ITypeRegistry.Copy() - so a value the adapter owns would be adapted by the standard
-        // mapping in the extended environment and not in the original.
+        // ITypeRegistry.Copy().
         return new ProtoTypeRegistry(new Dictionary<string, IType>(revTypeMap),
             pbdb.Copy(), customAdapter);
     }
@@ -150,21 +153,25 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
     /// <summary>
     ///     A registry that offers every native value to <paramref name="customAdapter" /> before
     ///     applying the standard mapping, so a caller can own the CEL representation of a protobuf
-    ///     message type - a <c>confluent.type.Decimal</c>, say, which a caller may want carried as
-    ///     its own decimal value rather than as a message compared field by field. Returning null
-    ///     defers to the standard mapping.
+    ///     message type. Returning null defers to the standard mapping.
     ///     <para>
-    ///         The adapter reaches message *fields* as well as top-level values, because
-    ///         <see cref="NativeToValue" /> is the single funnel every conversion passes through and
-    ///         it recurses into itself. That is why a caller cannot get the same effect by wrapping
-    ///         the registry from outside. Mirrors AvroRegistry.NewRegistry(customAdapter).
+    ///         This exists because a registry-level adapter is the only one that reaches message
+    ///         *fields*. <see cref="EnvOptions.CustomTypeAdapter" /> is consulted for a bound value
+    ///         only: the attribute layer adapts the *container* first
+    ///         (IAttributeFactory.RefResolve), and every field of the resulting PbObjectT is then
+    ///         adapted by the registry the object was built with, never by the environment's
+    ///         adapter. cel-go differs here - its qualifiers read fields off the *native* object
+    ///         (fieldQualifier.Qualify) and adapt the field value with the environment's adapter,
+    ///         so a wrapper installed there does reach fields. Aligning cel.net's attribute layer
+    ///         with cel-go's would make this factory unnecessary; until then it is the only hook
+    ///         that works for nested values.
     ///     </para>
     /// </summary>
     public static ProtoTypeRegistry NewRegistry(Func<object, IVal?>? customAdapter,
         params Message[] types)
     {
-        var p = new ProtoTypeRegistry(new Dictionary<string, IType>(), Db.NewDb(),
-            customAdapter);
+        var p =
+            new ProtoTypeRegistry(new Dictionary<string, IType>(), Db.NewDb(), customAdapter);
         p.RegisterType(
             BoolT.BoolType,
             BytesT.BytesType,
@@ -379,12 +386,10 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
     public IVal NativeToValue(object? value)
     {
         IVal? val;
-        // Identity for an already-adapted value, before the custom adapter is consulted. The
-        // adapter's contract is over *native* values, and DefaultTypeAdapter preserves an IVal
-        // further down this method, so offering one to the adapter would let a broad adapter
-        // replace a value that is already in its final CEL form. AvroRegistry.NativeToValue
-        // orders these the same way.
-        if (value is IVal) return (IVal)value;
+        // Identity for an already-adapted value, before the custom adapter is consulted: the
+        // adapter's contract is over native values, and DefaultTypeAdapter preserves an IVal
+        // further down this method. AvroRegistry.NativeToValue orders these the same way.
+        if (value is IVal alreadyAdapted) return alreadyAdapted;
         if (customAdapter != null && value != null)
         {
             var custom = customAdapter(value);

@@ -22,4 +22,12 @@ namespace Cel.Common.Types.Ref;
 public interface ITypeAdapterProvider
 {
     TypeAdapter ToTypeAdapter();
+
+    /// <summary>
+    ///     NativeToValue converts a native value to its CEL equivalent. The counterpart of cel-go's
+    ///     types.Adapter interface: an adapter is an object, not a bare delegate, so that
+    ///     Env.Extend can recognize a mutable adapter and copy or alias it the way cel-go does.
+    ///     ToTypeAdapter above remains as the delegate view for the interpreter internals.
+    /// </summary>
+    IVal NativeToValue(object? value);
 }

@@ -31,9 +31,12 @@ public sealed class ScriptHost
 {
     private readonly bool disableOptimize;
     private readonly ITypeRegistry registry;
+    private readonly ITypeAdapterProvider? adapter;
 
-    private ScriptHost(bool disableOptimize, ITypeRegistry registry)
+    private ScriptHost(bool disableOptimize, ITypeRegistry registry,
+        ITypeAdapterProvider? adapter)
     {
+        this.adapter = adapter;
         this.disableOptimize = disableOptimize;
         this.registry = registry;
     }
@@ -122,6 +125,12 @@ public sealed class ScriptHost
             if (!ReferenceEquals(container, null)) envOptions.Add(EnvOptions.Container(container));
             ((List<EnvOption>)envOptions).AddRange(libraries.Select(l => LibraryOptions.Lib(l)).ToList());
 
+            // Appended last so it replaces the registry-derived default, matching cel-go, where
+            // cel.CustomTypeAdapter replaces rather than composes: a caller that wants to defer
+            // some values wraps the registry it also passes as the provider.
+            if (outerInstance.adapter != null)
+                envOptions.Add(EnvOptions.CustomTypeAdapter(outerInstance.adapter));
+
             var env = Env.NewCustomEnv(outerInstance.registry, envOptions);
 
             var astIss = env.Parse(sourceText);
@@ -145,6 +154,7 @@ public sealed class ScriptHost
         private bool disableOptimize;
 
         private ITypeRegistry? registry;
+        private ITypeAdapterProvider? adapter;
 
         internal Builder()
         {
@@ -173,11 +183,24 @@ public sealed class ScriptHost
             return this;
         }
 
+        /// <summary>
+        ///     Use the given adapter in place of the one derived from the registry - the
+        ///     ScriptHost-level passthrough for <see cref="EnvOptions.CustomTypeAdapter" />, so a
+        ///     caller can own the CEL representation of a type. As in cel-go this *replaces* the
+        ///     adapter, so an implementation that only handles some values should hold the registry
+        ///     it is passed alongside and delegate the rest to it.
+        /// </summary>
+        public Builder Adapter(ITypeAdapterProvider? adapter)
+        {
+            this.adapter = adapter;
+            return this;
+        }
+
         public ScriptHost Build()
         {
             var r = registry;
             if (r == null) r = ProtoTypeRegistry.NewRegistry();
-            return new ScriptHost(disableOptimize, r);
+            return new ScriptHost(disableOptimize, r, adapter);
         }
     }
 }
