@@ -379,6 +379,12 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
     public IVal NativeToValue(object? value)
     {
         IVal? val;
+        // Identity for an already-adapted value, before the custom adapter is consulted. The
+        // adapter's contract is over *native* values, and DefaultTypeAdapter preserves an IVal
+        // further down this method, so offering one to the adapter would let a broad adapter
+        // replace a value that is already in its final CEL form. AvroRegistry.NativeToValue
+        // orders these the same way.
+        if (value is IVal) return (IVal)value;
         if (customAdapter != null && value != null)
         {
             var custom = customAdapter(value);
