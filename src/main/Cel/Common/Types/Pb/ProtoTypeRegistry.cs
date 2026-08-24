@@ -32,10 +32,32 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
     private readonly Db pbdb;
     private readonly IDictionary<string, IType> revTypeMap;
 
-    private ProtoTypeRegistry(IDictionary<string, IType> revTypeMap, Db pbdb)
+    private readonly Func<object, IVal?>? customAdapter;
+
+    private ProtoTypeRegistry(IDictionary<string, IType> revTypeMap, Db pbdb,
+        Func<object, IVal?>? customAdapter = null)
     {
         this.revTypeMap = revTypeMap;
         this.pbdb = pbdb;
+        this.customAdapter = customAdapter;
+    }
+
+    /// <summary>
+    ///     A copy of this registry that offers every native value to <paramref name="adapter" />
+    ///     before applying the standard mapping, so a caller can own the CEL representation of a
+    ///     protobuf message type - a <c>confluent.type.Decimal</c>, say, which a caller may want
+    ///     carried as its own decimal value rather than as a message compared field by field.
+    ///     Returning null defers to the standard mapping.
+    ///     <para>
+    ///         The adapter reaches message *fields* as well as top-level values, because
+    ///         <see cref="NativeToValue" /> is the single funnel every conversion passes through
+    ///         and it recurses into itself. That is why a caller cannot get the same effect by
+    ///         wrapping the registry from outside. Mirrors AvroRegistry.NewRegistry(customAdapter).
+    ///     </para>
+    /// </summary>
+    public ProtoTypeRegistry WithCustomAdapter(Func<object, IVal?> adapter)
+    {
+        return new ProtoTypeRegistry(revTypeMap, pbdb, adapter);
     }
 
     /// <summary>
@@ -356,6 +378,12 @@ public sealed class ProtoTypeRegistry : ITypeRegistry
     public IVal NativeToValue(object? value)
     {
         IVal? val;
+        if (customAdapter != null && value != null)
+        {
+            var custom = customAdapter(value);
+            if (custom != null) return custom;
+        }
+
         if (value is Message)
         {
             var v = (Message)value;

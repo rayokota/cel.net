@@ -182,34 +182,37 @@ public sealed class Db
 
     /// <summary>
     ///     CollectFileDescriptorSet builds a file descriptor set associated with the file where the input
-    ///     message is declared.
+    ///     message is declared, together with every file it imports, transitively.
+    ///     <para>
+    ///         All imports are walked, not just the public ones. A field whose type comes from an
+    ///         ordinarily imported file - <c>import "confluent/type/decimal.proto";</c> rather than
+    ///         <c>import public</c> - is in <see cref="FileDescriptor.Dependencies" /> and not in
+    ///         <see cref="FileDescriptor.PublicDependencies" />, so registering only the public ones
+    ///         left that field's message type unregistered and evaluation failed with
+    ///         "unknown type '...'" the first time a rule read the field. This mirrors the reference
+    ///         Go implementation, which expands the full import list.
+    ///     </para>
     /// </summary>
     public static ISet<FileDescriptor> CollectFileDescriptorSet(Message message)
     {
         ISet<FileDescriptor> fdMap = new HashSet<FileDescriptor>();
-        var messageDesc = message.Descriptor;
-        var messageFile = messageDesc.File;
-        fdMap.Add(messageFile);
-        fdMap.UnionWith(messageFile.PublicDependencies);
+        var messageFile = message.Descriptor.File;
 
-        //    parentFile = message.ProtoReflect().Descriptor().ParentFile()
-        //    fdMap[parentFile.Path()] = parentFile
-        //    // Initialize list of dependencies
-        //    deps := make([]protoreflect.FileImport, parentFile.Imports().Len())
-        //    for i := 0; i < parentFile.Imports().Len(); i++ {
-        //      deps[i] = parentFile.Imports().Get(i)
-        //    }
-        //    // Expand list for new dependencies
-        //    for i := 0; i < len(deps); i++ {
-        //      dep := deps[i]
-        //      if _, found := fdMap[dep.Path()]; found {
-        //        continue
-        //      }
-        //      fdMap[dep.Path()] = dep.FileDescriptor
-        //      for j := 0; j < dep.FileDescriptor.Imports().Len(); j++ {
-        //        deps = append(deps, dep.FileDescriptor.Imports().Get(j))
-        //      }
-        //    }
+        var pending = new Queue<FileDescriptor>();
+        pending.Enqueue(messageFile);
+        while (pending.Count > 0)
+        {
+            var file = pending.Dequeue();
+            if (!fdMap.Add(file))
+            {
+                // Already seen - also what terminates a cycle of imports.
+                continue;
+            }
+
+            foreach (var dep in file.Dependencies) pending.Enqueue(dep);
+            foreach (var dep in file.PublicDependencies) pending.Enqueue(dep);
+        }
+
         return fdMap;
     }
 

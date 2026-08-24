@@ -42,13 +42,33 @@ public sealed class AvroRegistry : ITypeRegistry
 
     private readonly IDictionary<string, AvroEnumValue> enumValues = new Dictionary<string, AvroEnumValue>();
 
-    private AvroRegistry()
+    private readonly Func<object, IVal?>? customAdapter;
+
+    private AvroRegistry(Func<object, IVal?>? customAdapter)
     {
+        this.customAdapter = customAdapter;
     }
 
     public static ITypeRegistry NewRegistry()
     {
-        return new AvroRegistry();
+        return new AvroRegistry(null);
+    }
+
+    /// <summary>
+    ///     A registry that offers every native value to <paramref name="customAdapter" /> before
+    ///     applying the standard mapping, so a caller can own the CEL representation of a type
+    ///     Avro decodes to — the <c>decimal</c> logical type's <see cref="AvroDecimal" />, say,
+    ///     which a caller may want carried as its own decimal value rather than
+    ///     <see cref="AvroDecimalT" />. Returning null defers to the standard mapping.
+    ///     <para>
+    ///         The adapter reaches record *fields* as well as top-level values, because the
+    ///         object value built below adapts its fields through this same registry. That is why
+    ///         a caller cannot get the same effect by wrapping the registry from outside.
+    ///     </para>
+    /// </summary>
+    public static ITypeRegistry NewRegistry(Func<object, IVal?> customAdapter)
+    {
+        return new AvroRegistry(customAdapter);
     }
 
     public ITypeRegistry Copy()
@@ -114,6 +134,12 @@ public sealed class AvroRegistry : ITypeRegistry
     public IVal NativeToValue(object value)
     {
         if (value is IVal) return (IVal)value;
+        if (customAdapter != null)
+        {
+            var custom = customAdapter(value);
+            if (custom != null) return custom;
+        }
+
         var maybe = TypeAdapterSupport.MaybeNativeToValue(ToTypeAdapter(), value);
         if (maybe != null) return maybe;
 
