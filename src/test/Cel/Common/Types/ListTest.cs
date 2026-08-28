@@ -320,4 +320,24 @@ public class ListTConvertToNativeTest
         var asPlainIList = (IList)list.ConvertToNative(typeof(object))!;
         Assert.That(asPlainIList, Is.EqualTo(new List<object> { "one", "two" }));
     }
+
+    [Test]
+    public void ConvertToNativeSupportsThePlainIListInterface()
+    {
+        IVal list = ListT.NewStringArrayList(new[] { "one", "two" });
+
+        var asIList = (IList)list.ConvertToNative(typeof(IList))!;
+        Assert.That(asIList, Is.EqualTo(new List<object> { "one", "two" }));
+    }
+
+    // A concrete IList-implementer other than List<T> (e.g. ArrayList) must not be silently
+    // accepted: ToArrayList only ever builds a List<T>, so a caller casting the result to
+    // ArrayList would get an InvalidCastException if this conversion claimed to support it.
+    [Test]
+    public void ConvertToNativeRejectsConcreteListImplementersItCannotProduce()
+    {
+        IVal list = ListT.NewStringArrayList(new[] { "one", "two" });
+
+        Assert.That(() => list.ConvertToNative(typeof(ArrayList)), Throws.ArgumentException);
+    }
 }

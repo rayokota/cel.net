@@ -94,7 +94,10 @@ public abstract class ListT : BaseVal, ILister
             var isGenericList = typeDesc.IsGenericType &&
                                 (typeDesc.GetGenericTypeDefinition() == typeof(List<>) ||
                                  typeDesc.GetGenericTypeDefinition() == typeof(IList<>));
-            if (isGenericList || typeof(IList).IsAssignableFrom(typeDesc) || typeDesc == typeof(object))
+            // Restricted to the interface itself, not IsAssignableFrom: ToArrayList only ever
+            // produces a List<T>, so a concrete IList-implementer request like ArrayList would
+            // otherwise be reported as supported while returning a value the caller can't cast to it.
+            if (isGenericList || typeDesc == typeof(IList) || typeDesc == typeof(object))
                 return ToArrayList(typeDesc);
 
             if (typeDesc == typeof(ListValue)) return ToPbListValue();
