@@ -94,8 +94,11 @@ public abstract class ListT : BaseVal, ILister
             var isGenericList = typeDesc.IsGenericType &&
                                 (typeDesc.GetGenericTypeDefinition() == typeof(List<>) ||
                                  typeDesc.GetGenericTypeDefinition() == typeof(IList<>));
-            if (isGenericList || typeof(IList).IsAssignableFrom(typeDesc) || typeDesc == typeof(object))
-                return ToArrayList();
+            // Restricted to the interface itself, not IsAssignableFrom: ToArrayList only ever
+            // produces a List<T>, so a concrete IList-implementer request like ArrayList would
+            // otherwise be reported as supported while returning a value the caller can't cast to it.
+            if (isGenericList || typeDesc == typeof(IList) || typeDesc == typeof(object))
+                return ToArrayList(typeDesc);
 
             if (typeDesc == typeof(ListValue)) return ToPbListValue();
 
@@ -146,9 +149,24 @@ public abstract class ListT : BaseVal, ILister
             return list;
         }
 
-        internal virtual IList ToArrayList()
+        // typeDesc drives the *element* type: List<string>/IList<string> must come back as a
+        // List<string>, not a List<object>, or a caller casting the result throws
+        // InvalidCastException. A plain, non-generic IList (or `object`) has no element type to
+        // honor, so it falls back to List<object>, matching the CEL default of object elements.
+        internal virtual IList ToArrayList(Type typeDesc)
         {
-            return new List<object> { ConvertToNative(typeof(Array))! };
+            var elemType = typeof(object);
+            if (typeDesc.IsGenericType)
+            {
+                var args = typeDesc.GetGenericArguments();
+                if (args.Length == 1) elemType = args[0];
+            }
+
+            var array = ConvertToNative(elemType.MakeArrayType())!;
+
+            if (elemType == typeof(object)) return new List<object>((object[])array);
+
+            return (IList)Activator.CreateInstance(typeof(List<>).MakeGenericType(elemType), array)!;
         }
 
         internal virtual object ToArray<T>(Type typeDesc)

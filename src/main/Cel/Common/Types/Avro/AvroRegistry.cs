@@ -42,6 +42,28 @@ public sealed class AvroRegistry : ITypeRegistry
 
     private readonly IDictionary<string, AvroEnumValue> enumValues = new Dictionary<string, AvroEnumValue>();
 
+    // The CEL built-in type names (`bytes`, `string`, ...) must resolve through FindIdent, the same
+    // as ProtoTypeRegistry does. Without this, AbsoluteAttribute.TryResolve's fallback to
+    // provider.FindIdent(nm) returns null for these names, and an expression like
+    // `type(x) == bytes` fails at eval time with "undeclared reference" instead of resolving the
+    // constant - the checker itself needs no help, since the standard declarations already contain
+    // these identifiers regardless of registry.
+    private static readonly IDictionary<string, IType> PrimitiveTypes = new Dictionary<string, IType>
+    {
+        [BoolT.BoolType.TypeName()] = BoolT.BoolType,
+        [BytesT.BytesType.TypeName()] = BytesT.BytesType,
+        [DoubleT.DoubleType.TypeName()] = DoubleT.DoubleType,
+        [DurationT.DurationType.TypeName()] = DurationT.DurationType,
+        [IntT.IntType.TypeName()] = IntT.IntType,
+        [ListT.ListType.TypeName()] = ListT.ListType,
+        [MapT.MapType.TypeName()] = MapT.MapType,
+        [NullT.NullType.TypeName()] = NullT.NullType,
+        [StringT.StringType.TypeName()] = StringT.StringType,
+        [TimestampT.TimestampType.TypeName()] = TimestampT.TimestampType,
+        [TypeT.TypeType.TypeName()] = TypeT.TypeType,
+        [UintT.UintType.TypeName()] = UintT.UintType
+    };
+
     private readonly Func<object, IVal?>? customAdapter;
 
     private AvroRegistry(Func<object, IVal?>? customAdapter)
@@ -109,6 +131,10 @@ public sealed class AvroRegistry : ITypeRegistry
 
         enumValues.TryGetValue(identName, out var enumVal);
         if (enumVal != null) return enumVal.StringValue();
+
+        PrimitiveTypes.TryGetValue(identName, out var primitiveType);
+        if (primitiveType != null) return primitiveType;
+
         return null;
     }
 
@@ -142,6 +168,16 @@ public sealed class AvroRegistry : ITypeRegistry
 
         var maybe = TypeAdapterSupport.MaybeNativeToValue(ToTypeAdapter(), value);
         if (maybe != null) return maybe;
+
+        if (value is GenericFixed fixedValue)
+        {
+            // Avro's `fixed` is a fixed-width byte string, so present it as CEL bytes - the same
+            // way `bytes` is presented, and what the Java reference does (GenericFixed ->
+            // CelByteString). Without this arm it fell through to the record fallback and became an
+            // opaque object, so `size(this.fx)` and a comparison against a bytes literal both
+            // failed to find an overload.
+            return BytesT.BytesOf(fixedValue.Value);
+        }
 
         if (value is AvroDecimal dec)
         {

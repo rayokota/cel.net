@@ -290,3 +290,54 @@ public class GenericArrayListTest : ListTest<object>
         };
     }
 }
+
+[TestFixture]
+public class ListTConvertToNativeTest
+{
+    // ConvertToNative(List<T>)/(IList<T>) must honor the requested element type T, not always
+    // hand back a List<object> - a caller casting the result to List<string> would otherwise get
+    // an InvalidCastException.
+    [Test]
+    public void ConvertToNativeHonorsGenericElementType()
+    {
+        IVal list = ListT.NewStringArrayList(new[] { "one", "two", "three" });
+
+        var asListOfString = (List<string>)list.ConvertToNative(typeof(List<string>))!;
+        Assert.That(asListOfString, Is.EqualTo(new List<string> { "one", "two", "three" }));
+
+        var asIListOfString = (IList<string>)list.ConvertToNative(typeof(IList<string>))!;
+        Assert.That(asIListOfString, Is.EqualTo(new List<string> { "one", "two", "three" }));
+    }
+
+    [Test]
+    public void ConvertToNativeDefaultsToObjectElementType()
+    {
+        IVal list = ListT.NewStringArrayList(new[] { "one", "two" });
+
+        var asList = (List<object>)list.ConvertToNative(typeof(List<object>))!;
+        Assert.That(asList, Is.EqualTo(new List<object> { "one", "two" }));
+
+        var asPlainIList = (IList)list.ConvertToNative(typeof(object))!;
+        Assert.That(asPlainIList, Is.EqualTo(new List<object> { "one", "two" }));
+    }
+
+    [Test]
+    public void ConvertToNativeSupportsThePlainIListInterface()
+    {
+        IVal list = ListT.NewStringArrayList(new[] { "one", "two" });
+
+        var asIList = (IList)list.ConvertToNative(typeof(IList))!;
+        Assert.That(asIList, Is.EqualTo(new List<object> { "one", "two" }));
+    }
+
+    // A concrete IList-implementer other than List<T> (e.g. ArrayList) must not be silently
+    // accepted: ToArrayList only ever builds a List<T>, so a caller casting the result to
+    // ArrayList would get an InvalidCastException if this conversion claimed to support it.
+    [Test]
+    public void ConvertToNativeRejectsConcreteListImplementersItCannotProduce()
+    {
+        IVal list = ListT.NewStringArrayList(new[] { "one", "two" });
+
+        Assert.That(() => list.ConvertToNative(typeof(ArrayList)), Throws.ArgumentException);
+    }
+}
