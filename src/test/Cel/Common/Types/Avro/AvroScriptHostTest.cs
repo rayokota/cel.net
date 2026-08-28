@@ -87,6 +87,81 @@ internal class AvroScriptHostTest
         Assert.That(result, Is.EqualTo(amount));
     }
 
+    // An Avro `fixed` field is a fixed-width byte string, so it must reach CEL as bytes - the same
+    // as `bytes`, and what the Java reference does (GenericFixed -> CelByteString). It used to fall
+    // through NativeToValue's arms to the record fallback and become an opaque object, so both
+    // size() and a comparison against a bytes literal failed to find an overload.
+    [Test]
+    public virtual void FixedFieldIsBytes()
+    {
+        RecordSchema recordSchema = (RecordSchema)Schema.Parse(
+            "{\"type\":\"record\",\"name\":\"FixedRecord\",\"fields\":[" +
+            "{\"name\":\"fx\",\"type\":{\"type\":\"fixed\",\"name\":\"F4\",\"size\":4}}]}");
+
+        ScriptHost scriptHost = ScriptHost.NewBuilder().Registry(AvroRegistry.NewRegistry()).Build();
+        recordSchema.TryGetField("fx", out var field);
+        GenericRecord record = new GenericRecord(recordSchema);
+        record.Add("fx", new GenericFixed((FixedSchema)field.Schema, new byte[] { 1, 2, 3, 4 }));
+
+        foreach (string expr in new[]
+                 {
+                     "user.fx == b'\\x01\\x02\\x03\\x04'",
+                     "size(user.fx) == 4",
+                     "type(user.fx) == bytes"
+                 })
+        {
+            Script script =
+                scriptHost
+                    .BuildScript(expr)
+                    .WithDeclarations(Decls.NewVar("user", Decls.NewObjectType(recordSchema.Fullname)))
+                    .WithTypes(recordSchema)
+                    .Build();
+            Assert.That(script.Execute<bool>(new Dictionary<string, object> { ["user"] = record }),
+                Is.True, expr);
+        }
+    }
+
+    // A nullable union (["null", X]) is declared `dyn`, not X, so a rule can compare the field to
+    // null - the natural way to test an Avro optional. Declaring X made the checker reject
+    // `user.opt == null` with no matching overload for `_==_` applied to `(string, null)`, and it
+    // rejected the comparison even when the field was *set*, because the declaration is decided at
+    // check time. The member type still resolves at runtime, so the member's own operators work.
+    [Test]
+    public virtual void NullableUnionFieldIsComparableToNull()
+    {
+        RecordSchema recordSchema = (RecordSchema)Schema.Parse(
+            "{\"type\":\"record\",\"name\":\"OptRecord\",\"fields\":[" +
+            "{\"name\":\"opt\",\"type\":[\"null\",\"string\"]}]}");
+
+        ScriptHost scriptHost = ScriptHost.NewBuilder().Registry(AvroRegistry.NewRegistry()).Build();
+
+        GenericRecord unset = new GenericRecord(recordSchema);
+        unset.Add("opt", null);
+        GenericRecord set = new GenericRecord(recordSchema);
+        set.Add("opt", "hi");
+
+        foreach ((string expr, GenericRecord record, bool expected) in new[]
+                 {
+                     ("user.opt == null", unset, true),
+                     ("user.opt != null", unset, false),
+                     ("user.opt == null", set, false),
+                     ("user.opt != null", set, true),
+                     // The member type still works through the dyn declaration.
+                     ("user.opt == 'hi'", set, true),
+                     ("type(user.opt) == string", set, true)
+                 })
+        {
+            Script script =
+                scriptHost
+                    .BuildScript(expr)
+                    .WithDeclarations(Decls.NewVar("user", Decls.NewObjectType(recordSchema.Fullname)))
+                    .WithTypes(recordSchema)
+                    .Build();
+            Assert.That(script.Execute<bool>(new Dictionary<string, object> { ["user"] = record }),
+                Is.EqualTo(expected), expr);
+        }
+    }
+
     [Test]
     public virtual void ComplexInput()
     {

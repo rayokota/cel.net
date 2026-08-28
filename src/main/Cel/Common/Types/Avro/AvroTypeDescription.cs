@@ -94,11 +94,23 @@ public sealed class AvroTypeDescription : ITypeDescription
                 UnionSchema unionSchema = (UnionSchema)schema;
                 if (unionSchema.Schemas.Count == 2 && unionSchema.Schemas.Contains(NullAvroSchema))
                 {
+                    // A nullable union is reported as `dyn`, not as its non-null member type.
+                    // The value really can be null, and declaring the member type made the
+                    // checker reject the natural way to test an Avro optional: `this.opt == null`
+                    // failed with no matching overload for `_==_` applied to `(string, null)` -
+                    // and so did `this.opt != null`, and even a comparison on a field that
+                    // happened to be *set*, because this is a check-time decision. CEL has no
+                    // nullable type, so `dyn` is the honest declaration; it still resolves to the
+                    // member type at runtime, so `type(this.opt)` and the member's own operators
+                    // keep working. Matches the Java reference, which permits `T == null`.
                     foreach (Schema memberSchema in unionSchema.Schemas)
                     {
                         if (!memberSchema.Equals(NullAvroSchema))
                         {
-                            return FindTypeForAvroType(memberSchema, typeQuery);
+                            // Resolved for its side effects: a record member still has to be
+                            // registered with the type query so its own fields stay resolvable.
+                            FindTypeForAvroType(memberSchema, typeQuery);
+                            return Checked.CheckedDyn;
                         }
                     }
                 }

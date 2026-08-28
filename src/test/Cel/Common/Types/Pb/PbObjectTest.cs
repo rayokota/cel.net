@@ -50,6 +50,30 @@ public class PbObjectTest
         Assert.That(call.Get(StringT.StringOf("function")).Equal(StringT.StringOf("")), Is.SameAs(BoolT.True));
     }
 
+    // An UNSET singular message field reads back as its default instance, not as null.
+    // protobuf-C#'s accessor returns null where protobuf-Java's getField returns the default, so
+    // without the fix in FieldDescription.GetValueFromField this Get() produced NullT and any
+    // further selection failed with "no such overload" - while cel-java, cel-go, cel-cpp and every
+    // other CEL implementation reads the defaults. Presence is unaffected: IsSet consults
+    // HasValue, not the value.
+    [Test]
+    public virtual void UnsetMessageFieldReadsAsDefaultInstance()
+    {
+        var reg = ProtoTypeRegistry.NewRegistry();
+        var parsedExpr = new ParsedExpr(); // both source_info and expr left unset
+        reg.RegisterMessage(parsedExpr);
+        var obj = (IIndexer)reg.NativeToValue(parsedExpr);
+
+        var si = obj.Get(StringT.StringOf("source_info"));
+        Assert.That(si.Equal(NullT.NullValue), Is.SameAs(BoolT.False));
+
+        // Selection through two unset levels still yields the defaults rather than erroring.
+        var expr = (IIndexer)obj.Get(StringT.StringOf("expr"));
+        var call = (IIndexer)expr.Get(StringT.StringOf("call_expr"));
+        Assert.That(call.Get(StringT.StringOf("function")).Equal(StringT.StringOf("")),
+            Is.SameAs(BoolT.True));
+    }
+
     [Test]
     public virtual void ProtoObjectConvertToNative()
     {

@@ -143,6 +143,16 @@ public sealed class AvroRegistry : ITypeRegistry
         var maybe = TypeAdapterSupport.MaybeNativeToValue(ToTypeAdapter(), value);
         if (maybe != null) return maybe;
 
+        if (value is GenericFixed fixedValue)
+        {
+            // Avro's `fixed` is a fixed-width byte string, so present it as CEL bytes - the same
+            // way `bytes` is presented, and what the Java reference does (GenericFixed ->
+            // CelByteString). Without this arm it fell through to the record fallback and became an
+            // opaque object, so `size(this.fx)` and a comparison against a bytes literal both
+            // failed to find an overload.
+            return BytesT.BytesOf(fixedValue.Value);
+        }
+
         if (value is AvroDecimal dec)
         {
             // Avro's `decimal` logical type decodes to AvroDecimal. CEL has no decimal type,

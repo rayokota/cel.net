@@ -561,6 +561,24 @@ public sealed class FieldDescription : Description
           }
         }
         */
+
+        // An unset singular message field reads back as the message type's DEFAULT INSTANCE, not
+        // as null. protobuf-C#'s accessor returns null here, where protobuf-Java's getField returns
+        // the default - so without this, `this.msg` was CEL null and `this.msg.field` failed with
+        // "no such overload" on NullT, while every other CEL implementation reads the default.
+        // Measured across the Schema Registry clients: Java, Go, JS, Python, Rust and C++ all
+        // report `msg == null` as false and dereference an unset message to its defaults; .NET was
+        // alone in doing otherwise.
+        //
+        // Well-known wrapper types are excluded above and stay null, which is correct: an unset
+        // google.protobuf.StringValue IS CEL null. Repeated and map fields never reach this - their
+        // accessors return an empty collection rather than null. Presence is unaffected, because
+        // IsSet/HasValueForField consult HasValue rather than the value itself.
+        if (v == null && desc.FieldType == FieldType.Message && !desc.IsRepeated && !desc.IsMap)
+        {
+            return desc.MessageType.Parser.ParseFrom(Array.Empty<byte>());
+        }
+
         return v;
     }
 

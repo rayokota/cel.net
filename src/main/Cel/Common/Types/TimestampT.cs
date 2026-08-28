@@ -255,6 +255,37 @@ public sealed class TimestampT : BaseVal, IAdder, IComparer, IReceiver, ISubtrac
         return ts;
     }
 
+    // RFC 3339 patterns emitting a fixed-width fractional second. NodaTime's built-in
+    // OffsetDateTimePattern.Rfc3339 uses ";FFFFFFFFF", which strips trailing zeros: an instant at
+    // .100 rendered as ".1Z" and .500 as ".5Z". Every other CEL implementation - cel-java (via
+    // protobuf's Timestamps.toString), cel-go, cel-cpp and cel-python - emits the fraction in
+    // whole 3-digit groups, so a timestamp rendered through string() differed on .NET alone.
+    private static readonly OffsetDateTimePattern Rfc3339NoFraction =
+        OffsetDateTimePattern.CreateWithInvariantCulture("uuuu'-'MM'-'dd'T'HH':'mm':'sso<Z+HH:mm>");
+
+    private static readonly OffsetDateTimePattern Rfc3339Millis =
+        OffsetDateTimePattern.CreateWithInvariantCulture("uuuu'-'MM'-'dd'T'HH':'mm':'ss'.'fffo<Z+HH:mm>");
+
+    private static readonly OffsetDateTimePattern Rfc3339Micros =
+        OffsetDateTimePattern.CreateWithInvariantCulture("uuuu'-'MM'-'dd'T'HH':'mm':'ss'.'ffffffo<Z+HH:mm>");
+
+    private static readonly OffsetDateTimePattern Rfc3339Nanos =
+        OffsetDateTimePattern.CreateWithInvariantCulture("uuuu'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffffo<Z+HH:mm>");
+
+    /// <summary>
+    ///     Formats an instant as RFC 3339 with the fractional second in whole 3-digit groups:
+    ///     none when it is zero, then 3, 6 or 9 digits according to the smallest group that
+    ///     represents the value exactly.
+    /// </summary>
+    private static string FormatRfc3339(OffsetDateTime value)
+    {
+        var nanos = value.NanosecondOfSecond;
+        if (nanos == 0) return Rfc3339NoFraction.Format(value);
+        if (nanos % 1000000 == 0) return Rfc3339Millis.Format(value);
+        if (nanos % 1000 == 0) return Rfc3339Micros.Format(value);
+        return Rfc3339Nanos.Format(value);
+    }
+
     /// <summary>
     ///     ConvertToType implements ref.Val.ConvertToType.
     /// </summary>
@@ -263,7 +294,7 @@ public sealed class TimestampT : BaseVal, IAdder, IComparer, IReceiver, ISubtrac
         switch (typeValue.TypeEnum().InnerEnumValue)
         {
             case TypeEnum.InnerEnum.String:
-                return StringT.StringOf(OffsetDateTimePattern.Rfc3339.Format(t.ToOffsetDateTime()));
+                return StringT.StringOf(FormatRfc3339(t.ToOffsetDateTime()));
             case TypeEnum.InnerEnum.Int:
                 return IntT.IntOf(t.ToInstant().ToUnixTimeSeconds());
             case TypeEnum.InnerEnum.Timestamp:
