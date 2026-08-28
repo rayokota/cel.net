@@ -290,3 +290,34 @@ public class GenericArrayListTest : ListTest<object>
         };
     }
 }
+
+[TestFixture]
+public class ListTConvertToNativeTest
+{
+    // ConvertToNative(List<T>)/(IList<T>) must honor the requested element type T, not always
+    // hand back a List<object> - a caller casting the result to List<string> would otherwise get
+    // an InvalidCastException.
+    [Test]
+    public void ConvertToNativeHonorsGenericElementType()
+    {
+        IVal list = ListT.NewStringArrayList(new[] { "one", "two", "three" });
+
+        var asListOfString = (List<string>)list.ConvertToNative(typeof(List<string>))!;
+        Assert.That(asListOfString, Is.EqualTo(new List<string> { "one", "two", "three" }));
+
+        var asIListOfString = (IList<string>)list.ConvertToNative(typeof(IList<string>))!;
+        Assert.That(asIListOfString, Is.EqualTo(new List<string> { "one", "two", "three" }));
+    }
+
+    [Test]
+    public void ConvertToNativeDefaultsToObjectElementType()
+    {
+        IVal list = ListT.NewStringArrayList(new[] { "one", "two" });
+
+        var asList = (List<object>)list.ConvertToNative(typeof(List<object>))!;
+        Assert.That(asList, Is.EqualTo(new List<object> { "one", "two" }));
+
+        var asPlainIList = (IList)list.ConvertToNative(typeof(object))!;
+        Assert.That(asPlainIList, Is.EqualTo(new List<object> { "one", "two" }));
+    }
+}
