@@ -62,7 +62,11 @@ public sealed class OpaqueT : BaseVal
     public static OpaqueT Of(object value, string typeName)
     {
         if (value == null) throw new ArgumentNullException(nameof(value));
-        if (string.IsNullOrEmpty(typeName)) throw new ArgumentException(nameof(typeName));
+        if (string.IsNullOrEmpty(typeName))
+        {
+            throw new ArgumentException("typeName must not be null or empty", nameof(typeName));
+        }
+
         return new OpaqueT(value, TypeT.NewObjectTypeValue(typeName));
     }
 
@@ -76,9 +80,26 @@ public sealed class OpaqueT : BaseVal
         return type;
     }
 
+    /// <summary>
+    ///     Type identity is the whole type value - its kind as well as its name - everywhere below.
+    ///     <para>
+    ///         Comparing names alone is not enough once the name is the caller's to choose: an
+    ///         opaque value named <c>string</c> would answer a conversion to CEL <c>string</c>
+    ///         with itself, because <see cref="StringT.StringType" /> is also named "string". It
+    ///         would then be handed on as a <see cref="StringT" /> and fail somewhere with no
+    ///         connection to the cause. <see cref="TypeT.Equals" /> compares the type enum too,
+    ///         and an opaque type is always <see cref="TypeEnum.Object" />, so a same-named
+    ///         primitive cannot satisfy it.
+    ///     </para>
+    ///     <para>
+    ///         The bespoke carrier this generalises had the same name-only comparison and could
+    ///         not trip on it, because its name was the fixed <c>avro.decimal</c>. Generalising
+    ///         the name is what made the collision reachable.
+    ///     </para>
+    /// </summary>
     public override IVal Equal(IVal other)
     {
-        return other is OpaqueT o && type.TypeName().Equals(o.type.TypeName())
+        return other is OpaqueT o && type.Equals(o.type)
             ? Types.BoolOf(value.Equals(o.value))
             : BoolT.False;
     }
@@ -87,7 +108,7 @@ public sealed class OpaqueT : BaseVal
     {
         if (typeValue.TypeEnum().InnerEnumValue == TypeEnum.InnerEnum.Type) return type;
 
-        if (typeValue.TypeName().Equals(type.TypeName())) return this;
+        if (type.Equals(typeValue)) return this;
 
         return Err.NewTypeConversionError(type, typeValue);
     }
@@ -101,8 +122,7 @@ public sealed class OpaqueT : BaseVal
 
     public override bool Equals(object? o)
     {
-        return o is OpaqueT other && type.TypeName().Equals(other.type.TypeName())
-                                  && value.Equals(other.value);
+        return o is OpaqueT other && type.Equals(other.type) && value.Equals(other.value);
     }
 
     public override int GetHashCode()
