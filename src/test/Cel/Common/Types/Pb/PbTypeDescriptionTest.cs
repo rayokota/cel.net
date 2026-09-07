@@ -110,6 +110,28 @@ public class PbTypeDescriptionTest
         };
     }
 
+    /// <summary>
+    ///     A protobuf Timestamp keeps its sub-second part when unwrapped.
+    ///
+    ///     Instant is immutable, so <c>PlusNanoseconds</c> returns a new value; the result used
+    ///     to be discarded, which silently truncated every timestamp bound into CEL to whole
+    ///     seconds. The existing MaybeUnwrap case uses nanos = 0, so it could never catch this.
+    /// </summary>
+    [Test]
+    public virtual void MaybeUnwrapTimestampKeepsNanos()
+    {
+        var c = UnwrapContext.Get();
+        var timestamp = new Timestamp { Seconds = 1700000000, Nanos = 123456789 };
+
+        var td = c.pbdb.DescribeType(Timestamp.Descriptor.FullName);
+        Assert.That(td, Is.Not.Null);
+        var val = td!.MaybeUnwrap(c.pbdb, timestamp);
+
+        Assert.That(val,
+            Is.EqualTo(Instant.FromUnixTimeSeconds(1700000000).PlusNanoseconds(123456789)
+                .InZone(TimestampT.ZoneIdZ)));
+    }
+
     [TestCaseSource(nameof(MaybeUnwrapTestCases))]
     public virtual void MaybeUnwrap(MaybeUnwrapTestCase tc)
     {

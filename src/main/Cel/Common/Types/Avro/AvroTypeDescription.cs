@@ -120,7 +120,7 @@ public sealed class AvroTypeDescription : ITypeDescription
                 // A logical-typed field's value is the logical representation, not the
                 // underlying primitive: timestamp-* decodes to DateTime, decimal to
                 // AvroDecimal, uuid to Guid — and NativeToValue adapts those to a CEL
-                // timestamp / AvroDecimalT / string. Reporting the base type here (Int for a
+                // timestamp / opaque avro.decimal / string. Reporting the base type here (Int for a
                 // timestamp-millis long, say) is a check/runtime mismatch: `this.ts < now`
                 // fails to check with "no matching overload for '_<_' applied to
                 // '(int, timestamp)'" even though the value IS a timestamp. Dyn defers to the
