@@ -77,11 +77,25 @@ public sealed class AvroRegistry : ITypeRegistry
     }
 
     /// <summary>
+    ///     Runtime type name a carried Avro decimal reports - what <c>Type().TypeName()</c>
+    ///     answers for the value <see cref="NativeToValue" /> produces from an
+    ///     <see cref="AvroDecimal" />.
+    ///     <para>
+    ///         Public for a <b>host</b>, which is the only thing that can act on it: code that
+    ///         inspects the carried value, or a custom adapter deciding whether to take the type
+    ///         over. It is <i>not</i> usable from a rule - <see cref="FindIdent" /> resolves only
+    ///         registered records, enums and primitives, so <c>avro.decimal</c> is an undeclared
+    ///         reference in an expression and <c>type(x) == avro.decimal</c> does not compile.
+    ///     </para>
+    /// </summary>
+    public const string DecimalTypeName = "avro.decimal";
+
+    /// <summary>
     ///     A registry that offers every native value to <paramref name="customAdapter" /> before
     ///     applying the standard mapping, so a caller can own the CEL representation of a type
     ///     Avro decodes to — the <c>decimal</c> logical type's <see cref="AvroDecimal" />, say,
-    ///     which a caller may want carried as its own decimal value rather than
-    ///     <see cref="AvroDecimalT" />. Returning null defers to the standard mapping.
+    ///     which a caller may want carried as its own decimal value rather than as the opaque
+    ///     <c>avro.decimal</c> below. Returning null defers to the standard mapping.
     ///     <para>
     ///         The adapter reaches record *fields* as well as top-level values, because the
     ///         object value built below adapts its fields through this same registry. That is why
@@ -186,7 +200,7 @@ public sealed class AvroRegistry : ITypeRegistry
             // AvroDecimal; callers reconstruct the exact value from its unscaled value + scale.
             // Without this arm, an AvroDecimal field read would fall through to the record
             // fallback below and throw "Cannot get schema for Avro.AvroDecimal".
-            return AvroDecimalT.Of(dec);
+            return OpaqueT.Of(dec, DecimalTypeName);
         }
 
         if (value is GenericEnum)
@@ -211,7 +225,18 @@ public sealed class AvroRegistry : ITypeRegistry
         }
         catch (Exception e)
         {
-            throw new Exception("oops", e);
+            // The fallback for a CLR value none of the arms above recognised: it is treated as an
+            // Avro record, which needs a schema for its type. Naming the type matters, because this
+            // is what a caller sees when a value reaches CEL that the registry has no arm for, and
+            // the type is the only thing that tells them which one is missing.
+            // The type *and* the value, as cel-go's UnsupportedRefValConversionErr does
+            // ("unsupported conversion to ref.Val: (%T)%v"). The value is what identifies which
+            // one of a container's elements was unrepresentable; the type alone names the arm
+            // that is missing but not the data that reached it.
+            throw new Exception(
+                $"cannot represent a value of type {value.GetType().FullName} as an Avro CEL " +
+                $"value: {value}",
+                e);
         }
     }
 

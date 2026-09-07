@@ -124,7 +124,12 @@ public sealed class JsonRegistry : ITypeRegistry
         }
         catch (Exception e)
         {
-            throw new Exception("oops", e);
+            // As in AvroRegistry: the fallback for a CLR value no arm above recognised, reported
+            // with the type and the value the way cel-go's UnsupportedRefValConversionErr is.
+            throw new Exception(
+                $"cannot represent a value of type {value.GetType().FullName} as a JSON CEL " +
+                $"value: {value}",
+                e);
         }
     }
 

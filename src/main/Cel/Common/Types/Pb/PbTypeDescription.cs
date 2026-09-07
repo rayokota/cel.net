@@ -281,8 +281,10 @@ public sealed class PbTypeDescription : Description, ITypeDescription
 
     private static ZonedDateTime AsTimestamp(Timestamp t)
     {
-        var instant = Instant.FromUnixTimeSeconds(t.Seconds);
-        instant.PlusNanoseconds(t.Nanos);
+        // Instant is immutable, so PlusNanoseconds returns a new value rather than mutating
+        // this one. Discarding it dropped the sub-second part of every protobuf Timestamp
+        // bound into CEL: 1700000000.123 reached a rule as 1700000000.000, silently.
+        var instant = Instant.FromUnixTimeSeconds(t.Seconds).PlusNanoseconds(t.Nanos);
         return new ZonedDateTime(instant, TimestampT.ZoneIdZ);
     }
 
