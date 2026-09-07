@@ -77,6 +77,20 @@ public sealed class AvroRegistry : ITypeRegistry
     }
 
     /// <summary>
+    ///     Runtime type name a carried Avro decimal reports - what <c>Type().TypeName()</c>
+    ///     answers for the value <see cref="NativeToValue" /> produces from an
+    ///     <see cref="AvroDecimal" />.
+    ///     <para>
+    ///         Public for a <b>host</b>, which is the only thing that can act on it: code that
+    ///         inspects the carried value, or a custom adapter deciding whether to take the type
+    ///         over. It is <i>not</i> usable from a rule - <see cref="FindIdent" /> resolves only
+    ///         registered records, enums and primitives, so <c>avro.decimal</c> is an undeclared
+    ///         reference in an expression and <c>type(x) == avro.decimal</c> does not compile.
+    ///     </para>
+    /// </summary>
+    public const string DecimalTypeName = "avro.decimal";
+
+    /// <summary>
     ///     A registry that offers every native value to <paramref name="customAdapter" /> before
     ///     applying the standard mapping, so a caller can own the CEL representation of a type
     ///     Avro decodes to — the <c>decimal</c> logical type's <see cref="AvroDecimal" />, say,
@@ -88,13 +102,6 @@ public sealed class AvroRegistry : ITypeRegistry
     ///         a caller cannot get the same effect by wrapping the registry from outside.
     ///     </para>
     /// </summary>
-    /// <summary>
-    ///     Runtime type name a carried Avro decimal reports, and what <c>type(x)</c> answers for
-    ///     one. Public because it is the only handle a caller has on the type: the checker reports
-    ///     a logical-typed field as <c>dyn</c>, so this name is what a rule can compare against.
-    /// </summary>
-    public const string DecimalTypeName = "avro.decimal";
-
     public static ITypeRegistry NewRegistry(Func<object, IVal?> customAdapter)
     {
         return new AvroRegistry(customAdapter);
