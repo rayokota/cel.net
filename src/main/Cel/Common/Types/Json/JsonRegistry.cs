@@ -28,27 +28,55 @@ namespace Cel.Common.Types.Json;
 /// </summary>
 public sealed class JsonRegistry : ITypeRegistry
 {
-    private readonly IDictionary<Type, JsonEnumDescription> enumMap = new Dictionary<Type, JsonEnumDescription>();
-    private readonly IDictionary<string, JsonEnumValue> enumValues = new Dictionary<string, JsonEnumValue>();
-    private readonly IDictionary<Type, JsonTypeDescription> knownTypes = new Dictionary<Type, JsonTypeDescription>();
+    private readonly IDictionary<Type, JsonEnumDescription> enumMap;
+    private readonly IDictionary<string, JsonEnumValue> enumValues;
+    private readonly IDictionary<Type, JsonTypeDescription> knownTypes;
 
-    private readonly IDictionary<string, JsonTypeDescription> knownTypesByName =
-        new Dictionary<string, JsonTypeDescription>();
+    private readonly IDictionary<string, JsonTypeDescription> knownTypesByName;
 
     // Types registered by name, as on ProtoTypeRegistry. This registry is the fallback for a
     // value that is neither a record nor a message, so a caller-owned type can land here.
-    private readonly IDictionary<string, IType> revTypeMap = new Dictionary<string, IType>();
+    private readonly IDictionary<string, IType> revTypeMap;
 
     private readonly JsonSerializer serializer;
 
     private JsonRegistry()
+        : this(new Dictionary<Type, JsonEnumDescription>(),
+            new Dictionary<string, JsonEnumValue>(),
+            new Dictionary<Type, JsonTypeDescription>(),
+            new Dictionary<string, JsonTypeDescription>(),
+            new Dictionary<string, IType>())
     {
+    }
+
+    private JsonRegistry(
+        IDictionary<Type, JsonEnumDescription> enumMap,
+        IDictionary<string, JsonEnumValue> enumValues,
+        IDictionary<Type, JsonTypeDescription> knownTypes,
+        IDictionary<string, JsonTypeDescription> knownTypesByName,
+        IDictionary<string, IType> revTypeMap)
+    {
+        this.enumMap = enumMap;
+        this.enumValues = enumValues;
+        this.knownTypes = knownTypes;
+        this.knownTypesByName = knownTypesByName;
+        this.revTypeMap = revTypeMap;
         serializer = new JsonSerializer();
     }
 
+    /// <summary>
+    ///     A registry whose mutable state is isolated, as <see cref="ITypeRegistry.Copy" />
+    ///     promises and <c>Env.Extend</c> relies on. Returned <c>this</c> before, so registering
+    ///     a type in a derived environment also mutated the parent and its siblings.
+    /// </summary>
     public ITypeRegistry Copy()
     {
-        return this;
+        return new JsonRegistry(
+            new Dictionary<Type, JsonEnumDescription>(enumMap),
+            new Dictionary<string, JsonEnumValue>(enumValues),
+            new Dictionary<Type, JsonTypeDescription>(knownTypes),
+            new Dictionary<string, JsonTypeDescription>(knownTypesByName),
+            new Dictionary<string, IType>(revTypeMap));
     }
 
     public void Register(object t)

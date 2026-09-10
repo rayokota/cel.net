@@ -102,6 +102,55 @@ internal class AvroRegisterTypeTest
     }
 
     /// <summary>
+    ///     Copy() isolates mutable state, as ITypeRegistry.Copy promises and Env.Extend relies
+    ///     on. It returned <c>this</c> before, so registering anything in a derived environment
+    ///     mutated the parent and its siblings — the registered-type map added here and the
+    ///     schema-derived tables that predate it alike.
+    /// </summary>
+    [Test]
+    public virtual void CopyIsolatesRegisteredTypes()
+    {
+        ITypeRegistry parent = AvroRegistry.NewRegistry(Carry);
+        ITypeRegistry child = parent.Copy();
+
+        Assert.That(ReferenceEquals(parent, child), Is.False);
+
+        child.RegisterType(TypeT.NewObjectTypeValue(CarriedTypeName));
+        Assert.That(child.FindIdent(CarriedTypeName), Is.Not.Null);
+        Assert.That(parent.FindIdent(CarriedTypeName), Is.Null, "leaked to the parent");
+
+        // The tables that predate RegisterType leak the same way if Copy() shares them.
+        ITypeRegistry other = AvroRegistry.NewRegistry(Carry);
+        ITypeRegistry otherChild = other.Copy();
+        otherChild.Register(Example.Avro.User._SCHEMA);
+        Assert.That(otherChild.FindType(Example.Avro.User._SCHEMA.Fullname), Is.Not.Null);
+        Assert.That(other.FindType(Example.Avro.User._SCHEMA.Fullname), Is.Null,
+            "schema registration leaked to the parent");
+    }
+
+    /// <summary>The custom adapter survives the copy, or it silently stops applying.</summary>
+    [Test]
+    public virtual void CopyKeepsTheCustomAdapter()
+    {
+        ITypeRegistry child = AvroRegistry.NewRegistry(Carry).Copy();
+        Assert.That(child.NativeToValue(new AvroDecimal(1234, 2)).Type().TypeName(),
+            Is.EqualTo(CarriedTypeName));
+    }
+
+    /// <summary>The JSON registry is the same contract.</summary>
+    [Test]
+    public virtual void TheJsonRegistryCopyIsolatesToo()
+    {
+        ITypeRegistry parent = JsonRegistry.NewRegistry();
+        ITypeRegistry child = parent.Copy();
+
+        Assert.That(ReferenceEquals(parent, child), Is.False);
+        child.RegisterType(TypeT.NewObjectTypeValue(CarriedTypeName));
+        Assert.That(child.FindIdent(CarriedTypeName), Is.Not.Null);
+        Assert.That(parent.FindIdent(CarriedTypeName), Is.Null, "leaked to the parent");
+    }
+
+    /// <summary>
     ///     Registering a name does not disturb the schema-derived resolution around it: the
     ///     built-in type names still resolve through the same FindIdent.
     /// </summary>
