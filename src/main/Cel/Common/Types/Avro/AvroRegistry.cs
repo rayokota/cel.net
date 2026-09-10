@@ -31,16 +31,17 @@ namespace Cel.Common.Types.Avro;
 /// </summary>
 public sealed class AvroRegistry : ITypeRegistry
 {
-    private readonly IDictionary<RecordSchema, AvroTypeDescription> knownTypes =
-        new Dictionary<RecordSchema, AvroTypeDescription>();
+    private readonly IDictionary<RecordSchema, AvroTypeDescription> knownTypes;
 
-    private readonly IDictionary<string, AvroTypeDescription> knownTypesByName =
-        new Dictionary<string, AvroTypeDescription>();
+    private readonly IDictionary<string, AvroTypeDescription> knownTypesByName;
 
-    private readonly IDictionary<EnumSchema, AvroEnumDescription> enumMap =
-        new Dictionary<EnumSchema, AvroEnumDescription>();
+    private readonly IDictionary<EnumSchema, AvroEnumDescription> enumMap;
 
-    private readonly IDictionary<string, AvroEnumValue> enumValues = new Dictionary<string, AvroEnumValue>();
+    private readonly IDictionary<string, AvroEnumValue> enumValues;
+
+    // Types registered by name, as on ProtoTypeRegistry. A caller that owns a value's CEL
+    // representation (see customAdapter below) names it, and no Avro schema declares that name.
+    private readonly IDictionary<string, IType> revTypeMap;
 
     // The CEL built-in type names (`bytes`, `string`, ...) must resolve through FindIdent, the same
     // as ProtoTypeRegistry does. Without this, AbsoluteAttribute.TryResolve's fallback to
@@ -67,8 +68,29 @@ public sealed class AvroRegistry : ITypeRegistry
     private readonly Func<object, IVal?>? customAdapter;
 
     private AvroRegistry(Func<object, IVal?>? customAdapter)
+        : this(customAdapter,
+            new Dictionary<RecordSchema, AvroTypeDescription>(),
+            new Dictionary<string, AvroTypeDescription>(),
+            new Dictionary<EnumSchema, AvroEnumDescription>(),
+            new Dictionary<string, AvroEnumValue>(),
+            new Dictionary<string, IType>())
+    {
+    }
+
+    private AvroRegistry(
+        Func<object, IVal?>? customAdapter,
+        IDictionary<RecordSchema, AvroTypeDescription> knownTypes,
+        IDictionary<string, AvroTypeDescription> knownTypesByName,
+        IDictionary<EnumSchema, AvroEnumDescription> enumMap,
+        IDictionary<string, AvroEnumValue> enumValues,
+        IDictionary<string, IType> revTypeMap)
     {
         this.customAdapter = customAdapter;
+        this.knownTypes = knownTypes;
+        this.knownTypesByName = knownTypesByName;
+        this.enumMap = enumMap;
+        this.enumValues = enumValues;
+        this.revTypeMap = revTypeMap;
     }
 
     public static ITypeRegistry NewRegistry()
@@ -107,9 +129,25 @@ public sealed class AvroRegistry : ITypeRegistry
         return new AvroRegistry(customAdapter);
     }
 
+    /// <summary>
+    ///     A registry whose mutable state is isolated, as <see cref="ITypeRegistry.Copy" />
+    ///     promises and <c>Env.Extend</c> relies on. Every lookup table is copied and
+    ///     <c>customAdapter</c> is carried over; dropping it would silently disable a caller's
+    ///     representation of a type in an extended environment.
+    /// </summary>
+    /// <remarks>
+    ///     This returned <c>this</c> before, so registering a type or a schema in a derived
+    ///     environment also mutated the parent and its siblings.
+    /// </remarks>
     public ITypeRegistry Copy()
     {
-        return this;
+        return new AvroRegistry(
+            customAdapter,
+            new Dictionary<RecordSchema, AvroTypeDescription>(knownTypes),
+            new Dictionary<string, AvroTypeDescription>(knownTypesByName),
+            new Dictionary<EnumSchema, AvroEnumDescription>(enumMap),
+            new Dictionary<string, AvroEnumValue>(enumValues),
+            new Dictionary<string, IType>(revTypeMap));
     }
 
     public void Register(object t)
@@ -117,9 +155,16 @@ public sealed class AvroRegistry : ITypeRegistry
         TypeDescription(AvroTypeDescription.GetSchema(t));
     }
 
+    /// <summary>
+    ///     Registers a type by the name it reports, so <see cref="FindIdent" /> and
+    ///     <see cref="FindType" /> resolve it. Mirrors <c>ProtoTypeRegistry.RegisterType</c>,
+    ///     the port of cel-go's <c>Registry.RegisterType</c>. Threw
+    ///     <see cref="NotSupportedException" /> before, so a caller-owned type was nameable
+    ///     under the protobuf registry and not under this one.
+    /// </summary>
     public void RegisterType(params IType[] types)
     {
-        throw new NotSupportedException();
+        foreach (var t in types) revTypeMap[t.TypeName()] = t;
     }
 
     public TypeAdapter ToTypeAdapter()
@@ -140,6 +185,10 @@ public sealed class AvroRegistry : ITypeRegistry
 
     public IVal? FindIdent(string identName)
     {
+        // A registered type first, as in ProtoTypeRegistry.
+        revTypeMap.TryGetValue(identName, out var registered);
+        if (registered != null) return registered;
+
         knownTypesByName.TryGetValue(identName, out var td);
         if (td != null) return td.Type();
 
@@ -154,6 +203,17 @@ public sealed class AvroRegistry : ITypeRegistry
 
     public Google.Api.Expr.V1Alpha1.Type? FindType(string typeName)
     {
+        // As in ProtoTypeRegistry.FindType: the type *of* the type, which is what lets the name
+        // stand as a type expression.
+        if (revTypeMap.ContainsKey(typeName))
+        {
+            var named = new Google.Api.Expr.V1Alpha1.Type();
+            named.MessageType = typeName;
+            var asType = new Google.Api.Expr.V1Alpha1.Type();
+            asType.Type_ = named;
+            return asType;
+        }
+
         knownTypesByName.TryGetValue(typeName, out var td);
         if (td == null) return null;
         return td.PbType();
