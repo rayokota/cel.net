@@ -35,6 +35,10 @@ public sealed class JsonRegistry : ITypeRegistry
     private readonly IDictionary<string, JsonTypeDescription> knownTypesByName =
         new Dictionary<string, JsonTypeDescription>();
 
+    // Types registered by name, as on ProtoTypeRegistry. This registry is the fallback for a
+    // value that is neither a record nor a message, so a caller-owned type can land here.
+    private readonly IDictionary<string, IType> revTypeMap = new Dictionary<string, IType>();
+
     private readonly JsonSerializer serializer;
 
     private JsonRegistry()
@@ -53,9 +57,14 @@ public sealed class JsonRegistry : ITypeRegistry
         TypeDescription(cls);
     }
 
+    /// <summary>
+    ///     Registers a type by the name it reports, so <see cref="FindIdent" /> and
+    ///     <see cref="FindType" /> resolve it. As on <c>ProtoTypeRegistry</c> and
+    ///     <c>AvroRegistry</c>; threw <see cref="NotSupportedException" /> before.
+    /// </summary>
     public void RegisterType(params IType[] types)
     {
-        throw new NotSupportedException();
+        foreach (var t in types) revTypeMap[t.TypeName()] = t;
     }
 
     public TypeAdapter ToTypeAdapter()
@@ -72,6 +81,10 @@ public sealed class JsonRegistry : ITypeRegistry
 
     public IVal? FindIdent(string identName)
     {
+        // A registered type first, as in ProtoTypeRegistry.
+        revTypeMap.TryGetValue(identName, out var registered);
+        if (registered != null) return registered;
+
         knownTypesByName.TryGetValue(identName, out var td);
         if (td != null) return td.Type();
 
@@ -82,6 +95,17 @@ public sealed class JsonRegistry : ITypeRegistry
 
     public Google.Api.Expr.V1Alpha1.Type? FindType(string typeName)
     {
+        // As in ProtoTypeRegistry.FindType: the type *of* the type, which is what lets the name
+        // stand as a type expression.
+        if (revTypeMap.ContainsKey(typeName))
+        {
+            var named = new Google.Api.Expr.V1Alpha1.Type();
+            named.MessageType = typeName;
+            var asType = new Google.Api.Expr.V1Alpha1.Type();
+            asType.Type_ = named;
+            return asType;
+        }
+
         knownTypesByName.TryGetValue(typeName, out var td);
         if (td == null) return null;
         return td.PbType();

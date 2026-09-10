@@ -145,10 +145,20 @@ internal class JsonRegistryTest
         Assert.That(reg.ToTypeAdapter(), Is.EqualTo(reg.ToTypeAdapter()));
     }
 
+    /// <summary>
+    ///     RegisterType used to throw NotSupportedException here. It now records the type under
+    ///     the name it reports, as ProtoTypeRegistry has always done - see AvroRegisterTypeTest
+    ///     for why a caller needs it: this registry is the one selected for a value that is
+    ///     neither a record nor a message, so a caller-owned type bound on its own lands here.
+    /// </summary>
     [Test]
     public virtual void RegisterType()
     {
         var reg = JsonRegistry.NewRegistry();
-        Assert.That(() => reg.RegisterType(IntT.IntType), Throws.Exception.InstanceOf(typeof(NotSupportedException)));
+        reg.RegisterType(TypeT.NewObjectTypeValue("example.Carried"));
+        Assert.That(reg.FindIdent("example.Carried"), Is.Not.Null);
+        Assert.That(reg.FindType("example.Carried"), Is.Not.Null);
+        // An unregistered name is still unresolvable, so the lookup is not answering blindly.
+        Assert.That(reg.FindIdent("example.Absent"), Is.Null);
     }
 }
